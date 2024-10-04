@@ -11,7 +11,7 @@
     "g-c-build_apk": "npx jetify && cd ./android  && ./gradlew clean && ./gradlew assembleRelease",
     "g-c-build_aab": "npx jetify && cd ./android  && ./gradlew clean && ./gradlew bundleRelease",
     "pod_install": "rvm use ext-ruby-2.7.4 && cd ios && bundle i && pod install && cd ..",
-    "push": "git add . && git commit -m 'frist commit' && git push origin staging"
+    "push": "git add . && git commit -m 'frist commit' && git push origin staging2"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.21.0",
