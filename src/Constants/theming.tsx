@@ -6,8 +6,8 @@ import { RootState } from '../Store/store';
 import { Colors, ColorWithOpacity, FontsLtr, FontsLtrIOS, FontsRtl } from './styleConstants';
 const themes  = {
   dark: {
-    appBackgroundColor: '#FF7631',
-    appFullBackgroundColor: '#FF7631',
+    appBackgroundColor: '#FFFFFF',
+    appFullBackgroundColor: '#FFFFFF',
     headerBackgroundColor: '#ED6A1D',
     inputBackground: '#464646',
     inputTextColor: Colors.medGary,
@@ -111,14 +111,14 @@ const themes  = {
     gray_blue2: Colors.mainColor,
     cartCyrcle: '#F1F1F1',
     alertBackground: '#FFFFFF',
-    border: '#E9E9E9',
+    border: '#E6E4E7',
     cartItemTitleColor: '#222222',
     separator: ColorWithOpacity('#000000', 0.1),
     lightSeparator: ColorWithOpacity('#000000', 0.06),
     pagesText: '#707F89',
     accordianBack: '#F1F1F1',
-    appBackgroundColor: '#FF7631',
-    appFullBackgroundColor: '#FF7631',
+    appBackgroundColor: '#FFFFFF',
+    appFullBackgroundColor: '#FFFFFF',
     headerBackgroundColor: '#ED6A1D',
     inputBackground: '#F1F1F1',
     inputTextColor: Colors.medGary,
@@ -151,13 +151,21 @@ const themes  = {
     textTitle: '#82799D',
     medGary: Colors.medGary,
     grayTabBar: '#707F89',
-    bodyBackground: '#FF7631',
+    bodyBackground: '#FFFFFF',
     labelText: "#030303",
     phonecodeDropdowe: "#E5E5E5",
     orText: "#030303",
    signuoText: "#432C81",
  social:"#FCFCFC",
- appointment:"#D20000"
+ appointment:"#D20000",
+ active:Colors.secondColor,
+ deactive:"#888888",
+ textColor:"#3D4A78",
+ black:"#000000",
+ currenctText:"#FEBA32",
+ timeText:"#A3A3A3",
+ optionText:"#EDEEF0",
+ sepreator:"#EDEBEB"
   },
 }as any;
 const LayoutDirectionRtl = StyleSheet.create({
@@ -207,14 +215,12 @@ const initialState = {
 };
 const ThemeContext = createContext(initialState);
 
-const ThemeProvider = ({ children }) => {
+const ThemeProvider = ({ children }:any) => {
   const dispatch = useDispatch<any>();
   const { darkmode, direction } = useSelector(
     (state: RootState) => state.settings,
   );
-console.log('============darkmode========================');
-console.log(darkmode);
-console.log('====================================');
+
   const [dark, setDark] = useState<boolean>(darkmode);
   const [dir, setDir] = useState<string>(direction);
 

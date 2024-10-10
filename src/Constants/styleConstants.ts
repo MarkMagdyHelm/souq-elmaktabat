@@ -3,8 +3,8 @@ const { width, height } = Dimensions.get('screen');
 export const phoneHeight = Dimensions.get('screen').height;
 export const phoneWidth = Dimensions.get('screen').width;
 export enum Colors {
-  mainColor = '#FF7631',
-  secondColor = '#00D787',
+  mainColor = '#FFFFFF',
+  secondColor = '#0394FF',
   light = '#F6F6F6',
   dark = '#383535',
   darkLighter = '#68655F',
@@ -15,7 +15,7 @@ export enum Colors {
   googleLogin = '#F2F6F8',
 
   gray = '#979797',
-  appBackgroundColor = '#fff',
+  appBackgroundColor = '#FFFF',
   sacandAppBackgroundColor = '#F4F6F9',
   grayDark = '#515355',
   boxColor = '#E0E6EF',
@@ -36,30 +36,34 @@ export enum Colors {
 }
 
 export enum FontsRtl {
-  extraLight = 'ArbFONTS-The-Sans-Plain-alinma',
-  light = 'ArbFONTS-TheSans-Bold-alinma',
-  regular = 'FrutigerLTArabic45Light',
-  medium = 'FrutigerLTArabic55Roman',
-  bold = 'FrutigerLTArabic65Bold',
-  semiBold = 'frutigerltarabic75black',
-  // extraBold = 'Tajawal-ExtraBold',
-  // black = 'Tajawal-black',
+  extraLight = 'Tajawal-ExtraLight.ttf',
+  light = 'Tajawal-light.ttf',
+  regular = 'Tajawal-Regular.ttf',
+  medium = 'Tajawal-medium.ttf',
+  bold = 'Tajawal-bold.ttf',
+  // semiBold = 'frutigerltarabic75black',
+  extraBold = 'Tajawal-ExtraBold.ttf',
+  black = 'Tajawal-black.ttf',
 }
 export enum FontsLtr {
-  extraLight = 'ArbFONTS-The-Sans-Plain-alinma',
-  light = 'ArbFONTS-TheSans-Bold-alinma',
-  regular = 'FrutigerLTArabic45Light',
-  medium = 'FrutigerLTArabic55Roman',
-  bold = 'FrutigerLTArabic65Bold',
-  semiBold = 'frutigerltarabic75black',
+  extraLight = 'Tajawal-ExtraLight',
+  light = 'Tajawal-light',
+  regular = 'Tajawal-Regular',
+  medium = 'Tajawal-medium',
+  bold = 'Tajawal-bold',
+  // semiBold = 'frutigerltarabic75black',
+  extraBold = 'Tajawal-ExtraBold',
+  black = 'Tajawal-black',
 }
 export enum FontsLtrIOS {
-  extraLight = 'TheSans Plain',
-  light = 'TheSans Bold',
-  regular = 'Frutiger LT Arabic 45 Light',
-  medium = 'Frutiger LT Arabic 55 Roman',
-  bold = 'Frutiger LT Arabic 65 Bold',
-  semiBold = 'Frutiger LT Arabic 75 Black',
+  extraLight = 'Tajawal-ExtraLight',
+  light = 'Tajawal-light',
+  regular = 'Tajawal-Regular',
+  medium = 'Tajawal-medium',
+  bold = 'Tajawal-bold',
+  // semiBold = 'frutigerltarabic75black',
+  extraBold = 'Tajawal-ExtraBold',
+  black = 'Tajawal-black',
 }
 
 export enum Images {

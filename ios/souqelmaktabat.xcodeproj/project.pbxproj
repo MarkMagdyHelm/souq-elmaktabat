@@ -12,8 +12,16 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		1E2AB18926964D609C2E0D8A /* Tajawal-bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C1F103D8E7204B66A179E971 /* Tajawal-bold.ttf */; };
+		49ECEDDACF93C60DDBE4DB77 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 079CBAACB7CA6C167B089B6E /* PrivacyInfo.xcprivacy */; };
+		52F09B4311F34C8590EC5D40 /* Tajawal-medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 415DEBA85F794892BFB15DEC /* Tajawal-medium.ttf */; };
+		530CCFF101F14ECEB7355311 /* Tajawal-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 090A1A92901F4FA2913F7655 /* Tajawal-Regular.ttf */; };
+		748A471A657D4CA7A1E9F85B /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4DEFF8EF3A014FA0BD17180E /* BootSplash.storyboard */; };
 		7699B88040F8A987B510C191 /* libPods-souqelmaktabat-souqelmaktabatTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-souqelmaktabat-souqelmaktabatTests.a */; };
-		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		7E1610C5A1E7408ABA0D4CC1 /* Tajawal-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ED481D8DAA8F4CEDAFB7FA44 /* Tajawal-ExtraBold.ttf */; };
+		7FD991D2FEDB4C489D51CC76 /* Tajawal-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D8C8E0F7BE204C2092F01649 /* Tajawal-ExtraLight.ttf */; };
+		BED3F39683F34BD8A18CB549 /* Tajawal-black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5336C7BCADC144B4B8F3502D /* Tajawal-black.ttf */; };
+		F9FAC90F47804C58A70B9557 /* Tajawal-light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2B878C0C26AF47259BCF4DE1 /* Tajawal-light.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -30,6 +38,8 @@
 		00E356EE1AD99517003FC87E /* souqelmaktabatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = souqelmaktabatTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* souqelmaktabatTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = souqelmaktabatTests.m; sourceTree = "<group>"; };
+		079CBAACB7CA6C167B089B6E /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = souqelmaktabat/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		090A1A92901F4FA2913F7655 /* Tajawal-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Tajawal-Regular.ttf"; path = "../src/Assets/Fonts/Tajawal-Regular.ttf"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* souqelmaktabat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = souqelmaktabat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = souqelmaktabat/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = souqelmaktabat/AppDelegate.mm; sourceTree = "<group>"; };
@@ -37,13 +47,19 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = souqelmaktabat/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = souqelmaktabat/main.m; sourceTree = "<group>"; };
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-souqelmaktabat-souqelmaktabatTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-souqelmaktabat-souqelmaktabatTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2B878C0C26AF47259BCF4DE1 /* Tajawal-light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Tajawal-light.ttf"; path = "../src/Assets/Fonts/Tajawal-light.ttf"; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-souqelmaktabat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-souqelmaktabat.debug.xcconfig"; path = "Target Support Files/Pods-souqelmaktabat/Pods-souqelmaktabat.debug.xcconfig"; sourceTree = "<group>"; };
+		415DEBA85F794892BFB15DEC /* Tajawal-medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Tajawal-medium.ttf"; path = "../src/Assets/Fonts/Tajawal-medium.ttf"; sourceTree = "<group>"; };
+		4DEFF8EF3A014FA0BD17180E /* BootSplash.storyboard */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = BootSplash.storyboard; path = souqelmaktabat/BootSplash.storyboard; sourceTree = "<group>"; };
+		5336C7BCADC144B4B8F3502D /* Tajawal-black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Tajawal-black.ttf"; path = "../src/Assets/Fonts/Tajawal-black.ttf"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-souqelmaktabat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-souqelmaktabat.release.xcconfig"; path = "Target Support Files/Pods-souqelmaktabat/Pods-souqelmaktabat.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-souqelmaktabat-souqelmaktabatTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-souqelmaktabat-souqelmaktabatTests.debug.xcconfig"; path = "Target Support Files/Pods-souqelmaktabat-souqelmaktabatTests/Pods-souqelmaktabat-souqelmaktabatTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-souqelmaktabat.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-souqelmaktabat.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = souqelmaktabat/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-souqelmaktabat-souqelmaktabatTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-souqelmaktabat-souqelmaktabatTests.release.xcconfig"; path = "Target Support Files/Pods-souqelmaktabat-souqelmaktabatTests/Pods-souqelmaktabat-souqelmaktabatTests.release.xcconfig"; sourceTree = "<group>"; };
+		C1F103D8E7204B66A179E971 /* Tajawal-bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Tajawal-bold.ttf"; path = "../src/Assets/Fonts/Tajawal-bold.ttf"; sourceTree = "<group>"; };
+		D8C8E0F7BE204C2092F01649 /* Tajawal-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Tajawal-ExtraLight.ttf"; path = "../src/Assets/Fonts/Tajawal-ExtraLight.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		ED481D8DAA8F4CEDAFB7FA44 /* Tajawal-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Tajawal-ExtraBold.ttf"; path = "../src/Assets/Fonts/Tajawal-ExtraBold.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,8 +106,9 @@
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				4DEFF8EF3A014FA0BD17180E /* BootSplash.storyboard */,
+				079CBAACB7CA6C167B089B6E /* PrivacyInfo.xcprivacy */,
 			);
 			name = souqelmaktabat;
 			sourceTree = "<group>";
@@ -104,6 +121,20 @@
 				19F6CBCC0A4E27FBF8BF4A61 /* libPods-souqelmaktabat-souqelmaktabatTests.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6BAAEBBC662542E181CB0738 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				ED481D8DAA8F4CEDAFB7FA44 /* Tajawal-ExtraBold.ttf */,
+				D8C8E0F7BE204C2092F01649 /* Tajawal-ExtraLight.ttf */,
+				5336C7BCADC144B4B8F3502D /* Tajawal-black.ttf */,
+				2B878C0C26AF47259BCF4DE1 /* Tajawal-light.ttf */,
+				415DEBA85F794892BFB15DEC /* Tajawal-medium.ttf */,
+				090A1A92901F4FA2913F7655 /* Tajawal-Regular.ttf */,
+				C1F103D8E7204B66A179E971 /* Tajawal-bold.ttf */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -122,6 +153,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				6BAAEBBC662542E181CB0738 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -242,8 +274,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				748A471A657D4CA7A1E9F85B /* BootSplash.storyboard in Resources */,
+				7E1610C5A1E7408ABA0D4CC1 /* Tajawal-ExtraBold.ttf in Resources */,
+				7FD991D2FEDB4C489D51CC76 /* Tajawal-ExtraLight.ttf in Resources */,
+				BED3F39683F34BD8A18CB549 /* Tajawal-black.ttf in Resources */,
+				F9FAC90F47804C58A70B9557 /* Tajawal-light.ttf in Resources */,
+				52F09B4311F34C8590EC5D40 /* Tajawal-medium.ttf in Resources */,
+				530CCFF101F14ECEB7355311 /* Tajawal-Regular.ttf in Resources */,
+				1E2AB18926964D609C2E0D8A /* Tajawal-bold.ttf in Resources */,
+				49ECEDDACF93C60DDBE4DB77 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -486,8 +526,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 69PGAW6TAN;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = souqelmaktabat/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Souq Elmaktabat";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -498,7 +540,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.souqelmaktabat;
 				PRODUCT_NAME = souqelmaktabat;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -513,7 +555,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 69PGAW6TAN;
 				INFOPLIST_FILE = souqelmaktabat/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Souq Elmaktabat";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -524,7 +568,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.souqelmaktabat;
 				PRODUCT_NAME = souqelmaktabat;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -564,7 +608,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -572,6 +616,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
+					_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -592,12 +637,18 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "$(inherited)";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-DFOLLY_NO_CONFIG",
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
 				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -635,9 +686,13 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION,
+				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -655,12 +710,18 @@
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_CFLAGS = "$(inherited)";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-DFOLLY_NO_CONFIG",
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
 				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};

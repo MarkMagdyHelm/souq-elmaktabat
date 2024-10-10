@@ -44,15 +44,15 @@ export const Container: FC<containerProps> = ({
   return (
     <>
       <StatusBar
-        backgroundColor={isdark?theme.bodyBackground:theme.secondColor}
+        backgroundColor={isdark?theme.mainColor:theme.mainColor}
         barStyle={isdark ? 'light-content' : 'dark-content'}
         // hidden
       />
-    <SafeAreaView style={{ flex:0, backgroundColor:isdark?theme.bodyBackground:theme.secondColor}} />
+    <SafeAreaView style={{ flex:0, backgroundColor:isdark?theme.mainColor:theme.mainColor}} />
     
       <KeyboardAvoidingView
         style={{ flex: 1 ,borderColor:Colors.white,
-          backgroundColor:isdark?theme.bodyBackground:theme.secondColor}}
+          backgroundColor:isdark?theme.mainColor:theme.mainColor}}
         keyboardVerticalOffset={50}
         // behavior='padding'
     // behavior='height'

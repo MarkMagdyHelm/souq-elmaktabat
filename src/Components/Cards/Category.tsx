@@ -1,8 +1,9 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, Platform, StyleSheet, Text, View } from 'react-native'
 import React, { useContext } from 'react'
 import { ThemeContext } from '../../Constants/theming';
 import { IFont, ITheme } from '../../Constants/interfaces';
-import { Colors, PixelPerfect, phoneWidth } from '../../Constants/styleConstants';
+import { ColorWithOpacity, Colors, PixelPerfect, phoneWidth } from '../../Constants/styleConstants';
+import { t } from 'i18next';
 
 type Props = {}
 
@@ -10,13 +11,20 @@ const Category = (props: Props) => {
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
   return (
-    <View style={styles.con}>
+    <View style={[layout.rowBox,styles.con,]}>
+      <View style={[layout.rowBox,{alignItems:"center"}]}>
       <View style={styles.imageCon}>
         <Image style={styles.image}
-        source={require('../../Assets/Images/hospital.png')}
+        source={require('../../Assets/Images/image.png')}
         />
       </View>
-        <Text style={styles.text}>Hospital</Text>
+      <View style={{justifyContent:"center",alignItems:"center"}}>
+        <Text style={styles.text1}>{"مرام"}</Text>
+        <Text style={styles.text2}>{"75 جرام"}</Text>
+      </View>
+      </View>
+      
+        <Text style={styles.currency}>570 {t("LE")}</Text>
     </View>
   )
 }
@@ -26,26 +34,44 @@ export default Category
 const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,) =>
 StyleSheet.create({
     con:{
-        backgroundColor:Colors.white,
         borderRadius:PixelPerfect(8),
-        height:PixelPerfect(82),
-        width:(phoneWidth-PixelPerfect(55))/3,
+        height:PixelPerfect(60),
+        width:(phoneWidth-PixelPerfect(29))/2,
         alignItems:"center",
-        justifyContent:"center",
-        marginBottom:PixelPerfect(8)
+        backgroundColor:Colors.white,
+        marginBottom:PixelPerfect(16),
+       borderColor:ColorWithOpacity(theme.black,0.25),
+       borderWidth:PixelPerfect(0.7),
+       borderRaduis:PixelPerfect(4),
+       justifyContent:"space-between",
+       elevation: 1,
+       shadowColor: '#000',
+       shadowOffset: {width: 0, height: 1},
+       shadowOpacity: 0.3,
+       shadowRadius: 1,
     },
     imageCon:{
-        height:PixelPerfect(30),
-        width:PixelPerfect(30),
+        height:PixelPerfect(50),
+        width:PixelPerfect(50),
     },
     image:{
-        height:PixelPerfect(30),
-        width:PixelPerfect(30),
+        height:PixelPerfect(50),
+        width:PixelPerfect(50),
     },
-    text:{
-        color: theme.labelText,
-        fontSize: PixelPerfect(12),
-        fontFamily: Fonts.regular,
-        marginVertical:PixelPerfect(7),
-    }
+    text1:{
+        color: theme.textColor,
+        fontSize: PixelPerfect(16),
+        fontFamily: Fonts.bold,
+    },
+    text2:{
+      color: theme.black,
+      fontSize: PixelPerfect(12),
+      fontFamily: Fonts.light,
+    },
+    currency:{
+      color: theme.currenctText,
+      fontSize: PixelPerfect(18),
+      fontFamily: Fonts.bold,
+       paddingHorizontal:PixelPerfect(4)
+      }
 });

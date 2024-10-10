@@ -1,5 +1,5 @@
 import { StyleProp, ViewStyle } from 'react-native';
-import { ActionType } from '../store/actions/actions';
+import { ActionType } from '../Store/actions/actions';
 
 export interface TouchableProps {
   dark?: boolean;
@@ -42,9 +42,9 @@ export interface IFont {
   regular: string;
   medium: string;
   bold: string;
-  semiBold: string;
-  // extraBold: string;
-  // black: string;
+  // semiBold: string;
+  extraBold: string;
+  black: string;
 }
 
 export interface ITheme {
@@ -116,5 +116,13 @@ export interface ITheme {
   orText:string,
    signuoText: string,
    social:string,
-   appointment:string
+   appointment:string,
+   active:string,
+ deactive:string,
+ textColor:string,
+ black:string,
+ currenctText:string,
+ timeText:string,
+ optionText:string,
+ sepreator:string
 }

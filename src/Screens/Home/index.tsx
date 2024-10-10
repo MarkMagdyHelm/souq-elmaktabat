@@ -1,15 +1,19 @@
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
 import { Container } from '../../Components/containers/Containers'
 import { ThemeContext } from '../../Constants/theming'
 import { IFont, ITheme } from '../../Constants/interfaces'
-import { CoinsIcon, ElectricIcon, PlusIcon, PrescriptionIcon } from '../../Assets/Svg'
 import { t } from 'i18next'
 import { ColorWithOpacity, Colors, PixelPerfect, phoneWidth } from '../../Constants/styleConstants'
 import TabBar from '../../Components/TabBar/index';
 import Category from '../../Components/Cards/Category';
-import Appointment from  '../../Components/Cards/Appointment';
-let items = [{flag:false},{flag:true},{flag:false},{flag:false},{flag:false},{flag:false}]
+import { CallIcon, PaperIcon, SharIcon } from '../../Assets/Svg'
+import moment from 'moment';
+import 'moment/locale/ar'  // without this line it didn't work
+import  ViewShot  from "react-native-view-shot";
+import Share from 'react-native-share';
+
+let items = [{flag:false},{flag:true},{flag:false},{flag:false},{flag:false},{flag:false},{flag:false},{flag:true},{flag:false},{flag:false},{flag:false},{flag:false},,{flag:false}]
 type Props = {
     navigation: any
 }
@@ -20,46 +24,50 @@ const Index = (props: Props) => {
     } = props
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
+    const ref = useRef() as any;
+    const handleScreenShot = ()=>{
+      ref.current.capture().then((uri:any) => {
+        Share.open({url:uri})
+  .then((res) => {
+    console.log(res);
+  })
+  .catch((err) => {
+    err && console.log(err);
+  });
+        console.log("do something with ", uri);
+      });
+    }
     return (
+      <ViewShot style={{flex:1}} ref={ref} options={{ fileName: "Your-File-Name", format: "jpg", quality: 0.9 }}>
         <Container showHint={false}>
-            <View style={[{ flex: 0.26, backgroundColor: theme.bodyBackground }]}>
-                <View style={[layout.dirRow,styles.welcomCon]}>
-                    <ElectricIcon />
-                    <View>
-                        <Text style={styles.welcomText}>{t('Good morning,')}</Text>
-                        <Text style={styles.nameText}>{t('Albert Emil')}</Text>
-                    </View>
-                </View>
-                <View style={[layout.rowBox,styles.pointsCon]}>
-               <Pressable style={[layout.rowBox,styles.CoinsCon]}>
-                <CoinsIcon/>
-                <Text style={styles.PointsText}>3200<Text style={[styles.PointsText,{fontFamily:Fonts.bold}]}> {t('Point')}</Text></Text>
-               </Pressable>
-               <Pressable style={[layout.rowBox,styles.CoinsCon]}>
-               <Text style={styles.PointsText}>280<Text style={[styles.PointsText,{fontFamily:Fonts.bold,fontSize:PixelPerfect(12)}]}>{t('LE')}</Text></Text>
-                <PlusIcon/>
-               </Pressable>
-            </View>
-            </View>
            <View style={styles.bodyCon}>
-             <View style={[layout.rowBox,styles.presCon]}>
-               <PrescriptionIcon/>
-               <View style={styles.presTextsCon}>
-                <Text style={styles.presText1}>{t('Send prescription')}</Text>
-                <Text style={styles.presText2}>{t('Now you can send  prescription !')}</Text>
-               </View>
-             </View>
-             <View style={styles.categoriesCon}>
-                <Text style={styles.categoriesTitle}>{t("Categories")}</Text>
-                <View>
-                <FlatList
+
+              <View style={[layout.rowBox,styles.section1]}>
+              <PaperIcon/>
+              <Text style={styles.textsection1}>{t("hometext1")}</Text>
+              </View>
+
+              <View style={[layout.rowBox,styles.section2]}>
+                <View style={[layout.rowBox,]}>
+              <CallIcon/>
+              <Text style={styles.textsection2}>{moment().locale("ar").format('dddd')} {moment().locale("en").format('DD-MM-YYYY')}</Text>
+                </View>
+                <Pressable style={[layout.rowBox,styles.sharButton]}
+                onPress={handleScreenShot}
+                >
+                  <SharIcon/>
+                  <Text style={styles.sharText}>{t('Share')}</Text>
+                </Pressable>
+              </View>
+              <View style={styles.listCon}>
+              <FlatList
               showsVerticalScrollIndicator={false}
             //   onRefresh={() =>{}}
             //   refreshing={isFetching}
             columnWrapperStyle={{justifyContent:"space-between"}}
               style={styles.list}
               data={items}
-              numColumns={3}
+              numColumns={2}
               keyExtractor={(items, index:number) => index.toString()}
               renderItem={item => {
                 return (
@@ -68,32 +76,11 @@ const Index = (props: Props) => {
                   </>
                 );
               }}/>
-                </View>
-             </View>
-             <View style={[styles.categoriesCon,{paddingHorizontal:0,paddingLeft:PixelPerfect(20)}]}>
-                <Text style={styles.categoriesTitle}>{t("Upcoming appointments")}</Text>
-                <View>
-                <FlatList
-              showsVerticalScrollIndicator={false}
-            //   onRefresh={() =>{}}
-            //   refreshing={isFetching}
-            ItemSeparatorComponent={()=>(<View style={{width:PixelPerfect(10)}}/>)}
-               horizontal
-              style={styles.list}
-              data={items}
-              keyExtractor={(items, index:number) => index.toString()}
-              renderItem={({item}) => {
-                return (
-                  <>
-                    <Appointment item={item}/>
-                  </>
-                );
-              }}/>
-                </View>
-             </View>
+              </View>
            </View>
            <TabBar/>
         </Container>
+        </ViewShot>
     )
 }
 
@@ -101,81 +88,56 @@ export default Index
 
 const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,) =>
 StyleSheet.create({
-    welcomCon:{
-        alignItems:"center",
-        justifyContent:"space-between",
-        paddingRight:PixelPerfect(20),
-    },
-    welcomText:{
-        color: theme.inputTextColor,
-        fontSize: PixelPerfect(14),
-        fontFamily: Fonts.regular,
-        marginBottom:PixelPerfect(5)
-    },
-   nameText:{
-        color: Colors.white,
-        fontSize: PixelPerfect(28),
-        fontFamily: Fonts.bold,
-        marginTop:PixelPerfect(5)
-    },
-    pointsCon:{
-        alignSelf:"center",
-        backgroundColor:ColorWithOpacity(Colors.white,0.1),
-        paddingHorizontal:PixelPerfect(10),
-        alignItems:"center",
-        justifyContent:"space-between",
-        height:PixelPerfect(49),
-        borderRadius:PixelPerfect(8),
-        marginHorizontal:PixelPerfect(20),
-        width:phoneWidth-PixelPerfect(40)
-    },
-    PointsText:{
-        paddingHorizontal:PixelPerfect(7),
-        color: Colors.white,
-        fontSize: PixelPerfect(18),
-        fontFamily: Fonts.medium,
-    },
-    CoinsCon:{
-        alignItems:"center"
-    },
+   
     bodyCon:{
-        flex:0.66,
-        backgroundColor:theme.secondColor,
-        alignItems:"center",
-        paddingTop:PixelPerfect(20)
+        flex:0.9,
+        backgroundColor:theme.mainColor,
+        paddingTop:PixelPerfect(18),
+        paddingHorizontal:PixelPerfect(10)
     },
-    presCon:{
-        backgroundColor:Colors.white,
-        borderRadius:PixelPerfect(8),
-        height:PixelPerfect(82),
-        width:phoneWidth-PixelPerfect(40),
-        paddingHorizontal:PixelPerfect(20),
-        paddingVertical:PixelPerfect(10),
-        alignItems:"center"
+    section1:{
+      alignItems:"center",
+      flex:0.05
     },
-    presTextsCon:{
-     paddingHorizontal:PixelPerfect(20)
+    textsection1:{
+      fontFamily:Fonts.bold,
+      color:theme.active,
+      paddingHorizontal:PixelPerfect(8),
+      fontSize:PixelPerfect(22)
     },
-    presText1:{
-        color: theme.labelText,
-        fontSize: PixelPerfect(18),
-        fontFamily: Fonts.medium,
+    section2:{
+      alignItems:"center",
+      marginTop:PixelPerfect(15),
+      justifyContent:"space-between",
+      flex:0.05
     },
-    presText2:{
-        color: theme.inputTextColor,
-        fontSize: PixelPerfect(12),
-        fontFamily: Fonts.regular,
-        marginTop:PixelPerfect(5)
+    textsection2:{
+      fontFamily:Fonts.regular,
+      // fontWeight:"700",
+      color:theme.textColor,
+      paddingHorizontal:PixelPerfect(8),
+      fontSize:PixelPerfect(20),
+      lineHeight:24
     },
-    categoriesCon:{
-        paddingHorizontal:PixelPerfect(20),
-        width:"100%"
+    sharButton:{
+      padding:PixelPerfect(10),
+      height:PixelPerfect(40),
+      width:PixelPerfect(100),
+      borderRadius:PixelPerfect(8),
+      borderColor:theme.active,
+      borderWidth:PixelPerfect(1),
+      alignItems:"center",
+      justifyContent:"space-between"
     },
-    categoriesTitle:{
-        color: theme.labelText,
-        fontSize: PixelPerfect(18),
-        fontFamily: Fonts.medium,
-        marginVertical:PixelPerfect(15),
+    sharText:{
+      fontFamily:Fonts.bold,
+      color:theme.active,
+      fontSize:PixelPerfect(16),
+      lineHeight:22
+    },
+    listCon:{
+      flex:0.9,
+      paddingVertical:PixelPerfect(15),
     },
     list:{
 

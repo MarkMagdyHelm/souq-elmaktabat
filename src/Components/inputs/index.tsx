@@ -33,12 +33,14 @@ export default function Index(props: Props) {
     console.log(Platform.OS,dir);
     console.log('====================================');
     return (
-        <View style={[styles.inputContainner]}>
+        <>
+            <Text style={[layout.textAlign,styles.label]}>{label}</Text>
+        <View style={[layout.rowBox,styles.inputContainner]}>
             <TextInput
           selectionColor={Colors.secondColor}
           style={[ styles.textInputContainer, ]}
           placeholderTextColor={theme.inputTextColor}
-        placeholder={label}
+       
           secureTextEntry={password && !state.showPassword ? true : false}
           textContentType={'none'}
           {...options}
@@ -49,37 +51,41 @@ export default function Index(props: Props) {
             <EyeIcon/>
         </Pressable>}
         </View>
+        </>
     )
 }
 
 const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,) =>
     StyleSheet.create({
         inputContainner:{
-            flexDirection:"row",
+            
             backgroundColor:Colors.white,
-            height:PixelPerfect(46),
+            height:PixelPerfect(50),
             alignItems:"center",
             borderRadius:PixelPerfect(8),
             paddingHorizontal:PixelPerfect(15),
-            marginBottom:PixelPerfect(20)
+            marginBottom:PixelPerfect(20),
+            borderWidth:PixelPerfect(1),
+            borderColor:theme.optionText
         },
         label:{
             fontFamily:Fonts.medium,
-            fontSize:PixelPerfect(16),
-            color:theme.inputTextColor,
-         
+            fontSize:PixelPerfect(18),
+            color:theme.black,
+            marginBottom:PixelPerfect(10)
         },
         textInputContainer:{
         width:"95%",
-        height:PixelPerfect(46),
+        height:PixelPerfect(49),
         fontFamily:Fonts.medium,
         fontSize:PixelPerfect(16),
-        color:theme.inputTextColor,
-        textAlign:dir==="rtl"?"right":"left"
+        color:theme.deactive,
+        textAlign:dir==="rtl"?"right":"left",
         },
         eyecon:{
             alignItems:"center",
             justifyContent:"center",
             width:"5%",
-        }
+        },
+        
     });
