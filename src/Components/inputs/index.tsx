@@ -1,21 +1,27 @@
-import { Platform, Pressable, StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native'
+import { Platform, Pressable, StyleSheet, Text, TextInput, TextInputProps, TextStyle, View, ViewStyle, } from 'react-native'
 import React, { useContext, useState } from 'react'
 import { ThemeContext } from '../../Constants/theming';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import { Colors, PixelPerfect } from '../../Constants/styleConstants';
-import { EyeIcon } from '../../Assets/Svg';
+import { EyeIcon, FlagIcon, SmallArrowDownIcon } from '../../Assets/Svg';
 
 type Props = {
     label: string,
     password:boolean,
-    options?: TextInputProps & { ref?: (ref: any) => void };
+    options?: TextInputProps & { ref?: (ref: any) => void },
+    inputCon?:ViewStyle,
+    input?:TextStyle,
+    isPhone?:boolean
 }
 
 export default function Index(props: Props) {
     const {
         label,
         password,
-        options
+        options,
+        inputCon,
+        input,
+        isPhone
     } = props;
     const [state, setstate] = useState({
         showPassword:false
@@ -35,10 +41,17 @@ export default function Index(props: Props) {
     return (
         <>
             <Text style={[layout.textAlign,styles.label]}>{label}</Text>
-        <View style={[layout.rowBox,styles.inputContainner]}>
+        <View style={[layout.rowBox,styles.inputContainner,inputCon]}>
+            {isPhone&&
+            <View style={[layout.rowBox,styles.phoneCon]}>
+               <FlagIcon/>
+               <Text style={styles.phonecodetext}>{"+02"}</Text>
+               <SmallArrowDownIcon/>
+            </View>
+            }
             <TextInput
           selectionColor={Colors.secondColor}
-          style={[ styles.textInputContainer, ]}
+          style={[ styles.textInputContainer,input ]}
           placeholderTextColor={theme.inputTextColor}
        
           secureTextEntry={password && !state.showPassword ? true : false}
@@ -63,7 +76,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             height:PixelPerfect(50),
             alignItems:"center",
             borderRadius:PixelPerfect(8),
-            paddingHorizontal:PixelPerfect(15),
+            paddingHorizontal:PixelPerfect(10),
             marginBottom:PixelPerfect(20),
             borderWidth:PixelPerfect(1),
             borderColor:theme.optionText
@@ -87,5 +100,19 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             justifyContent:"center",
             width:"5%",
         },
-        
+        phoneCon:{
+            alignItems:"center",
+            justifyContent:"space-between",
+            height:PixelPerfect(50),
+           borderLeftWidth:1,
+           paddingRight:PixelPerfect(8),
+           marginRight:PixelPerfect(8),
+           borderLeftColor:theme.optionText,
+           width:"25%"
+        },
+        phonecodetext:{
+            fontFamily:Fonts.medium,
+            fontSize:PixelPerfect(16),
+            color:theme.deactive,
+        }
     });

@@ -25,4 +25,26 @@ export default {
      "Forget password ?": "هل نسيت كلمة المرور؟",
 "Don't have account": "ليس لديك حساب ؟",
 "Sign up": "سجل الان",
+//contactus
+"contactus":"تواصل معنا",
+"fullname":"الاسم",
+"fullnamew":"اكتب الاسم",
+"Email":"الايميل",
+"Emailw":"اكتب الايميل",
+"message":"رسالتك",
+"messagew":"اكتب رسالتك هنا",
+"Send":"ارسال",
+"message1":"معلومات التواصل معنا",
+//Signin
+"signtxt1":"انشاء حساب جديد",
+"adress":"العنوان",
+"adressw":"اكتب العنوان",
+"Government":"المحافظة",
+"Governmentw":"اختار المحافظة",
+"AccountType":"نوع الحساب",
+"AccountTypew":"اختار نوع الحساب",
+"confirmpasword":"تاكيد كلمة السر",
+"confirmpaswordw":"تاكيد كلمة السر",
+"Phone":"رقم التليفون",
+"Phonew":"اكتب رقم التليفون"
 };
