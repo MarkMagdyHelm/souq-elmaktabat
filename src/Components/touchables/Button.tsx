@@ -6,6 +6,7 @@ import {
   TextStyle,
   View,
   ViewStyle,
+  TouchableOpacity
 } from 'react-native';
 import LottieView from 'lottie-react-native';
 
@@ -13,7 +14,6 @@ import {TouchableProps} from '../../Constants/interfaces';
 import {Colors} from '../../Constants/styleConstants';
 import {PixelPerfect} from '../../Constants/styleConstants';
 import {ThemeContext} from '../../Constants/theming';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 interface Props extends TouchableProps {
   title: string;

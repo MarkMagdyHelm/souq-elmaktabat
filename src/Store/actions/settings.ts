@@ -32,3 +32,22 @@ export const ChangeAppDirection = (direction: string) => ({
   type: ActionType.CHANGE_APP_DIRECTION,
   payload: direction,
 });
+
+
+/**
+ * SetAppSettings
+ * @param direction string
+ */
+export const SetAppSettings = (payload: any) => ({
+  type: ActionType.SET_APP_SETTINGS,
+  payload: payload,
+});
+
+/**
+ * SetForceUpdatw
+ * @param direction string
+ */
+export const SetForceUpdate = (payload: boolean) => ({
+  type: ActionType.SET_FORCE_UPDATE,
+  payload: payload,
+});

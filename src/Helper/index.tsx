@@ -22,7 +22,7 @@ export const saveItem = async (key: string, data: any) => {
     try {
       await AsyncStorage.setItem(key, JSON.stringify(data));
       return true;
-    } catch (error) {
+    } catch (error:any) {
       console.log('saveItem', error.message);
     }
     return false;
@@ -33,7 +33,7 @@ export const saveItem = async (key: string, data: any) => {
       const retrievedItem: any = await AsyncStorage.getItem(key);
       const item = JSON.parse(retrievedItem);
       return item;
-    } catch (error) {
+    } catch (error:any) {
       console.log('getItem', error.message);
     }
     return null;
@@ -43,7 +43,7 @@ export const saveItem = async (key: string, data: any) => {
     try {
       await AsyncStorage.removeItem(key);
       return true;
-    } catch (error) {
+    } catch (error:any) {
       console.log('removeItem', error.message);
     }
     return false;
@@ -61,7 +61,7 @@ export const SpotifyTransition = {
       open: AnimationSpec, //TransitionSpecs.TransitionIOSSpec,
       close: AnimationSpec, //TransitionSpecs.TransitionIOSSpec,
     },
-    cardStyleInterpolator: ({current, next}) => {
+    cardStyleInterpolator: ({current, next}:any) => {
       return {
         cardStyle: {
           transform: [
@@ -81,3 +81,14 @@ export const SpotifyTransition = {
       };
     },
   };
+  
+
+  export const roles = [
+    { id: 1, arName: "مستهلك", name: "Customer" },
+    { id: 2, arName: "تاجر", name: "Merchant" },
+    { id: 3, arName: "صاحب مكتبة", name: "Bookstore Owner" },
+    { id: 4, arName: "صاحب مطبعة", name: "Printing Owner" },
+    { id: 5, arName: "مكتب", name: "Office" },
+    { id: 6, arName: "مدرسة", name: "School" },
+    { id: 7, arName: "شركة إمداد", name: "Supply Company" }
+  ];

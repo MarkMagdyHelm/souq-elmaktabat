@@ -11,13 +11,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const authConfig = {
   key: 'auth',
   storage: AsyncStorage,
-  whitelist: [],
+  whitelist: ['gusterID','userdata','isLogin'],
 };
 
 const settingsConfig = {
   key: 'settings',
   storage: AsyncStorage,
-  whitelist: ['darkmode', 'langauge', 'direction'],
+  whitelist: ['darkmode', 'langauge', 'direction','forceUpdate','appSettings'],
 };
 
 

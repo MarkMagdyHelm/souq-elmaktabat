@@ -7,12 +7,20 @@ import { t } from 'i18next'
 import { Container } from '../containers/Containers'
 import Button from '../touchables/Button'
 import { ContactUsIcon, ShareMoreIcon, SharIcon } from '../../Assets/Svg'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../Store/store'
 
 type Props = {
     navigation: any
 }
 
 const MoreComponnent = (props: Props) => {
+  const { isLogin } = useSelector((state:RootState) => state.auth);
+  const { appSettings } = useSelector((state:RootState) => state.settings);
+   let SignInActive = appSettings?.find((el:any)=>el.type == "SignInActive");
+   console.log('===============SignInActive=====================');
+   console.log(SignInActive.status);
+   console.log('====================================');
     const {
         navigation
     } = props
@@ -22,14 +30,15 @@ const MoreComponnent = (props: Props) => {
         <Container>
             <View style={styles.body}>
             <Text style={[layout.textAlign,styles.textsection1]}>{t("MoreText1")}</Text>
-              <Button
+          {(SignInActive.status==1&&!isLogin)&&<>    
+          <Button
               title={t('Sign in')}
               styleTitle={styles.buttonText}
               onPress={()=>navigation.navigate("Signin")}
               style={styles.button}
               />
-              <View style={styles.seprator}/>
-              <Pressable style={[layout.rowBox,styles.tapCon]}
+              <View style={styles.seprator}/></>}
+              <Pressable style={[layout.rowBox,styles.tapCon,(SignInActive.status==0||isLogin)&&{marginTop:PixelPerfect(16)}]}
                onPress={()=>navigation.navigate("ContactUs")}
               >
                 <ContactUsIcon/>

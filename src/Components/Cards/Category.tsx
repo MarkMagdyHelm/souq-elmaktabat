@@ -4,27 +4,34 @@ import { ThemeContext } from '../../Constants/theming';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import { ColorWithOpacity, Colors, PixelPerfect, phoneWidth } from '../../Constants/styleConstants';
 import { t } from 'i18next';
-
-type Props = {}
+import {imageUrl} from '../../Constants/config'
+type Props = {
+  item:any
+}
 
 const Category = (props: Props) => {
+  const {
+    item
+  } =props;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
+
   return (
     <View style={[layout.rowBox,styles.con,]}>
       <View style={[layout.rowBox,{alignItems:"center"}]}>
       <View style={styles.imageCon}>
         <Image style={styles.image}
-        source={require('../../Assets/Images/image.png')}
+       
+        source={{uri:imageUrl+item?.imageUrl,cache:'reload' }}
         />
       </View>
-      <View style={{justifyContent:"center",alignItems:"center"}}>
-        <Text style={styles.text1}>{"مرام"}</Text>
-        <Text style={styles.text2}>{"75 جرام"}</Text>
+      <View style={{justifyContent:"center",paddingHorizontal:PixelPerfect(5)}}>
+        <Text style={[layout.textAlign,styles.text1]}>{item?.name}</Text>
+        <Text style={[layout.textAlign,styles.text2]}>{item?.paperSize}</Text>
       </View>
       </View>
       
-        <Text style={styles.currency}>570 {t("LE")}</Text>
+        <Text style={styles.currency}>{item?.price} {t("LE")}</Text>
     </View>
   )
 }
@@ -34,6 +41,7 @@ export default Category
 const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,) =>
 StyleSheet.create({
     con:{
+      paddingLeft:PixelPerfect(5),
         borderRadius:PixelPerfect(8),
         height:PixelPerfect(60),
         width:(phoneWidth-PixelPerfect(29))/2,
@@ -57,6 +65,7 @@ StyleSheet.create({
     image:{
         height:PixelPerfect(50),
         width:PixelPerfect(50),
+        resizeMode:"contain"
     },
     text1:{
         color: theme.textColor,

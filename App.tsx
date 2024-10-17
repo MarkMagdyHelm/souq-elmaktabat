@@ -5,11 +5,12 @@
  * @format
  */
 
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import type {PropsWithChildren} from 'react';
 import {
   I18nManager,
   LogBox,
+  Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -26,9 +27,14 @@ import AppInitializer from './src/index'
 import { ThemeContext } from './src/Constants/theming';
 import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './src/Store/store';
 import './src/Local/i18n.config';
+import { GetSettingsHandler } from './src/Apis/Appinfo';
+import ForceUpdate from './src/Components/PopUps/ForceUpdate';
+import DeviceInfo from 'react-native-device-info';
+import Error from './src/Components/Notifications/Error';
+import Success from './src/Components/Notifications/Success';
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
@@ -37,18 +43,49 @@ type SectionProps = PropsWithChildren<{
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
-  useEffect(() => {
-    RNBootSplash.hide({ fade: true });
-  }, []);
+
 
   const { theme, dark, Fonts, toggleDir } = useContext(ThemeContext);
   const { t } = useTranslation();
   const { langauge } = useSelector((state: RootState) => state.settings);
 
   useEffect(() => {
+    RNBootSplash.hide({ fade: true });
     i18next.changeLanguage(langauge);
+    getSettings()
   }, [langauge]);
-
+   const dispatch = useDispatch();
+   const [state, setstate] = useState({
+      forceUpdate:false,
+      isForceUpdateOptional:true
+   });
+   const getSettings = ()=>{
+    dispatch<any>(GetSettingsHandler((res,status)=>{
+      if (Platform.OS === "android") {
+        let androidSetting = res?.data?.find((el:any)=>el.type == "Android");
+        if (androidSetting.status == 1 && parseFloat(DeviceInfo.getVersion()) < parseFloat(androidSetting.targetVersion)) {
+          setstate(old=>({...old,isForceUpdateOptional:false,forceUpdate:true}))
+        }else if(androidSetting.status == 0 && parseFloat(DeviceInfo.getVersion()) < parseFloat(androidSetting.targetVersion)){
+          setstate(old=>({...old,isForceUpdateOptional:true,forceUpdate:true}))
+        }else{
+          setstate(old=>({...old,isForceUpdateOptional:false,forceUpdate:false}))
+        }
+      } else {
+        let iosSetting = res?.data?.find((el:any)=>el.type == "IOS");
+        if (iosSetting.status == 1 && parseFloat(DeviceInfo.getVersion()) < parseFloat(iosSetting.targetVersion)) {
+          setstate(old=>({...old,isForceUpdateOptional:false,forceUpdate:true}))
+        }else if(iosSetting.status == 0 && parseFloat(DeviceInfo.getVersion()) < parseFloat(iosSetting.targetVersion)){
+          setstate(old=>({...old,isForceUpdateOptional:true,forceUpdate:true}))
+        }else{
+          setstate(old=>({...old,isForceUpdateOptional:false,forceUpdate:false}))
+        }
+    
+      }
+    }))
+   }
+   console.log('====================================');
+   console.log(state);
+   console.log('====================================');
   useEffect(() => {
     if (I18nManager.isRTL) {
       I18nManager.forceRTL(false);
@@ -61,9 +98,20 @@ function App(): JSX.Element {
     <>
       {/* <OfflineNotice /> */}
       <ToastProvider
-        offsetTop={30}
-      >
+    offsetTop={50}
+    renderType={{
+      error: (toast) => (
+        <Error toast={toast} />
+      ),
+      ok: (toast) => (
+         <Success toast={toast} />
+      ),
+    }}
+  >
         <AppInitializer />
+        <ForceUpdate show={state.forceUpdate} isForceUpdateOptional={state.isForceUpdateOptional}
+         onCloseFn={()=> setstate(old=>({...old,isForceUpdateOptional:false,forceUpdate:false}))}
+        />
       </ToastProvider>
       </>
   );

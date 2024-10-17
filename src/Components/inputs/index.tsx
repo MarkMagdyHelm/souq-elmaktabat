@@ -3,7 +3,8 @@ import React, { useContext, useState } from 'react'
 import { ThemeContext } from '../../Constants/theming';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import { Colors, PixelPerfect } from '../../Constants/styleConstants';
-import { EyeIcon, FlagIcon, SmallArrowDownIcon } from '../../Assets/Svg';
+import { EyeIcon, EyeOpenIcon, FlagIcon, SmallArrowDownIcon } from '../../Assets/Svg';
+import { t } from 'i18next';
 
 type Props = {
     label: string,
@@ -11,7 +12,9 @@ type Props = {
     options?: TextInputProps & { ref?: (ref: any) => void },
     inputCon?:ViewStyle,
     input?:TextStyle,
-    isPhone?:boolean
+    isPhone?:boolean,
+    showErrorr?:boolean,
+    error?:any
 }
 
 export default function Index(props: Props) {
@@ -21,7 +24,9 @@ export default function Index(props: Props) {
         options,
         inputCon,
         input,
-        isPhone
+        isPhone,
+        showErrorr,
+        error,
     } = props;
     const [state, setstate] = useState({
         showPassword:false
@@ -35,9 +40,7 @@ export default function Index(props: Props) {
             setstate(old=>({...old,showPassword:true}));
         }
     }
-    console.log('====================================');
-    console.log(Platform.OS,dir);
-    console.log('====================================');
+
     return (
         <>
             <Text style={[layout.textAlign,styles.label]}>{label}</Text>
@@ -61,9 +64,10 @@ export default function Index(props: Props) {
         {password&&<Pressable style={styles.eyecon}
         onPress={onPress}
         >
-            <EyeIcon/>
+            {state.showPassword?<EyeOpenIcon/>:<EyeIcon/>}
         </Pressable>}
         </View>
+        {showErrorr&& <Text style={styles.errorText}>{t(error)}</Text>}
         </>
     )
 }
@@ -114,5 +118,13 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             fontFamily:Fonts.medium,
             fontSize:PixelPerfect(16),
             color:theme.deactive,
+        },
+        errorText:{
+            fontFamily:Fonts.regular,
+    fontSize:PixelPerfect(14),
+    color:theme.red_yellow,
+    textAlign:dir==="rtl"?"right":"left",
+    marginBottom:PixelPerfect(10),
+    paddingHorizontal:PixelPerfect(10)
         }
     });

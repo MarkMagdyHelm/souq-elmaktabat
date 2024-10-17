@@ -1,5 +1,5 @@
 import { Image, Keyboard, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Container, Content } from '../../../Components/containers/Containers'
 import { Colors, PixelPerfect, phoneHeight } from '../../../Constants/styleConstants'
 import { ThemeContext } from '../../../Constants/theming'
@@ -9,6 +9,11 @@ import Inputs from '../../../Components/inputs/index'
 import Button from '../../../Components/touchables/Button';
 import {useKeyboard} from '../../../Constants/UseKayboard'
 import { AppleIcon, FacebookIcon, GoogleIcon, LogoIcon } from '../../../Assets/Svg'
+import { Formik } from 'formik'
+import { validationSchema } from '../../../Validation/Signin'
+import { useDispatch } from 'react-redux'
+import { SignInHandler } from '../../../Apis/User'
+import { useToast } from 'react-native-toast-notifications'
 type Props = {
   navigation:any
 }
@@ -28,10 +33,56 @@ const handlePass = ()=>{
     ],
   });
 }
+const [state, setstate] = useState({
+  loading:false,
+});
+const dispatch = useDispatch();
+  useEffect(() => {
+ 
+  }, [])
+  const toast = useToast();
+  const toastNotfication = (config:any) => {
+      toast.hideAll();
+      toast.show(config.message, {
+          type: config.type,
+          duration: 3000,
+          offset: 50,
+          animationType: 'slide-in',
+          placement: 'top',
+      } as any);
+  }
+  const signin = (body:any)=>{
+    setstate(old=>({...old,loading:true}))
+   dispatch<any>(SignInHandler(body,(res,status)=>{
+     if (res.status == 200) {
+      setstate(old=>({...old,goverements:res.data}))
+      navigation.navigate("Home")
+     }else{
+      toastNotfication({ type: 'error', message: res?.Message ?? t("Something Went wrong") });
+     }
+     setstate(old=>({...old,loading:false}))
+   }))
+  };
   return (
     <Container showHint={false}
     fullBackground
     >
+       <Formik
+        validationSchema={validationSchema}
+        initialValues={{
+          PhoneNumber:"",
+          Password:"",
+          fcmToken:"",
+          }}
+        onSubmit={(values)=>{
+           signin(values);
+         }} >
+        {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue,setFieldTouched }) => {
+          console.log('====================================');
+          console.log(errors);
+          console.log('====================================');
+          return (
+            <>
         <Content style={styles.formCon} noPadding >
             <View style={styles.logoCon}>
               <Text style={[styles.passTxt,dir=="rtl"?{left:0}:{right:0}]}
@@ -43,27 +94,29 @@ const handlePass = ()=>{
             <Text style={[layout.textAlign,styles.textsection1]}>{t("signin1")}</Text>
             </View>
                <View style={styles.inputsCon}>
-               <Inputs label={t('username')}
+               <Inputs label={t('Phone')}
                     options={{
-                      onBlur: ()=>{},
-                      onChangeText: txt => {
-                      },
-                      placeholder:t("usernamew"),
-                      maxLength:30,
-                      keyboardType: 'email-address',
+                      onBlur: handleBlur("PhoneNumber"),
+                      onChangeText: handleChange("PhoneNumber"),
+                      placeholder:t("Phonew"),
+                      maxLength:11,
+                      keyboardType: Platform.OS === 'android' ? "numeric" : "number-pad",
                     }}
                     password={false}
+                    showErrorr={(errors.PhoneNumber && touched.PhoneNumber) as boolean }
+                    error={errors.PhoneNumber as any}
               />
               <Inputs label={t('pasword')}
                     options={{
-                      onBlur: ()=>{},
-                      onChangeText: txt => {
-                      },
+                      onBlur: handleBlur("Password"),
+                      onChangeText: handleChange("Password"),
                       placeholder:t("paswordw"),
                       keyboardType: 'default',
                       maxLength:30,
                     }}
                     password={true}
+                    showErrorr={(errors.Password && touched.Password) as boolean }
+                    error={errors.Password as any}
               />
                </View>
                <View style={styles.forgetPassword}>
@@ -72,8 +125,9 @@ const handlePass = ()=>{
                <View style={{backgroundColor:theme.mainColor}}>
                <Button
               title={t('Sign in')}
+              loader={state.loading}
               styleTitle={styles.buttonText}
-              onPress={()=>navigation.navigate("Signin")}
+              onPress={handleSubmit}
               style={styles.button}
               />
                </View>
@@ -83,6 +137,11 @@ const handlePass = ()=>{
                 </Text>
               </Pressable>
         </Content>
+        </>
+            )
+          }}
+          
+        </Formik>
     </Container>
   )
 }

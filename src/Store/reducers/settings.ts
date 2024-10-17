@@ -6,6 +6,7 @@ const initialState = {
   darkmode: false,
   direction: 'rtl',
   langauge: 'ar',
+  appSettings:{},
   forceUpdate: false,
 
 };
@@ -21,6 +22,10 @@ export default (state = initialState, { type, payload }: IReduser) => {
 
     case ActionType.CHANGE_APP_LANGUAGE:
       return { ...state, langauge: payload };
+      case ActionType.SET_APP_SETTINGS:
+        return { ...state, appSettings: payload };
+        case ActionType.SET_FORCE_UPDATE:
+          return { ...state, forceUpdate: payload };
     default:
       return state;
   }

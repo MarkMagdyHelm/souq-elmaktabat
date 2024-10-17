@@ -1,5 +1,5 @@
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
-import React, { useContext, useEffect, useRef } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Container } from '../../Components/containers/Containers'
 import { ThemeContext } from '../../Constants/theming'
 import { IFont, ITheme } from '../../Constants/interfaces'
@@ -12,6 +12,12 @@ import moment from 'moment';
 import 'moment/locale/ar'  // without this line it didn't work
 import  ViewShot  from "react-native-view-shot";
 import Share from 'react-native-share';
+import { GetPapersHandler } from '../../Apis/HomeApis'
+import { useDispatch, useSelector } from 'react-redux'
+import HomeCategoryLoder from '../../Components/SkeltonLoaders/HomeCategoryLoder'
+import { AssignDeviceIdToGuestHandler } from '../../Apis/Auth'
+import { useToast } from 'react-native-toast-notifications'
+import { RootState } from '../../Store/store'
 
 let items = [{flag:false},{flag:true},{flag:false},{flag:false},{flag:false},{flag:false},{flag:false},{flag:true},{flag:false},{flag:false},{flag:false},{flag:false},,{flag:false}]
 type Props = {
@@ -25,6 +31,8 @@ const Index = (props: Props) => {
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
     const ref = useRef() as any;
+    const { isLogin } = useSelector((state:RootState) => state.auth);
+
     const handleScreenShot = ()=>{
       ref.current.capture().then((uri:any) => {
         Share.open({url:uri})
@@ -37,6 +45,51 @@ const Index = (props: Props) => {
         console.log("do something with ", uri);
       });
     }
+    const dispatch = useDispatch();
+    const [state, setstate] = useState({
+       loading:false,
+       items : [{flag:false},{flag:true},{flag:false},{flag:false},{flag:false},{flag:false},{flag:false},{flag:true},{flag:false},{flag:false},{flag:false},{flag:false},,{flag:false}]
+
+    });
+    useEffect(() => {
+    getPapers();
+    if (!isLogin) {
+      assignID();
+    }
+    }, [])
+    const toast = useToast();
+    const toastNotfication = (config:any) => {
+        toast.hideAll();
+        toast.show(config.message, {
+            type: config.type,
+            duration: 3000,
+            offset: 50,
+            animationType: 'slide-in',
+            placement: 'top',
+        } as any);
+    }
+    const getPapers = ()=>{
+      setstate(old=>({...old,loading:true}))
+     dispatch<any>(GetPapersHandler((res,status)=>{
+       if (res.status == 200) {
+        setstate(old=>({...old,items:res.data}))
+        
+       }else{
+        toastNotfication({ type: 'error', message: res?.Message ?? t("Something Went wrong") });
+       }
+       setstate(old=>({...old,loading:false}))
+     }))
+    };
+    const assignID = ()=>{
+     dispatch<any>(AssignDeviceIdToGuestHandler({},(res,status)=>{
+      if (res.status == 200) {
+       
+      }else{
+        toastNotfication({ type: 'error', message: res?.message ?? t("Something Went wrong") });
+      }
+     }))
+    };
+   
     return (
       <ViewShot style={{flex:1}} ref={ref} options={{ fileName: "Your-File-Name", format: "jpg", quality: 0.9 }}>
         <Container showHint={false}>
@@ -64,15 +117,17 @@ const Index = (props: Props) => {
               showsVerticalScrollIndicator={false}
             //   onRefresh={() =>{}}
             //   refreshing={isFetching}
-            columnWrapperStyle={{justifyContent:"space-between"}}
+            columnWrapperStyle={[layout.rowBox,{justifyContent:"space-between"}]}
               style={styles.list}
-              data={items}
+              data={state.items}
               numColumns={2}
               keyExtractor={(items, index:number) => index.toString()}
-              renderItem={item => {
+              renderItem={({item,index}) => {
                 return (
                   <>
-                    <Category/>
+                 {state.loading?
+                 <HomeCategoryLoder/>
+                 :   <Category item={item} />}
                   </>
                 );
               }}/>

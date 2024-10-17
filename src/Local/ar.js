@@ -35,7 +35,8 @@ export default {
 "messagew":"اكتب رسالتك هنا",
 "Send":"ارسال",
 "message1":"معلومات التواصل معنا",
-//Signin
+//Signup
+'Choose City':"اختار المحافظة",
 "signtxt1":"انشاء حساب جديد",
 "adress":"العنوان",
 "adressw":"اكتب العنوان",
@@ -46,5 +47,27 @@ export default {
 "confirmpasword":"تاكيد كلمة السر",
 "confirmpaswordw":"تاكيد كلمة السر",
 "Phone":"رقم التليفون",
-"Phonew":"اكتب رقم التليفون"
+"Phonew":"اكتب رقم التليفون",
+'Address is Required':"العنوان مطلوب",
+'Fullname is required':"الاسم الكامل مطلوب",
+'Address is Required':"العنوان مطلوب",
+'Email is required':"البريد الإلكتروني مطلوب",
+'Passwords must match':"يجب أن تتطابق كلمات المرور",
+'Password is Required':"كلمة المرور مطلوبة",
+'ConfirmPassword is Required':"تأكيد كلمة المرور مطلوب",
+'Mobile Number is Required':"رقم الهاتف المحمول مطلوب",
+'It must be numbers and 11 digits':"يجب أن يكون أرقامًا و11 رقمًا",
+"mobilenumber must be at least 11 characters":"يجب أن يكون أرقامًا و11 رقمًا",
+"Choose Account Type":"اختار نوع الحساب",
+"You must pick a role!":"عليك أن تختار دوراً!",
+"You must pick a city!":"يجب عليك اختيار مدينة!",
+"Email must be a valid email":"يجب أن يكون البريد الإلكتروني صالحًا",
+ "Password must be at least 6 characters":"يجب أن تتكون كلمة المرور من 6 أحرف على الأقل",
+ "Fail Passwords must be at least 6 characters.Passwords must have at least one digit ('0'-'9').":" يجب أن تحتوي كلمات المرور على 6 أحرف على الأقل. يجب أن تحتوي كلمات المرور على رقم واحد على الأقل (من '0' إلى '9').",
+//forcetxt
+"forcetitle":"تحديث التطبيق",
+"forceMessage":"يوجد بعض المميزات والتحديثات الجديدة يجب عليك تحديث التطبيق ",
+"forcetxt1":"تحديث الان",
+"forcetxt2":"ربما لاحقا",
+"Something Went wrong":"حدث خطأ ما"
 };

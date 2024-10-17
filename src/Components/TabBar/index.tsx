@@ -29,6 +29,7 @@ const index = (props: Props) => {
                   { name: name }as any,
                 ],
               });
+            // navigation.navigate(name)
              
         }
 }    
@@ -93,7 +94,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
         },
         tabText: {
             paddingTop: PixelPerfect(1),
-            fontSize: PixelPerfect(16),
+            fontSize: PixelPerfect(15),
             fontFamily: Fonts.regular,
             lineHeight:19
         },
