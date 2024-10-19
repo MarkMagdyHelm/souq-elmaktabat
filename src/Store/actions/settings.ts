@@ -13,6 +13,7 @@ import DeviceInfo from 'react-native-device-info';
 export const ChangeAppLanguage = (language: string) => ({
   type: ActionType.CHANGE_APP_LANGUAGE,
   payload: language,
+  
 });
 
 /**

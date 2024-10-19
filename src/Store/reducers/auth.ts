@@ -19,6 +19,7 @@ export default (state = initialState, { type, payload }: IReduser) => {
           return { ...state, isLogin: payload };
           case ActionType.USER_LOGOUT:
           return { ...state, isLogin: payload };
+          
     default:
       return state;
   }
