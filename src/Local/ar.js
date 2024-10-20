@@ -35,6 +35,9 @@ export default {
 "messagew":"اكتب رسالتك هنا",
 "Send":"ارسال",
 "message1":"معلومات التواصل معنا",
+'message is Required':"يجب إدخال الرسالة",
+"Full Name must be at least 2 characters":"يجب أن يتكون الاسم الكامل من حرفين على الأقل",
+"Message sent successfully":"تم إرسال الرسالة بنجاح",
 //Signup
 'Choose City':"اختار المحافظة",
 "signtxt1":"انشاء حساب جديد",

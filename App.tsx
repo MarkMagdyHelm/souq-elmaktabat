@@ -35,6 +35,7 @@ import ForceUpdate from './src/Components/PopUps/ForceUpdate';
 import DeviceInfo from 'react-native-device-info';
 import Error from './src/Components/Notifications/Error';
 import Success from './src/Components/Notifications/Success';
+import PushNotificationHandler from './src/Utilties';
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
@@ -83,9 +84,7 @@ function App(): JSX.Element {
       }
     }))
    }
-   console.log('====================================');
-   console.log(state);
-   console.log('====================================');
+   const PushNotification = PushNotificationHandler();
   useEffect(() => {
     if (I18nManager.isRTL) {
       I18nManager.forceRTL(false);

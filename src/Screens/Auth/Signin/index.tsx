@@ -11,9 +11,10 @@ import {useKeyboard} from '../../../Constants/UseKayboard'
 import { AppleIcon, FacebookIcon, GoogleIcon, LogoIcon } from '../../../Assets/Svg'
 import { Formik } from 'formik'
 import { validationSchema } from '../../../Validation/Signin'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { SignInHandler } from '../../../Apis/User'
 import { useToast } from 'react-native-toast-notifications'
+import { RootState } from '../../../Store/store'
 type Props = {
   navigation:any
 }
@@ -37,9 +38,6 @@ const [state, setstate] = useState({
   loading:false,
 });
 const dispatch = useDispatch();
-  useEffect(() => {
- 
-  }, [])
   const toast = useToast();
   const toastNotfication = (config:any) => {
       toast.hideAll();
@@ -51,7 +49,9 @@ const dispatch = useDispatch();
           placement: 'top',
       } as any);
   }
+  const { fcm } = useSelector((state: RootState) => state.auth);
   const signin = (body:any)=>{
+    body.fcmToken = fcm;
     setstate(old=>({...old,loading:true}))
    dispatch<any>(SignInHandler(body,(res,status)=>{
      if (res.status == 200) {

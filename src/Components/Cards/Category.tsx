@@ -65,6 +65,7 @@ StyleSheet.create({
     image:{
         height:PixelPerfect(50),
         width:PixelPerfect(50),
+        borderRadius:PixelPerfect(10),
         resizeMode:"contain"
     },
     text1:{

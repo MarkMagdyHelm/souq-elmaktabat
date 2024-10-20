@@ -40,3 +40,12 @@ export const UserLogout = () => ({
   type: ActionType.USER_LOGOUT,
   payload: false,
 });
+
+/**
+ * ChangeAppLanguage
+ * @param fcm string
+ */
+export const SetFCM = (fcm: any) => ({
+  type: ActionType.SET_FCM_TOKEN,
+  payload: fcm,
+});

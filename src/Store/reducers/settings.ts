@@ -6,7 +6,7 @@ const initialState = {
   darkmode: false,
   direction: 'rtl',
   langauge: 'ar',
-  appSettings:{},
+  appSettings:[],
   forceUpdate: false,
 
 };

@@ -36,7 +36,7 @@ const Stacks = () => {
           // presentation:"transparentModal",
         };
       }}
-        initialRouteName={isLogin ? 'Signin' : 'Home'}
+        initialRouteName={ 'Home' }
       >
         
        <Stack.Screen name="Signin" component={Signin} />

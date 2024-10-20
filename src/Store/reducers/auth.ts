@@ -5,6 +5,7 @@ const initialState = {
   userdata:{},
   isLogin:false,
   gusterID: "",
+  fcm:""
 
 };
 
@@ -19,6 +20,8 @@ export default (state = initialState, { type, payload }: IReduser) => {
           return { ...state, isLogin: payload };
           case ActionType.USER_LOGOUT:
           return { ...state, isLogin: payload };
+          case ActionType.SET_FCM_TOKEN:
+          return { ...state, fcm: payload };
           
     default:
       return state;

@@ -1,5 +1,6 @@
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
+apply plugin: 'com.google.gms.google-services'
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -88,6 +89,12 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            storeFile file('release.keystore')
+            storePassword 'souqelmaktabat'
+            keyAlias 'souqelmaktabat'
+            keyPassword 'souqelmaktabat'
+        }
     }
     buildTypes {
         debug {
@@ -96,10 +103,24 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
+        applicationVariants.all{
+            // this method is use to rename your all apk weather
+            // it may be signed or unsigned(debug apk)
+            variant ->
+                variant.outputs.each{
+                    // on below line we are setting a 
+                    // name to our apk as GFG.apk
+                    output->
+                        def name = "souqelmaktabat.apk"
+                        // on below line we are setting the 
+                        // outputFile Name to our apk file. 
+                        output.outputFileName = name
+                }
+       }
     }
 }
 

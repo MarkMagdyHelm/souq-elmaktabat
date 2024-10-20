@@ -17,10 +17,12 @@ type Props = {
 const MoreComponnent = (props: Props) => {
   const { isLogin } = useSelector((state:RootState) => state.auth);
   const { appSettings } = useSelector((state:RootState) => state.settings);
-   let SignInActive = appSettings?.find((el:any)=>el.type == "SignInActive");
-   console.log('===============SignInActive=====================');
-   console.log(SignInActive.status);
-   console.log('====================================');
+   let SignInActive :any={}
+   if (appSettings?.length !=0) {
+    
+     SignInActive= appSettings?.find((el:any)=>el.type == "SignInActive");
+   }
+
     const {
         navigation
     } = props
@@ -38,7 +40,7 @@ const MoreComponnent = (props: Props) => {
               style={styles.button}
               />
               <View style={styles.seprator}/></>}
-              <Pressable style={[layout.rowBox,styles.tapCon,(SignInActive.status==0||isLogin)&&{marginTop:PixelPerfect(16)}]}
+              <Pressable style={[layout.rowBox,styles.tapCon,(SignInActive?.status==0||isLogin)&&{marginTop:PixelPerfect(16)}]}
                onPress={()=>navigation.navigate("ContactUs")}
               >
                 <ContactUsIcon/>

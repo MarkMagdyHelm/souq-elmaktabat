@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { IFont, ITheme } from '../../Constants/interfaces'
 import { ThemeContext } from '../../Constants/theming'
 import { Colors, PixelPerfect } from '../../Constants/styleConstants'
@@ -10,6 +10,11 @@ import HeaderWithText from '../../Components/Headers/HeaderWithText'
 import Inputs from '../../Components/inputs/index'
 import Button from '../../Components/touchables/Button'
 import { FaceBookIcon, GmailIcon, PhoneIcon } from '../../Assets/Svg'
+import { Formik } from 'formik'
+import { validationSchema } from '../../Validation/contacus'
+import { useToast } from 'react-native-toast-notifications'
+import { useDispatch } from 'react-redux'
+import { ContactUsHandler } from '../../Apis/Appinfo'
 
 type Props = {
     navigation: any
@@ -21,6 +26,32 @@ const Index = (props: Props) => {
     } = props
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
+    const [state, setstate] = useState({
+      loading:false,
+    });
+    const dispatch = useDispatch();
+      const toast = useToast();
+      const toastNotfication = (config:any) => {
+          toast.hideAll();
+          toast.show(config.message, {
+              type: config.type,
+              duration: 3000,
+              offset: 50,
+              animationType: 'slide-in',
+              placement: 'top',
+          } as any);
+      }
+      const contactus = (body:any)=>{
+        setstate(old=>({...old,loading:true}))
+       dispatch<any>(ContactUsHandler(body,{},(res,status)=>{
+         if (res.status == 200) {
+          toastNotfication({ type: 'ok', message: res?.Message ?? t("Message sent successfully") });
+         }else{
+          toastNotfication({ type: 'error', message: res?.Message ?? t("Something Went wrong") });
+         }
+         setstate(old=>({...old,loading:false}))
+       }))
+      };
     return (
         <Container showHint={false}
             fullBackground
@@ -28,37 +59,54 @@ const Index = (props: Props) => {
             <HeaderWithText
                 title={t("contactus")}
             />
+             <Formik
+        validationSchema={validationSchema}
+        initialValues={{
+          name:"",
+          email:"",
+          message:"",
+          }}
+        onSubmit={(values)=>{
+          contactus(values);
+         }} >
+        {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue,setFieldTouched }) => {
+          console.log('====================================');
+          console.log(errors);
+          console.log('====================================');
+          return (
+            <>
             <Content style={styles.formCon} noPadding >
                 <View style={styles.body}>
 
             <Inputs label={t('fullname')}
                     options={{
-                      onBlur: ()=>{},
-                      onChangeText: txt => {
-                      },
+                      onBlur: handleBlur("name"),
+                      onChangeText: handleChange("name"),
                       placeholder:t("fullnamew"),
                       maxLength:100,
                       keyboardType: 'default',
                     }}
                     password={false}
+                    showErrorr={(errors.name && touched.name) as boolean }
+                    error={errors.name as any}
               />
                 <Inputs label={t('Email')}
                     options={{
-                      onBlur: ()=>{},
-                      onChangeText: txt => {
-                      },
+                      onBlur: handleBlur("email"),
+                      onChangeText: handleChange("email"),
                       placeholder:t("Emailw"),
                       maxLength:30,
                       keyboardType: 'email-address',
                     }}
                     password={false}
+                    showErrorr={(errors.email && touched.email) as boolean }
+                    error={errors.email as any}
               />
                 <Inputs label={t('message')}
 
                     options={{
-                      onBlur: ()=>{},
-                      onChangeText: txt => {
-                      },
+                      onBlur: handleBlur("message"),
+                      onChangeText: handleChange("message"),
                       numberOfLines:5,
                       placeholder:t("messagew"),
                       maxLength:250,
@@ -68,14 +116,17 @@ const Index = (props: Props) => {
                      inputCon={{height:PixelPerfect(142),paddingTop:PixelPerfect(17)}}
                      input={{height:PixelPerfect(142),verticalAlign:"top"}}
                     password={false}
+                    showErrorr={(errors.message && touched.message) as boolean }
+                    error={errors.message as any}
               />
                 <Button
               title={t('Send')}
               styleTitle={styles.buttonText}
-              onPress={()=>{}}
+              loader={state.loading}
+              onPress={handleSubmit}
               style={styles.button}
               />
-              <View style={{paddingTop:PixelPerfect(32)}}>
+              <View style={{paddingTop:PixelPerfect(2)}}>
                 <Text style={[layout.textAlign,styles.lable]}>{t("message1")}</Text>
                 <View style={[layout.rowBox,styles.infoCon]}>
                     <PhoneIcon/>
@@ -92,6 +143,11 @@ const Index = (props: Props) => {
               </View>
                 </View>
             </Content>
+            </>
+            )
+          }}
+          
+        </Formik>
         </Container>
     )
 }
@@ -107,14 +163,15 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             paddingHorizontal: PixelPerfect(20)
         },
         body:{
-            backgroundColor:theme.white
+            backgroundColor:theme.white,
+            paddingBottom:PixelPerfect(20)
         },
         button:{
             backgroundColor:Colors.secondColor,
             height:PixelPerfect(50),
             alignItems:"center",
             justifyContent:"center",
-            marginTop:PixelPerfect(16)
+            marginTop:PixelPerfect(10)
           },
           buttonText:{
             fontFamily:Fonts.bold,

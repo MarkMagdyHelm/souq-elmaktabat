@@ -40,3 +40,24 @@ export const GetCitiesHandler = (cb?: (data: any,status:any) => void) => {
   };
 };
 
+/**
+ * ContactUs
+ * @param body {name,email,message}
+ * @param params {}
+ * @param cb callback function
+ */
+export const ContactUsHandler = (body:any,params:any,cb?: (data: any,status:any) => void) => {
+  return async (dispatch: Dispatch<IDispatch>) => {
+    try {
+      const { data,status } = await globalAPI.post('/api/Poll/AddMessage',body,{params:params});  
+      if (data.status == 200) {      
+          // dispatch(SetGuesterId(data.data))     
+      }
+      cb && cb(data,status);
+    } catch (error) {
+        console.log('ContactUs error = ', error);
+      cb && cb(error,500);
+    }
+  };
+};
+
