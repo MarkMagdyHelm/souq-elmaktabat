@@ -44,7 +44,7 @@ const Index = (props: Props) => {
     selectedGoverenmet: { name:"",arName: "", id: "" },
     goverements:[],
     loading:false,
-    selectedRole: { name:"",arName: "", id: "" },
+    selectedRole: { name:"",arName: "", id: "" }as any,
     roles:roles,
     showRols:false,
     loadingSignin:false
@@ -206,6 +206,19 @@ const Index = (props: Props) => {
                 </View>
                 {state.forms.Role.length !=0&& <Text style={styles.errorText}>{t(state.forms.Role)}</Text>}
               </Pressable>
+             {state.selectedRole.id==9&&<Inputs label={t('')}
+                    options={{
+                      onBlur: handleBlur("Name"),
+                      onChangeText: handleChange("Name"),
+                      placeholder:t(""),
+                      maxLength:100,
+                      keyboardType: 'default',
+                    }}
+                    
+                    password={false}
+                    showErrorr={(errors.Name && touched.Name) as boolean }
+                    error={errors.Name as any}
+              />}
               <Pressable style={styles.selectMenueCon} onPress={()=>{ setstate(old => ({...old, showGovernemnts: true}));}}>
                 <Text style={[layout.textAlign,styles.label]}>{t('Government')}</Text>
                 <View style={[layout.rowBox,styles.selectMenue]}>

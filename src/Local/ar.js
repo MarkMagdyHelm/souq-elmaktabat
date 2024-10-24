@@ -32,7 +32,7 @@ export default {
 "Email":"الايميل",
 "Emailw":"اكتب الايميل",
 "message":"رسالتك",
-"messagew":"اكتب رسالتك هنا",
+"messagew":"اكتب رسالتك/اقتراحك هنا",
 "Send":"ارسال",
 "message1":"معلومات التواصل معنا",
 'message is Required':"يجب إدخال الرسالة",

@@ -19,7 +19,7 @@ const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
  return (
     <SkeletonPlaceholder backgroundColor={Colors.secondColor}>
     <SkeletonPlaceholder.Item >
-      <SkeletonPlaceholder.Item    height={PixelPerfect(300)}
+      <SkeletonPlaceholder.Item    height={height??PixelPerfect(300)}
        
      marginBottom={8}
       borderRadius={PixelPerfect(5)} />

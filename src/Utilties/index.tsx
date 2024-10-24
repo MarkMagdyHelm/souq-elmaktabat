@@ -7,15 +7,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../Store/store';
 import { SetFCM } from '../Store/actions/auth';
 import { AssignGuestFCMTokenHandler } from '../Apis/Auth';
-
+import { useNavigation } from '@react-navigation/native';
 
 type Props = {
 
-}
+};
+
 
 const PushNotificationHandler = () => {
     const { isLogin } = useSelector((state: RootState) => state.auth);
-
+    const navigation = useNavigation() as any;
     const requestNotificationPermission = async () => {
         if (Platform.OS === 'android' && Platform.Version >= 33) {  // Android 13 (API 33) and above
             try {
@@ -86,7 +87,7 @@ const PushNotificationHandler = () => {
             console.log(fcmToken);
             console.log('====================================');
             dispatch(SetFCM(fcmToken));
-            if (!isLogin) {      
+            // if (!isLogin) {      
                 dispatch<any>(AssignGuestFCMTokenHandler({},
                     {
                         fcmToken:fcmToken
@@ -99,7 +100,7 @@ const PushNotificationHandler = () => {
                     //   toastNotfication({ type: 'error', message: res?.message ?? t("Something Went wrong") });
                     }
                    }))
-            }
+            // }
         } catch (error) {
             console.log('===============errorFCM=====================');
             console.log(error);
@@ -108,7 +109,7 @@ const PushNotificationHandler = () => {
 
     }
 
-
+   
     PushNotification.configure({
         // (optional) Called when Token is generated (iOS and Android)
         onRegister: function (token: any) {
@@ -118,7 +119,15 @@ const PushNotificationHandler = () => {
         // (required) Called when a remote is received or opened, or local notification is opened
         onNotification: function (notification: any) {
             console.log("NOTIFICATION:", notification);
-            //    navigation.navigate("AdevencedFlatlist")
+           
+            switch (notification.data.FirstName as string ) {
+                case  "AdminPoll":
+                  navigation.navigate("Polls");
+                  break;
+                default:
+                    navigation.navigate("Home")
+                  break;
+            }
             // process the notification
 
             // (required) Called when a remote is received or opened, or local notification is opened

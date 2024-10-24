@@ -9,7 +9,7 @@ import TabBar from '../../Components/TabBar/index';
 import Category from '../../Components/Cards/Category';
 import { CallIcon, PaperIcon, SharIcon } from '../../Assets/Svg'
 import moment from 'moment';
-import 'moment/locale/ar'  // without this line it didn't work
+import 'moment/locale/ar'  
 import  ViewShot  from "react-native-view-shot";
 import Share from 'react-native-share';
 import { GetPapersHandler } from '../../Apis/HomeApis'
@@ -18,8 +18,9 @@ import HomeCategoryLoder from '../../Components/SkeltonLoaders/HomeCategoryLoder
 import { AssignDeviceIdToGuestHandler } from '../../Apis/Auth'
 import { useToast } from 'react-native-toast-notifications'
 import { RootState } from '../../Store/store'
+import PushNotificationHandler from '../../Utilties'
 
-let items = [{flag:false},{flag:true},{flag:false},{flag:false},{flag:false},{flag:false},{flag:false},{flag:true},{flag:false},{flag:false},{flag:false},{flag:false},,{flag:false}]
+let items = [{flag:false},{flag:true},{flag:false},{flag:false},{flag:false},{flag:false},{flag:false},{flag:true},{flag:false},{flag:false},{flag:false},{flag:false},{flag:false}]
 type Props = {
     navigation: any
 }
@@ -68,6 +69,7 @@ const Index = (props: Props) => {
             placement: 'top',
         } as any);
     }
+    const PushNotification = PushNotificationHandler();
     const getPapers = ()=>{
       setstate(old=>({...old,loading:true}))
      dispatch<any>(GetPapersHandler((res,status)=>{

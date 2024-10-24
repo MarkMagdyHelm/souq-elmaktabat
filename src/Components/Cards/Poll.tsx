@@ -19,6 +19,7 @@ interface PollData {
   id: number;
   question: string;
   totalVotes: number;
+  remainingTime:any
 }
 
 interface PollProps {
@@ -28,7 +29,7 @@ interface PollProps {
 
 const Poll: React.FC<PollProps> = ({ pollData, onVote }) => {
   const [poll, setPoll] = useState<PollData>(
-    pollData || { id: 0, question: '', options: [], hasVoted: false, totalVotes: 0 }
+    pollData || { id: 0, question: '', options: [], hasVoted: false, totalVotes: 0,remainingTime:0 }
   );
   const [isVoting, setIsVoting] = useState(false);
   
@@ -144,7 +145,7 @@ const Poll: React.FC<PollProps> = ({ pollData, onVote }) => {
 
       <View style={[layout.rowBox, styles.textCon]}>
         {poll.totalVotes >= 200 ? <Text style={styles.totalText}>{poll.totalVotes} {t("Votes")}</Text> : <Text />}
-        <Text style={styles.totalText}>{"باقي 16 ساعه"}</Text>
+        <Text style={styles.totalText}>{`باقي ${parseInt(poll.remainingTime)} ساعه`}</Text>
       </View>
     </View>
   );

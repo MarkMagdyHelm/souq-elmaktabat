@@ -26,13 +26,14 @@ interface PollData {
   options: Option[];
   hasVoted: boolean;
   totalVotes: number;
+  remainingTime:any
 }
 
 const Index = () => {
   const { gusterID,userdata,isLogin } = useSelector((state:RootState) => state.auth);
 
   const [polls, setPolls] = useState<PollData[]>([
-    { id: 0, question: '', options: [], hasVoted: false, totalVotes: 0}
+    { id: 0, question: '', options: [], hasVoted: false, totalVotes: 0,remainingTime:0}
     // {
     //     id: 2,
     //     question: 'ما توقعاتك لاسعار اليوم',
@@ -74,11 +75,14 @@ const Index = () => {
       GuestId:gusterID
      },(res,status)=>{
        if (res.status == 200) {
-        res.data[0].hasVoted=false;
-        res.data[0].options[0].selected=false;
+        // res.data[0].hasVoted=false;
+        // res.data[0].options[0].selected=false;
         // console.log('============rrrrrrr========================');
         // console.log(res.data);
         // console.log('====================================');
+        console.log('=========اااااااااااا===========================');
+        console.log(res.data);
+        console.log('====================================');
         setPolls(res.data)
        }else{
         toastNotfication({ type: 'error', message: res?.Message ?? t("Something Went wrong") });

@@ -51,7 +51,10 @@ function App(): JSX.Element {
   const { langauge } = useSelector((state: RootState) => state.settings);
 
   useEffect(() => {
-    RNBootSplash.hide({ fade: true });
+    setTimeout(() => {
+      
+      RNBootSplash.hide({ fade: true });
+    }, 1000);
     i18next.changeLanguage(langauge);
     getSettings()
   }, [langauge]);
@@ -84,7 +87,7 @@ function App(): JSX.Element {
       }
     }))
    }
-   const PushNotification = PushNotificationHandler();
+  
   useEffect(() => {
     if (I18nManager.isRTL) {
       I18nManager.forceRTL(false);

@@ -1,34 +1,57 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useContext } from 'react'
 import { IFont, ITheme } from '../../Constants/interfaces'
 import { ThemeContext } from '../../Constants/theming'
 import { Colors, phoneWidth, PixelPerfect } from '../../Constants/styleConstants'
 import { t } from 'i18next'
 import { NotificationIcon } from '../../Assets/Svg'
+import moment from 'moment'
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 
 type Props = {
-    item?: any
+    item?: any,
+    onPress:()=>void,
+    loading:boolean
 }
 
 const Notification = (props: Props) => {
     const {
-        item
+        item,
+        onPress,
+        loading
     } = props
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
+    // console.log('====================================');
+    // console.log(item);
+    // console.log('====================================');
     return (
-        <View style={[layout.rowBox,styles.con]}>
+        <Pressable style={[layout.rowBox,styles.con]} onPress={onPress}>
            <View style={styles.iconCon}>
             <NotificationIcon color={Colors.white}/>
            </View>
            <View style={styles.bodyCon}>
               <View style={[layout.rowBox,styles.textsCon]}>
-                <Text style={[layout.textAlign,styles.text1]}>{"استطلاع راي "}</Text>
-                <Text style={[layout.textAlign,,styles.text2]}>{"09سبتمبر 2024"}</Text>
+              {loading?
+                <SkeletonPlaceholder backgroundColor={Colors.secondColor}> 
+              <SkeletonPlaceholder.Item backgroundColor={Colors.secondColor} marginBottom={8}   height={PixelPerfect(20)}
+              width={150}></SkeletonPlaceholder.Item>
+              </SkeletonPlaceholder>
+              :  <Text style={[layout.textAlign,styles.text1]} numberOfLines={1}>{item?.title}</Text>}
+                {loading?
+                <SkeletonPlaceholder backgroundColor={Colors.secondColor}> 
+              <SkeletonPlaceholder.Item backgroundColor={Colors.secondColor} marginBottom={8}    height={PixelPerfect(20)}
+              width={150}/>
+              </SkeletonPlaceholder>
+              : <Text style={[layout.textAlign,,styles.text2]}>{moment().locale("en").format('DD')} {moment().locale("ar").format('MMM')} {moment().locale("en").format('YYYY')}</Text>}
               </View>
-              <Text numberOfLines={1} style={[layout.textAlign,styles.textMessage]}>{"تم اضافة استطلاع راي جديد شارك برايك الان"}</Text>
+              {loading?
+             <SkeletonPlaceholder backgroundColor={Colors.secondColor}> 
+                <SkeletonPlaceholder.Item  alignSelf='flex-end'   height={PixelPerfect(20)}
+              width={250}></SkeletonPlaceholder.Item></SkeletonPlaceholder>
+              : <Text numberOfLines={1} style={[layout.textAlign,styles.textMessage]}>{item?.description}</Text>}
            </View>
-        </View>
+        </Pressable>
     )
 }
 
@@ -64,7 +87,8 @@ textsCon:{
 text1:{
     fontFamily:Fonts.bold,
       color:theme.black,
-      fontSize:PixelPerfect(18)
+      fontSize:PixelPerfect(18),
+      width:"60%"
 },
 text2:{
     fontFamily:Fonts.regular,

@@ -84,11 +84,14 @@ export const SpotifyTransition = {
   
 
   export const roles = [
-    { id: 1, arName: "مستهلك", name: "Customer" },
+    { id: 1, arName: "استخدام شخصي", name: "Customer" },
     { id: 2, arName: "تاجر", name: "Merchant" },
     { id: 3, arName: "صاحب مكتبة", name: "Bookstore Owner" },
     { id: 4, arName: "صاحب مطبعة", name: "Printing Owner" },
     { id: 5, arName: "مكتب", name: "Office" },
     { id: 6, arName: "مدرسة", name: "School" },
-    { id: 7, arName: "شركة إمداد", name: "Supply Company" }
+    { id: 7, arName: "شركة توريدات", name: "Supply Company" },
+    // { id: 8, arName: "مستورد", name: "Importer" },
+    // { id: 9, arName: "اخرى", name: "Importer" }
+
   ];

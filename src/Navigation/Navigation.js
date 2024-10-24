@@ -55,7 +55,7 @@ const Drawer = createDrawerNavigator();
 
 const Drawers =()=> {
   const { direction } = useSelector(state => state.settings, shallowEqual);
-
+ 
   return (
     
       <Drawer.Navigator initialRouteName="Home"
@@ -84,6 +84,7 @@ const Drawers =()=> {
 const initNavgtion = () => {
   const { dark } = useContext(ThemeContext);
   const navigationRef = React.createRef();
+  
   return (
     <NavigationContainer
       theme={dark ? DarkTheme : DefaultTheme}
