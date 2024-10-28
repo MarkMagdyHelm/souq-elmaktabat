@@ -49,6 +49,7 @@ const Index = (props: Props) => {
     const dispatch = useDispatch();
     const [state, setstate] = useState({
        loading:false,
+       isFetching:false,
        items : [{flag:false},{flag:true},{flag:false},{flag:false},{flag:false},{flag:false},{flag:false},{flag:true},{flag:false},{flag:false},{flag:false},{flag:false},,{flag:false}]
 
     });
@@ -117,8 +118,8 @@ const Index = (props: Props) => {
               <View style={styles.listCon}>
               <FlatList
               showsVerticalScrollIndicator={false}
-            //   onRefresh={() =>{}}
-            //   refreshing={isFetching}
+              onRefresh={() =>{getPapers()}}
+              refreshing={state.isFetching}
             columnWrapperStyle={[layout.rowBox,{justifyContent:"space-between"}]}
               style={styles.list}
               data={state.items}

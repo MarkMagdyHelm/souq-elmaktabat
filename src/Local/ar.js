@@ -72,5 +72,6 @@ export default {
 "forceMessage":"يوجد بعض المميزات والتحديثات الجديدة يجب عليك تحديث التطبيق ",
 "forcetxt1":"تحديث الان",
 "forcetxt2":"ربما لاحقا",
-"Something Went wrong":"حدث خطأ ما"
+"Something Went wrong":"حدث خطأ ما",
+"GM":"جم"
 };

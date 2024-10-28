@@ -9,7 +9,7 @@
     "start": "react-native start",
     "test": "jest",
     "g-c-build_apk": "npx jetify && cd ./android  && ./gradlew clean && ./gradlew assembleRelease ",
-    "g-c-build_aab": "npx jetify && cd ./android  && ./gradlew clean && ./gradlew bundleRelease",
+    "g-c-build_abb": "npx jetify && cd ./android  && ./gradlew clean && ./gradlew bundleRelease",
     "pod_install": "rvm use ext-ruby-2.7.4 && cd ios && pod install && cd ..",
     "push": "git add . && git commit -m 'frist apk' && git push origin staging2",
     "bootsplash": "npx react-native generate-bootsplash logo.svg --background='#FFFFFF' --logo-width=192 --assets-output=assets --flavor=main",

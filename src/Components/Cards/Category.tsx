@@ -1,10 +1,11 @@
-import { Image, Platform, StyleSheet, Text, View } from 'react-native'
-import React, { useContext } from 'react'
+import { Image, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
+import React, { useContext, useState } from 'react'
 import { ThemeContext } from '../../Constants/theming';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import { ColorWithOpacity, Colors, PixelPerfect, phoneWidth } from '../../Constants/styleConstants';
 import { t } from 'i18next';
 import {imageUrl} from '../../Constants/config'
+import BigImage from '../PopUps/Picture';
 type Props = {
   item:any
 }
@@ -15,9 +16,11 @@ const Category = (props: Props) => {
   } =props;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
-
+const [show, setshow] = useState(false);
   return (
-    <View style={[layout.rowBox,styles.con,]}>
+    <Pressable style={[layout.rowBox,styles.con,]} 
+    onPress={()=>setshow(true)}
+    >
       <View style={[layout.rowBox,{alignItems:"center"}]}>
       <View style={styles.imageCon}>
         <Image style={styles.image}
@@ -28,11 +31,19 @@ const Category = (props: Props) => {
       <View style={{justifyContent:"center",paddingHorizontal:PixelPerfect(5)}}>
         <Text style={[layout.textAlign,styles.text1]}>{item?.name}</Text>
         <Text style={[layout.textAlign,styles.text2]}>{item?.paperSize}</Text>
+        <Text style={[layout.textAlign,styles.text2]}>{item?.paperWidth==0?"70":"80"} {t("GM")}</Text>
       </View>
       </View>
       
         <Text style={styles.currency}>{item?.price} {t("LE")}</Text>
-    </View>
+        {
+        <BigImage
+        show={show}
+        image={imageUrl+item?.imageUrl}
+        onCloseFn={()=>setshow(false)}
+        />
+        }
+    </Pressable>
   )
 }
 
@@ -82,6 +93,9 @@ StyleSheet.create({
       color: theme.currenctText,
       fontSize: PixelPerfect(18),
       fontFamily: Fonts.bold,
-       paddingHorizontal:PixelPerfect(4)
+      //  paddingHorizontal:PixelPerfect(4),
+      position:"absolute",
+      right:2,
+      top:PixelPerfect(20)
       }
 });

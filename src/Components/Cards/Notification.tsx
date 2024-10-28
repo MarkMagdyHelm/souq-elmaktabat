@@ -37,7 +37,7 @@ const Notification = (props: Props) => {
               <SkeletonPlaceholder.Item backgroundColor={Colors.secondColor} marginBottom={8}   height={PixelPerfect(20)}
               width={150}></SkeletonPlaceholder.Item>
               </SkeletonPlaceholder>
-              :  <Text style={[layout.textAlign,styles.text1]} numberOfLines={1}>{item?.title}</Text>}
+              :  <Text style={[layout.textAlign,styles.text1]}>{item?.title}</Text>}
                 {loading?
                 <SkeletonPlaceholder backgroundColor={Colors.secondColor}> 
               <SkeletonPlaceholder.Item backgroundColor={Colors.secondColor} marginBottom={8}    height={PixelPerfect(20)}
@@ -49,7 +49,7 @@ const Notification = (props: Props) => {
              <SkeletonPlaceholder backgroundColor={Colors.secondColor}> 
                 <SkeletonPlaceholder.Item  alignSelf='flex-end'   height={PixelPerfect(20)}
               width={250}></SkeletonPlaceholder.Item></SkeletonPlaceholder>
-              : <Text numberOfLines={1} style={[layout.textAlign,styles.textMessage]}>{item?.description}</Text>}
+              : <Text  style={[layout.textAlign,styles.textMessage]}>{item?.description}</Text>}
            </View>
         </Pressable>
     )
