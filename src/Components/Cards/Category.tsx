@@ -35,7 +35,7 @@ const [show, setshow] = useState(false);
       </View>
       </View>
       
-        <Text style={styles.currency}>{item?.price} {t("LE")}</Text>
+        <Text style={styles.currency}>{item?.price==0?"------":item?.price} {item?.price==0?"":t("LE")}</Text>
         {
         <BigImage
         show={show}

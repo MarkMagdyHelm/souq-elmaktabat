@@ -24,7 +24,7 @@ interface PollData {
 
 interface PollProps {
   pollData: PollData;
-  onVote: (pollId: number, newOptions: Option[], newTotalVotes: number, optionId: number) => void;
+  onVote: (pollId: number, newOptions: Option[], newTotalVotes: number, optionId: number,previousChoice:number,isVotedPoll:boolean) => void;
 }
 
 const Poll: React.FC<PollProps> = ({ pollData, onVote }) => {
@@ -32,7 +32,8 @@ const Poll: React.FC<PollProps> = ({ pollData, onVote }) => {
     pollData || { id: 0, question: '', options: [], hasVoted: false, totalVotes: 0,remainingTime:0 }
   );
   const [isVoting, setIsVoting] = useState(false);
-  
+  const [previousChoice, setPreviousChoice] = useState<number | null>(null);
+
   // Initialize refs for animations outside of the map function
   const progressAnimations = useRef<Animated.Value[]>([]);
 
@@ -41,6 +42,7 @@ const Poll: React.FC<PollProps> = ({ pollData, onVote }) => {
     if (pollData) {
       setPoll(pollData);
       setIsVoting(pollData.hasVoted);
+      
       // Initialize progress animations if the length changes
       if (progressAnimations.current.length !== pollData.options.length) {
         progressAnimations.current = pollData.options.map(() => new Animated.Value(0));
@@ -50,29 +52,37 @@ const Poll: React.FC<PollProps> = ({ pollData, onVote }) => {
       if (pollData.hasVoted) {
         animateProgressBars(pollData.options, pollData.totalVotes);
       }
+      const selectedOption = pollData.options.find((option) => option.selected);
+      if (selectedOption) {
+        setPreviousChoice(selectedOption.id);
+      }
     }
   }, [pollData]);
 
   const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
   const styles = useStyles(Fonts, theme, dark, dir);
 
-  const handleSubmitVote = (optionId: number) => {
-    if (poll.hasVoted) return;
+  const handleSubmitVote = (newOptionId: number) => {
+    if (newOptionId === previousChoice) return;
 
     setIsVoting(true);
 
-    // Update the options based on the vote
     const newOptions = poll.options.map((option) => {
-      return option.id === optionId
-        ? { ...option, selected: true, totalVotes: (option.totalVotes || 0) + 1 }
-        : { ...option, selected: false };
+      if (option.id === previousChoice) {
+        return { ...option, selected: false, totalVotes: Math.max(0, option.totalVotes - 1) };
+      }
+      if (option.id === newOptionId) {
+        return { ...option, selected: true, totalVotes: (option.totalVotes || 0) + 1 };
+      }
+      return option;
     });
 
     const newTotalVotes = newOptions.reduce((sum, option) => sum + (option.totalVotes || 0), 0);
 
-    // Update the poll state and trigger animations
     setPoll({ ...poll, options: newOptions, totalVotes: newTotalVotes, hasVoted: true });
-    onVote(poll.id, newOptions, newTotalVotes, optionId);
+    setPreviousChoice(newOptionId);
+    onVote(poll.id, newOptions, newTotalVotes, newOptionId, previousChoice,poll.hasVoted);
+
     animateProgressBars(newOptions, newTotalVotes);
   };
 
@@ -106,14 +116,14 @@ const Poll: React.FC<PollProps> = ({ pollData, onVote }) => {
       outputRange: ['0%', '100%'],
     }) || '0%'; // Fallback to '0%' if undefined
 
-    console.log(`Rendering option ${item.id}, progressWidth: ${progressWidth}`); // Debugging
+    // console.log(`Rendering option ${item}, progressWidth: ${isVoting}`); // Debugging
 
     return (
       <View style={[styles.optionContainer]}>
         <TouchableOpacity
           style={[layout.rowBox, styles.optionContent, item.selected ? styles.selectedOption : null]}
           onPress={() => handleSubmitVote(item.id)}
-          disabled={poll.hasVoted}
+          // disabled={poll.hasVoted}
         >
           <View style={[styles.radioButton, { borderColor: item.selected ? theme.active : theme.gray }]}>
             {item.selected ? <View style={styles.radioButtonSelected} /> : null}

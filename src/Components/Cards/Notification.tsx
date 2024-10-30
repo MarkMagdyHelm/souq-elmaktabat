@@ -22,9 +22,9 @@ const Notification = (props: Props) => {
     } = props
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
-    // console.log('====================================');
-    // console.log(item);
-    // console.log('====================================');
+    console.log('====================================');
+    console.log(item);
+    console.log('====================================');
     return (
         <Pressable style={[layout.rowBox,styles.con]} onPress={onPress}>
            <View style={styles.iconCon}>
@@ -43,7 +43,7 @@ const Notification = (props: Props) => {
               <SkeletonPlaceholder.Item backgroundColor={Colors.secondColor} marginBottom={8}    height={PixelPerfect(20)}
               width={150}/>
               </SkeletonPlaceholder>
-              : <Text style={[layout.textAlign,,styles.text2]}>{moment().locale("en").format('DD')} {moment().locale("ar").format('MMM')} {moment().locale("en").format('YYYY')}</Text>}
+              : <Text style={[layout.textAlign,,styles.text2]}>{moment(item.creationDate).locale("en").format('DD')} {moment().locale("ar").format('MMM')} {moment(item.creationDate).locale("en").format('YYYY')}</Text>}
               </View>
               {loading?
              <SkeletonPlaceholder backgroundColor={Colors.secondColor}> 

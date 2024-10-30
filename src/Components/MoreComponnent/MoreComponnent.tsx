@@ -46,10 +46,10 @@ const MoreComponnent = (props: Props) => {
                 <ContactUsIcon/>
                 <Text style={[layout.textAlign,styles.tapText]}>{t("Contact us")}</Text>
               </Pressable>
-              <Pressable style={[layout.rowBox,styles.tapCon]}>
+              {/* <Pressable style={[layout.rowBox,styles.tapCon]}>
                 <ShareMoreIcon/>
                 <Text style={[layout.textAlign,styles.tapText]}>{t("Shar")}</Text>
-              </Pressable>
+              </Pressable> */}
             </View>
         </Container>
     )

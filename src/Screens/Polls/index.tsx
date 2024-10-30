@@ -8,7 +8,7 @@ import TabBar from '../../Components/TabBar/index';
 import { Colors } from '../../Constants/styleConstants';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../Store/store';
-import { GetPollsHandler, VotePollByGueseHandler, VotePollByUserHandler } from '../../Apis/Poll';
+import { GetPollsHandler, UpdateVotePollByGueseHandler, UpdateVotePollByUserHandler, VotePollByGueseHandler, VotePollByUserHandler } from '../../Apis/Poll';
 import { useToast } from 'react-native-toast-notifications';
 import PollLoader from '../../Components/SkeltonLoaders/PollLoader';
 import { logoutHandler } from '../../Apis/User';
@@ -75,13 +75,8 @@ const Index = () => {
       GuestId:gusterID
      },(res,status)=>{
        if (res.status == 200) {
-        // res.data[0].hasVoted=false;
-        // res.data[0].options[0].selected=false;
-        // console.log('============rrrrrrr========================');
-        // console.log(res.data);
-        // console.log('====================================');
         console.log('=========اااااااااااا===========================');
-        console.log(res.data);
+        console.log(res.data[0]);
         console.log('====================================');
         setPolls(res.data)
        }else{
@@ -90,51 +85,114 @@ const Index = () => {
        setloading(false)
      }))
     };
-    console.log('====================================');
-    console.log(userdata);
-    console.log('====================================');
-    const voting = (OptionId:number)=>{
+    
+    const voting = (OptionId:number,isVotedPoll:boolean,previousChoice?:number)=>{
       console.log('====================================');
       console.log(gusterID,OptionId);
       console.log('====================================');
       if (isLogin) {
-        dispatch<any>(VotePollByUserHandler({
-          UserId:userdata.id,
-          OptionId:OptionId
-         },(res,status)=>{
-          if (res.status == 200) {
-          //  setPolls(res.data)
-           }else{
-            toastNotfication({ type: 'error', message: res?.message ?? t("Something Went wrong") });
-           }
-          
-         }))
-      } else {     
-        dispatch<any>(VotePollByGueseHandler({
-         GuestId:gusterID,
-         OptionId:OptionId
-        },(res,status)=>{
-      
-         if (res.status == 200) {
-           
-         //  setPolls(res.data)
-          }else{
-           toastNotfication({ type: 'error', message: res?.message ?? t("Something Went wrong") });
-          }
+        if (!isVotedPoll) {
+          dispatch<any>(VotePollByUserHandler({
+            UserId:userdata.id,
+            OptionId:OptionId
+           },(res,status)=>{
+            if (res.status == 200) {
+            //  setPolls(res.data)
+             }else{
+              toastNotfication({ type: 'error', message: res?.message ?? t("Something Went wrong") });
+             }
+            
+           }))
+        } else {
+          dispatch<any>(UpdateVotePollByUserHandler({
+            UserId:userdata.id,
+            NewOptionId:OptionId,
+            OldOptionId:previousChoice
+           },(res,status)=>{
+            console.log('==============vvvvv======================');
+            console.log(res);
+            console.log('====================================');
+            if (res.status == 200) {
+            //  setPolls(res.data)
+             }else{
+              toastNotfication({ type: 'error', message: res?.message ?? t("Something Went wrong") });
+             }
+            
+           }))
+        }
+       
+      } else {    
+        if (!isVotedPoll) {
+          dispatch<any>(VotePollByGueseHandler({
+            GuestId:gusterID,
+            OptionId:OptionId
+           },(res,status)=>{
          
-        }))
+            if (res.status == 200) {
+              
+            //  setPolls(res.data)
+             }else{
+              toastNotfication({ type: 'error', message: res?.message ?? t("Something Went wrong") });
+             }
+            
+           }))
+        } else {
+          dispatch<any>(UpdateVotePollByGueseHandler({
+            GuestId:gusterID,
+            NewOptionId:OptionId,
+            OldOptionId:previousChoice
+           },(res,status)=>{
+            if (res.status == 200) {
+              console.log('==============vvvvv======================');
+              console.log(res);
+              console.log('====================================');
+            //  setPolls(res.data)
+             }else{
+              toastNotfication({ type: 'error', message: res?.message ?? t("Something Went wrong") });
+             }
+            
+           }))
+        } 
+       
       }
     };
-  const handleVote = (pollId: number, newOptions: Option[], newTotalVotes: number,optionId:number) => {
-    voting(optionId);
-    setPolls((prevPolls) =>
-      prevPolls.map((poll) =>
-        poll.id === pollId
-          ? { ...poll, options: newOptions, totalVotes: newTotalVotes, hasVoted: true }
-          : poll
-      )
-    );
-  };
+    const handleVote = (
+      pollId: number,
+      newOptions: Option[],
+      newTotalVotes: number,
+      optionId: number,
+      oldOptionId: number | null,
+      isVotedPoll:boolean
+    ) => {
+      voting(optionId,isVotedPoll,oldOptionId);
+ 
+      setPolls((prevPolls) =>
+        prevPolls.map((poll) => {
+          if (poll.id === pollId) {
+            // Adjust vote counts based on new and old selections
+
+            const updatedOptions = poll.options.map((option) => {
+              if (option.id === oldOptionId) {
+                // Decrease vote count for the old option
+                return { ...option, totalVotes: Math.max(0, option.totalVotes - 1), selected: false };
+              } else if (option.id === optionId) {
+                // Increase vote count for the new option
+                return { ...option, totalVotes: option.totalVotes + 1, selected: true };
+              }
+              return option;
+            });
+    
+            return {
+              ...poll,
+              options: updatedOptions,
+              totalVotes: newTotalVotes,
+              hasVoted: true,
+            };
+          }
+          return poll;
+        })
+      );
+    };
 
   const renderPoll = ({ item }: { item: PollData }) => 
     (

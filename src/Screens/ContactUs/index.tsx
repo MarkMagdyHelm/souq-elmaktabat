@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Linking, Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useState } from 'react'
 import { IFont, ITheme } from '../../Constants/interfaces'
 import { ThemeContext } from '../../Constants/theming'
@@ -15,7 +15,8 @@ import { validationSchema } from '../../Validation/contacus'
 import { useToast } from 'react-native-toast-notifications'
 import { useDispatch } from 'react-redux'
 import { ContactUsHandler } from '../../Apis/Appinfo'
-
+import Instagram from 'react-native-vector-icons/AntDesign'
+import Whatsapp from 'react-native-vector-icons/FontAwesome'
 type Props = {
     navigation: any
 }
@@ -52,6 +53,19 @@ const Index = (props: Props) => {
          setstate(old=>({...old,loading:false}))
        }))
       };
+      const handleInstgram = ()=>{
+        Linking.openURL("https://www.instagram.com/jmforpapertrade/profilecard/?igsh=a2xkdmQ4bWRmaGlk");
+      }
+      const handleFacebook = ()=>{
+        Linking.openURL("https://web.facebook.com/p/souq-elmaktabat-%D8%B3%D9%88%D9%82-%D8%A7%D9%84%D9%85%D9%83%D8%AA%D8%A8%D8%A7%D8%AA-61567837892703/?mibextid=LQQJ4d&_rdc=1&_rdr");
+      }
+      const handleWhatsapp = ()=>{
+        Linking.openURL('whatsapp://send?text=hello&phone=+201044764930');
+
+      }
+      const handleMail = ()=>{
+        Linking.openURL(`mailto:souq.elmaktabat@gmail.com`);
+      }
     return (
         <Container showHint={false}
             fullBackground
@@ -128,18 +142,22 @@ const Index = (props: Props) => {
               />
               <View style={{paddingTop:PixelPerfect(2)}}>
                 <Text style={[layout.textAlign,styles.lable]}>{t("message1")}</Text>
-                <View style={[layout.rowBox,styles.infoCon]}>
-                    <PhoneIcon/>
-                    <Text style={styles.text}>01234567890</Text>
-                </View>
-                <View style={[layout.rowBox,styles.infoCon]}>
+                <Pressable style={[layout.rowBox,styles.infoCon]} onPress={handleWhatsapp}>
+                    <Whatsapp color={Colors.whatsapp} size={25} name="whatsapp" />
+                    <Text style={styles.text}>+201044764930</Text>
+                </Pressable>
+                <Pressable style={[layout.rowBox,styles.infoCon]}  onPress={handleMail}>
                     <GmailIcon/>
-                    <Text style={styles.text}>souq el maktabat@gmail.com</Text>
-                </View>
-                <View style={[layout.rowBox,styles.infoCon]}>
+                    <Text style={styles.text}>souq.elmaktabat@gmail.com</Text>
+                </Pressable>
+                <Pressable style={[layout.rowBox,styles.infoCon]}  onPress={handleFacebook}>
                     <FaceBookIcon/>
                     <Text style={styles.text}>سوق المكتبات</Text>
-                </View>
+                </Pressable>
+                <Pressable style={[layout.rowBox,styles.infoCon]} onPress={handleInstgram}>
+                    <Instagram name="instagram" size={25} color={Colors.instagram} />
+                    <Text style={styles.text}>سوق المكتبات</Text>
+                </Pressable>
               </View>
                 </View>
             </Content>

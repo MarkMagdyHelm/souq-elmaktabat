@@ -46,15 +46,15 @@ globalAPI.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `bearer ${token}`;
     }
-    config.headers['DeviceId'] = DeviceInfo.getUniqueIdSync();
+    config.headers['DeviceId'] = DeviceInfo.getUniqueIdSync()+"albert";
     if (config?.data) {
      
       if (!config.data.channel) {
         config.data.Source = channel;
       }
 
-      config.data.DeviceId = DeviceInfo.getUniqueIdSync();
-      config.params['DeviceId'] = DeviceInfo.getUniqueIdSync();
+      config.data.DeviceId = DeviceInfo.getUniqueIdSync()+"albert";
+      config.params['DeviceId'] = DeviceInfo.getUniqueIdSync()+"albert";
      
     }
     console.log('==============data.id=========config=============');

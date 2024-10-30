@@ -39,6 +39,23 @@ export const VotePollByGueseHandler = (params:any,cb?: (data: any,status:any) =>
       }
     };
   };
+ /**
+ * UpdateVotePollByGuese
+ * @param cb callback function
+ */
+ export const UpdateVotePollByGueseHandler = (params:any,cb?: (data: any,status:any) => void) => {
+  return async (dispatch: Dispatch<IDispatch>) => {
+    try {
+      const { data,status } = await globalAPI.post('api/Poll/UpdatePollByGuest',{},{
+          params:params
+      });       
+      cb && cb(data,status);
+    } catch (error) {
+        console.log('UpdateVotePollByGueseHandler error = ', error);
+      cb && cb(error,500);
+    }
+  };
+};
 
   /**
  * VotePollByUserHandler
@@ -53,6 +70,24 @@ export const VotePollByUserHandler = (params:any,cb?: (data: any,status:any) => 
       cb && cb(data,status);
     } catch (error) {
         console.log('VotePollByUserHandler error = ', error);
+      cb && cb(error,500);
+    }
+  };
+};
+
+/**
+ * UpdateVotePollByUserHandler
+ * @param cb callback function
+ */
+export const UpdateVotePollByUserHandler = (params:any,cb?: (data: any,status:any) => void) => {
+  return async (dispatch: Dispatch<IDispatch>) => {
+    try {
+      const { data,status } = await globalAPI.post('api/Poll/UpdatePollByUser',{},{
+          params:params
+      });       
+      cb && cb(data,status);
+    } catch (error) {
+        console.log('UpdateVotePollByUserHandler error = ', error);
       cb && cb(error,500);
     }
   };
