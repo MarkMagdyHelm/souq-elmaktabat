@@ -36,6 +36,8 @@ import DeviceInfo from 'react-native-device-info';
 import Error from './src/Components/Notifications/Error';
 import Success from './src/Components/Notifications/Success';
 import PushNotificationHandler from './src/Utilties';
+import Orientation from 'react-native-orientation-locker';
+
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
@@ -95,6 +97,7 @@ function App(): JSX.Element {
     console.log('==========I18nManager.isRTL==========================');
     console.log(I18nManager.isRTL);
     console.log('====================================');
+    Orientation.lockToPortrait();
     if (I18nManager.isRTL) {
       I18nManager.forceRTL(false);
       I18nManager.allowRTL(false);
