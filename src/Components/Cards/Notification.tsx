@@ -43,7 +43,7 @@ const Notification = (props: Props) => {
               <SkeletonPlaceholder.Item backgroundColor={Colors.secondColor} marginBottom={8}    height={PixelPerfect(20)}
               width={150}/>
               </SkeletonPlaceholder>
-              : <Text style={[layout.textAlign,,styles.text2]}>{moment(item.creationDate).locale("en").format('DD')} {moment().locale("ar").format('MMM')} {moment(item.creationDate).locale("en").format('YYYY')}</Text>}
+              : <Text style={[layout.textAlign,,styles.text2]}>{moment(item?.creationDate).locale("en").format('DD')} {moment().locale("ar").format('MMM')} {moment(item?.creationDate).locale("en").format('YYYY')}</Text>}
               </View>
               {loading?
              <SkeletonPlaceholder backgroundColor={Colors.secondColor}> 

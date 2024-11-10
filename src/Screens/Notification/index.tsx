@@ -7,7 +7,7 @@ import { t } from 'i18next';
 import { Container } from '../../Components/containers/Containers';
 import TabBar from '../../Components/TabBar/index';
 import HeaderWithText from '../../Components/Headers/HeaderWithText';
-import Notification from '../../Components/Cards/Notification';
+import  Notification from '../../Components/Cards/Notification';
 import { useToast } from 'react-native-toast-notifications';
 import { useDispatch } from 'react-redux';
 import { GetAllNotificationsHandler } from '../../Apis/Notification';

@@ -92,11 +92,18 @@ function App(): JSX.Element {
    }
   
   useEffect(() => {
+    console.log('==========I18nManager.isRTL==========================');
+    console.log(I18nManager.isRTL);
+    console.log('====================================');
     if (I18nManager.isRTL) {
       I18nManager.forceRTL(false);
-      LogBox.ignoreLogs(['Warning: ...']);
-      LogBox.ignoreAllLogs();
+      I18nManager.allowRTL(false);
+    }else{
+      I18nManager.forceRTL(false);
+      I18nManager.allowRTL(false);
     }
+    LogBox.ignoreLogs(['Warning: ...']);
+    LogBox.ignoreAllLogs();
   }, []);
 
   return (
