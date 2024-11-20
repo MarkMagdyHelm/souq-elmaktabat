@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "313280893555",
+    "project_id": "souq-elmaktabat",
+    "storage_bucket": "souq-elmaktabat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:313280893555:android:01ded78dd804ff3f675006",
+        "android_client_info": {
+          "package_name": "com.souqelmaktabat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAM1JpPe3QJVpQoBbzdWcr1pukRr0bb3oE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
