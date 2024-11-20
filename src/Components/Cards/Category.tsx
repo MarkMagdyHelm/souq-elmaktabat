@@ -96,6 +96,6 @@ StyleSheet.create({
       //  paddingHorizontal:PixelPerfect(4),
       position:"absolute",
       right:2,
-      top:PixelPerfect(20)
+      top:PixelPerfect(26)
       }
 });
