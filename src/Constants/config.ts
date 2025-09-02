@@ -4,13 +4,13 @@ import { NativeModules, Platform } from 'react-native';
 import { AsyncKeys, getItem } from '../Helper';
 import DeviceInfo from 'react-native-device-info'
 // Staging
-export const mainUrl = 'http://markmagdy-001-site1.ctempurl.com/';
-export const imageUrl = 'http://markmagdy-001-site2.ctempurl.com/images/';
-export const fawriredirectUrl = 'www.questnow.me';
+// export const mainUrl = 'http://markmagdy-001-site3.ctempurl.com/';
+// export const imageUrl = 'http://markmagdy-001-site2.ctempurl.com/images/';
+
 
 // Production
-// export const mainUrl = 'http://apis.questnow.me/';
-// export const fawriredirectUrl = 'www.questnow.me';
+export const mainUrl = 'http://markmagdy-001-site1.ctempurl.com/';
+export const imageUrl = 'http://markmagdy-001-site2.ctempurl.com/images/';
 
 export const channel = Platform.OS == "android" ? "Android" : "IOS";
 export const headers = {

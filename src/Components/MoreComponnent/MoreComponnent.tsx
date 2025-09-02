@@ -32,7 +32,7 @@ const MoreComponnent = (props: Props) => {
         <Container>
             <View style={styles.body}>
             <Text style={[layout.textAlign,styles.textsection1]}>{t("MoreText1")}</Text>
-          {(SignInActive.status==1&&!isLogin)&&<>    
+          {<>    
           <Button
               title={t('Sign in')}
               styleTitle={styles.buttonText}

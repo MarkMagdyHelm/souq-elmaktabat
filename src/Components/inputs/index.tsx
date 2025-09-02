@@ -112,12 +112,14 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
            paddingRight:PixelPerfect(8),
            marginRight:PixelPerfect(8),
            borderLeftColor:theme.optionText,
-           width:"25%"
+           width:"27%"
         },
         phonecodetext:{
+            marginTop:5,
             fontFamily:Fonts.medium,
             fontSize:PixelPerfect(16),
             color:theme.deactive,
+            paddingHorizontal:PixelPerfect(5)
         },
         errorText:{
             fontFamily:Fonts.regular,

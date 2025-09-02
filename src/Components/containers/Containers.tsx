@@ -29,6 +29,7 @@ interface contentProps {
   paddingVertical?: boolean;
   children?: JSX.Element[] | JSX.Element | any;
   refreshControl?: any;
+  scrollEnabled?:boolean
 }
 export const Container: FC<containerProps> = ({
   children,
@@ -83,6 +84,7 @@ export const Content: FC<contentProps> = ({
   contentContainerStyle,
   paddingVertical,
   refreshControl,
+  scrollEnabled
 }) => {
   const { theme } = useContext(ThemeContext);
 
@@ -97,9 +99,10 @@ export const Content: FC<contentProps> = ({
       refreshControl={refreshControl}
       ref={ContentRef as any}
       style={style}
+      scrollEnabled={scrollEnabled}
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={[
-        { backgroundColor: theme.secondColor },
+        // { backgroundColor: theme.secondColor },
         paddingVertical && { paddingVertical: PixelPerfect(30) },
         contentContainerStyle,
       ]}>

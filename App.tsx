@@ -56,7 +56,7 @@ function App(): JSX.Element {
     setTimeout(() => {
       
       RNBootSplash.hide({ fade: true });
-    }, 1000);
+    }, 100);
     i18next.changeLanguage(langauge);
     getSettings()
   }, [langauge]);

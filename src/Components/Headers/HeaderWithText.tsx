@@ -39,7 +39,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             paddingHorizontal:PixelPerfect(19),
         },
         title:{
-            fontFamily:Fonts.bold,
+            fontFamily:Fonts.medium,
             color:theme.active,
             fontSize:PixelPerfect(22),
             lineHeight:PixelPerfect(30)

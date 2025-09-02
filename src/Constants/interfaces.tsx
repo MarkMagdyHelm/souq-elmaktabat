@@ -124,5 +124,6 @@ export interface ITheme {
  currenctText:string,
  timeText:string,
  optionText:string,
- sepreator:string
+ sepreator:string,
+ grayLigth:string
 }

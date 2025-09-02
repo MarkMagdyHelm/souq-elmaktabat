@@ -10,13 +10,15 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { ThemeContext } from '../Constants/theming';
 import Signin from "../Screens/Auth/Signin/index";
 import Signup from '../Screens/Auth/SignUp/index';
+import ConfirmtionCode from '../Screens/Auth/ConfirmtionCode/index'
 import Home from '../Screens/Home/index';
 import Notifications from '../Screens/Notification/index';
 import Polls from '../Screens/Polls/index';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import MoreComponnent from '../Components/MoreComponnent/MoreComponnent';
 import { phoneWidth, PixelPerfect } from '../Constants/styleConstants';
-import ContactUs from '../Screens/ContactUs/index'
+import ContactUs from '../Screens/ContactUs/index';
+import RegisterInformation from '../Screens/Auth/RegisterInformation/index'
 const Stack = createStackNavigator();
 
 
@@ -39,12 +41,14 @@ const Stacks = () => {
         initialRouteName={ 'Home' }
       >
         
-       <Stack.Screen name="Signin" component={Signin} />
        <Stack.Screen name="Home" component={Home} />
+       <Stack.Screen name="Signin" component={Signin} />
        <Stack.Screen name="Signup" component={Signup} />
+         <Stack.Screen name="ConfirmtionCode" component={ConfirmtionCode} />
        <Stack.Screen name="Notifications" component={Notifications} />
        <Stack.Screen name="Polls" component={Polls} />
        <Stack.Screen name="ContactUs" component={ContactUs} />
+        <Stack.Screen name="RegisterInformation" component={RegisterInformation} />
     </Stack.Navigator>
   );
 };

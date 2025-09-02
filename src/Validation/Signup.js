@@ -2,35 +2,8 @@ import * as yup from 'yup';
 import {phoneRegExp, passwordRegExp} from './regex';
 
 export const validationSchema = yup.object().shape({
-    PhoneNumber: yup
-    .string()
-    .required('Mobile Number is Required')
-    .label('mobilenumber')
-    .matches(phoneRegExp, 'It must be numbers and 11 digits')
-    .min(11),
-    Password: yup
-    .string()
-    .required('Password is Required')
-    .label('Password')
-    .matches(passwordRegExp, "Fail Passwords must be at least 6 characters.Passwords must have at least one digit ('0'-'9').")
-    .min(6),
-  ConfirmPassword: yup
-    .string()
-    .required('ConfirmPassword is Required')
-    .oneOf([yup.ref('Password'), null], 'Passwords must match')
-    .label('Confirm Password'),
+   
   Email: yup.string()
-//   .required('Email is required')
-  .label('Email').email(),
-  Name: yup
-    .string()
-    .required('Fullname is required')
-    .label('Full Name')
-    .min(2)
-    .max(25),
-    Address: yup
-    .string()
-    // .required('Address is Required')
-    .label('Address')
-    
+  .required('Email is required')
+  .label('Email').email(),   
 });

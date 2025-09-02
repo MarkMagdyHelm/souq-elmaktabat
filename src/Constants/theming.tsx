@@ -165,7 +165,8 @@ const themes  = {
  currenctText:"#FEBA32",
  timeText:"#A3A3A3",
  optionText:"#EDEEF0",
- sepreator:"#EDEBEB"
+ sepreator:"#EDEBEB",
+ grayLigth:"#F2F2F7"
   },
 }as any;
 const LayoutDirectionRtl = StyleSheet.create({
@@ -184,6 +185,10 @@ const LayoutDirectionRtl = StyleSheet.create({
   dirRow: {
     flexDirection: 'row',
   },
+  center:{
+    alignItems:"center",
+    justifyContent:"center"
+  }
 });
 const LayoutDirectionLtr = StyleSheet.create({
   rowBox: {
