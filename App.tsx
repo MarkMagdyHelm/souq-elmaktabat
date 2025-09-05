@@ -53,8 +53,14 @@ function App(): JSX.Element {
   const { langauge } = useSelector((state: RootState) => state.settings);
 
   useEffect(() => {
+    console.log('====================================');
+    console.log("splash 1");
+    console.log('====================================');
+      RNBootSplash.hide({ fade: true });
     setTimeout(() => {
-      
+       console.log('====================================');
+    console.log("splash 2");
+    console.log('====================================');
       RNBootSplash.hide({ fade: true });
     }, 100);
     i18next.changeLanguage(langauge);
