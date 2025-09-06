@@ -13,7 +13,7 @@ export enum Colors {
 
   facebook = '#1877F2',
   googleLogin = '#F2F6F8',
-
+  whiteGray = '#F2F2F7',
   gray = '#979797',
   appBackgroundColor = '#FFFF',
   sacandAppBackgroundColor = '#F4F6F9',

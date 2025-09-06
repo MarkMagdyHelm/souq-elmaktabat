@@ -18,10 +18,10 @@ const MoreComponnent = (props: Props) => {
   const { isLogin } = useSelector((state:RootState) => state.auth);
   const { appSettings } = useSelector((state:RootState) => state.settings);
    let SignInActive :any={}
-   if (appSettings?.length !=0) {
+  //  if (appSettings?.length !=0) {
     
-     SignInActive= appSettings?.find((el:any)=>el.type == "SignInActive");
-   }
+  //    SignInActive= appSettings?.find((el:any)=>el.type == "SignInActive");
+  //  }
 
     const {
         navigation
