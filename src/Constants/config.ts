@@ -14,7 +14,7 @@ export const imageUrl = 'http://markmagdy-001-site2.ctempurl.com/images/';
 
 export const channel = Platform.OS == "android" ? "Android" : "IOS";
 export const headers = {
-  Accept: 'application/json',
+  Accept: 'application/json', 
   'Cache-Control': 'no-cache',
   Pragma: 'no-cache',
   Expires: '0',
