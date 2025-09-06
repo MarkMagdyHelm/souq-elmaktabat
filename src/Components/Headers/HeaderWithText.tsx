@@ -37,6 +37,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             alignItems: "center",
             justifyContent: "center",
             paddingHorizontal:PixelPerfect(19),
+            // backgroundColor:"red"
         },
         title:{
             fontFamily:Fonts.medium,

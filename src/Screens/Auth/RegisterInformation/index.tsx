@@ -10,9 +10,9 @@ import Button from '../../../Components/touchables/Button';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../Store/store';
 import useToastNotification from '../../../Components/CustomHooks/useToastNotification';
-import { Formik } from 'formik';
+import { Formik, FormikProps } from 'formik';
 import HeaderWithText from '../../../Components/Headers/HeaderWithText';
-import { validationSchema } from '../../../Validation/ConfirmationCode';
+import { validationSchema } from '../../../Validation/Form1Refistration';
 import Section from './Componnent/Section';
 import Inputs from '../../../Components/inputs/index'
 import { roles } from '../../../Helper'
@@ -52,8 +52,13 @@ const Index = (props: Props) => {
     useEffect(() => {
         setActiveStep(1);
     }, []);
+      const formikRef1 = useRef<FormikProps<any>>(null);
+
     return (
-        <Container>
+        <Container
+        noSafeArea
+        
+        >
             <HeaderWithText title={t("signtxt1")} />
             <Content
                 noPadding
@@ -67,6 +72,7 @@ const Index = (props: Props) => {
                 >
                     <Formik
                         validationSchema={validationSchema}
+                          innerRef={formikRef1}
                         initialValues={{
                             Name: "",
                             Email: "",
@@ -191,9 +197,11 @@ const Index = (props: Props) => {
                     step={2}
                     activeStep={activeStep}
                     setActiveStep={setActiveStep}
+                    onSubmmit={()=>{formikRef1.current?.handleSubmit()}}
                 >
                     <Formik
                         validationSchema={validationSchema}
+
                         initialValues={{
                             Address: "",
                             City: "",
@@ -273,6 +281,7 @@ const Index = (props: Props) => {
                 <Pressable style={[layout.rowBox,styles.checkcon]}>
 
                 </Pressable>
+                <View style={{height:PixelPerfect(30)}}/>
             </Content>
         </Container>
     );
@@ -283,7 +292,7 @@ export default Index;
 const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string) =>
     StyleSheet.create({
         body: {
-            marginTop: PixelPerfect(30),
+            // marginTop: PixelPerfect(30),
             flex: 0.9,
             paddingHorizontal: PixelPerfect(16),
         },

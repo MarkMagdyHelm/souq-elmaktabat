@@ -28,9 +28,5 @@ export const validationSchema = yup.object().shape({
     .label('Full Name')
     .min(2)
     .max(25),
-    Address: yup
-    .string()
-    // .required('Address is Required')
-    .label('Address')
     
 });

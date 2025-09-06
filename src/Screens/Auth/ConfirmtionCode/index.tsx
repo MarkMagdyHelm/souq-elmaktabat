@@ -238,6 +238,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string) 
             borderRadius: PixelPerfect(8),
             borderColor: theme.deactive,
             textAlign: 'center',
+            color: Colors.secondColor,
 
         },
         focusCell: {

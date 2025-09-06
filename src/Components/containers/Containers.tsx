@@ -55,12 +55,9 @@ export const Container: FC<containerProps> = ({
         style={{ flex: 1 ,borderColor:Colors.white,
           backgroundColor:isdark?theme.mainColor:theme.mainColor}}
         keyboardVerticalOffset={50}
-        // behavior='padding'
-    // behavior='height'
+       
     {...(showHint && {
-      // enabled: true,
-      // behavior: 'height',
-      // keyboardVerticalOffset: PixelPerfect(200),
+      
     })}>
     {children}
   </KeyboardAvoidingView>
@@ -103,7 +100,7 @@ export const Content: FC<contentProps> = ({
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={[
         // { backgroundColor: theme.secondColor },
-        paddingVertical && { paddingVertical: PixelPerfect(30) },
+        // paddingVertical && { paddingVertical: PixelPerfect(30) },
         contentContainerStyle,
       ]}>
       <View

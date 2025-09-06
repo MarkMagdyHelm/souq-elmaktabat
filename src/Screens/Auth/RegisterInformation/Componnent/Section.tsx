@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ViewStyle,
   TextStyle,
+  Platform,
 } from "react-native";
 import Collapsible from "react-native-collapsible";
 import { IFont, ITheme } from "../../../../Constants/interfaces";
@@ -21,6 +22,7 @@ interface SectionProps {
   children: React.ReactNode;
   containerStyle?: ViewStyle;
   titleStyle?: TextStyle;
+  onSubmmit?:()=>void
 }
 
 const Section: React.FC<SectionProps> = ({
@@ -31,16 +33,27 @@ const Section: React.FC<SectionProps> = ({
   children,
   containerStyle,
   titleStyle,
+  onSubmmit
 }) => {
   const isActive = step === activeStep;
   const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
   const styles = useStyles(Fonts, theme, dark, dir);
+ const handleSubmmit = async() => {
+          try {
+             setActiveStep(isActive ? null : step)
+           await new Promise((resolve) => setTimeout(resolve, 1000));
+           onSubmmit?.();
+          } catch (error) {
+            
+          }
+         
+        }
   return (
     <View style={[styles.section, containerStyle]}>
       {/* Header */}
       <TouchableOpacity
         style={[layout.rowBox,styles.header]}
-        onPress={() => setActiveStep(isActive ? null : step)}
+        onPress={handleSubmmit}
       >
         <View style={[layout.rowBox,{alignItems:"center"}]}>
         <View style={[layout.center,styles.stepNumberCon]}>
@@ -86,7 +99,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string) 
   },
   stepNumber: {
     textAlign: "center",
-    lineHeight: PixelPerfect(30),
+    lineHeight:Platform.OS=="ios"? PixelPerfect(30):PixelPerfect(25),
     color: Colors.white,
      fontSize: PixelPerfect(16),
      fontFamily:Fonts.medium,
