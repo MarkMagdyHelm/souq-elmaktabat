@@ -13,6 +13,7 @@ import Signup from '../Screens/Auth/SignUp/index';
 import ConfirmtionCode from '../Screens/Auth/ConfirmtionCode/index'
 import Home from '../Screens/Home/index';
 import Home2 from '../Screens/Home2/index';
+import HomeMore from '../Screens/HomeMore/index';
 import Notifications from '../Screens/Notification/index';
 import Polls from '../Screens/Polls/index';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -39,11 +40,13 @@ const Stacks = () => {
           // presentation:"transparentModal",
         };
       }}
-      initialRouteName={'Home2'}
+      initialRouteName={'HomeMore'}
     >
 
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="Home2" component={Home2} />
+      <Stack.Screen name="HomeMore" component={HomeMore} />
+
       <Stack.Screen name="Signin" component={Signin} />
       <Stack.Screen name="Signup" component={Signup} />
       <Stack.Screen name="ConfirmtionCode" component={ConfirmtionCode} />

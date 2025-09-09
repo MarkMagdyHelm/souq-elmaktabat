@@ -1,24 +1,17 @@
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
+import { FlatList, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Container } from '../../Components/containers/Containers'
 import { ThemeContext } from '../../Constants/theming'
 import { IFont, ITheme } from '../../Constants/interfaces'
-import { t } from 'i18next'
-import { ColorWithOpacity, Colors, PixelPerfect, phoneWidth } from '../../Constants/styleConstants'
+import { PixelPerfect, phoneWidth } from '../../Constants/styleConstants'
 import TabBar from '../../Components/TabBar/index';
-import Category from '../../Components/Cards/Category';
-import { CallIcon, PaperIcon, SharIcon } from '../../Assets/Svg'
-import moment from 'moment';
+
 import 'moment/locale/ar'
-import ViewShot from "react-native-view-shot";
-import Share from 'react-native-share';
-import { GetPapersHandler } from '../../Apis/HomeApis'
+
 import { useDispatch, useSelector } from 'react-redux'
-import HomeCategoryLoder from '../../Components/SkeltonLoaders/HomeCategoryLoder'
-import { AssignDeviceIdToGuestHandler } from '../../Apis/Auth'
+
 import { useToast } from 'react-native-toast-notifications'
 import { RootState } from '../../Store/store'
-import PushNotificationHandler from '../../Utilties'
 import HomeCategory from '../../Components/Cards/HomeCategory'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import Product from '../../Components/Cards/Product'

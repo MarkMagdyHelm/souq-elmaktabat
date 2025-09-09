@@ -58,7 +58,8 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
     StyleSheet.create({
 
         con: {
-            width: PixelPerfect(159),
+            width: PixelPerfect(163),
+            height: PixelPerfect(228),
             backgroundColor: "#fff",
             borderRadius: PixelPerfect(12),
             margin: PixelPerfect(8),
@@ -80,7 +81,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
         con2: {
             alignItems: "center", marginTop: PixelPerfect(4)
         },
-      
+
         image: {
             height: PixelPerfect(80),
             width: PixelPerfect(143),
