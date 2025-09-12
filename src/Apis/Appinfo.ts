@@ -64,7 +64,28 @@ export const GetCitiesHandler = (cb?: (data: any,status:any) => void) => {
     }
   };
 };
+ /**
+ * GetAppCities
+ * @param CountryId
+ * @param cb callback function
+ */
+export const GetAllRegionsByCountryIdHandler = (CountryId,cb?: (data: any,status:any) => void) => {
+  return async (dispatch: Dispatch<IDispatch>) => {
+    try {
+      const { data,status } = await globalAPI.get('api/User/GetAllRegionsByCountryId',{params:{
+        CountryId:CountryId
 
+      }});
+      console.log('GetAllRegionsByCountryIdHandler data = ', data,status);
+      // cb && cb(data,status);
+
+      dispatch(SetCountries(data.data));
+    } catch (error) {
+        console.log('GetAllRegionsByCountryIdHandler error = ', error);
+      cb && cb(error,500);
+    }
+  };
+};
 /**
  * GetAppGetAllActivities
  * @param cb callback function

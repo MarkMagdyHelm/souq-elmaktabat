@@ -18,6 +18,7 @@ import Inputs from '../../../Components/inputs/index'
 import { roles } from '../../../Helper'
 import DropDowenMenu from '../../../Components/DropDowenMenus/DropDowenMenu';
 import { ArrowDownIcon, ArrowUpIcon } from '../../../Assets/Svg';
+import { GetAllRegionsByCountryIdHandler } from '../../../Apis/Appinfo';
 
 type Props = {
     navigation: any
@@ -42,13 +43,22 @@ const Index = (props: Props) => {
         roles: roles,
         showRols: false,
         loadingSignin: false,
-
+areas:[]
     });
     const keyboard = useKeyboard();
     const dispatch = useDispatch();
     const showToast = useToastNotification();
     const [activeStep, setActiveStep] = useState<number | null>(null);
-
+const GetAreas = (id)=>{
+     dispatch<any>(GetAllRegionsByCountryIdHandler(id,(res,status)=>{
+            if (res.status == 200) {
+                  setstate(old=>({...old,areas:res.data}))
+            } else {
+                showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
+            }
+           
+        }))
+}
     // ✅ force step 1 open on mount
     useEffect(() => {
         setActiveStep(1);
@@ -300,21 +310,21 @@ const Index = (props: Props) => {
                                         style={{ flex: 0.7, }}
                                     />}
 
-                                      {!state.showArea && <DropDowenMenu
+                                      {(state.showArea&&state.areas.length !=0) && <DropDowenMenu
                                         onCloseFn={(val) => {
                                             console.log('================val====================');
                                             console.log(val);
                                             console.log('====================================');
                                             if (typeof val?.id == 'string') {
                                                 setstate(old => ({
-                                                    ...old, showGovernemnts: false, forms: {
+                                                    ...old, showArea: false, forms: {
                                                         ...state.forms, Area: "You must pick a area!"
                                                     }
                                                 }));
                                             } else {
                                                 setFieldValue("Area", val.id);
                                                 setstate(old => ({
-                                                    ...old, showGovernemnts: false, selectedArea: val, forms: {
+                                                    ...old, showArea: false, selectedArea: val, forms: {
                                                         ...state.forms, Area: ""
                                                     }
                                                 }));
@@ -323,7 +333,7 @@ const Index = (props: Props) => {
                                         }}
                                         title={t('Choose Area')}
                                         currentFilter={state.selectedArea}
-                                        items={countries}
+                                        items={state.areas}
                                         style={{ flex: 0.7, }}
                                     />}
                                 </>
