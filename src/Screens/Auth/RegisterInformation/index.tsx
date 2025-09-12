@@ -26,6 +26,7 @@ type Props = {
 const Index = (props: Props) => {
     const { navigation } = props;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
+    const { countries, activites } = useSelector((state: RootState) => state.settings);
     const styles = useStyles(Fonts, theme, dark, dir);
     const [state, setstate] = useState({
         showGovernemnts: false,
@@ -52,12 +53,12 @@ const Index = (props: Props) => {
     useEffect(() => {
         setActiveStep(1);
     }, []);
-      const formikRef1 = useRef<FormikProps<any>>(null);
+    const formikRef1 = useRef<FormikProps<any>>(null);
 
     return (
         <Container
-        noSafeArea
-        
+            noSafeArea
+
         >
             <HeaderWithText title={t("signtxt1")} />
             <Content
@@ -72,7 +73,7 @@ const Index = (props: Props) => {
                 >
                     <Formik
                         validationSchema={validationSchema}
-                          innerRef={formikRef1}
+                        innerRef={formikRef1}
                         initialValues={{
                             Name: "",
                             Email: "",
@@ -197,7 +198,7 @@ const Index = (props: Props) => {
                     step={2}
                     activeStep={activeStep}
                     setActiveStep={setActiveStep}
-                    onSubmmit={()=>{formikRef1.current?.handleSubmit()}}
+                    onSubmmit={() => { formikRef1.current?.handleSubmit() }}
                 >
                     <Formik
                         validationSchema={validationSchema}
@@ -258,7 +259,7 @@ const Index = (props: Props) => {
                                         </View>
                                         {state.forms.Markets.length != 0 && <Text style={styles.errorText}>{t(state.forms.Markets)}</Text>}
                                     </Pressable>
-                                     <Inputs label={t('otherPhoneNumber')}
+                                    <Inputs label={t('otherPhoneNumber')}
                                         options={{
                                             onBlur: handleBlur("OtherPhoneNumber"),
                                             onChangeText: handleChange("OtherPhoneNumber"),
@@ -272,16 +273,69 @@ const Index = (props: Props) => {
                                         showErrorr={(errors.OtherPhoneNumber && touched.OtherPhoneNumber) as boolean}
                                         error={errors.OtherPhoneNumber as any}
                                     />
+                                    {state.showGovernemnts && <DropDowenMenu
+                                        onCloseFn={(val) => {
+                                            console.log('================val====================');
+                                            console.log(val);
+                                            console.log('====================================');
+                                            if (typeof val?.id == 'string') {
+                                                setstate(old => ({
+                                                    ...old, showGovernemnts: false, forms: {
+                                                        ...state.forms, City: "You must pick a city!"
+                                                    }
+                                                }));
+                                            } else {
+                                                setFieldValue("City", val.id);
+                                                setstate(old => ({
+                                                    ...old, showGovernemnts: false, selectedGoverenmet: val, forms: {
+                                                        ...state.forms, City: ""
+                                                    }
+                                                }));
+                                            }
+
+                                        }}
+                                        title={t('Choose City')}
+                                        currentFilter={state.selectedGoverenmet}
+                                        items={countries}
+                                        style={{ flex: 0.7, }}
+                                    />}
+
+                                      {!state.showArea && <DropDowenMenu
+                                        onCloseFn={(val) => {
+                                            console.log('================val====================');
+                                            console.log(val);
+                                            console.log('====================================');
+                                            if (typeof val?.id == 'string') {
+                                                setstate(old => ({
+                                                    ...old, showGovernemnts: false, forms: {
+                                                        ...state.forms, Area: "You must pick a area!"
+                                                    }
+                                                }));
+                                            } else {
+                                                setFieldValue("Area", val.id);
+                                                setstate(old => ({
+                                                    ...old, showGovernemnts: false, selectedArea: val, forms: {
+                                                        ...state.forms, Area: ""
+                                                    }
+                                                }));
+                                            }
+
+                                        }}
+                                        title={t('Choose Area')}
+                                        currentFilter={state.selectedArea}
+                                        items={countries}
+                                        style={{ flex: 0.7, }}
+                                    />}
                                 </>
                             )
                         }}
 
                     </Formik>
                 </Section>
-                <Pressable style={[layout.rowBox,styles.checkcon]}>
+                <Pressable style={[layout.rowBox, styles.checkcon]}>
 
                 </Pressable>
-                <View style={{height:PixelPerfect(30)}}/>
+                <View style={{ height: PixelPerfect(30) }} />
             </Content>
         </Container>
     );
@@ -329,7 +383,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string) 
             marginBottom: PixelPerfect(10),
             paddingHorizontal: PixelPerfect(10)
         },
-        checkcon:{
-            
+        checkcon: {
+
         }
     });

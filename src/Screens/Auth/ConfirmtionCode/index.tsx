@@ -20,12 +20,16 @@ import {
     useBlurOnFulfill,
     useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
+import { useRoute } from '@react-navigation/native';
+import { ConfirmEmailHandler, SendOTPByEmailHandler } from '../../../Apis/User';
+import DeviceInfo from 'react-native-device-info';
 type Props = {
     navigation: any
 };
 
 const Index = (props: Props) => {
     const { navigation } = props;
+    const {email} = useRoute().params as any;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
     const [state, setstate] = useState({
@@ -76,6 +80,33 @@ const Index = (props: Props) => {
             .toString()
             .padStart(2, "0")}`;
     };
+
+    const handleResend = ()=>{
+         setIsRunning(true)
+    dispatch<any>(SendOTPByEmailHandler(email,(res,status)=>{
+        if (res.status == 200) {
+             showToast({ type: 'ok', message: res?.message});
+             navigation.navigate("ConfirmtionCode",{email:email})
+        } else {
+            showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
+        }
+         setstate(old=>({...old,loadingSignin:false}))
+    }))
+    }
+    const handleSubmit = (values)=>{
+        setstate(old=>({...old,loading:true}));
+let body = {...values,email:email};
+    dispatch<any>(ConfirmEmailHandler(body,(res,status)=>{
+        if (res.status == 200) {
+             showToast({ type: 'ok', message: res?.message});
+             navigation.navigate("RegisterInformation",{email:email})
+        } else {
+            showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
+        }
+         setstate(old=>({...old,loading:false}))
+    }))
+    }
+    
     return (
         <Container showHint={false}>
             <HeaderWithText title={t("confirmtxt1")} />
@@ -87,10 +118,10 @@ const Index = (props: Props) => {
                 <Formik
                     validationSchema={validationSchema}
                     initialValues={{
-                        Code: "",
+                        verifyCode: "",
                     }}
-                    onSubmit={(values) => { navigation.navigate("RegisterInformation") }} >
-                    {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue, setFieldTouched }) => {
+                    onSubmit={handleSubmit} >
+                    {({ handleChange, handleBlur, handleSubmit, values, errors , touched, setFieldValue, setFieldTouched }) => {
 
                         return (
                             <>
@@ -106,10 +137,10 @@ const Index = (props: Props) => {
                                         {...props}
                                         // Use `caretHidden={false}` when users can't paste a text value, because context menu doesn't appear
                                         value={value}
-                                        onBlur={handleBlur('Code')}
+                                        onBlur={handleBlur('verifyCode')}
                                         onChangeText={(val) => {
                                             setValue(val)
-                                            setFieldValue('Code', val)
+                                            setFieldValue('verifyCode', val)
                                         }}
                                         onSubmitEditing={() => {
                                             handleSubmit()
@@ -130,7 +161,7 @@ const Index = (props: Props) => {
                                             </Text>
                                         )}
                                     />
-                                    {(errors.Code && touched.Code) && <Text style={styles.errorText}>{t(errors.Code)}</Text>}
+                                    {(errors.verifyCode && touched.verifyCode) && <Text style={styles.errorText}>{t(errors?.verifyCode)}</Text>}
                                     {isRunning&&<View style={[layout.rowBox, layout.center]}>
 
                                         <TimerIcone />
@@ -138,7 +169,7 @@ const Index = (props: Props) => {
                                             {formatTime(timeLeft)}
                                         </Text>
                                     </View>}
-                                    <Pressable style={styles.signUpCon} onPress={() => { setIsRunning(true) }}
+                                    <Pressable style={styles.signUpCon} onPress={handleResend}
                                         disabled={isRunning}>
                                         <Text style={[styles.signUpText,isRunning&&{color:theme.deactive}]}>{t("confirmtxt3")}
                                             <Text style={[styles.signUpText1,isRunning&&{color:theme.deactive}]}>{t("confirmtxt4")}</Text>
@@ -250,7 +281,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string) 
             color: theme.black,
             textAlign: "center",
             paddingHorizontal: PixelPerfect(2),
-            marginTop: PixelPerfect(5),
+            marginTop:Platform.OS=="ios"? PixelPerfect(5):0,
 
         },
         errorText: {

@@ -46,9 +46,27 @@ export const SetAppSettings = (payload: any) => ({
 
 /**
  * SetForceUpdatw
- * @param direction string
+ * @param payload string
  */
 export const SetForceUpdate = (payload: boolean) => ({
   type: ActionType.SET_FORCE_UPDATE,
+  payload: payload,
+});
+
+/**
+ * SetCountries
+ * @param payload string
+ */
+export const SetCountries = (payload: boolean) => ({
+  type: ActionType.SAVE_COUNTRIES,
+  payload: payload,
+});
+
+/**
+ * SetActivites
+ * @param payload string
+ */
+export const SetActivites = (payload: boolean) => ({
+  type: ActionType.SAVE_ACTIVITES,
   payload: payload,
 });

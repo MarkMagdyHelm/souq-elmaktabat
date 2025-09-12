@@ -40,12 +40,12 @@ const Stacks = () => {
           // presentation:"transparentModal",
         };
       }}
-      initialRouteName={'HomeMore'}
+      initialRouteName={'Home'}
     >
 
       <Stack.Screen name="Home" component={Home} />
-      <Stack.Screen name="Home2" component={Home2} />
-      <Stack.Screen name="HomeMore" component={HomeMore} />
+      {/* <Stack.Screen name="Home2" component={Home2} />
+      <Stack.Screen name="HomeMore" component={HomeMore} /> */}
 
       <Stack.Screen name="Signin" component={Signin} />
       <Stack.Screen name="Signup" component={Signup} />

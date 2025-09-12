@@ -1,7 +1,7 @@
 import { Dispatch } from "react";
 import { IDispatch } from "../Constants/interfaces";
 import { globalAPI } from "../Constants/config";
-import { SetAppSettings } from "../Store/actions/settings";
+import { SetActivites, SetAppSettings, SetCountries } from "../Store/actions/settings";
 import { Platform } from "react-native";
 import DeviceInfo from "react-native-device-info";
 
@@ -23,22 +23,7 @@ export const GetSettingsHandler = (cb?: (data: any,status:any) => void) => {
     };
   };
 
-  /**
- * GetAppCities
- * @param cb callback function
- */
-export const GetCitiesHandler = (cb?: (data: any,status:any) => void) => {
-  return async (dispatch: Dispatch<IDispatch>) => {
-    try {
-      const { data,status } = await globalAPI.get('api/User/GetAllCountries');
-      console.log('GetCitiesHandler data = ', data,status);
-      cb && cb(data,status);
-    } catch (error) {
-        console.log('GetCitiesHandler error = ', error);
-      cb && cb(error,500);
-    }
-  };
-};
+
 
 /**
  * ContactUs
@@ -61,3 +46,43 @@ export const ContactUsHandler = (body:any,params:any,cb?: (data: any,status:any)
   };
 };
 
+  /**
+ * GetAppCities
+ * @param cb callback function
+ */
+export const GetCitiesHandler = (cb?: (data: any,status:any) => void) => {
+  return async (dispatch: Dispatch<IDispatch>) => {
+    try {
+      const { data,status } = await globalAPI.get('api/User/GetAllCountries');
+      console.log('GetCitiesHandler data = ', data,status);
+      // cb && cb(data,status);
+
+      dispatch(SetCountries(data.data));
+    } catch (error) {
+        console.log('GetCitiesHandler error = ', error);
+      cb && cb(error,500);
+    }
+  };
+};
+
+/**
+ * GetAppGetAllActivities
+ * @param cb callback function
+ */
+export const GetAllActivitiesHandler = (cb?: (data: any,status:any) => void) => {
+  return async (dispatch: Dispatch<IDispatch>) => {
+    try {
+      const { data,status } = await globalAPI.get('api/User/GetAllActivities');
+      console.log('GetAllActivitiesHandler data = ', data,status);
+      // cb && cb(data,status);
+            const activitesWithFlag = data.data.map(activity => ({
+  ...activity,
+  isSelected: false, 
+}));
+dispatch(SetActivites(activitesWithFlag));
+    } catch (error) {
+        console.log('GetAllActivitiesHandler error = ', error);
+      cb && cb(error,500);
+    }
+  };
+};

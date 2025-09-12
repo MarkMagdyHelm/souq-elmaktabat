@@ -8,7 +8,8 @@ const initialState = {
   langauge: 'ar',
   appSettings:[],
   forceUpdate: false,
-
+  countries:[],
+  activites:[]
 };
 
 export default (state = initialState, { type, payload }: IReduser) => {
@@ -26,6 +27,10 @@ export default (state = initialState, { type, payload }: IReduser) => {
         return { ...state, appSettings: payload };
         case ActionType.SET_FORCE_UPDATE:
           return { ...state, forceUpdate: payload };
+            case ActionType.SAVE_COUNTRIES:
+          return { ...state, countries: payload };
+            case ActionType.SAVE_ACTIVITES:
+          return { ...state, activites: payload };
     default:
       return state;
   }

@@ -88,11 +88,13 @@ export default {
     "Marketw":"اختر الأسواق التي تهمك",
     "otherPhoneNumber":"رقم التليفون اخر",
     "otherPhoneNumberw":"ادخل رقم التليفون اخر",
+    'Choose Area':"اختر المنطقة",
+    "You must pick a area!":"يجب عليك اختيار منطقة",
     //forcetxt
     "forcetitle": "تحديث التطبيق",
     "forceMessage": "يوجد بعض المميزات والتحديثات الجديدة يجب عليك تحديث التطبيق ",
     "forcetxt1": "تحديث الان",
     "forcetxt2": "ربما لاحقا",
     "Something Went wrong": "حدث خطأ ما",
-    "GM": "جم"
+    "GM": "جم",
 };
