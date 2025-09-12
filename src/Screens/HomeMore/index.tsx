@@ -17,6 +17,7 @@ import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import Product from '../../Components/Cards/Product'
 import SearchBar from '../../Components/Cards/SearchBar'
 import Icon from "react-native-vector-icons/Ionicons";
+import Filter from '../../Components/PopUps/Filter'
 type Props = {
     navigation: any
 }
@@ -156,6 +157,7 @@ const Index = (props: Props) => {
                 />
 
             </View>
+            <Filter/>
             <TabBar />
         </Container>
 

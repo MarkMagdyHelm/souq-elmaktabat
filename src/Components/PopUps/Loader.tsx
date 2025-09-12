@@ -9,35 +9,35 @@ import LottieView from 'lottie-react-native'
 
 
 type Props = {
-   
+
 }
 
 const Loader = (props: Props) => {
     const {
-     
+
     } = props
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
 
     return (
         <Modal
-           backdropOpacity={0.2}
-        //    backdropColor='#00000'
-        onBackButtonPress={()=>{}}
-        onBackdropPress={()=>{}}
+            backdropOpacity={0.2}
+            //    backdropColor='#00000'
+            onBackButtonPress={() => { }}
+            onBackdropPress={() => { }}
             isVisible={true}
-            style={{margin:0,justifyContent:"center",alignItems:"center"}}
+            style={{ margin: 0, justifyContent: "center", alignItems: "center" }}
         >
-           <View style={[styles.con]}>
-           <LottieView
-              source={require('../../Assets/Animations/loader.json')}
-              autoPlay
-              loop
-              style={{
-                width: PixelPerfect(30),
-                height: PixelPerfect(30),
-              }}/>
-           </View>
+            <View style={[styles.con]}>
+                <LottieView
+                    source={require('../../Assets/Animations/loader.json')}
+                    autoPlay
+                    loop
+                    style={{
+                        width: PixelPerfect(30),
+                        height: PixelPerfect(30),
+                    }} />
+            </View>
         </Modal>
     )
 }
@@ -46,13 +46,13 @@ export default Loader
 
 const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,) =>
     StyleSheet.create({
-        con:{
-            backgroundColor:Colors.secondColor,
-            borderRadius:PixelPerfect(8),
-           width:PixelPerfect(70),
-           height:PixelPerfect(70),
-           alignItems:"center",
-           justifyContent:"center"
+        con: {
+            backgroundColor: Colors.secondColor,
+            borderRadius: PixelPerfect(8),
+            width: PixelPerfect(70),
+            height: PixelPerfect(70),
+            alignItems: "center",
+            justifyContent: "center"
         },
-      
+
     })
