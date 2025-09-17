@@ -157,7 +157,7 @@ const Index = (props: Props) => {
                 />
 
             </View>
-            <Filter/>
+            {/* <Filter/> */}
             <TabBar />
         </Container>
 

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ChangeAppDirection, ChangeDarkMode } from '../Store/actions/settings';
 import { RootState } from '../Store/store';
 import { Colors, ColorWithOpacity, FontsLtr, FontsLtrIOS, FontsRtl } from './styleConstants';
-const themes  = {
+const themes = {
   dark: {
     appBackgroundColor: '#FFFFFF',
     appFullBackgroundColor: '#FFFFFF',
@@ -79,7 +79,8 @@ const themes  = {
     grayL_grayD: '#9B9B9B',
     labelText: "#030303",
     phonecodeDropdowe: "#E5E5E5",
-    CountryText: "#FFFFFF"
+    CountryText: "#FFFFFF",
+    gray2: '#D9D9D9',
   },
   light: {
     grayL_grayD: '#889BA7',
@@ -107,6 +108,8 @@ const themes  = {
     white_gray: '#707B82',
     gray_gray2: '#707B82',
     gray_black: '#222222',
+    gray2: '#D9D9D9',
+
     gray_blue: Colors.mainColor,
     gray_blue2: Colors.mainColor,
     cartCyrcle: '#F1F1F1',
@@ -131,8 +134,12 @@ const themes  = {
     white: '#ffffff',
     success: '#1AA361',
 
+    babyBlue: "#0394FF",
+
     facebook: '#1877F2',
     googleLogin: '#F2F6F8',
+
+
 
     gray: '#979797',
     sacandAppBackgroundColor: '#F4F6F9',
@@ -155,20 +162,20 @@ const themes  = {
     labelText: "#030303",
     phonecodeDropdowe: "#E5E5E5",
     orText: "#030303",
-   signuoText: "#432C81",
- social:"#FCFCFC",
- appointment:"#D20000",
- active:Colors.secondColor,
- deactive:"#888888",
- textColor:"#3D4A78",
- black:"#000000",
- currenctText:"#FEBA32",
- timeText:"#A3A3A3",
- optionText:"#EDEEF0",
- sepreator:"#EDEBEB",
- grayLigth:"#F2F2F7"
+    signuoText: "#432C81",
+    social: "#FCFCFC",
+    appointment: "#D20000",
+    active: Colors.secondColor,
+    deactive: "#888888",
+    textColor: "#3D4A78",
+    black: "#000000",
+    currenctText: "#FEBA32",
+    timeText: "#A3A3A3",
+    optionText: "#EDEEF0",
+    sepreator: "#EDEBEB",
+    grayLigth: "#F2F2F7"
   },
-}as any;
+} as any;
 const LayoutDirectionRtl = StyleSheet.create({
   rowBox: {
     flexDirection: 'row-reverse',
@@ -185,9 +192,9 @@ const LayoutDirectionRtl = StyleSheet.create({
   dirRow: {
     flexDirection: 'row',
   },
-  center:{
-    alignItems:"center",
-    justifyContent:"center"
+  center: {
+    alignItems: "center",
+    justifyContent: "center"
   }
 });
 const LayoutDirectionLtr = StyleSheet.create({
@@ -220,7 +227,7 @@ const initialState = {
 };
 const ThemeContext = createContext(initialState);
 
-const ThemeProvider = ({ children }:any) => {
+const ThemeProvider = ({ children }: any) => {
   const dispatch = useDispatch<any>();
   const { darkmode, direction } = useSelector(
     (state: RootState) => state.settings,
@@ -233,7 +240,7 @@ const ThemeProvider = ({ children }:any) => {
   const toggle = () => {
     setDark(!dark);
     dispatch(ChangeDarkMode(!dark));
-   
+
   };
   const toggleDir = (dir: React.SetStateAction<string>) => {
     setDir(dir);
@@ -242,8 +249,8 @@ const ThemeProvider = ({ children }:any) => {
 
   // Filter the styles based on the theme selected
   const theme = dark ? themes.dark : themes.light;
-  const layout = dir === 'rtl' ? LayoutDirectionRtl : LayoutDirectionLtr  as any;
-  const Fonts = Platform.OS === "ios"? FontsLtrIOS :FontsLtr as any;
+  const layout = dir === 'rtl' ? LayoutDirectionRtl : LayoutDirectionLtr as any;
+  const Fonts = Platform.OS === "ios" ? FontsLtrIOS : FontsLtr as any;
 
   return (
     <ThemeContext.Provider

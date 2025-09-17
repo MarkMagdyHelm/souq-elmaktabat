@@ -40,7 +40,7 @@ const Stacks = () => {
           // presentation:"transparentModal",
         };
       }}
-      initialRouteName={'HomeMore'}
+      initialRouteName={'Home2'}
     >
 
       <Stack.Screen name="Home" component={Home} />

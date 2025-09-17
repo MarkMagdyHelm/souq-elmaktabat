@@ -74,6 +74,8 @@ export interface ITheme {
   darkLighter: string;
   white: string;
   success: string;
+  babyBlue: string;
+
 
   facebook: string;
   googleLogin: string;
@@ -113,17 +115,18 @@ export interface ITheme {
   cartItemTitleColor: string;
   labelText: string;
   phonecodeDropdowe: string
-  orText:string,
-   signuoText: string,
-   social:string,
-   appointment:string,
-   active:string,
- deactive:string,
- textColor:string,
- black:string,
- currenctText:string,
- timeText:string,
- optionText:string,
- sepreator:string,
- grayLigth:string
+  orText: string,
+  signuoText: string,
+  social: string,
+  appointment: string,
+  active: string,
+  deactive: string,
+  textColor: string,
+  black: string,
+  currenctText: string,
+  timeText: string,
+  optionText: string,
+  sepreator: string,
+  grayLigth: string
+  gray2:string
 }
