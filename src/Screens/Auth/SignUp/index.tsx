@@ -1,5 +1,5 @@
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { IFont, ITheme } from '../../../Constants/interfaces';
 import { ThemeContext } from '../../../Constants/theming';
 import { Colors, PixelPerfect } from '../../../Constants/styleConstants';
@@ -13,6 +13,8 @@ import useToastNotification from '../../../Components/CustomHooks/useToastNotifi
 import HeaderWithText from '../../../Components/Headers/HeaderWithText';
 import { Formik } from 'formik';
 import { validationSchema } from '../../../Validation/Signup';
+import { GetCitiesHandler, GetAllActivitiesHandler, GetAllRolesHandler } from '../../../Apis/Appinfo';
+import { SendOTPByEmailHandler } from '../../../Apis/User';
 
 type Props = {
     navigation: any
@@ -21,6 +23,7 @@ type Props = {
 const Index = (props: Props) => {
     const { navigation } = props;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
+    
     const styles = useStyles(Fonts, theme, dark, dir);
     const [state, setstate] = useState({
         showRols: false,
@@ -28,7 +31,24 @@ const Index = (props: Props) => {
     });
     const dispatch = useDispatch();
     const showToast = useToastNotification();
+useEffect(() => {
+dispatch<any>(GetCitiesHandler());
+dispatch<any>(GetAllActivitiesHandler())
+dispatch<any>(GetAllRolesHandler())
+}, []);
 
+const handleSubmit = (values)=>{
+    setstate(old=>({...old,loadingSignin:true}))
+dispatch<any>(SendOTPByEmailHandler(values.Email,(res,status)=>{
+    if (res.status == 200) {
+         showToast({ type: 'ok', message: res?.message});
+         navigation.navigate("ConfirmtionCode",{email:values.Email})
+    } else {
+        showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
+    }
+     setstate(old=>({...old,loadingSignin:false}))
+}))
+}
     return (
         <Container showHint={false}>
             <HeaderWithText title={t("signtxt1")} />
@@ -41,7 +61,7 @@ const Index = (props: Props) => {
                     initialValues={{
                         Email: "",
                     }}
-                    onSubmit={(values) => {navigation.navigate("ConfirmtionCode") }} >
+                    onSubmit={handleSubmit} >
                     {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue, setFieldTouched }) => {
                        
                         return (
@@ -49,8 +69,7 @@ const Index = (props: Props) => {
                                 <Content
                                     noPadding
                                     style={styles.body}
-                                    scrollEnabled={false}
-                                >
+                                    scrollEnabled={false}>
                                     <Inputs label={t('Email')}
                                         options={{
                                             onBlur: handleBlur("Email"),

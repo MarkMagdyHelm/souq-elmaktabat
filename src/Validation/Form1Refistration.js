@@ -20,7 +20,7 @@ export const validationSchema = yup.object().shape({
     .oneOf([yup.ref('Password'), null], 'Passwords must match')
     .label('Confirm Password'),
   Email: yup.string()
-//   .required('Email is required')
+   .required('Email is required')
   .label('Email').email(),
   Name: yup
     .string()
@@ -28,5 +28,8 @@ export const validationSchema = yup.object().shape({
     .label('Full Name')
     .min(2)
     .max(25),
-    
+     Role: yup
+      .string()
+    .required("You must pick a role!")
+   
 });

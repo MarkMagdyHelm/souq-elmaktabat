@@ -1,4 +1,5 @@
 import { IReduser } from '../../Constants/interfaces';
+import { roles } from '../../Helper';
 import { ActionType } from '../actions/actions';
 
 const initialState = {
@@ -8,7 +9,9 @@ const initialState = {
   langauge: 'ar',
   appSettings:[],
   forceUpdate: false,
-
+  countries:[],
+  activites:[],
+  roles:[]
 };
 
 export default (state = initialState, { type, payload }: IReduser) => {
@@ -26,6 +29,12 @@ export default (state = initialState, { type, payload }: IReduser) => {
         return { ...state, appSettings: payload };
         case ActionType.SET_FORCE_UPDATE:
           return { ...state, forceUpdate: payload };
+            case ActionType.SAVE_COUNTRIES:
+          return { ...state, countries: payload };
+            case ActionType.SAVE_ACTIVITES:
+          return { ...state, activites: payload };
+           case ActionType.SAVE_Roles:
+          return { ...state, roles: payload };
     default:
       return state;
   }

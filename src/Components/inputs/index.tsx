@@ -7,7 +7,7 @@ import { EyeIcon, EyeOpenIcon, FlagIcon, SmallArrowDownIcon } from '../../Assets
 import { t } from 'i18next';
 
 type Props = {
-    label: string,
+    label?: string,
     password:boolean,
     options?: TextInputProps & { ref?: (ref: any) => void },
     inputCon?:ViewStyle,

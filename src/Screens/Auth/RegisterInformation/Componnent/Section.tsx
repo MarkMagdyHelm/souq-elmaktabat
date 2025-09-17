@@ -109,6 +109,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string) 
     fontSize: PixelPerfect(18),
     fontFamily: Fonts.bold,
     color: theme.textColor,
+    lineHeight:PixelPerfect(25)
   },
   activeText: {
     color: theme.textColor,
