@@ -1,7 +1,7 @@
 import { Dispatch } from "react";
 import { IDispatch } from "../Constants/interfaces";
 import { globalAPI } from "../Constants/config";
-import { SetActivites, SetAppSettings, SetCountries } from "../Store/actions/settings";
+import { SetActivites, SetAppSettings, SetCountries, SetRoles } from "../Store/actions/settings";
 import { Platform } from "react-native";
 import DeviceInfo from "react-native-device-info";
 
@@ -77,9 +77,9 @@ export const GetAllRegionsByCountryIdHandler = (CountryId,cb?: (data: any,status
 
       }});
       console.log('GetAllRegionsByCountryIdHandler data = ', data,status);
-      // cb && cb(data,status);
+      cb && cb(data,status);
 
-      dispatch(SetCountries(data.data));
+      // dispatch(SetCountries(data.data));
     } catch (error) {
         console.log('GetAllRegionsByCountryIdHandler error = ', error);
       cb && cb(error,500);
@@ -103,6 +103,25 @@ export const GetAllActivitiesHandler = (cb?: (data: any,status:any) => void) => 
 dispatch(SetActivites(activitesWithFlag));
     } catch (error) {
         console.log('GetAllActivitiesHandler error = ', error);
+      cb && cb(error,500);
+    }
+  };
+};
+
+  /**
+ * GetAppRoles
+ * @param cb callback function
+ */
+export const GetAllRolesHandler = (cb?: (data: any,status:any) => void) => {
+  return async (dispatch: Dispatch<IDispatch>) => {
+    try {
+      const { data,status } = await globalAPI.get('api/User/GetAllRoles');
+      console.log('GetAllRolesHandler data = ', data,status);
+      // cb && cb(data,status);
+
+      dispatch(SetRoles(data.data));
+    } catch (error) {
+        console.log('GetAllRolesHandler error = ', error);
       cb && cb(error,500);
     }
   };

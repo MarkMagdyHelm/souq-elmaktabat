@@ -13,7 +13,7 @@ import useToastNotification from '../../../Components/CustomHooks/useToastNotifi
 import HeaderWithText from '../../../Components/Headers/HeaderWithText';
 import { Formik } from 'formik';
 import { validationSchema } from '../../../Validation/Signup';
-import { GetCitiesHandler, GetAllActivitiesHandler } from '../../../Apis/Appinfo';
+import { GetCitiesHandler, GetAllActivitiesHandler, GetAllRolesHandler } from '../../../Apis/Appinfo';
 import { SendOTPByEmailHandler } from '../../../Apis/User';
 
 type Props = {
@@ -34,7 +34,7 @@ const Index = (props: Props) => {
 useEffect(() => {
 dispatch<any>(GetCitiesHandler());
 dispatch<any>(GetAllActivitiesHandler())
-
+dispatch<any>(GetAllRolesHandler())
 }, []);
 
 const handleSubmit = (values)=>{
@@ -69,8 +69,7 @@ dispatch<any>(SendOTPByEmailHandler(values.Email,(res,status)=>{
                                 <Content
                                     noPadding
                                     style={styles.body}
-                                    scrollEnabled={false}
-                                >
+                                    scrollEnabled={false}>
                                     <Inputs label={t('Email')}
                                         options={{
                                             onBlur: handleBlur("Email"),

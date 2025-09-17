@@ -10,15 +10,15 @@ import Button from '../../../Components/touchables/Button';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../Store/store';
 import useToastNotification from '../../../Components/CustomHooks/useToastNotification';
-import { Formik, FormikProps } from 'formik';
+import { FormikProps } from 'formik';
 import HeaderWithText from '../../../Components/Headers/HeaderWithText';
-import { validationSchema } from '../../../Validation/Form1Refistration';
 import Section from './Componnent/Section';
-import Inputs from '../../../Components/inputs/index'
-import { roles } from '../../../Helper'
-import DropDowenMenu from '../../../Components/DropDowenMenus/DropDowenMenu';
-import { ArrowDownIcon, ArrowUpIcon } from '../../../Assets/Svg';
+import {  CheckBoxEmptyIconBig, CheckBoxIconBig } from '../../../Assets/Svg';
 import { GetAllRegionsByCountryIdHandler } from '../../../Apis/Appinfo';
+import { useRoute } from '@react-navigation/native';
+import FormStep1 from './Componnent/FormStep1';
+import FormStep2 from './Componnent/FormStep2';
+import { SignUpHandler } from '../../../Apis/User';
 
 type Props = {
     navigation: any
@@ -27,43 +27,156 @@ type Props = {
 const Index = (props: Props) => {
     const { navigation } = props;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
-    const { countries, activites } = useSelector((state: RootState) => state.settings);
+    const { countries, activites, roles } = useSelector((state: RootState) => state.settings);
     const styles = useStyles(Fonts, theme, dark, dir);
+    const { email } = useRoute().params as any;
     const [state, setstate] = useState({
         showGovernemnts: false,
         showArea: false,
         shoMarkets: false,
-        forms: { City: "", Role: "", Area: "", Markets: "" },
+        forms: { City: "", Role: "", Area: "", Markets: "", agreesonTerms: "" },
         selectedGoverenmet: { name: "", arName: "", id: "" },
         selectedArea: { name: "", arName: "", id: "" },
-        selectedMarket: { name: "", arName: "", id: "" },
+        selectedMarket: [],
         goverements: [],
         loading: false,
-        selectedRole: { name: "", arName: "", id: "" } as any,
+        selectedRole: { name: "", arName: "", id: null } as any,
         roles: roles,
         showRols: false,
         loadingSignin: false,
-areas:[]
+        areas: [],
+        isAgreeOnTerms: false
     });
     const keyboard = useKeyboard();
     const dispatch = useDispatch();
     const showToast = useToastNotification();
     const [activeStep, setActiveStep] = useState<number | null>(null);
-const GetAreas = (id)=>{
-     dispatch<any>(GetAllRegionsByCountryIdHandler(id,(res,status)=>{
+    const GetAreas = (id) => {
+        dispatch<any>(GetAllRegionsByCountryIdHandler(id, (res, status) => {
             if (res.status == 200) {
-                  setstate(old=>({...old,areas:res.data}))
+                setstate(old => ({ ...old, areas: res.data }))
             } else {
                 showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
             }
-           
+
         }))
-}
+    }
     // ✅ force step 1 open on mount
     useEffect(() => {
         setActiveStep(1);
     }, []);
+    const handleagreeonterms = () => {
+        setstate(old => {
+            let forms = old.forms;
+            if (!old.isAgreeOnTerms) {
+                forms.agreesonTerms = "";
+            }
+            return ({ ...old, isAgreeOnTerms: !old.isAgreeOnTerms, forms: forms })
+        })
+    }
     const formikRef1 = useRef<FormikProps<any>>(null);
+    const formikRef2 = useRef<FormikProps<any>>(null);
+    const handleForms = () => {
+        formikRef1.current?.handleSubmit();
+        formikRef2.current?.handleSubmit();
+        const isFormik1IsEmpty = Object.keys(formikRef1?.current?.errors).length === 0;
+        const isFormik2IsEmpty = Object.keys(formikRef2?.current?.errors).length === 0;
+
+        if (!isFormik1IsEmpty) {
+            setActiveStep(1);
+            return false
+        } else if (!isFormik2IsEmpty) {
+            setActiveStep(2);
+            return false
+        }
+        return true;
+    }
+    const handleBody = () => {
+        let body = { ...formikRef1?.current?.values };
+        body.OtherPhoneNumbers = formikRef2?.current?.values?.OtherPhoneNumbers?.length != 0 ? [formikRef2?.current?.values?.OtherPhoneNumbers] : [];
+        body.Activities = formikRef2?.current?.values?.Activities.filter(item => item.id !== undefined) || [];
+        body.OtherActivities = formikRef2?.current?.values?.Activities.filter(item => item.id === undefined) || [];
+        body.Addresses = [{
+            Country: formikRef2?.current?.values?.City,
+            Region: formikRef2?.current?.values?.Area,
+            Street: formikRef2?.current?.values?.Address
+        }];
+        delete body.ConfirmPassword;
+        return body;
+    }
+    const handleSubmmit = () => {
+        const isFormsValid = handleForms();
+        let body = {};
+        if (!state.isAgreeOnTerms) {
+            setstate(old => ({
+                ...old, forms: {
+                    ...state.forms, agreesonTerms: "You must agree on terms"
+                }
+            }));
+            return;
+        }
+        if (!isFormsValid) {
+            return
+        } else {
+            body = handleBody()
+        }
+         console.log('===============final=====================');
+        console.log(formikRef1?.current?.values, formikRef2?.current?.values);
+        console.log('====================================');
+        console.log('===============final========body=============');
+        console.log(body);
+        console.log('====================================');
+        setstate(old => ({ ...old, loading: true }));
+        dispatch<any>(SignUpHandler(body, (res, status) => {
+            if (res.status == 200) {
+                showToast({ type: 'ok', message: res?.message });
+                console.log('===========res=========================');
+                console.log(res);
+                console.log('====================================');
+            } else {
+                showToast({ type: 'error', message: t("Some Fields has incorrect Values!") });
+                handleBackendErrors(res?.message )
+            }
+            setstate(old => ({ ...old, loading: false }))
+        }))
+       
+    }
+
+  const handleBackendErrors = (message: string) => {
+  const errorsArray = message.split(" , ").map(err => err.trim());
+
+  // Collect errors for each form
+  const errors1: Record<string, string> = {};
+  const errors2: Record<string, string> = {};
+
+  errorsArray.forEach(err => {
+    const match = err.match(/The (.+?) field/);
+    if (match) {
+      const fieldName = match[1]; 
+      const key = fieldName.charAt(0) + fieldName.slice(1);
+
+      if (["Name", "Email", "Password","PhoneNumber"].includes(key)) {
+        errors1[key] = err; 
+      } else if (["Addresses"].includes(key)) {
+        
+        errors2[key] = err; 
+      }
+    }
+  });
+console.log('====================================');
+console.log(errors1,errors2);
+console.log('====================================');
+formikRef1.current?.setErrors(errors1);
+  formikRef2.current?.setErrors(errors2);
+  if (Object.keys(errors1).length > 0) {
+    setActiveStep(1)
+  }
+
+  if (Object.keys(errors2).length > 0) {
+    setActiveStep(2)
+  }
+ 
+};
 
     return (
         <Container
@@ -79,128 +192,16 @@ const GetAreas = (id)=>{
                     title={t("regtxt1")}
                     step={1}
                     activeStep={activeStep}
-                    setActiveStep={setActiveStep}
-                >
-                    <Formik
-                        validationSchema={validationSchema}
-                        innerRef={formikRef1}
-                        initialValues={{
-                            Name: "",
-                            Email: "",
-                            Password: "",
-                            ConfirmPassword: "",
-                            PhoneNumber: "",
-                            Role: "",
-                        }}
-                        onSubmit={(values) => { }} >
-                        {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue, setFieldTouched }) => {
-                            console.log('====================================');
-                            console.log(errors);
-                            console.log('====================================');
-                            return (
-                                <>
-                                    <Inputs label={t('fullname')}
-                                        options={{
-                                            onBlur: handleBlur("Name"),
-                                            onChangeText: handleChange("Name"),
-                                            placeholder: t("fullnamew"),
-                                            maxLength: 100,
-                                            keyboardType: 'default',
-                                        }}
-                                        password={false}
-                                        showErrorr={(errors.Name && touched.Name) as boolean}
-                                        error={errors.Name as any}
-                                    />
-                                    <Inputs label={t('Phone')}
-                                        options={{
-                                            onBlur: handleBlur("PhoneNumber"),
-                                            onChangeText: handleChange("PhoneNumber"),
-                                            placeholder: t("Phonew"),
-                                            maxLength: 11,
-                                            keyboardType: Platform.OS === 'android' ? "numeric" : "number-pad",
-                                        }}
-                                        password={false}
-                                        isPhone={true}
-                                        input={{ width: "73%" }}
-                                        showErrorr={(errors.PhoneNumber && touched.PhoneNumber) as boolean}
-                                        error={errors.PhoneNumber as any}
-                                    />
-                                    <Inputs label={t('Email')}
-                                        options={{
-                                            onBlur: handleBlur("Email"),
-                                            onChangeText: handleChange("Email"),
-                                            placeholder: "example@email.com",
-                                            maxLength: 30,
-                                            keyboardType: 'email-address',
-                                            placeholderTextColor: theme.black
-                                        }}
-                                        password={false}
-                                        showErrorr={(errors.Email && touched.Email) as boolean}
-                                        error={errors.Email as any}
-                                    />
-                                    <Inputs label={t('pasword')}
-                                        options={{
-                                            onBlur: handleBlur("Password"),
-                                            onChangeText: handleChange("Password"),
-                                            placeholder: t("paswordw"),
-                                            keyboardType: 'default',
-                                            maxLength: 30,
-                                        }}
-                                        password={true}
-                                        showErrorr={(errors.Password && touched.Password) as boolean}
-                                        error={errors.Password as any}
-                                    />
-                                    <Inputs label={t('confirmpasword')}
-                                        options={{
-                                            onBlur: handleBlur("ConfirmPassword"),
-                                            onChangeText: handleChange("ConfirmPassword"),
-                                            placeholder: t("confirmpaswordw"),
-                                            keyboardType: 'default',
-                                            maxLength: 30,
-                                        }}
-                                        password={true}
-                                        showErrorr={(errors.ConfirmPassword && touched.ConfirmPassword) as boolean}
-                                        error={errors.ConfirmPassword as any}
-                                    />
-                                    <Pressable style={styles.selectMenueCon} onPress={() => { setstate(old => ({ ...old, showRols: true })); }}>
-                                        <Text style={[layout.textAlign, styles.label]}>{t("AccountType")}</Text>
-                                        <View style={[layout.rowBox, styles.selectMenue]}>
-                                            <Text style={styles.textselectmenu}>{typeof state.selectedRole.id != "string" ?
-                                                (dir == "rtl" ? state.selectedRole.arName : state.selectedRole.name) : t("AccountTypew")}</Text>
-                                            {state.showRols ? <ArrowUpIcon /> : <ArrowDownIcon />}
-                                        </View>
-                                        {state.forms.Role.length != 0 && <Text style={styles.errorText}>{t(state.forms.Role)}</Text>}
-                                    </Pressable>
-                                    {state.showRols && <DropDowenMenu
-                                        onCloseFn={(val) => {
-                                            if (typeof val?.id == 'string') {
-                                                setstate(old => ({
-                                                    ...old, showRols: false, forms: {
-                                                        ...state.forms, Role: "You must pick a role!"
-                                                    }
-                                                }));
-                                            } else {
-                                                setFieldValue("Role", val.id);
-                                                setstate(old => ({
-                                                    ...old, showRols: false, selectedRole: val, forms: {
-                                                        ...state.forms, Role: ""
-                                                    }
-                                                }));
-                                                setActiveStep(2)
-                                            }
-
-                                        }}
-                                        title={t('Choose Account Type')}
-                                        currentFilter={state.selectedRole}
-                                        items={state.roles}
-                                        style={{ flex: 0.2, }}
-                                    />}
-                                </>
-                            )
-                        }}
-
-                    </Formik>
-
+                    setActiveStep={setActiveStep}>
+                    <FormStep1
+                        formikRef={formikRef1}
+                        email={email}
+                        state={state}
+                        setstate={setstate}
+                        setActiveStep={setActiveStep}
+                        roles={roles}
+                        styles={styles}
+                    />
                 </Section>
                 <View style={{ paddingVertical: PixelPerfect(8) }} />
                 <Section
@@ -208,142 +209,39 @@ const GetAreas = (id)=>{
                     step={2}
                     activeStep={activeStep}
                     setActiveStep={setActiveStep}
-                    onSubmmit={() => { formikRef1.current?.handleSubmit() }}
+                    onSubmmit={() => { }}
                 >
-                    <Formik
-                        validationSchema={validationSchema}
-
-                        initialValues={{
-                            Address: "",
-                            City: "",
-                            Area: "",
-                            OtherPhoneNumber: "",
-                        }}
-                        onSubmit={(values) => { }} >
-                        {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue, setFieldTouched }) => {
-                            console.log('====================================');
-                            console.log(errors);
-                            console.log('====================================');
-                            return (
-                                <>
-                                    <Pressable style={styles.selectMenueCon} onPress={() => { setstate(old => ({ ...old, showGovernemnts: true })); }}>
-                                        <Text style={[layout.textAlign, styles.label]}>{t('Government')}</Text>
-                                        <View style={[layout.rowBox, styles.selectMenue]}>
-                                            <Text style={styles.textselectmenu}>{typeof state.selectedGoverenmet.id != "string" ?
-                                                (dir == "rtl" ? state.selectedGoverenmet.arName : state.selectedGoverenmet.name) : t("Governmentw")}</Text>
-                                            <ArrowDownIcon />
-                                        </View>
-                                        {state.forms.City.length != 0 && <Text style={styles.errorText}>{t(state.forms.City)}</Text>}
-                                    </Pressable>
-                                    <Pressable style={styles.selectMenueCon} onPress={() => { setstate(old => ({ ...old, showArea: true })); }}>
-                                        <Text style={[layout.textAlign, styles.label]}>{t('Area')}</Text>
-                                        <View style={[layout.rowBox, styles.selectMenue]}>
-                                            <Text style={styles.textselectmenu}>{typeof state.selectedArea.id != "string" ?
-                                                (dir == "rtl" ? state.selectedArea.arName : state.selectedArea.name) : t("Areaw")}</Text>
-                                            <ArrowDownIcon />
-                                        </View>
-                                        {state.forms.Area.length != 0 && <Text style={styles.errorText}>{t(state.forms.Area)}</Text>}
-                                    </Pressable>
-                                    <Inputs label={t('adress')}
-                                        options={{
-                                            onBlur: handleBlur("Address"),
-                                            onChangeText: handleChange("Address"),
-                                            numberOfLines: 2,
-                                            placeholder: t("adressw"),
-                                            maxLength: 250,
-                                            keyboardType: 'default',
-                                            multiline: true,
-                                        }}
-                                        inputCon={{ height: PixelPerfect(74), paddingTop: PixelPerfect(17) }}
-                                        input={{ height: PixelPerfect(74), verticalAlign: "top" }}
-                                        password={false}
-                                        showErrorr={(errors.Address && touched.Address) as boolean}
-                                        error={errors.Address as any}
-                                    />
-                                    <Pressable style={styles.selectMenueCon} onPress={() => { setstate(old => ({ ...old, shoMarkets: true })); }}>
-                                        <Text style={[layout.textAlign, styles.label]}>{t('Market')}</Text>
-                                        <View style={[layout.rowBox, styles.selectMenue]}>
-                                            <Text style={styles.textselectmenu}>{typeof state.selectedMarket.id != "string" ?
-                                                (dir == "rtl" ? state.selectedMarket.arName : state.selectedMarket.name) : t("Marketw")}</Text>
-                                            <ArrowDownIcon />
-                                        </View>
-                                        {state.forms.Markets.length != 0 && <Text style={styles.errorText}>{t(state.forms.Markets)}</Text>}
-                                    </Pressable>
-                                    <Inputs label={t('otherPhoneNumber')}
-                                        options={{
-                                            onBlur: handleBlur("OtherPhoneNumber"),
-                                            onChangeText: handleChange("OtherPhoneNumber"),
-                                            placeholder: t("otherPhoneNumberw"),
-                                            maxLength: 11,
-                                            keyboardType: Platform.OS === 'android' ? "numeric" : "number-pad",
-                                        }}
-                                        password={false}
-                                        isPhone={true}
-                                        input={{ width: "73%" }}
-                                        showErrorr={(errors.OtherPhoneNumber && touched.OtherPhoneNumber) as boolean}
-                                        error={errors.OtherPhoneNumber as any}
-                                    />
-                                    {state.showGovernemnts && <DropDowenMenu
-                                        onCloseFn={(val) => {
-                                            console.log('================val====================');
-                                            console.log(val);
-                                            console.log('====================================');
-                                            if (typeof val?.id == 'string') {
-                                                setstate(old => ({
-                                                    ...old, showGovernemnts: false, forms: {
-                                                        ...state.forms, City: "You must pick a city!"
-                                                    }
-                                                }));
-                                            } else {
-                                                setFieldValue("City", val.id);
-                                                setstate(old => ({
-                                                    ...old, showGovernemnts: false, selectedGoverenmet: val, forms: {
-                                                        ...state.forms, City: ""
-                                                    }
-                                                }));
-                                            }
-
-                                        }}
-                                        title={t('Choose City')}
-                                        currentFilter={state.selectedGoverenmet}
-                                        items={countries}
-                                        style={{ flex: 0.7, }}
-                                    />}
-
-                                      {(state.showArea&&state.areas.length !=0) && <DropDowenMenu
-                                        onCloseFn={(val) => {
-                                            console.log('================val====================');
-                                            console.log(val);
-                                            console.log('====================================');
-                                            if (typeof val?.id == 'string') {
-                                                setstate(old => ({
-                                                    ...old, showArea: false, forms: {
-                                                        ...state.forms, Area: "You must pick a area!"
-                                                    }
-                                                }));
-                                            } else {
-                                                setFieldValue("Area", val.id);
-                                                setstate(old => ({
-                                                    ...old, showArea: false, selectedArea: val, forms: {
-                                                        ...state.forms, Area: ""
-                                                    }
-                                                }));
-                                            }
-
-                                        }}
-                                        title={t('Choose Area')}
-                                        currentFilter={state.selectedArea}
-                                        items={state.areas}
-                                        style={{ flex: 0.7, }}
-                                    />}
-                                </>
-                            )
-                        }}
-
-                    </Formik>
+                    <FormStep2
+                        formikRef={formikRef2}
+                        state={state}
+                        setstate={setstate}
+                        GetAreas={GetAreas}
+                        countries={countries}
+                        activites={activites}
+                        styles={styles}
+                    />
                 </Section>
-                <Pressable style={[layout.rowBox, styles.checkcon]}>
+                <Pressable style={[layout.rowBox, styles.checkcon]} onPress={handleagreeonterms}>
+                    {state.isAgreeOnTerms ? <CheckBoxIconBig /> : <CheckBoxEmptyIconBig />}
+                    <Text style={styles.agreeText}
 
+                    >{t("Agree on")}
+                        <Text style={[styles.agreeText1]} onPress={() => console.log("gagfagafgafga")}> {t("Privcy and terms")}</Text>
+                    </Text>
+                </Pressable>
+                {state.forms.agreesonTerms.length != 0 && <Text style={[styles.errorText, { marginTop: 5 }]}>{t(state.forms.agreesonTerms)}</Text>}
+                <Button
+                    title={t('signtxt1')}
+                    styleTitle={styles.buttonText}
+                    onPress={handleSubmmit}
+                    style={styles.button}
+                    loader={state.loading}
+                    disable={state.loading}
+                />
+                <Pressable style={styles.signUpCon} onPress={() => { navigation.navigate("Signin") }}>
+                    <Text style={styles.signUpText}>{t("Do you have account")}
+                        <Text style={[styles.signUpText1]}>  {t("Sign in")}</Text>
+                    </Text>
                 </Pressable>
                 <View style={{ height: PixelPerfect(30) }} />
             </Content>
@@ -394,6 +292,46 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string) 
             paddingHorizontal: PixelPerfect(10)
         },
         checkcon: {
-
+            marginTop: PixelPerfect(16),
+            alignItems: "center"
+        },
+        button: {
+            backgroundColor: Colors.secondColor,
+            height: PixelPerfect(50),
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: PixelPerfect(16),
+            marginHorizontal: PixelPerfect(10)
+        },
+        buttonText: {
+            fontFamily: Fonts.bold,
+            fontSize: PixelPerfect(18),
+            color: theme.mainColor,
+        },
+        signUpCon: {
+            backgroundColor: theme.mainColor,
+            paddingTop: PixelPerfect(16),
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: PixelPerfect(10)
+        },
+        signUpText: {
+            fontFamily: Fonts.medium,
+            fontSize: PixelPerfect(14),
+            color: theme.deactive,
+        },
+        signUpText1: {
+            fontFamily: Fonts.bold,
+            fontSize: PixelPerfect(16),
+            color: Colors.secondColor,
+        },
+        agreeText: {
+            fontFamily: Fonts.regular,
+            fontSize: PixelPerfect(16),
+            color: theme.black,
+            paddingHorizontal: PixelPerfect(6)
+        },
+        agreeText1: {
+            textDecorationLine: "underline"
         }
     });

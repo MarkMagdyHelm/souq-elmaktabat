@@ -55,7 +55,7 @@ export const SetForceUpdate = (payload: boolean) => ({
 
 /**
  * SetCountries
- * @param payload string
+ * @param payload array
  */
 export const SetCountries = (payload: boolean) => ({
   type: ActionType.SAVE_COUNTRIES,
@@ -64,9 +64,18 @@ export const SetCountries = (payload: boolean) => ({
 
 /**
  * SetActivites
- * @param payload string
+ * @param payload array
  */
 export const SetActivites = (payload: boolean) => ({
   type: ActionType.SAVE_ACTIVITES,
+  payload: payload,
+});
+
+/**
+ * SetRoles
+ * @param payload array
+ */
+export const SetRoles = (payload: boolean) => ({
+  type: ActionType.SAVE_Roles,
   payload: payload,
 });

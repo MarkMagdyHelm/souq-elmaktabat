@@ -432,3 +432,81 @@ export const TimerIcone = (props) => (
     </Defs>
   </Svg>
 );
+
+export const CheckBoxEmptyIcon = (props) => (
+  <Svg
+    width={20}
+    height={20}
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <Rect
+      x={1.57153}
+      y={1}
+      width={17.4286}
+      height={18}
+      stroke="#888888"
+      strokeWidth={2}
+    />
+  </Svg>
+);
+
+export const CheckBoxIcon = (props) => (
+  <Svg
+    width={20}
+    height={20}
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <Rect
+      x={1.57129}
+      y={1}
+      width={17.4286}
+      height={18}
+      fill="#3D4A78"
+      stroke="#3D4A78"
+      strokeWidth={2}
+    />
+    <Path
+      d="M4.85693 9.16667L7.90999 12.5L14.5712 7.5"
+      stroke="white"
+      strokeWidth={2}
+    />
+  </Svg>
+);
+
+export const CheckBoxEmptyIconBig = (props) => (
+  <Svg
+    width={20}
+    height={20}
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <Rect x={0.5} y={0.5} width={19} height={19} rx={3.5} stroke="#888888" />
+  </Svg>
+);
+
+export const CheckBoxIconBig = (props) => (
+  <Svg
+    width={20}
+    height={20}
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <Rect x={0.5} y={0.5} width={19} height={19} rx={3.5} stroke="#3D4A78" />
+    <Path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M15.3657 6.23447C15.5157 6.3845 15.5999 6.58794 15.5999 6.80007C15.5999 7.0122 15.5157 7.21565 15.3657 7.36567L8.96568 13.7657C8.81566 13.9156 8.61221 13.9999 8.40008 13.9999C8.18795 13.9999 7.9845 13.9156 7.83448 13.7657L4.63448 10.5657C4.48876 10.4148 4.40812 10.2127 4.40994 10.003C4.41177 9.7932 4.4959 9.59254 4.64423 9.44422C4.79255 9.29589 4.9932 9.21176 5.20296 9.20993C5.41272 9.20811 5.6148 9.28875 5.76568 9.43447L8.40008 12.0689L14.2345 6.23447C14.3845 6.0845 14.588 6.00024 14.8001 6.00024C15.0122 6.00024 15.2157 6.0845 15.3657 6.23447Z"
+      fill="#3D4A78"
+    />
+  </Svg>
+);

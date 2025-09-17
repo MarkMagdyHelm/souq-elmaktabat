@@ -121,3 +121,30 @@ export const ConfirmEmailHandler = (body:any, cb?: (data: any,status:any) => voi
       }
     };
   };
+
+  /**
+ *   SignUp
+ * @param body  email verifyCode
+ * @param cb callback function
+ */
+export const SignUpHandler = (body:any, cb?: (data: any,status:any) => void) => {
+    return async (dispatch: Dispatch<IDispatch>) => {
+      try {
+        console.log('===============aaaa=====================');
+        console.log(body);
+        console.log('====================================');
+        const { data,status } = await globalAPI.post('/api/User/SignUp', body);
+        console.log(data,status);
+        
+        console.log('SignUpHandler data = ', data,status);
+  
+        // if (status == 200) {
+        //   dispatch<any>(loginHandler(data.data));
+        // }
+        cb && cb(data,status);
+      } catch (error) {
+          console.log('SignUpHandler error = ', error);
+        cb && cb(error,500);
+      }
+    };
+  };
