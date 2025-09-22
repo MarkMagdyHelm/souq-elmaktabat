@@ -21,6 +21,7 @@ import MoreComponnent from '../Components/MoreComponnent/MoreComponnent';
 import { phoneWidth, PixelPerfect } from '../Constants/styleConstants';
 import ContactUs from '../Screens/ContactUs/index';
 import RegisterInformation from '../Screens/Auth/RegisterInformation/index'
+import ProductDetails from '../Screens/ProductDetails/index'
 const Stack = createStackNavigator();
 
 
@@ -41,13 +42,16 @@ const Stacks = () => {
         };
       }}
 
-      initialRouteName={'Home2'}
+      initialRouteName={'ProductDetails'}
 
     >
 
       <Stack.Screen name="Home" component={Home} />
+
+
       <Stack.Screen name="Home2" component={Home2} />
       <Stack.Screen name="HomeMore" component={HomeMore} />
+      <Stack.Screen name="ProductDetails" component={ProductDetails} />
 
       <Stack.Screen name="Signin" component={Signin} />
       <Stack.Screen name="Signup" component={Signup} />

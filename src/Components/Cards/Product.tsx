@@ -60,11 +60,11 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
         con: {
             width: PixelPerfect(163),
             height: PixelPerfect(228),
-            backgroundColor: "#fff",
+            backgroundColor: theme.white,
             borderRadius: PixelPerfect(12),
             margin: PixelPerfect(8),
             padding: PixelPerfect(8),
-            shadowColor: "#000",
+            shadowColor: theme.black,
             shadowOpacity: 0.1,
             shadowRadius: 4,
             elevation: 2,
