@@ -219,6 +219,10 @@ const FormStep2 = ({ formikRef, state, setstate, GetAreas, countries, activites,
               onCloseFn={(val) => {
                 if (val?.length === 0) {
                   setFieldError("Activities", "You must choose a market!");
+                     setstate((old) => ({
+                    ...old,
+                    shoMarkets: false,
+                  }));
                 } else {
                   setFieldValue("Activities", val);
                   setstate((old) => ({
@@ -233,6 +237,9 @@ const FormStep2 = ({ formikRef, state, setstate, GetAreas, countries, activites,
               currentFilter={state.selectedMarket}
               items={activites}
               style={{ flex: 0.6 }}
+              type="activities"
+                hasTextInput={true}
+                  textinputTitle={t('marketwwww')}
             />
           )}
         </>

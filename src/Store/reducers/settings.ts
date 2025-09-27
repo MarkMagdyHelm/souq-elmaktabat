@@ -11,7 +11,9 @@ const initialState = {
   forceUpdate: false,
   countries:[],
   activites:[],
-  roles:[]
+  roles:[],
+  tools:[],
+  payments:[]
 };
 
 export default (state = initialState, { type, payload }: IReduser) => {
@@ -33,8 +35,12 @@ export default (state = initialState, { type, payload }: IReduser) => {
           return { ...state, countries: payload };
             case ActionType.SAVE_ACTIVITES:
           return { ...state, activites: payload };
+                case ActionType.SAVE_TOOLS:
+          return { ...state, tools: payload };
            case ActionType.SAVE_Roles:
           return { ...state, roles: payload };
+           case ActionType.SAVE_PAYMENTS:
+          return { ...state, payments: payload };
     default:
       return state;
   }

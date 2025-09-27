@@ -1,7 +1,7 @@
 import { Dispatch } from "react";
 import { IDispatch } from "../Constants/interfaces";
 import { globalAPI } from "../Constants/config";
-import { SetActivites, SetAppSettings, SetCountries, SetRoles } from "../Store/actions/settings";
+import { SetActivites, SetAppSettings, SetCountries, SetPayments, SetRoles, SetTools } from "../Store/actions/settings";
 import { Platform } from "react-native";
 import DeviceInfo from "react-native-device-info";
 
@@ -12,10 +12,32 @@ import DeviceInfo from "react-native-device-info";
 export const GetSettingsHandler = (cb?: (data: any,status:any) => void) => {
     return async (dispatch: Dispatch<IDispatch>) => {
       try {
-        const { data,status } = await globalAPI.get('/api/Configuration/GetAllSetting');
-        console.log('GetSettingsHandler data = ', data,status);
-        dispatch(SetAppSettings(data.data))
-        cb && cb(data,status);
+        const { data,status } = await globalAPI.get('/api/Configuration/GetAllLookups');
+        console.log('GetSettingsHandler data = ', data.data,data.status);
+        dispatch(SetAppSettings(data.data.setting));
+                    const paymentTypesithFlag = Array.isArray(data?.data?.paymentTypes)
+  ? data.data.paymentTypes.map(payment => ({
+      ...payment,
+      isSelected: false,
+    }))
+  : [];
+console.log('==============paymentTypesithFlag======================');
+console.log(paymentTypesithFlag);
+console.log('====================================');
+          dispatch(SetPayments(paymentTypesithFlag));
+            dispatch(SetCountries(data.data.country));
+                        const activitesWithFlag = data.data.activities.map(activity => ({
+  ...activity,
+  isSelected: false, 
+}));
+dispatch(SetActivites(activitesWithFlag));
+            const toolsWithFlag = data.data.availableTools.map(tool => ({
+  ...tool,
+  isSelected: false, 
+}));
+dispatch(SetTools(toolsWithFlag));
+  dispatch(SetRoles(data.data.roles));
+        cb && cb(data.data.setting,data.status);
       } catch (error) {
           console.log('GetSettingsHandler error = ', error);
         cb && cb(error,500);
@@ -86,6 +108,7 @@ export const GetAllRegionsByCountryIdHandler = (CountryId,cb?: (data: any,status
     }
   };
 };
+
 /**
  * GetAppGetAllActivities
  * @param cb callback function
@@ -108,7 +131,29 @@ dispatch(SetActivites(activitesWithFlag));
   };
 };
 
-  /**
+/**
+ * GetAppGetAllAvailableTools
+ * @param cb callback function
+ */
+export const GetAllAvailableToolsHandler = (cb?: (data: any,status:any) => void) => {
+  return async (dispatch: Dispatch<IDispatch>) => {
+    try {
+      const { data,status } = await globalAPI.get('api/User/GetAllAvailableTools');
+      console.log('GetAllAvailableToolsHandler data = ', data,status);
+      // cb && cb(data,status);
+            const toolsWithFlag = data.data.map(tool => ({
+  ...tool,
+  isSelected: false, 
+}));
+dispatch(SetTools(toolsWithFlag));
+    } catch (error) {
+        console.log('GetAllAvailableToolsHandler error = ', error);
+      cb && cb(error,500);
+    }
+  };
+};
+
+/**
  * GetAppRoles
  * @param cb callback function
  */
@@ -126,3 +171,4 @@ export const GetAllRolesHandler = (cb?: (data: any,status:any) => void) => {
     }
   };
 };
+

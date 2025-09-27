@@ -11,14 +11,17 @@ import { Formik } from 'formik'
 import { validationSchema } from '../../Validation/activity'
 import Inputs from '../inputs/index'
 import { useKeyboard } from '../../Constants/UseKayboard'
-import { SetActivites, SetRoles } from '../../Store/actions/settings'
+import { SetActivites, SetPayments, SetRoles, SetTools } from '../../Store/actions/settings'
 import { useDispatch } from 'react-redux'
 type Props = {
     onCloseFn: (val: any) => void,
     currentFilter: any,
     items: any,
     title: string,
-    style: ViewStyle
+    style: ViewStyle,
+    hasTextInput?:boolean,
+    type:string;
+    textinputTitle?:string
 }
 
 const MultiChekers = (props: Props) => {
@@ -27,7 +30,10 @@ const MultiChekers = (props: Props) => {
         currentFilter,
         items,
         title,
-        style
+        style,
+        hasTextInput,
+        type,
+        textinputTitle
     } = props
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
@@ -43,7 +49,8 @@ const MultiChekers = (props: Props) => {
   const flatListRef = useRef(null);
 
 const handelCheck = (index: number) => {
-  setstate((old) => {
+    if (type=="activities") {
+         setstate((old) => {
     const updatedItems = old.items.map((item, i) =>
       i === index ? { ...item, isSelected: !item.isSelected } : item
     );
@@ -57,39 +64,94 @@ const handelCheck = (index: number) => {
       isScroll:false
     };
   });
+    } 
+
+    if (type=="tools") {
+           setstate((old) => {
+    const updatedItems = old.items.map((item, i) =>
+      i === index ? { ...item, isSelected: !item.isSelected } : item
+    );
+
+    const ToolsSelected = updatedItems.filter((el) => el.isSelected);
+  dispatch(SetTools(updatedItems));
+    return {
+      ...old,
+      items: updatedItems,
+      selectFilter: ToolsSelected,
+      isScroll:false
+    };
+  });
+    }
+ if (type=="payments") {
+           setstate((old) => {
+    const updatedItems = old.items.map((item, i) =>
+      i === index ? { ...item, isSelected: !item.isSelected } : item
+    );
+
+    const PaymentsSelected = updatedItems.filter((el) => el.isSelected);
+  dispatch(SetPayments(updatedItems));
+    return {
+      ...old,
+      items: updatedItems,
+      selectFilter: PaymentsSelected,
+      isScroll:false
+    };
+  });
+    }
 };
 
 const keyboard = useKeyboard();
 
 const handleSubmmit = (values) => {
   setstate((old) => {
-    const newItem = {
-      arName: values.activity,
-      isSelected: true,
-      name: values.activity,
-    };
+    if (values.activites !=0) {
+        
+        const newItem = {
+          arName: values.activity,
+          isSelected: true,
+          name: values.activity,
+        };
+    
+        // check if it already exists (by arName or name)
+        const exists = old.items.some(
+          (el) => el.arName == values.activity || el.name == values.activity
+        );
+    
+        // if exists, return old state without changes
+        if (exists) {
+          return old;
+        }
+    
+        const updatedItems = [...old.items, newItem] as any;
+        if (type == "activities") {
+            
+            dispatch(SetActivites(updatedItems));
+            const ActivitesSelected = updatedItems.filter((el) => el.isSelected);
+           
+            return {
+              ...old,
+              items: updatedItems,
+              selectFilter: ActivitesSelected,
+              isScroll:true,
+            };
+        }
 
-    // check if it already exists (by arName or name)
-    const exists = old.items.some(
-      (el) => el.arName == values.activity || el.name == values.activity
-    );
-
-    // if exists, return old state without changes
-    if (exists) {
-      return old;
+         if (type == "tools") {
+            
+            dispatch(SetTools(updatedItems));
+            const ToolsSelected = updatedItems.filter((el) => el.isSelected);
+           
+            return {
+              ...old,
+              items: updatedItems,
+              selectFilter: ToolsSelected,
+              isScroll:true,
+            };
+        }
+             
     }
-
-    const updatedItems = [...old.items, newItem] as any;
-    dispatch(SetActivites(updatedItems));
-    const ActivitesSelected = updatedItems.filter((el) => el.isSelected);
-   
-    return {
-      ...old,
-      items: updatedItems,
-      selectFilter: ActivitesSelected,
-      isScroll:true,
-    };
   });
+//   handleSubmit2()
 };
 useEffect(() => {
     if (state.isScroll) {
@@ -100,7 +162,9 @@ useEffect(() => {
     }, 100);
     }
 }, [state.items])
-
+const handleSubmit2 = ()=>{
+      onCloseFn && onCloseFn(state.selectFilter)
+}
     return (
         <Modal
             backdropOpacity={0.2}
@@ -123,7 +187,7 @@ useEffect(() => {
                         <CloseIcon />
                     </Pressable>
                 </View>
-                <View style={styles.listCon}>
+                <View style={[styles.listCon,!hasTextInput&&{flex:0.7}]}>
                     <FlatList
                      ref={flatListRef}
                         showsVerticalScrollIndicator={false}
@@ -135,26 +199,26 @@ useEffect(() => {
                         keyExtractor={(items, index: number) => index.toString()}
                         ItemSeparatorComponent={() => (<View style={{ height: PixelPerfect(18) }} />)}
                         renderItem={({ item, index }) => {
-                            console.log('====================================');
-                            console.log(item);
+                            console.log('==========sss==========================');
+                            console.log(hasTextInput,item.name);
                             console.log('====================================');
                             return (
                                 <Pressable style={[layout.rowBox, styles.filterCon]} onPress={() => { handelCheck(index) }}>
                                     {item.isSelected ? <CheckBoxIcon /> : <CheckBoxEmptyIcon />}
-                                    <Text style={styles.filterText}>{dir == "rtl" ? item.arName : item.name}</Text>
+                                    <Text style={styles.filterText}>{!hasTextInput?item.name:(dir == "rtl" ? item.arName : item.name)}</Text>
                                 </Pressable>
                             );
                         }}
                         ListFooterComponent={() => (<View style={{ height: PixelPerfect(10) }} />)}
                     />
                 </View>
-                <ScrollView
+                 {hasTextInput?   <ScrollView
                     automaticallyAdjustKeyboardInsets
                     showsVerticalScrollIndicator={false}
                     style={{flex:0.05,paddingHorizontal:PixelPerfect(20)}}
                     keyboardShouldPersistTaps="handled"
                 >
-                    <Formik
+                <Formik
                         validationSchema={validationSchema}
                         initialValues={{
                             activity: "",
@@ -171,7 +235,7 @@ useEffect(() => {
                                         options={{
                                             onBlur: handleBlur("activity"),
                                             onChangeText: handleChange("activity"),
-                                            placeholder: t("اكتب الادوات المتاحة"),
+                                            placeholder: textinputTitle,
                                             maxLength: 30,
                                             keyboardType: 'email-address',
                                             // onSubmitEditing:handleSubmmit
@@ -192,7 +256,19 @@ useEffect(() => {
                         }}
 
                     </Formik>
+                    
                 </ScrollView>
+                    :
+                    <View style={{flex:0.2,paddingHorizontal:PixelPerfect(16)}}>
+
+                        <Button
+                        title={t('Save')}
+                        styleTitle={styles.buttonText}
+                        onPress={handleSubmit2}
+                        style={styles.button}
+                    />
+                    </View>
+                    }
             </View>
         </Modal>
     )

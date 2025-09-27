@@ -20,7 +20,10 @@ import FormStep1 from './Componnent/FormStep1';
 import FormStep2 from './Componnent/FormStep2';
 import FormStep3 from './Componnent/FormStep3';
 
-import { SignUpHandler } from '../../../Apis/User';
+import { loginHandler, SignUpHandler } from '../../../Apis/User';
+import FormStep4 from './Componnent/FormStep4';
+import FormStep5 from './Componnent/FormStep5';
+import SignUpSuccess from '../../../Components/PopUps/SignUpSuccess';
 
 type Props = {
     navigation: any
@@ -29,14 +32,14 @@ type Props = {
 const Index = (props: Props) => {
     const { navigation } = props;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
-    const { countries, activites, roles } = useSelector((state: RootState) => state.settings);
+    const { countries, activites, roles,tools,payments } = useSelector((state: RootState) => state.settings);
     const styles = useStyles(Fonts, theme, dark, dir);
     const { email } = useRoute().params as any;
     const [state, setstate] = useState({
         showGovernemnts: false,
         showArea: false,
         shoMarkets: false,
-        forms: { City: "", Role: "", Area: "", Markets: "", agreesonTerms: "" },
+        forms: { City: "", Role: "", Area: "", Markets: "", agreesonTerms: "",Tools:"",payments:"" },
         selectedGoverenmet: { name: "", arName: "", id: "" },
         selectedArea: { name: "", arName: "", id: "" },
         selectedMarket: [],
@@ -48,7 +51,16 @@ const Index = (props: Props) => {
         loadingSignin: false,
         areas: [],
         isAgreeOnTerms: false,
-        IsRorleCustommer: true
+        IsRorleCustommer: true,
+        showTools:false,
+        selectedTools:[],
+                showPayment:false,
+        selectedPayment:[],
+        showFiltter:false,
+        whichimage:"logo",
+        addresses:[],
+        otherPhones:[],
+        showSuccess:false
     });
     const keyboard = useKeyboard();
     const dispatch = useDispatch();
@@ -64,7 +76,6 @@ const Index = (props: Props) => {
 
         }))
     }
-    // ✅ force step 1 open on mount
     useEffect(() => {
         setActiveStep(1);
     }, []);
@@ -80,12 +91,20 @@ const Index = (props: Props) => {
     const formikRef1 = useRef<FormikProps<any>>(null);
     const formikRef2 = useRef<FormikProps<any>>(null);
     const formikRef3 = useRef<FormikProps<any>>(null);
+    const formikRef4 = useRef<FormikProps<any>>(null);
+    const formikRef5 = useRef<FormikProps<any>>(null);
+
     const handleForms = () => {
 
         formikRef1.current?.handleSubmit();
-        formikRef2.current?.handleSubmit();
+        if (state.IsRorleCustommer) {
+            formikRef2.current?.handleSubmit();
+            
+        }else{
+             formikRef3.current?.handleSubmit();
+        }
         const isFormik1IsEmpty = Object.keys(formikRef1?.current?.errors).length === 0;
-        const isFormik2IsEmpty = Object.keys(formikRef2?.current?.errors).length === 0;
+        const isFormik2IsEmpty = Object.keys(state.IsRorleCustommer?formikRef2?.current?.errors:formikRef3?.current?.errors).length === 0;
 
         if (!isFormik1IsEmpty) {
             setActiveStep(1);
@@ -99,19 +118,40 @@ const Index = (props: Props) => {
     const handleBody = () => {
         const bodyFormData = new FormData();
         let body = { ...formikRef1?.current?.values };
-        body.OtherPhoneNumbers = formikRef2?.current?.values?.OtherPhoneNumbers?.length != 0 ? [formikRef2?.current?.values?.OtherPhoneNumbers] : [];
-        body.Activities = formikRef2?.current?.values?.Activities.filter(item => item.id !== undefined) || [];
-        body.OtherActivities = formikRef2?.current?.values?.Activities.filter(item => item.id === undefined) || [];
-        body.Addresses = [{
-            Country: formikRef2?.current?.values?.City,
-            Region: formikRef2?.current?.values?.Area,
-            Street: formikRef2?.current?.values?.Address
-        }];
-        body.Description = ""
-        body.ImageUrl2 = ""
-        body.ImageUrl = ""
-        body.CompanyName = ""
+        if (state.IsRorleCustommer) {
+            body.OtherPhoneNumbers = formikRef2?.current?.values?.OtherPhoneNumbers?.length != 0 ? [formikRef2?.current?.values?.OtherPhoneNumbers] : [];
+            body.Activities = formikRef2?.current?.values?.Activities.filter(item => item.id !== undefined) || [];
+            body.OtherActivities = formikRef2?.current?.values?.Activities.filter(item => item.id === undefined) || [];
+            body.Addresses = [{
+                Country: formikRef2?.current?.values?.City,
+                Region: formikRef2?.current?.values?.Area,
+                Street: formikRef2?.current?.values?.Addresses
+            }];
+            body.Description = ""
+            body.ImageUrl2 = ""
+            body.ImageUrl = ""
+            body.CompanyName = ""
+        }else{
+               body.OtherPhoneNumbers = state.otherPhones;
+            body.Activities = formikRef3?.current?.values?.Activities.filter(item => item.id !== undefined) || [];
+            body.OtherActivities = formikRef3?.current?.values?.Activities.filter(item => item.id === undefined) || [];
+            body.AvailableTools = formikRef3?.current?.values?.AvailableTools.filter(item => item.id !== undefined) || [];
+            body.OtherAvailebleTools = formikRef3?.current?.values?.AvailableTools.filter(item => item.id === undefined) || [];
+            body.PaymentTypes = formikRef3?.current?.values?.PaymentTypes.filter(item => item.id !== undefined) || [];
+           body.Addresses = state.addresses.map(address => ({
+    ...address,
+    Country: address.Country?.id || address.Country, // Extract ID
+    Region: address.Region?.id || address.Region     // Extract ID
+}));
+              body.Description = formikRef3?.current?.values?.Description
+            body.ImageUrl2 = formikRef3?.current?.values?.ImageUrl2
+            body.ImageUrl = formikRef3?.current?.values?.ImageUrl
+            body.CompanyName = formikRef3?.current?.values?.CompanyName
+        }
         delete body.ConfirmPassword;
+        console.log('====================================');
+        console.log(body);
+        console.log('====================================');
         const appendFormData = (data, parentKey = "") => {
             if (Array.isArray(data)) {
                 data.forEach((value, index) => {
@@ -157,60 +197,38 @@ const Index = (props: Props) => {
         setstate(old => ({ ...old, loading: true }));
         dispatch<any>(SignUpHandler(body, (res, status) => {
             if (res.status == 200) {
-                showToast({ type: 'ok', message: res?.message });
-                console.log('===========res=========================');
-                console.log(res);
-                console.log('====================================');
+             setstate(old => ({ ...old, showSuccess: true }));
+          
+                    setTimeout(() => {
+                setstate(old => ({ ...old, showSuccess: false }));
+                navigation.reset({
+                index:0,
+                routes: [
+                    { name: "Signin" }as any,
+                  ],
+              });
+             }, 2000);
+           
+             console.log('===========xxxx====hgjhgjggj=====================');
+             console.log(res);
+             console.log('====================================');
             } else {
-                showToast({ type: 'error', message: t("Some Fields has incorrect Values!") });
-                handleBackendErrors(res?.message)
+                showToast({ type: 'error', message:res?.message?? t("Some Fields has incorrect Values!") });
+                // handleBackendErrors(res?.message)
             }
             setstate(old => ({ ...old, loading: false }))
         }))
 
     }
 
-    const handleBackendErrors = (message: string) => {
-        const errorsArray = message.split(" , ").map(err => err.trim());
-
-        // Collect errors for each form
-        const errors1: Record<string, string> = {};
-        const errors2: Record<string, string> = {};
-
-        errorsArray.forEach(err => {
-            const match = err.match(/The (.+?) field/);
-            if (match) {
-                const fieldName = match[1];
-                const key = fieldName.charAt(0) + fieldName.slice(1);
-
-                if (["Name", "Email", "Password", "PhoneNumber"].includes(key)) {
-                    errors1[key] = err;
-                } else if (["Addresses"].includes(key)) {
-
-                    errors2[key] = err;
-                }
-            }
-        });
-        console.log('====================================');
-        console.log(errors1, errors2);
-        console.log('====================================');
-        formikRef1.current?.setErrors(errors1);
-        formikRef2.current?.setErrors(errors2);
-        if (Object.keys(errors1).length > 0) {
-            setActiveStep(1)
-        }
-
-        if (Object.keys(errors2).length > 0) {
-            setActiveStep(2)
-        }
-
-    };
-
     return (
         <Container
             noSafeArea
 
         >
+                <SignUpSuccess
+                show={state.showSuccess}
+                />
             <HeaderWithText title={t("signtxt1")} />
             <Content
                 noPadding
@@ -272,14 +290,62 @@ const Index = (props: Props) => {
                                 setstate={setstate}
                                 GetAreas={GetAreas}
                                 countries={countries}
-                                activites={activites}
+                                tools={tools}
+                                 activites={activites}
                                 styles={styles}
+                                payments={payments}
+                                   setActiveStep={setActiveStep}
                             />
                         </Section>
                     </>
                 }
-
-
+              
+    {!state?.IsRorleCustommer&&
+        <>
+          <View style={{ paddingVertical: PixelPerfect(8) }} />
+        {/* form4 */}
+                       <Section
+                           title={t("regtxt4")}
+                           step={3}
+                           activeStep={!(formikRef3?.current?.errors?.Addresses || formikRef3?.current?.errors?.City || formikRef3?.current?.errors?.Area)?activeStep:null}
+                           setActiveStep={setActiveStep}
+                           onSubmmit={() => { }}
+                       >
+                           <FormStep4
+                                formikRef={formikRef4}
+                                state={state}
+                                setstate={setstate}
+                                GetAreas={GetAreas}
+                                countries={countries}
+                                styles={styles}
+                              addresses={state.addresses}
+                                   setActiveStep={setActiveStep}
+                            />
+                       </Section>
+        </>
+    }
+     {!state?.IsRorleCustommer&&
+        <>
+          <View style={{ paddingVertical: PixelPerfect(8) }} />
+        {/* form5 */}
+                       <Section
+                           title={t("regtxt6")}
+                           step={4}
+                           activeStep={activeStep}
+                           setActiveStep={setActiveStep}
+                           onSubmmit={() => { }}
+                       >
+                           <FormStep5
+                                formikRef={formikRef5}
+                                state={state}
+                                setstate={setstate}
+                                styles={styles}
+                              otherPhones={state.otherPhones}
+                                  
+                            />
+                       </Section>
+        </>
+    }
 
                 <Pressable style={[layout.rowBox, styles.checkcon]} onPress={handleagreeonterms}>
                     {state.isAgreeOnTerms ? <CheckBoxIconBig /> : <CheckBoxEmptyIconBig />}

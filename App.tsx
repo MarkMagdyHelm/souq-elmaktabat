@@ -74,7 +74,7 @@ function App(): JSX.Element {
    const getSettings = ()=>{
     dispatch<any>(GetSettingsHandler((res,status)=>{
       if (Platform.OS === "android") {
-        let androidSetting = res?.data?.find((el:any)=>el.type == "Android");
+        let androidSetting = res?.find((el:any)=>el.type == "Android");
         console.log('====androidSetting================================');
         console.log(androidSetting);
         console.log('====================================');
@@ -86,7 +86,10 @@ function App(): JSX.Element {
           setstate(old=>({...old,isForceUpdateOptional:false,forceUpdate:false}))
         }
       } else {
-        let iosSetting = res?.data?.find((el:any)=>el.type == "IOS");
+        let iosSetting = res?.find((el:any)=>el.type == "IOS");
+          console.log('====iosSetting================================');
+        console.log(iosSetting.status);
+        console.log('====================================');
         if (iosSetting.status == 1 && parseFloat(DeviceInfo.getVersion()) < parseFloat(iosSetting.targetVersion)) {
           setstate(old=>({...old,isForceUpdateOptional:false,forceUpdate:true}))
         }else if(iosSetting.status == 0 && parseFloat(DeviceInfo.getVersion()) < parseFloat(iosSetting.targetVersion)){
