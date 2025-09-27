@@ -133,7 +133,11 @@ export const SignUpHandler = (body:any, cb?: (data: any,status:any) => void) => 
         console.log('===============aaaa=====================');
         console.log(body);
         console.log('====================================');
-        const { data,status } = await globalAPI.post('/api/User/SignUp', body);
+      
+        const { data,status } = await globalAPI.post('/api/User/SignUp', body,{
+  headers: {
+    "Content-Type": "multipart/form-data",
+  }});
         console.log(data,status);
         
         console.log('SignUpHandler data = ', data,status);

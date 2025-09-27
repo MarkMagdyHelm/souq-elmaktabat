@@ -104,6 +104,8 @@ export default {
     "SelectToolsw":"اكتب الادوات المتاحة",
     "You must choose a market!":"يجب عليك اختيار السوق!",
     "Activity is required":"النشاط مطلوب",
+    "regtxt3":"بيانات العمل",
+    "input1":"شعار المتجر او الشركة ",
     //forcetxt
     "forcetitle": "تحديث التطبيق",
     "forceMessage": "يوجد بعض المميزات والتحديثات الجديدة يجب عليك تحديث التطبيق ",

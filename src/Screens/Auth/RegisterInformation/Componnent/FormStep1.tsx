@@ -16,11 +16,11 @@ type Props = {
   setActiveStep: (step: number) => void;
   roles: any[];
   styles: any;
+  onSelectRole:(val:boolean)=>void
 };
 
-const FormStep1 = ({ formikRef, email, state, setstate, setActiveStep, roles, styles }: Props) => {
+const FormStep1 = ({ formikRef, email, state, setstate, setActiveStep, roles, styles ,onSelectRole}: Props) => {
   const { layout, dir } = useContext(ThemeContext);
-
   return (
     <Formik
       validationSchema={validationSchema}
@@ -133,6 +133,11 @@ const FormStep1 = ({ formikRef, email, state, setstate, setActiveStep, roles, st
                   }));
                   setFieldError("Role", "You must pick a role!");
                 } else {
+                  if (val.id == "ddbf3e23-3fe1-485e-3f86-08ddc6930493") {
+                    onSelectRole && onSelectRole(true);
+                  } else {
+                     onSelectRole && onSelectRole(false);
+                  }
                   setFieldValue("Role", val.id);
                   setstate((old) => ({
                     ...old,

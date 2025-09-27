@@ -28,9 +28,9 @@ const Index = (props: Props) => {
     const styles = useStyles(Fonts, theme, dark, dir);
 
     const pricePerUnit = 500;
-    const minQty = 2;
+    const minQty = 1;
     const maxQty = 1500;
-    const [qty, setQty] = useState(3);
+    const [qty, setQty] = useState(1);
 
     const product = {
         title: "ورق مرام 80جم",
@@ -47,6 +47,7 @@ const Index = (props: Props) => {
         items: [{ flag: false }, { flag: false }]
 
     });
+
     const total = useMemo(() => pricePerUnit * qty, [pricePerUnit, qty]);
 
     const decrease = () => {
@@ -143,11 +144,11 @@ const Index = (props: Props) => {
                             <View style={[layout.rowBox, { justifyContent: "space-between", alignItems: "center" }]}>
                                 <Text style={styles.sectionTitle}>حدد الكمية</Text>
                                 <View style={[layout.dirRow, styles.quantityRow]}>
-                                    <TouchableOpacity style={styles.qtyBtn} >
+                                    <TouchableOpacity style={styles.qtyBtn} onPress={decrease} >
                                         <Text style={styles.qtyText}>-</Text>
                                     </TouchableOpacity>
-                                    <Text style={styles.qtyValue}>{12}</Text>
-                                    <TouchableOpacity style={styles.qtyBtn} >
+                                    <Text style={styles.qtyValue}>{qty}</Text>
+                                    <TouchableOpacity style={styles.qtyBtn}  onPress={increase}>
                                         <Text style={styles.qtyText}>+</Text>
                                     </TouchableOpacity>
                                 </View>
