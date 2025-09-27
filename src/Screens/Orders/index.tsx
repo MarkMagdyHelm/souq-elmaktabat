@@ -10,7 +10,8 @@ import HeaderWithText from '../../Components/Headers/HeaderWithText';
 import { useToast } from 'react-native-toast-notifications';
 import { useDispatch } from 'react-redux';
 import OrderCard from '../../Components/Cards/OrderCard';
-import Order from '../../Components/Cards/Order';
+import Order from '../../Components/Cards/SellesOrders';
+import SellesOrder from '../../Components/Cards/SellesOrders';
 
 let items = [{ flag: false }, { flag: true }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, { flag: true }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, , { flag: false }]
 
@@ -134,7 +135,7 @@ const Index = (props: Props) => {
                   {/* {state.loading?
                   <PollLoader height={70}/> */}
                   {/* :  */}
-                  <Order item={item} onAccept={undefined} onReject={undefined}  />
+                  <SellesOrder item={item} onAccept={undefined} onReject={undefined}  />
                   {/* } */}
                 </>
               );

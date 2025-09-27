@@ -3,12 +3,12 @@ import React, { useContext, useState } from 'react'
 import { ThemeContext } from '../../Constants/theming';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import { Colors, PixelPerfect } from '../../Constants/styleConstants';
-import { Call2Icon, CallIcon } from '../../Assets/Svg';
+import { Call2Icon } from '../../Assets/Svg';
 type Props = {
     item: any, onAccept: any, onReject: any
 }
 
-const Order = (props: Props) => {
+const SellesOrder = (props: Props) => {
     const {
         item, onAccept
     } = props;
@@ -21,7 +21,10 @@ const Order = (props: Props) => {
             <View style={[layout.dirRow, styles.row]}>
                 <View style={styles.con1}>
                     <View style={[layout.dirRow, { justifyContent: "space-between", alignItems: "center" }]}>
-                        <Text style={[styles.time]}>{item.time}</Text>
+                        <TouchableOpacity style={styles.statusBtn} onPress={() => onAccept(item)}>
+                            <Text style={styles.statusText}>طلب مقبول</Text>
+
+                        </TouchableOpacity>
                         <View style={[layout.rowBox, { alignItems: "center" }]}>
                             <Image source={{ uri: item.avatar }} style={styles.avatar} />
                             <View style={[layout.flexStart, { paddingHorizontal: PixelPerfect(8) }]}>
@@ -35,11 +38,12 @@ const Order = (props: Props) => {
                     <View style={[layout.rowBox, styles.actions]}>
                         <Text style={styles.product}>{item.product}</Text>
 
-                        <TouchableOpacity style={styles.statusBtn} onPress={() => onAccept(item)}>
-                            <Text style={styles.acceptText}>طلب مقبول</Text>
 
-                        </TouchableOpacity>
                     </View>
+
+                    <Text style={styles.quantity}>التاريخ: 15 ديسمبر 2025 {item.quantity}</Text>
+
+
 
                     <View style={[layout.rowBox, styles.actions]}>
                         <Text style={styles.quantity}>الكمية: {item.quantity}</Text>
@@ -54,8 +58,7 @@ const Order = (props: Props) => {
             <View style={[layout.dirRow, styles.actions]}>
 
                 <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} onPress={() => onAccept(item)}>
-                    <Call2Icon style={styles.callBtn} color={Colors.white} />
-                    <Text style={styles.acceptText}>تواصل الان</Text>
+                    <Text style={styles.acceptText}>عرض التفاصيل</Text>
 
                 </TouchableOpacity>
             </View>
@@ -63,7 +66,7 @@ const Order = (props: Props) => {
     )
 }
 
-export default Order
+export default SellesOrder
 
 const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,) =>
     StyleSheet.create({
@@ -106,10 +109,11 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
         },
 
         statusBtn: {
-            flex: 0.40,
+            flex: 0.60,
             backgroundColor: theme.green,
             borderRadius: PixelPerfect(6),
             padding: PixelPerfect(4),
+
             alignItems: "center",
         },
         rejectBtn: {
@@ -122,8 +126,13 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             alignItems: "center",
         },
         acceptText: {
-            fontSize: PixelPerfect(16),
             fontFamily: Fonts.bold,
+            fontSize: PixelPerfect(16),
+            color: theme.white
+        },
+        statusText: {
+            fontFamily: Fonts.medium,
+            fontSize: PixelPerfect(14),
             color: theme.white
         },
         rejectText: { fontSize: PixelPerfect(16), color: theme.youtube, fontFamily: Fonts.bold, },
