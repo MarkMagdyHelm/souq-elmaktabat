@@ -70,6 +70,14 @@ export const SetActivites = (payload: boolean) => ({
   type: ActionType.SAVE_ACTIVITES,
   payload: payload,
 });
+/**
+ * SetTools
+ * @param payload array
+ */
+export const SetTools = (payload: boolean) => ({
+  type: ActionType.SAVE_TOOLS,
+  payload: payload,
+});
 
 /**
  * SetRoles
@@ -77,5 +85,14 @@ export const SetActivites = (payload: boolean) => ({
  */
 export const SetRoles = (payload: boolean) => ({
   type: ActionType.SAVE_Roles,
+  payload: payload,
+});
+
+/**
+ * SetPayments
+ * @param payload array
+ */
+export const SetPayments = (payload: boolean) => ({
+  type: ActionType.SAVE_PAYMENTS,
   payload: payload,
 });

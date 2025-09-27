@@ -70,8 +70,8 @@ const dispatch = useDispatch();
        <Formik
         validationSchema={validationSchema}
         initialValues={{
-          PhoneNumber:"",
-          Password:"",
+          email:"",
+          password:"",
           fcmToken:"",
           }}
         onSubmit={(values)=>{
@@ -94,29 +94,29 @@ const dispatch = useDispatch();
             <Text style={[layout.textAlign,styles.textsection1]}>{t("signin1")}</Text>
             </View>
                <View style={styles.inputsCon}>
-               <Inputs label={t('Phone')}
+               <Inputs label={t('username')}
                     options={{
-                      onBlur: handleBlur("PhoneNumber"),
-                      onChangeText: handleChange("PhoneNumber"),
-                      placeholder:t("Phonew"),
+                      onBlur: handleBlur("email"),
+                      onChangeText: handleChange("email"),
+                      placeholder:t("usernamew"),
                       maxLength:11,
                       keyboardType: Platform.OS === 'android' ? "numeric" : "number-pad",
                     }}
                     password={false}
-                    showErrorr={(errors.PhoneNumber && touched.PhoneNumber) as boolean }
-                    error={errors.PhoneNumber as any}
+                    showErrorr={(errors.email && touched.email) as boolean }
+                    error={errors.email as any}
               />
               <Inputs label={t('pasword')}
                     options={{
-                      onBlur: handleBlur("Password"),
-                      onChangeText: handleChange("Password"),
+                      onBlur: handleBlur("password"),
+                      onChangeText: handleChange("password"),
                       placeholder:t("paswordw"),
                       keyboardType: 'default',
                       maxLength:30,
                     }}
                     password={true}
-                    showErrorr={(errors.Password && touched.Password) as boolean }
-                    error={errors.Password as any}
+                    showErrorr={(errors.password && touched.password) as boolean }
+                    error={errors.password as any}
               />
                </View>
                <View style={styles.forgetPassword}>

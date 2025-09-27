@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ChangeAppDirection, ChangeDarkMode } from '../Store/actions/settings';
 import { RootState } from '../Store/store';
 import { Colors, ColorWithOpacity, FontsLtr, FontsLtrIOS, FontsRtl } from './styleConstants';
+import { green } from 'react-native-reanimated/lib/typescript/Colors';
 const themes = {
   dark: {
     appBackgroundColor: '#FFFFFF',
@@ -109,6 +110,7 @@ const themes = {
     gray_gray2: '#707B82',
     gray_black: '#222222',
     gray2: '#D9D9D9',
+    green: '#38B35F',
 
     gray_blue: Colors.mainColor,
     gray_blue2: Colors.mainColor,

@@ -108,7 +108,7 @@ const FormStep1 = ({ formikRef, email, state, setstate, setActiveStep, roles, st
           <Pressable
             style={styles.selectMenueCon}
             onPress={() => {
-              setFieldTouched("Role");
+           
               setstate((old) => ({ ...old, showRols: true }));
             }}
           >
@@ -125,6 +125,7 @@ const FormStep1 = ({ formikRef, email, state, setstate, setActiveStep, roles, st
           {state.showRols && (
             <DropDowenMenu
               onCloseFn={(val) => {
+   setFieldTouched("Role");
                 if (!val?.id) {
                   setstate((old) => ({
                     ...old,
@@ -133,7 +134,10 @@ const FormStep1 = ({ formikRef, email, state, setstate, setActiveStep, roles, st
                   }));
                   setFieldError("Role", "You must pick a role!");
                 } else {
-                  if (val.id == "ddbf3e23-3fe1-485e-3f86-08ddc6930493") {
+                  console.log('==============val.id ======================');
+                  console.log(val.id);
+                  console.log('====================================');
+                  if (val.id == 1) {
                     onSelectRole && onSelectRole(true);
                   } else {
                      onSelectRole && onSelectRole(false);

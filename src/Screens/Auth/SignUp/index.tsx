@@ -13,7 +13,7 @@ import useToastNotification from '../../../Components/CustomHooks/useToastNotifi
 import HeaderWithText from '../../../Components/Headers/HeaderWithText';
 import { Formik } from 'formik';
 import { validationSchema } from '../../../Validation/Signup';
-import { GetCitiesHandler, GetAllActivitiesHandler, GetAllRolesHandler } from '../../../Apis/Appinfo';
+import { GetCitiesHandler, GetAllActivitiesHandler, GetAllRolesHandler, GetAllAvailableToolsHandler } from '../../../Apis/Appinfo';
 import { SendOTPByEmailHandler } from '../../../Apis/User';
 
 type Props = {
@@ -31,11 +31,12 @@ const Index = (props: Props) => {
     });
     const dispatch = useDispatch();
     const showToast = useToastNotification();
-useEffect(() => {
-dispatch<any>(GetCitiesHandler());
-dispatch<any>(GetAllActivitiesHandler())
-dispatch<any>(GetAllRolesHandler())
-}, []);
+// useEffect(() => {
+// dispatch<any>(GetCitiesHandler());
+// dispatch<any>(GetAllActivitiesHandler());
+// dispatch<any>(GetAllRolesHandler());
+// dispatch<any>(GetAllAvailableToolsHandler());
+// }, []);
 
 const handleSubmit = (values)=>{
     setstate(old=>({...old,loadingSignin:true}))

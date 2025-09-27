@@ -12,7 +12,7 @@ import Signin from "../Screens/Auth/Signin/index";
 import Signup from '../Screens/Auth/SignUp/index';
 import ConfirmtionCode from '../Screens/Auth/ConfirmtionCode/index'
 import Home from '../Screens/Home/index';
-import Home2 from '../Screens/Home2/index';
+// import Home2 from '../Screens/Home2/index';
 import HomeMore from '../Screens/HomeMore/index';
 import Notifications from '../Screens/Notification/index';
 import Polls from '../Screens/Polls/index';
@@ -22,6 +22,11 @@ import { phoneWidth, PixelPerfect } from '../Constants/styleConstants';
 import ContactUs from '../Screens/ContactUs/index';
 import RegisterInformation from '../Screens/Auth/RegisterInformation/index'
 import ProductDetails from '../Screens/ProductDetails/index'
+import Home2 from '../Screens/Home2/index'
+import Orders from '../Screens/Orders/index'
+import Demo from '../Screens/Demo/index';
+
+
 const Stack = createStackNavigator();
 
 
@@ -42,18 +47,18 @@ const Stacks = () => {
         };
       }}
 
-      initialRouteName={'ProductDetails'}
+      initialRouteName={'Orders'}
 
     >
 
       <Stack.Screen name="Home" component={Home} />
 
 
+
+      <Stack.Screen name="Orders" component={Orders} />
       <Stack.Screen name="Home2" component={Home2} />
-      <Stack.Screen name="HomeMore" component={HomeMore} />
       <Stack.Screen name="ProductDetails" component={ProductDetails} />
 
-      <Stack.Screen name="Signin" component={Signin} />
       <Stack.Screen name="Signup" component={Signup} />
       <Stack.Screen name="ConfirmtionCode" component={ConfirmtionCode} />
       <Stack.Screen name="Notifications" component={Notifications} />
