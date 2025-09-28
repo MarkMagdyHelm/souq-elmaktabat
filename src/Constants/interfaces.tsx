@@ -123,6 +123,7 @@ export interface ITheme {
   deactive: string,
   textColor: string,
   black: string,
+  red: string,
   currenctText: string,
   timeText: string,
   optionText: string,

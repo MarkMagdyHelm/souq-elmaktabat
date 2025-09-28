@@ -111,6 +111,7 @@ const themes = {
     gray_black: '#222222',
     gray2: '#D9D9D9',
     green: '#38B35F',
+        red: '#F44336',
 
     gray_blue: Colors.mainColor,
     gray_blue2: Colors.mainColor,

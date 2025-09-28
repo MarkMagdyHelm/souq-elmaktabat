@@ -10,9 +10,9 @@ import HeaderWithText from '../../Components/Headers/HeaderWithText';
 import { useToast } from 'react-native-toast-notifications';
 import { useDispatch } from 'react-redux';
 import OrderCard from '../../Components/Cards/OrderCard';
-import Order from '../../Components/Cards/SellesOrders';
-import SellesOrder from '../../Components/Cards/SellesOrders';
-import MyOrderItem from '../../Components/Cards/MyOrdersItem';
+import Order from '../../Components/Cards/MyOrderItem';
+import MyOrderItem from '../../Components/Cards/MyOrderItem';
+
 
 let items = [{ flag: false }, { flag: true }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, { flag: true }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, , { flag: false }]
 
@@ -112,36 +112,16 @@ const Index = (props: Props) => {
 
 
 
-                {tab === "orders" ? (
-                    <FlatList
-                        data={ordersData}
-                        keyExtractor={(item) => item.id}
-                        renderItem={({ item }) => (
-                            <MyOrderItem item={item} onAccept={handleAccept} onReject={handleReject} />
-                        )}
-                        contentContainerStyle={{ paddingBottom: PixelPerfect(16), paddingHorizontal: PixelPerfect(16) }}
-                    />
-                ) : (
-                    <FlatList
-                        showsVerticalScrollIndicator={false}
-                        //   onRefresh={() =>{}}
-                        //   refreshing={isFetching}
-                        style={styles.list}
-                        data={state.items}
-                        keyExtractor={(items, index: number) => index.toString()}
-                        ItemSeparatorComponent={() => (state.loading ? null : <View style={styles.separator} />)}
-                        renderItem={({ item }) => {
-                            return (
-                                <>
-                                    {/* {state.loading?
-                  <PollLoader height={70}/> */}
-                                    {/* :  */}
-                                    <SellesOrder item={item} onAccept={undefined} onReject={undefined} />
-                                    {/* } */}
-                                </>
-                            );
-                        }} />
-                )}
+
+                <FlatList
+                    data={ordersData}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => (
+                        <MyOrderItem item={item} onAccept={handleAccept} onReject={handleReject} />
+                    )}
+                    contentContainerStyle={{ paddingBottom: PixelPerfect(16), paddingHorizontal: PixelPerfect(16) }}
+                />
+
             </View>
             <TabBar />
         </Container>

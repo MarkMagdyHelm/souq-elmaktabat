@@ -1,9 +1,10 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { ThemeContext } from '../../Constants/theming';
 import { IFont, ITheme } from '../../Constants/interfaces';
-import { Colors, PixelPerfect } from '../../Constants/styleConstants';
+import { PixelPerfect } from '../../Constants/styleConstants';
 import { Call2Icon } from '../../Assets/Svg';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 type Props = {
     item: any, onAccept: any, onReject: any
 }
@@ -14,17 +15,13 @@ const SellesOrder = (props: Props) => {
     } = props;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
-    const [show, setshow] = useState(false);
     return (
         <View style={styles.card}>
 
             <View style={[layout.dirRow, styles.row]}>
                 <View style={styles.con1}>
                     <View style={[layout.dirRow, { justifyContent: "space-between", alignItems: "center" }]}>
-                        <TouchableOpacity style={styles.statusBtn} onPress={() => onAccept(item)}>
-                            <Text style={styles.statusText}>طلب مقبول</Text>
-
-                        </TouchableOpacity>
+                        <Text style={[styles.time]}>{item.time}</Text>
                         <View style={[layout.rowBox, { alignItems: "center" }]}>
                             <Image source={{ uri: item.avatar }} style={styles.avatar} />
                             <View style={[layout.flexStart, { paddingHorizontal: PixelPerfect(8) }]}>
@@ -38,12 +35,11 @@ const SellesOrder = (props: Props) => {
                     <View style={[layout.rowBox, styles.actions]}>
                         <Text style={styles.product}>{item.product}</Text>
 
+                        <TouchableOpacity style={styles.statusBtn} onPress={() => onAccept(item)}>
+                            <Text style={styles.acceptText}>طلب مقبول</Text>
 
+                        </TouchableOpacity>
                     </View>
-
-                    <Text style={styles.quantity}>التاريخ: 15 ديسمبر 2025 {item.quantity}</Text>
-
-
 
                     <View style={[layout.rowBox, styles.actions]}>
                         <Text style={styles.quantity}>الكمية: {item.quantity}</Text>
@@ -58,7 +54,10 @@ const SellesOrder = (props: Props) => {
             <View style={[layout.dirRow, styles.actions]}>
 
                 <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} onPress={() => onAccept(item)}>
-                    <Text style={styles.acceptText}>عرض التفاصيل</Text>
+                    <View style={[styles.icon]}>
+                        <Call2Icon />
+                    </View>
+                    <Text style={styles.acceptText}>تواصل الان</Text>
 
                 </TouchableOpacity>
             </View>
@@ -98,7 +97,9 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             alignItems: "center",
             justifyContent: "center"
         },
-
+        icon: {
+            paddingHorizontal: PixelPerfect(2)
+        },
 
         callBtn: {
 
@@ -109,11 +110,10 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
         },
 
         statusBtn: {
-            flex: 0.60,
+            flex: 0.40,
             backgroundColor: theme.green,
             borderRadius: PixelPerfect(6),
             padding: PixelPerfect(4),
-
             alignItems: "center",
         },
         rejectBtn: {
@@ -126,13 +126,8 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             alignItems: "center",
         },
         acceptText: {
-            fontFamily: Fonts.bold,
             fontSize: PixelPerfect(16),
-            color: theme.white
-        },
-        statusText: {
-            fontFamily: Fonts.medium,
-            fontSize: PixelPerfect(14),
+            fontFamily: Fonts.bold,
             color: theme.white
         },
         rejectText: { fontSize: PixelPerfect(16), color: theme.youtube, fontFamily: Fonts.bold, },

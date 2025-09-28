@@ -24,8 +24,9 @@ import RegisterInformation from '../Screens/Auth/RegisterInformation/index'
 import ProductDetails from '../Screens/ProductDetails/index'
 import Home2 from '../Screens/Home2/index'
 import Orders from '../Screens/Orders/index'
+import MyOrders from '../Screens/MyOrders/index'
 import Demo from '../Screens/Demo/index';
-
+import OrderDetails from '../Screens/OrderDetails/index';
 
 const Stack = createStackNavigator();
 
@@ -47,14 +48,16 @@ const Stacks = () => {
         };
       }}
 
-      initialRouteName={'Orders'}
+      initialRouteName={'OrderDetails'}
 
     >
 
       <Stack.Screen name="Home" component={Home} />
 
 
-
+      {/* Baroo */}
+      <Stack.Screen name="OrderDetails" component={OrderDetails} />
+      <Stack.Screen name="MyOrders" component={MyOrders} />
       <Stack.Screen name="Orders" component={Orders} />
       <Stack.Screen name="Home2" component={Home2} />
       <Stack.Screen name="ProductDetails" component={ProductDetails} />
