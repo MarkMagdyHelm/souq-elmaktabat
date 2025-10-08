@@ -76,7 +76,7 @@ export interface ITheme {
   success: string;
   babyBlue: string;
   green: string;
-
+accordianBody: string;
   facebook: string;
   googleLogin: string;
 
@@ -129,5 +129,6 @@ export interface ITheme {
   optionText: string,
   sepreator: string,
   grayLigth: string
-  gray2: string
+  gray2: string,
+  rateBorder:string
 }

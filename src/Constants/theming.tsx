@@ -111,7 +111,7 @@ const themes = {
     gray_black: '#222222',
     gray2: '#D9D9D9',
     green: '#38B35F',
-        red: '#F44336',
+    red: '#F44336',
 
     gray_blue: Colors.mainColor,
     gray_blue2: Colors.mainColor,
@@ -176,7 +176,9 @@ const themes = {
     timeText: "#A3A3A3",
     optionText: "#EDEEF0",
     sepreator: "#EDEBEB",
-    grayLigth: "#F2F2F7"
+    grayLigth: "#F2F2F7",
+    rateBorder: "#E4E5E740",
+
   },
 } as any;
 const LayoutDirectionRtl = StyleSheet.create({

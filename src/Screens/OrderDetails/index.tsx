@@ -7,6 +7,9 @@ import SellerBranches from '../../Components/Cards/SellerBranches';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Call2Icon, CancelIcon, CheckIcon } from '../../Assets/Svg';
+import RatingScreen from '../../Components/PopUps/RatingScreen';
+import CancelOrder from '../../Components/PopUps/CancelOrder';
+import DoneRate from '../../Components/PopUps/DoneRate';
 type Props = {
     item: any, onAccept: any, onReject: any
 }
@@ -22,128 +25,148 @@ const MyOrderItem = (props: Props) => {
         items: [{ flag: false }, { flag: false }]
 
     });
+    const [visible, setVisible] = useState(true);
+
+
+    const handleSubmit = (data) => {
+        console.log('Rating submitted:', data);
+    };
+
+    // return (
+    //     <SafeAreaView style={styles.container}>
+    //         <ScrollView showsVerticalScrollIndicator={false}
+    //             showsHorizontalScrollIndicator={false}>
+    //             <View style={styles.card}>
+
+    //                 <View style={[layout.dirRow, styles.row]}>
+    //                     <View style={styles.con1}>
+    //                         <View style={[layout.dirRow, { justifyContent: "space-between", alignItems: "center" }]}>
+    //                             <TouchableOpacity style={styles.statusBtn} onPress={() => { }}>
+    //                                 <Text style={styles.statusText}>طلب مقبول</Text>
+
+    //                             </TouchableOpacity>
+    //                             <View style={[layout.rowBox, { alignItems: "center" }]}>
+    //                                 <Image source={{ uri: "https://i.pravatar.cc/100" }} style={styles.avatar} />
+    //                                 <Text style={styles.name}>مكتبة النور</Text>
+    //                             </View>
+    //                         </View>
+    //                         <View style={styles.actions}>
+    //                             <SellerBranches loading={state.loading} onPress={function (): void {
+    //                                 throw new Error('Function not implemented.');
+    //                             }} />
+    //                         </View>
+    //                         <Text style={styles.product}>ورق مرام 80جم</Text>
+
+
+
+    //                         <View style={styles.actions}>
+    //                             <Text style={styles.date}>التاريخ: </Text>
+    //                             <Text style={styles.date1}>15 ديسمبر 2025</Text>
+    //                         </View>
+
+    //                         <View style={styles.actions}>
+    //                             <Text style={styles.date}>الكمية: </Text>
+    //                             <Text style={styles.date1}>15</Text>
+    //                         </View>
+
+    //                         <View style={styles.actions}>
+    //                             <Text style={styles.date}>الاجمالي: </Text>
+    //                             <Text style={styles.total}>1500 جنيها</Text>
+    //                         </View>
+
+    //                         <View style={[layout.dirRow, styles.actions]}>
+    //                             <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} onPress={() => onAccept(item)}>
+    //                                 <View style={[styles.icon]}>
+    //                                     <Call2Icon />
+    //                                 </View>
+    //                                 <Text style={styles.acceptText}>تواصل الان</Text>
+
+    //                             </TouchableOpacity>
+
+    //                         </View>
+
+    //                         <View style={[layout.dirRow, styles.actions]}>
+
+    //                             <TouchableOpacity style={[layout.rowBox, styles.receiveBtn]} onPress={() => onAccept(item)}>
+    //                                  <View style={[styles.icon]}>
+    //                                      <CheckIcon />
+    //                                      </View>
+
+    //                                 <Text style={styles.receiveText}>تم التسليم</Text>
+
+    //                             </TouchableOpacity>
+    //                         </View>
+
+    //                          <View style={[layout.dirRow, styles.actions]}>
+
+    //                             <TouchableOpacity style={[layout.rowBox, styles.cancelBtn]} onPress={() => onAccept(item)}>
+    //                                   <View style={[styles.icon]}>
+    //                                      <CancelIcon />
+    //                                      </View>
+    //                                 <Text style={styles.cancelText}>الغاء الطلب</Text>
+
+    //                             </TouchableOpacity>
+    //                         </View>
+
+    //                         {/* وصف المنتج */}
+    //                         <View >
+    //                             <View style={styles.actions}>
+    //                                 <Text style={styles.description}>وصف المنتج: </Text>
+    //                                 <Text style={styles.description1}>ورق طباعة أبيض نقي بجودة ممتازة، مناسب لجميع أنواع الطابعات النافثة للحبر والليزر. العبوة تحتوي على 500 ورقة بحجم A4 قياسي. الورق مصنوع من ألياف طبيعية عالية الجودة مما يضمن طباعة واضحة ونتائج احترافية.</Text>
+    //                             </View>
+    //                             <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
+    //                                 <Text style={styles.note}>النوع</Text>
+    //                                 <Text style={styles.note1}>مرام</Text>
+    //                             </View>
+    //                             <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
+    //                                 <Text style={styles.note}>الحجم</Text>
+    //                                 <Text style={styles.note1}>A4</Text>
+    //                             </View>
+    //                             <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
+    //                                 <Text style={styles.note}>الوزن</Text>
+    //                                 <Text style={styles.note1}>جرام/مترمربع</Text>
+    //                             </View>
+
+    //                         </View>
+
+    //                         <Text style={styles.cancel}>تم الغاء الطلب بواسطه المشتري</Text>
+    //                         {/*التقييم*/}
+    //                         <Text style={styles.rate}>تقييمك للبائع : </Text>
+    //                         <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
+    //                             <Text style={styles.rating}>{"(5)"} ⭐⭐⭐⭐ </Text>
+    //                             <Text style={styles.dateRate}>18 مايو 2025</Text>
+
+    //                         </View>
+
+    //                         <Text style={styles.rateNote}>جودة ممتازة وسعر مناسب. الورق أبيض نقي والطباعة عليه واضحة جداً. أنصح بالشراء.</Text>
+    //                     </View>
+    //                 </View>
+
+
+
+    //                 {/* <View style={[layout.dirRow, styles.actions]}>
+
+    //             <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} onPress={() => onAccept(item)}>
+    //                 <Text style={styles.acceptText}>تواصل الان</Text>
+
+    //             </TouchableOpacity>
+    //         </View> */}
+    //             </View>
+
+    //         </ScrollView>
+
+    //     </SafeAreaView >
+    // )
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView showsVerticalScrollIndicator={false}
-                showsHorizontalScrollIndicator={false}>
-                <View style={styles.card}>
 
-                    <View style={[layout.dirRow, styles.row]}>
-                        <View style={styles.con1}>
-                            <View style={[layout.dirRow, { justifyContent: "space-between", alignItems: "center" }]}>
-                                <TouchableOpacity style={styles.statusBtn} onPress={() => { }}>
-                                    <Text style={styles.statusText}>طلب مقبول</Text>
+        <View style={{ flex: 1, justifyContent: 'center' }}>
 
-                                </TouchableOpacity>
-                                <View style={[layout.rowBox, { alignItems: "center" }]}>
-                                    <Image source={{ uri: "https://i.pravatar.cc/100" }} style={styles.avatar} />
-                                    <Text style={styles.name}>مكتبة النور</Text>
-                                </View>
-                            </View>
-                            <View style={styles.actions}>
-                                <SellerBranches loading={state.loading} onPress={function (): void {
-                                    throw new Error('Function not implemented.');
-                                }} />
-                            </View>
-                            <Text style={styles.product}>ورق مرام 80جم</Text>
-
-
-
-                            <View style={styles.actions}>
-                                <Text style={styles.date}>التاريخ: </Text>
-                                <Text style={styles.date1}>15 ديسمبر 2025</Text>
-                            </View>
-
-                            <View style={styles.actions}>
-                                <Text style={styles.date}>الكمية: </Text>
-                                <Text style={styles.date1}>15</Text>
-                            </View>
-
-                            <View style={styles.actions}>
-                                <Text style={styles.date}>الاجمالي: </Text>
-                                <Text style={styles.total}>1500 جنيها</Text>
-                            </View>
-
-                            <View style={[layout.dirRow, styles.actions]}>
-                                <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} onPress={() => onAccept(item)}>
-                                    <View style={[styles.icon]}>
-                                        <Call2Icon />
-                                    </View>
-                                    <Text style={styles.acceptText}>تواصل الان</Text>
-
-                                </TouchableOpacity>
-
-                            </View>
-
-                            <View style={[layout.dirRow, styles.actions]}>
-
-                                <TouchableOpacity style={[layout.rowBox, styles.receiveBtn]} onPress={() => onAccept(item)}>
-                                     <View style={[styles.icon]}>
-                                         <CheckIcon />
-                                         </View>
-                                   
-                                    <Text style={styles.receiveText}>تم التسليم</Text>
-
-                                </TouchableOpacity>
-                            </View>
-
-                             <View style={[layout.dirRow, styles.actions]}>
-
-                                <TouchableOpacity style={[layout.rowBox, styles.cancelBtn]} onPress={() => onAccept(item)}>
-                                      <View style={[styles.icon]}>
-                                         <CancelIcon />
-                                         </View>
-                                    <Text style={styles.cancelText}>الغاء الطلب</Text>
-
-                                </TouchableOpacity>
-                            </View>
-
-                            {/* وصف المنتج */}
-                            <View >
-                                <View style={styles.actions}>
-                                    <Text style={styles.description}>وصف المنتج: </Text>
-                                    <Text style={styles.description1}>ورق طباعة أبيض نقي بجودة ممتازة، مناسب لجميع أنواع الطابعات النافثة للحبر والليزر. العبوة تحتوي على 500 ورقة بحجم A4 قياسي. الورق مصنوع من ألياف طبيعية عالية الجودة مما يضمن طباعة واضحة ونتائج احترافية.</Text>
-                                </View>
-                                <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                                    <Text style={styles.note}>النوع</Text>
-                                    <Text style={styles.note1}>مرام</Text>
-                                </View>
-                                <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                                    <Text style={styles.note}>الحجم</Text>
-                                    <Text style={styles.note1}>A4</Text>
-                                </View>
-                                <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                                    <Text style={styles.note}>الوزن</Text>
-                                    <Text style={styles.note1}>جرام/مترمربع</Text>
-                                </View>
-
-                            </View>
-
-                            <Text style={styles.cancel}>تم الغاء الطلب بواسطه المشتري</Text>
-                            {/*التقييم*/}
-                            <Text style={styles.rate}>تقييمك للبائع : </Text>
-                            <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                                <Text style={styles.rating}>{"(5)"} ⭐⭐⭐⭐ </Text>
-                                <Text style={styles.dateRate}>18 مايو 2025</Text>
-
-                            </View>
-
-                            <Text style={styles.rateNote}>جودة ممتازة وسعر مناسب. الورق أبيض نقي والطباعة عليه واضحة جداً. أنصح بالشراء.</Text>
-                        </View>
-                    </View>
-
-
-
-                    {/* <View style={[layout.dirRow, styles.actions]}>
-
-                <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} onPress={() => onAccept(item)}>
-                    <Text style={styles.acceptText}>تواصل الان</Text>
-
-                </TouchableOpacity>
-            </View> */}
-                </View>
-            </ScrollView>
-        </SafeAreaView >
+            <DoneRate
+                visible={visible}
+                onClose={() => setVisible(false)}
+                onSubmit={handleSubmit}
+            />
+        </View>
     )
 }
 
@@ -230,7 +253,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             justifyContent: "center"
         },
 
-  cancelBtn: {
+        cancelBtn: {
             flex: 1,
             borderWidth: 1,
             borderColor: theme.red,
@@ -280,7 +303,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             fontFamily: Fonts.bold,
             color: theme.babyBlue
         },
-          cancelText: {
+        cancelText: {
             fontSize: PixelPerfect(16),
             fontFamily: Fonts.bold,
             color: theme.red
