@@ -1,6 +1,6 @@
 import { Dispatch } from "redux";
 import { IDispatch } from "../Constants/interfaces";
-import { SetUserData, UserLogin, UserLogout } from "../Store/actions/auth";
+import { SetUserData, UserIsSeller, UserLogin, UserLogout } from "../Store/actions/auth";
 import { AsyncKeys, saveItem } from "../Helper";
 import { globalAPI } from "../Constants/config";
 
@@ -24,6 +24,11 @@ export const SignInHandler = (body:any, cb?: (data: any,status:any) => void) => 
   
         if (status == 200) {
           dispatch<any>(loginHandler(data.data));
+        }
+        if (data.data.role != "Customer") {
+          if (data.data.admin) {     
+            dispatch<any>(UserIsSeller());
+          }
         }
         cb && cb(data,status);
       } catch (error) {

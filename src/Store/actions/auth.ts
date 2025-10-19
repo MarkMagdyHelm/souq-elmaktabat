@@ -34,6 +34,13 @@ export const UserLogin = () => ({
 });
 
 /**
+* UserIsSeller
+*/
+export const UserIsSeller = () => ({
+  type: ActionType.USER_ISRESELLER,
+  payload: true,
+});
+/**
 * UserLogout
 */
 export const UserLogout = () => ({

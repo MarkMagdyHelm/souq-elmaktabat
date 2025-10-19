@@ -1,13 +1,18 @@
 import React, { useContext } from "react";
-import { Pressable, Text, View, Platform } from "react-native";
+import { Pressable, Text, View, Platform, Image, StyleSheet } from "react-native";
 import { Formik, FormikProps } from "formik";
 import { validationSchema2 } from "../../../../Validation/Form2Refistration";
 import Inputs from "../../../../Components/inputs";
 import DropDowenMenu from "../../../../Components/DropDowenMenus/DropDowenMenu";
 import MultiChekers from "../../../../Components/PopUps/MultiChekers";
-import { ArrowDownIcon } from "../../../../Assets/Svg";
+import { ArrowDownIcon, ImageIcon } from "../../../../Assets/Svg";
 import { ThemeContext } from "../../../../Constants/theming";
 import { t } from "i18next";
+import { openAPPCamera, openAPPPicker } from "../../../../Services/ImageCropPicker";
+import FilterOrder from "../../../../Components/PopUps/FilterOrder";
+import { PixelPerfect } from "../../../../Constants/styleConstants";
+import { IFont, ITheme } from "../../../../Constants/interfaces";
+const filterOption = [{ ID: 1, Name: "Camera", Value: "Camera" }, { ID: 2, Name: "Photos", Value: "Photos" },]
 
 type Props = {
   formikRef: React.RefObject<FormikProps<any>>;
@@ -20,23 +25,99 @@ type Props = {
 };
 
 const FormStep2 = ({ formikRef, state, setstate, GetAreas, countries, activites, styles }: Props) => {
-  const { layout, dir } = useContext(ThemeContext);
+  const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
+    const styless = useStyles(Fonts, theme, dark, dir);
+    
 
+  const handleCameraPhotos = async (name) => {
+    try {
+      if (name == "Camera") {
+        let file = await openAPPCamera();
+        if (file) {
+          if (state.whichimage == "logo") {
+            // formikRef?.current.setFieldValue("ImageUrl", file);
+          }
+
+        } else {
+          if (state.whichimage == "logo") {
+            if (!formikRef?.current?.values?.ImageUrl.hasOwnProperty("uri")) {
+              // formikRef?.current?.setFieldError("ImageUrl", 'Image is required')
+            }
+          } 
+        }
+      } else if (name == "Photos") {
+        let file = await openAPPPicker();
+        console.log('====================================');
+        console.log(file);
+        console.log('====================================');
+        if (file) {
+          if (state.whichimage == "logo") {
+            formikRef?.current.setFieldValue("ImageUrl", file);
+          } 
+
+        } else {
+          if (state.whichimage == "logo") {
+            if (!formikRef?.current?.values?.ImageUrl.hasOwnProperty("uri")) {
+              // formikRef?.current?.setFieldError("ImageUrl", 'Image is required')
+            }
+          } 
+        }
+      }
+    } catch (error) {
+      console.log('===================ssss=================');
+      console.log(error);
+      console.log('====================================');
+      setstate(old => ({ ...old, commercialImage: [...state.commercialImage], ImageData: [...state.ImageData] }))
+    }
+
+  }
   return (
     <Formik
       validationSchema={validationSchema2}
       innerRef={formikRef}
       initialValues={{
+          ImageUrl: {},
         Addresses: "",
         City: "",
         Area: "",
         OtherPhoneNumbers: "",
         Activities: "",
       }}
-      onSubmit={() => {}}
+      onSubmit={() => { }}
     >
-      {({ handleChange, handleBlur, errors, touched, setFieldValue, setFieldTouched, setFieldError }) => (
+      {({ handleChange, handleBlur, errors, touched, setFieldValue, values,setFieldTouched, setFieldError }) => (
         <>
+                    <View style={styless.logoCon}>
+                      <Text style={styless.txtin}>{t('inputimg1')}</Text>
+                      {values?.ImageUrl?.hasOwnProperty("uri") ?
+                        <Pressable
+                          style={styles.imgcon}
+                          onPress={() => {
+                            setstate((old) => ({
+                              ...old,
+                              showFiltter: true,
+                              whichimage: "logo"
+                            }));
+                          }}
+                        >
+                          <Image
+                            style={styless.img}
+                            source={{ uri: `file:///${values?.ImageUrl?.uri}` }}
+                          />
+                        </Pressable>
+                        : <Pressable style={styless.conIcon}
+                          onPress={() => {
+                            setstate((old) => ({
+                              ...old,
+                              showFiltter: true,
+                              whichimage: "logo"
+                            }));
+                          }}
+                        >
+        
+                          <ImageIcon />
+                        </Pressable>}
+                    </View>
           {/* Government */}
           <Pressable
             style={styles.selectMenueCon}
@@ -219,7 +300,7 @@ const FormStep2 = ({ formikRef, state, setstate, GetAreas, countries, activites,
               onCloseFn={(val) => {
                 if (val?.length === 0) {
                   setFieldError("Activities", "You must choose a market!");
-                     setstate((old) => ({
+                  setstate((old) => ({
                     ...old,
                     shoMarkets: false,
                   }));
@@ -238,10 +319,26 @@ const FormStep2 = ({ formikRef, state, setstate, GetAreas, countries, activites,
               items={activites}
               style={{ flex: 0.6 }}
               type="activities"
-                hasTextInput={true}
-                  textinputTitle={t('marketwwww')}
+              hasTextInput={true}
+              textinputTitle={t('marketwwww')}
             />
           )}
+
+          {state.showFiltter && <FilterOrder
+              title={t('Filter')}
+              items={filterOption}
+              currentFilter={filterOption}
+              onCloseFn={(val) => {
+                if (state.whichimage == "logo") {
+                  setFieldTouched("ImageUrl")
+                }
+                setstate(old => ({ ...old, showFiltter: false }))
+                setTimeout(() => {
+                  handleCameraPhotos(val.Name);
+
+                }, 300);
+              }}
+            />}
         </>
       )}
     </Formik>
@@ -249,3 +346,31 @@ const FormStep2 = ({ formikRef, state, setstate, GetAreas, countries, activites,
 };
 
 export default FormStep2;
+const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string) =>
+  StyleSheet.create({
+    logoCon: {
+      alignItems: "center",
+      justifyContent: "center",
+      marginBottom: PixelPerfect(23)
+    },
+    txtin: {
+      fontFamily: Fonts.medium,
+      fontSize: PixelPerfect(18),
+      color: theme.black,
+      lineHeight: 24
+    },
+    conIcon: {
+      alignItems: "center",
+      justifyContent: "center",
+      width: PixelPerfect(64),
+      height: PixelPerfect(64),
+      borderRadius: PixelPerfect(64) / 2,
+      backgroundColor: theme.gray2,
+      marginTop: PixelPerfect(4)
+    },
+    img: {
+      width: PixelPerfect(64),
+      height: PixelPerfect(64),
+      borderRadius: PixelPerfect(64) / 2,
+    }
+  });

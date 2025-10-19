@@ -5,7 +5,8 @@ const initialState = {
   userdata:{},
   isLogin:false,
   gusterID: "",
-  fcm:""
+  fcm:"",
+  isSeller:false
 
 };
 
@@ -22,6 +23,8 @@ export default (state = initialState, { type, payload }: IReduser) => {
           return { ...state, isLogin: payload };
           case ActionType.SET_FCM_TOKEN:
           return { ...state, fcm: payload };
+            case ActionType.USER_ISRESELLER:
+          return { ...state, isSeller: payload };
           
     default:
       return state;

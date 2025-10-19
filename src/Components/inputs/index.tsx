@@ -89,7 +89,8 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             fontFamily:Fonts.medium,
             fontSize:PixelPerfect(18),
             color:theme.black,
-            marginBottom:PixelPerfect(10)
+            marginBottom:PixelPerfect(10),
+            lineHeight:PixelPerfect(20)
         },
         textInputContainer:{
         width:"95%",

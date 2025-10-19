@@ -27,7 +27,7 @@ import Orders from '../Screens/Orders/index'
 import MyOrders from '../Screens/MyOrders/index'
 import Demo from '../Screens/Demo/index';
 import OrderDetails from '../Screens/OrderDetails/index';
-
+import ForgetPassword from '../Screens/Auth/ForgetPassword/Index'
 const Stack = createStackNavigator();
 
 
@@ -48,7 +48,7 @@ const Stacks = () => {
         };
       }}
 
-      initialRouteName={'OrderDetails'}
+      initialRouteName={isLogin?"Home":'Demo'}
 
     >
 
@@ -62,12 +62,15 @@ const Stacks = () => {
       <Stack.Screen name="Home2" component={Home2} />
       <Stack.Screen name="ProductDetails" component={ProductDetails} />
 
+      <Stack.Screen name="Demo" component={Demo} />
       <Stack.Screen name="Signup" component={Signup} />
+       <Stack.Screen name="Signin" component={Signin} />
       <Stack.Screen name="ConfirmtionCode" component={ConfirmtionCode} />
       <Stack.Screen name="Notifications" component={Notifications} />
       <Stack.Screen name="Polls" component={Polls} />
       <Stack.Screen name="ContactUs" component={ContactUs} />
       <Stack.Screen name="RegisterInformation" component={RegisterInformation} />
+         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
     </Stack.Navigator>
   );
 };
