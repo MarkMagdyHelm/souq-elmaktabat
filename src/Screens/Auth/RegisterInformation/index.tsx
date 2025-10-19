@@ -141,8 +141,8 @@ const Index = (props: Props) => {
             body.PaymentTypes = formikRef3?.current?.values?.PaymentTypes.filter(item => item.id !== undefined) || [];
            body.Addresses = state.addresses.map(address => ({
     ...address,
-    Country: address.Country?.id || address.Country, // Extract ID
-    Region: address.Region?.id || address.Region     // Extract ID
+    Country: address.Country?.id || address.Country, 
+    Region: address.Region?.id || address.Region     
 }));
               body.Description = formikRef3?.current?.values?.Description
             body.ImageUrl2 = formikRef3?.current?.values?.ImageUrl2

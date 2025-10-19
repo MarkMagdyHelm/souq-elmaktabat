@@ -41,6 +41,9 @@ globalAPI.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `bearer ${token}`;
     }
+        console.log('=============token=======================');
+    console.log(token);
+    console.log('====================================');
     config.headers['DeviceId'] = DeviceInfo.getUniqueIdSync();
     if (config?.data) {
      

@@ -10,6 +10,7 @@ import { Call2Icon, CancelIcon, CheckIcon } from '../../Assets/Svg';
 import RatingScreen from '../../Components/PopUps/RatingScreen';
 import CancelOrder from '../../Components/PopUps/CancelOrder';
 import DoneRate from '../../Components/PopUps/DoneRate';
+import MultiChekers from '../../Components/PopUps/MultiChekers';
 type Props = {
     item: any, onAccept: any, onReject: any
 }
@@ -31,6 +32,12 @@ const MyOrderItem = (props: Props) => {
     const handleSubmit = (data) => {
         console.log('Rating submitted:', data);
     };
+
+     const categories = [
+        { id: "1", title: "ورق", image: "https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg" },
+        { id: "2", title: "أحبار", image: "https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg" },
+        { id: "3", title: "مطابع", image: "https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg" },
+    ];
 
     // return (
     //     <SafeAreaView style={styles.container}>
@@ -165,6 +172,18 @@ const MyOrderItem = (props: Props) => {
                 visible={visible}
                 onClose={() => setVisible(false)}
                 onSubmit={handleSubmit}
+            />
+            <MultiChekers
+                onCloseFn={(val) => {
+
+                }}
+                title={"tyutuyh"}
+                currentFilter={"jkklj"}
+                items={categories}
+                style={{ flex: 0.6 }}
+                type="activities"
+                hasTextInput={true}
+                textinputTitle={'marketwwww'}
             />
         </View>
     )
