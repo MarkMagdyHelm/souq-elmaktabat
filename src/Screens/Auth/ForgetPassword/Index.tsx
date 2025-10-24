@@ -39,7 +39,7 @@ const handleSubmit = (values)=>{
 dispatch<any>(ForgetPasswordHandler(values,(res,status)=>{
     if (res.status == 200) {
          showToast({ type: 'ok', message: res?.message});
-         navigation.navigate("signin")
+         navigation.navigate("signingit ")
     } else {
         showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
     }
