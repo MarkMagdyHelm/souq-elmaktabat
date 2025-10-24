@@ -130,5 +130,6 @@ accordianBody: string;
   sepreator: string,
   grayLigth: string
   gray2: string,
-  rateBorder:string
+  rateBorder:string,
+  categorypopupitemBg:string
 }

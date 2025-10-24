@@ -141,11 +141,7 @@ const Index = (props: Props) => {
           </View>
         </View>
         <TabBar />
-        {isSeller&&<View style={styles.addOffer}>
-          <Pressable onPress={()=>navigation.navigate("AddOffer")}>
-            <AddOfferICon />
-          </Pressable>
-        </View>}
+        
       </Container>
     </ViewShot>
   )
@@ -209,9 +205,5 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
     list: {
 
     },
-    addOffer: {
-      position: "absolute",
-      bottom: phoneHeight * 0.125,
-      left: PixelPerfect(16)
-    }
+  
   });

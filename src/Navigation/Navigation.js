@@ -50,7 +50,7 @@ const Stacks = () => {
         };
       }}
 
-      initialRouteName={isLogin?"Home":'Demo'}
+      initialRouteName={isLogin?"Home2":'Demo'}
 
     >
 
@@ -87,7 +87,7 @@ const Drawers = () => {
 
   return (
 
-    <Drawer.Navigator initialRouteName="Home2"
+    <Drawer.Navigator initialRouteName="Home"
 
       screenOptions={props => {
         return {

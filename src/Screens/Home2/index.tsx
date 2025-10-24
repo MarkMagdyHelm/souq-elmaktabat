@@ -1,9 +1,9 @@
-import { FlatList, SectionList, StyleSheet, Text, View } from 'react-native'
+import { FlatList, Pressable, SectionList, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Container, Content } from '../../Components/containers/Containers'
 import { ThemeContext } from '../../Constants/theming'
 import { IFont, ITheme } from '../../Constants/interfaces'
-import { PixelPerfect, phoneWidth } from '../../Constants/styleConstants'
+import { PixelPerfect, phoneHeight, phoneWidth } from '../../Constants/styleConstants'
 import TabBar from '../../Components/TabBar/index';
 
 
@@ -17,6 +17,9 @@ import Product from '../../Components/Cards/Product'
 import { GetCategories } from '../../Apis/CommonApi'
 import { t } from 'i18next'
 import { GetAllPaperOffers } from '../../Apis/HomeApis'
+import { AddOfferICon } from '../../Assets/Svg'
+import DropDowenMenu from '../../Components/DropDowenMenus/DropDowenMenu'
+import CategoriesPopup from '../../Components/PopUps/categories'
 
 
 type Props = {
@@ -30,7 +33,8 @@ const Index = (props: Props) => {
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
     const ref = useRef() as any;
-    const { isLogin } = useSelector((state: RootState) => state.auth);
+    const { isLogin, userdata, isSeller } = useSelector((state: RootState) => state.auth);
+  
     // const categories = [
     //     { id: "1", title: "ورق", image: "https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg" },
     //     { id: "2", title: "أحبار", image: "https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg" },
@@ -121,7 +125,8 @@ const Index = (props: Props) => {
         loading: false,
         isFetching: false,
         categories: [],
-        sections: []
+        sections: [],
+        showCategories:false
     });
     useEffect(() => {
         getCategory()
@@ -230,6 +235,19 @@ const Index = (props: Props) => {
                 ))}
             </Content>
             <TabBar />
+            {isSeller&&<View style={styles.addOffer}>
+                      <Pressable onPress={()=>  setstate(old => ({ ...old, showCategories: true }))}>
+                        <AddOfferICon />
+                      </Pressable>
+                    </View>}
+         {state.showCategories && (
+            <CategoriesPopup
+              onCloseFn={() => {  setstate(old => ({ ...old, showCategories: false }))}}
+              title={t("categoriespopup")}
+              items={state.categories}
+              style={{ flex: 0.45 }}
+            />
+          )}
         </Container>
 
     )
@@ -275,6 +293,10 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             fontSize: PixelPerfect(14),
 
         },
-
+  addOffer: {
+      position: "absolute",
+      bottom: phoneHeight * 0.125,
+      left: PixelPerfect(16)
+    }
 
     });
