@@ -108,7 +108,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             color:theme.black,
             marginBottom:PixelPerfect(20),
             textAlign:dir=="rtl"?"right":"left",
-         
+         lineHeight:PixelPerfect(25)
         },
         filterCon:{
             alignItems:"center",

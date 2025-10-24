@@ -15,4 +15,5 @@ export enum ActionType {
   SAVE_Roles = "SAVE_Roles",
   SAVE_TOOLS = "SAVE_TOOLS",
     SAVE_PAYMENTS = "SAVE_PAYMENTS",
+    USER_ISRESELLER="USER_ISRESELLER"
 }
