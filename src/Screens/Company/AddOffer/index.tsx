@@ -22,87 +22,37 @@ type Props = {
 
 const Index = (props: Props) => {
     const { navigation } = props;
-      const { email } = useRoute().params as any;
+    //   const {  } = useRoute().params as any;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
 
 
     const styles = useStyles(Fonts, theme, dark, dir);
     const [state, setstate] = useState({
         showRols: false,
-        loadingSignin: false
+        loading: false
     });
     const dispatch = useDispatch();
     const showToast = useToastNotification();
 
 const handleSubmit = (values)=>{
-    setstate(old=>({...old,loadingSignin:true}))
-dispatch<any>(ForgetPasswordHandler(values,(res,status)=>{
-    if (res.status == 200) {
-         showToast({ type: 'ok', message: res?.message});
-         navigation.navigate("signin")
-    } else {
-        showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
-    }
-     setstate(old=>({...old,loadingSignin:false}))
-}))
+    setstate(old=>({...old,loading:true}))
+
 }
     return (
         <Container showHint={false}>
-            <HeaderWithText title={t("signtxt3")} />
+            <HeaderWithText title={t("addoffer1")} />
             <View style={styles.con}>
                 <Formik
                     validationSchema={validationSchema}
                     initialValues={{
-                        Email: email,
+                       
                     }}
                     onSubmit={handleSubmit} >
                     {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue, setFieldTouched }) => {
                        
                         return (
                             <>
-                                <Content
-                                    noPadding
-                                    style={styles.body}
-                                    scrollEnabled={false}>
-                                    <Inputs
-                                               label={t("pasword")}
-                                               options={{
-                                                 onBlur: handleBlur("Password"),
-                                                 onChangeText: handleChange("Password"),
-                                                 placeholder: t("paswordw"),
-                                                 maxLength: 30,
-                                               }}
-                                               password={true}
-                                               showErrorr={(errors.Password && touched.Password) as boolean}
-                                               error={errors.Password as any}
-                                             />
-                                   
-                                             <Inputs
-                                               label={t("confirmpasword")}
-                                               options={{
-                                                 onBlur: handleBlur("ConfirmPassword"),
-                                                 onChangeText: handleChange("ConfirmPassword"),
-                                                 placeholder: t("confirmpaswordw"),
-                                                 maxLength: 30,
-                                               }}
-                                               password={true}
-                                               showErrorr={(errors.ConfirmPassword && touched.ConfirmPassword) as boolean}
-                                               error={errors.ConfirmPassword as any}
-                                             />
-                                    <View style={{ backgroundColor: theme.mainColor }}>
-                                        <Button
-                                            title={t('Next')}
-                                            loader={state.loadingSignin}
-                                            styleTitle={styles.buttonText}
-                                            onPress={() => {
-                                                handleSubmit();
-
-                                            }}
-                                            style={styles.button}
-                                        />
-                                    </View>
-                                   
-                                </Content>
+                             
                             </>
                         )
                     }}

@@ -24,10 +24,10 @@ export const SignInHandler = (body:any, cb?: (data: any,status:any) => void) => 
   
         if (status == 200) {
           dispatch<any>(loginHandler(data.data));
-        }
-        if (data.data.role != "Customer") {
-          if (data.data.admin) {     
-            dispatch<any>(UserIsSeller());
+          if (data.data.role != "Customer") {
+            if (data.data.admin) {     
+              dispatch<any>(UserIsSeller());
+            }
           }
         }
         cb && cb(data,status);
@@ -153,6 +153,55 @@ export const SignUpHandler = (body:any, cb?: (data: any,status:any) => void) => 
         cb && cb(data,status);
       } catch (error) {
           console.log('SignUpHandler error = ', error);
+        cb && cb(error,500);
+      }
+    };
+  };
+
+  /**
+ * CheckActivison
+ * @param cb callback function
+ */
+export const CheckActivison = (cb?: (data: any, status: any) => void) => {
+  return async (dispatch: Dispatch<IDispatch>) => {
+    try {
+      const { data, status } = await globalAPI.get('api/User/CheckConfirmation');
+      console.log('CheckActivisonHandler data = ', data, status);
+      // cb && cb(data,status);
+
+       if (data.status == 200) {
+            if (data.data) {     
+              dispatch<any>(UserIsSeller(data.data));
+            }
+          }
+    } catch (error) {
+      console.log('CheckActivisonHandler error = ', error);
+      cb && cb(error, 500);
+    }
+  };
+};
+
+/**
+ *   ForgetPassword
+ * @param body  phoneNumber password
+ * @param cb callback function
+ */
+export const ForgetPasswordHandler = (body:any, cb?: (data: any,status:any) => void) => {
+    return async (dispatch: Dispatch<IDispatch>) => {
+      try {
+        console.log('====================================');
+        console.log(body);
+        console.log('====================================');
+        const { data,status } = await globalAPI.post('/api/User/ChangePassword', body);
+        console.log(data,status);
+        
+        console.log('ForgetPasswordHandler data = ', data,status);
+  
+        if (status == 200) {
+          cb && cb(data,status);
+        }
+      } catch (error) {
+          console.log('ForgetPasswordHandler error = ', error);
         cb && cb(error,500);
       }
     };

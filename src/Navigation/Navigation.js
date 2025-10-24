@@ -27,7 +27,9 @@ import Orders from '../Screens/Orders/index'
 import MyOrders from '../Screens/MyOrders/index'
 import Demo from '../Screens/Demo/index';
 import OrderDetails from '../Screens/OrderDetails/index';
-import ForgetPassword from '../Screens/Auth/ForgetPassword/Index'
+import ForgetPassword from '../Screens/Auth/ForgetPassword/Index';
+import AddOffer from '../Screens/Company/AddOffer/index'
+
 const Stack = createStackNavigator();
 
 
@@ -71,6 +73,7 @@ const Stacks = () => {
       <Stack.Screen name="ContactUs" component={ContactUs} />
       <Stack.Screen name="RegisterInformation" component={RegisterInformation} />
          <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
+           <Stack.Screen name="AddOffer" component={AddOffer} />
     </Stack.Navigator>
   );
 };

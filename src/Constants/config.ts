@@ -30,6 +30,7 @@ globalAPI.interceptors.request.use(
   async config => {
     const language = await getItem(AsyncKeys.LANGUAGE);
     const { token } = (await getItem(AsyncKeys.USER_DATA)) || '';
+
       config.headers['Accept-Language']= language ?? 'ar';
       if (cancelToken?.hasOwnProperty("cancel")) {
         cancelToken.cancel('Canceling previous request');
