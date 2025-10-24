@@ -128,6 +128,7 @@ export const ConfirmEmailHandler = (body: any, cb?: (data: any, status: any) => 
       }
     };
   };
+};
 
   /**
  * CheckActivison
