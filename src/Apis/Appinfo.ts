@@ -9,40 +9,35 @@ import DeviceInfo from "react-native-device-info";
  * GetAppSettings
  * @param cb callback function
  */
-export const GetSettingsHandler = (body, action, cb?: (data: any, status: any) => void) => {
+export const GetSettingsHandler = (body:any,cb?: (data: any, status: any) => void) => {
   return async (dispatch: Dispatch<IDispatch>) => {
     try {
-      const { data, status } = await globalAPI.post('/api/Configuration/GetAllLookups', body);
-      console.log('GetSettingsHandler data = ', data);
-      if (action == "settings") {
-        dispatch(SetAppSettings(data.data.setting));
-      }
-
-      if (action == "signup") {
-        const paymentTypesithFlag = Array.isArray(data?.data?.PaymentTypes)
-          ? data.data.PaymentTypes.map(payment => ({
-            ...payment,
-            isSelected: false,
-          }))
-          : [];
-        console.log('==============paymentTypesithFlag======================');
-        console.log(paymentTypesithFlag);
-        console.log('====================================');
-        dispatch(SetPayments(paymentTypesithFlag));
-        dispatch(SetCountries(data.data.Countries));
-        const activitesWithFlag = data.data.Activities.map(activity => ({
-          ...activity,
+      const { data, status } = await globalAPI.get('/api/Configuration/GetAllLookups',body);
+      console.log('GetSettingsHandler data = ', data.data, data.status);
+      dispatch(SetAppSettings(data.data.setting));
+      const paymentTypesithFlag = Array.isArray(data?.data?.paymentTypes)
+        ? data.data.paymentTypes.map(payment => ({
+          ...payment,
           isSelected: false,
-        }));
-        dispatch(SetActivites(activitesWithFlag));
-        const toolsWithFlag = data.data.AvailableTools.map(tool => ({
-          ...tool,
-          isSelected: false,
-        }));
-        dispatch(SetTools(toolsWithFlag));
-        dispatch(SetRoles(data.data.Roles));
-      }
-      cb && cb(data.data.Settings,data.status);
+        }))
+        : [];
+      console.log('==============paymentTypesithFlag======================');
+      console.log(paymentTypesithFlag);
+      console.log('====================================');
+      dispatch(SetPayments(paymentTypesithFlag));
+      dispatch(SetCountries(data.data.country));
+      const activitesWithFlag = data.data.activities.map(activity => ({
+        ...activity,
+        isSelected: false,
+      }));
+      dispatch(SetActivites(activitesWithFlag));
+      const toolsWithFlag = data.data.availableTools.map(tool => ({
+        ...tool,
+        isSelected: false,
+      }));
+      dispatch(SetTools(toolsWithFlag));
+      dispatch(SetRoles(data.data.roles));
+      cb && cb(data.data.setting, data.status);
     } catch (error) {
       console.log('GetSettingsHandler error = ', error);
       cb && cb(error, 500);

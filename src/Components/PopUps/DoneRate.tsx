@@ -33,29 +33,13 @@ const DoneRate = ({ visible, onClose, onSubmit }) => {
 
     <Modal transparent visible={visible} animationType="fade">
       <View style={styles.overlay}>
-
         <View style={styles.container}>
-
-          {/* Header */}
           <View style={[layout.center]}>
-            <DoneIcon style ={{color:theme.babyBlue}}
-        
-             
-   
-            />
+            <DoneIcon style ={{color:theme.babyBlue}} />
             <Text style={styles.title}>تم التقييم بنجاح</Text>
-
           </View>
-
-
-
-
         </View>
-
-
       </View>
-
-
     </Modal >
 
   );

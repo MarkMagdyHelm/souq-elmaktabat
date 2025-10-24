@@ -39,9 +39,13 @@ globalAPI.interceptors.request.use(
       config.cancelToken = new axios.CancelToken(c => {
         cancelToken = c;
       });
-    if (token) {
-      config.headers.Authorization = `bearer ${token}`;
-    }
+    // if (token) {
+    //  // config.headers.Authorization = `bearer ${token}`;
+    //   config.headers.Authorization = `bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImE3NGVjMWU4LTNlNzUtNGNiMy1iMjZiLTA4ZGUwYmVhMDk5OSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJSWUNCQkJBN003IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQ3VzdG9tZXIiLCJleHAiOjE3NjM4OTUyMjl9.N4ax88eSA7A5m9FhXa_jflvEi8euzgAoIxoDMRAAwGY`;
+    // }
+          config.headers.Authorization = `bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjkxODc3MWZmLTlkZGItNGRjZS0xNTM5LTA4ZGRmMTZkMmI3OCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJNODdKQzJESUxDIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQ3VzdG9tZXIiLCJleHAiOjE3NjM5MTMwOTR9.jTxMxsI2IB-VZidQ9F2LoTvEMqOK9922IO4TIdwnjl8`;
+
+   
     config.headers['DeviceId'] = DeviceInfo.getUniqueIdSync();
     if (config?.data) {
      

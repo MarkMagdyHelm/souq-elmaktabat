@@ -18,16 +18,10 @@ import { ThemeContext } from '../../Constants/theming';
 import { PixelPerfect } from '../../Constants/styleConstants';
 
 const CancelOrder = ({ visible, onClose, onSubmit }) => {
-    const [rating, setRating] = useState(0);
-    const [comment, setComment] = useState('');
+
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
-    const handleRating = (value) => setRating(value);
-
-    const handleSave = () => {
-        onSubmit({ rating, comment });
-        onClose();
-    };
+  
 
     return (
 
@@ -39,7 +33,7 @@ const CancelOrder = ({ visible, onClose, onSubmit }) => {
                     {/* Header */}
                     <View style={[layout.rowBox, styles.header]}>
                         <Text style={styles.title}>الغاء الطلب</Text>
-                        <TouchableOpacity onPress={onClose}>
+                        <TouchableOpacity onPress={() => { onClose()}}>
                             <Text style={styles.close}>✕</Text>
                         </TouchableOpacity>
                     </View>
@@ -50,12 +44,12 @@ const CancelOrder = ({ visible, onClose, onSubmit }) => {
 
                     <View style={[layout.dirRow, styles.actions]}>
 
-                        <TouchableOpacity style={[layout.rowBox, styles.cancelBtn]} onPress={() => { }}>
+                        <TouchableOpacity style={[layout.rowBox, styles.cancelBtn]} onPress={() => { onSubmit()}}>
 
                             <Text style={styles.cancelText}>نعم، إلغاء الطلب</Text>
 
                         </TouchableOpacity>
-                        <TouchableOpacity style={[layout.rowBox, styles.backBtn]} onPress={() => { }}>
+                        <TouchableOpacity style={[layout.rowBox, styles.backBtn]} onPress={() => { onClose()}}>
 
                             <Text style={styles.backText}>لا، رجوع</Text>
 

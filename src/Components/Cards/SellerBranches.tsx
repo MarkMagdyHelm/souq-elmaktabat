@@ -11,14 +11,12 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 type Props = {
     item?: any,
     onPress: () => void,
-    loading: boolean
 }
 
 const SellerBranches = (props: Props) => {
     const {
         item,
-        onPress,
-        loading
+        onPress
     } = props
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
@@ -32,17 +30,9 @@ const SellerBranches = (props: Props) => {
                     <AddressIcon color={Colors.white} />
                 </View>
 
-                {loading ?
-                    <SkeletonPlaceholder backgroundColor={Colors.secondColor}>
-                        <SkeletonPlaceholder.Item alignSelf='flex-end' height={PixelPerfect(20)}
-                            width={250}></SkeletonPlaceholder.Item></SkeletonPlaceholder>
-                    : <Text style={[layout.textAlign, styles.textTitle]}>{"القاهرة / مصر الجديدة"}</Text>}
+                <Text style={[layout.textAlign, styles.textTitle]}>{item.country + "/" + item.region}</Text>
             </View>
-            {loading ?
-                <SkeletonPlaceholder backgroundColor={Colors.secondColor}>
-                    <SkeletonPlaceholder.Item alignSelf='flex-end' height={PixelPerfect(20)}
-                        width={250}></SkeletonPlaceholder.Item></SkeletonPlaceholder>
-                : <Text style={[layout.textAlign, styles.textBody]}>{"٢١ش الخليفة المأمون مصر الجديده امام سوق العصر اعلى راديو شاك"}</Text>}
+            <Text style={[layout.textAlign, styles.textBody]}>{item.name}</Text>
 
         </View>
     )
@@ -75,10 +65,10 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             fontSize: PixelPerfect(16),
             marginHorizontal: PixelPerfect(5)
         },
-          textBody: {
+        textBody: {
             fontFamily: Fonts.extraLight,
             color: theme.black,
             fontSize: PixelPerfect(14),
-            marginVertical:PixelPerfect(8)
+            marginVertical: PixelPerfect(8)
         }
     });

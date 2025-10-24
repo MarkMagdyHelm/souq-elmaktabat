@@ -6,40 +6,40 @@ import { ColorWithOpacity, Colors, PixelPerfect, phoneWidth } from '../../Consta
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 type Props = {
-    item: any
+    item: any, onPress: () => void,
 }
 
 const Product = (props: Props) => {
     const {
-        item
+        item,
+        onPress
     } = props;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
-    const [show, setshow] = useState(false);
     return (
         <Pressable
-            onPress={() => setshow(true)}
+            onPress={onPress}
         >
             <View
                 style={[styles.con]}
             >
-                <Image source={{ uri: item.image }} style={[styles.image]} />
-                <Text style={[styles.text]}>{item.name}</Text>
+                <Image source={{ uri: item.paperPhoto }} style={[styles.image]} />
+                <Text style={[styles.text]}>{item.categoryName + " " + item.paperName + " " + item.width + "جم " + item.paperSize}</Text>
                 <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                    <Text style={[styles.text1]}>{item.price}</Text>
+                    <Text style={[styles.text1]}>{item.price + "جنيها"}</Text>
                     <View style={[layout.rowBox]}>
                         <Text>{"⭐"}</Text>
-                        <Text style={[styles.text1]}>{"(" + item.rating + ")"}</Text>
+                        <Text style={[styles.text1]}>{"(" + item.userRateCount + ")"}</Text>
                     </View>
                 </View>
                 <View style={[layout.rowBox, styles.con2]}>
                     <Image
-                        source={{ uri: "https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg" }}
+                        source={{ uri: item.userImages }}
                         style={[styles.imageRound]}
                     />
                     <View style={{ marginHorizontal: PixelPerfect(4) }}>
-                        <Text style={[styles.text]}>{item.seller}</Text>
-                        <Text style={[styles.text2]}>{"القاهرة"}</Text>
+                        <Text style={[styles.text]}>{item.userName}</Text>
+                        <Text style={[styles.text2]}>{item.countryName}</Text>
                     </View>
                 </View>
                 <TouchableOpacity

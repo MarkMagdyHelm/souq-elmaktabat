@@ -1,13 +1,23 @@
 // @ts-ignore
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Easing, Platform } from 'react-native';
+import { Alert, Easing, Linking, Platform } from 'react-native';
 import i18n from '../Local/i18n.config';
 export enum AsyncKeys {
   IS_LOGIN = 'IS_LOGIN',
   USER_DATA = 'USER_DATA',
   LANGUAGE = 'LANGUAGE',
 }
+ export const CallNumber = async (phoneNumber) => {
+    const url = `tel:${phoneNumber}`;
+    const supported = await Linking.canOpenURL(url);
 
+    if (supported) {
+      await Linking.openURL(url);
+    } else {
+      Alert.alert("🚫 خطأ", "الاتصال غير مدعوم على هذا الجهاز");
+    }
+  };
+  
 export class PersistConfig {
   key: string;
   storage: AsyncStorage;
