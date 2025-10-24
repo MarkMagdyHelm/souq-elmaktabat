@@ -73,7 +73,7 @@ function App(): JSX.Element {
    });
    const getSettings = ()=>{
     dispatch<any>(GetSettingsHandler((res,status)=>{
-      if (Platform.OS === "android") {
+      if (Platform.OS === "android") {  
         let androidSetting = res?.find((el:any)=>el.type == "Android");
         console.log('====androidSetting================================');
         console.log(androidSetting);

@@ -1,4 +1,4 @@
-import { PermissionsAndroid, Platform, Text, View } from 'react-native'
+import { Alert, Linking, PermissionsAndroid, Platform, Text, View } from 'react-native'
 import React, { useEffect } from 'react'
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import PushNotification from "react-native-push-notification";
@@ -12,8 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 type Props = {
 
 };
-
-
+ 
 const PushNotificationHandler = () => {
     const { isLogin } = useSelector((state: RootState) => state.auth);
     const navigation = useNavigation() as any;
@@ -88,18 +87,18 @@ const PushNotificationHandler = () => {
             console.log('====================================');
             dispatch(SetFCM(fcmToken));
             // if (!isLogin) {      
-                dispatch<any>(AssignGuestFCMTokenHandler({},
-                    {
-                        fcmToken:fcmToken
-                    },(res,status)=>{
+            dispatch<any>(AssignGuestFCMTokenHandler({},
+                {
+                    fcmToken: fcmToken
+                }, (res, status) => {
                     if (res.status == 200) {
-                     console.log('=============AssignGuestFCMTokenHandler=======================');
-                     console.log(res);
-                     console.log('====================================');
-                    }else{
-                    //   toastNotfication({ type: 'error', message: res?.message ?? t("Something Went wrong") });
+                        console.log('=============AssignGuestFCMTokenHandler=======================');
+                        console.log(res);
+                        console.log('====================================');
+                    } else {
+                        //   toastNotfication({ type: 'error', message: res?.message ?? t("Something Went wrong") });
                     }
-                   }))
+                }))
             // }
         } catch (error) {
             console.log('===============errorFCM=====================');
@@ -109,7 +108,7 @@ const PushNotificationHandler = () => {
 
     }
 
-   
+
     PushNotification.configure({
         // (optional) Called when Token is generated (iOS and Android)
         onRegister: function (token: any) {
@@ -119,14 +118,14 @@ const PushNotificationHandler = () => {
         // (required) Called when a remote is received or opened, or local notification is opened
         onNotification: function (notification: any) {
             console.log("NOTIFICATION:", notification);
-           
-            switch (notification.data.FirstName as string ) {
-                case  "AdminPoll":
-                  navigation.navigate("Polls");
-                  break;
+
+            switch (notification.data.FirstName as string) {
+                case "AdminPoll":
+                    navigation.navigate("Polls");
+                    break;
                 default:
                     navigation.navigate("Home")
-                  break;
+                    break;
             }
             // process the notification
 
@@ -172,5 +171,8 @@ const PushNotificationHandler = () => {
     return <></>
 }
 
+
+
 export default PushNotificationHandler
+
 

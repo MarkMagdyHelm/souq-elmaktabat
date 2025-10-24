@@ -9,10 +9,10 @@ import DeviceInfo from "react-native-device-info";
  * GetAppSettings
  * @param cb callback function
  */
-export const GetSettingsHandler = (cb?: (data: any, status: any) => void) => {
+export const GetSettingsHandler = (body:any,cb?: (data: any, status: any) => void) => {
   return async (dispatch: Dispatch<IDispatch>) => {
     try {
-      const { data, status } = await globalAPI.get('/api/Configuration/GetAllLookups');
+      const { data, status } = await globalAPI.get('/api/Configuration/GetAllLookups',body);
       console.log('GetSettingsHandler data = ', data.data, data.status);
       dispatch(SetAppSettings(data.data.setting));
       const paymentTypesithFlag = Array.isArray(data?.data?.paymentTypes)

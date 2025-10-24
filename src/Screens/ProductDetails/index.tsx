@@ -16,6 +16,8 @@ import {
 } from "react-native";
 import { PixelPerfect } from '../../Constants/styleConstants';
 import SellerBranches from '../../Components/Cards/SellerBranches';
+import { Container, Content } from '../../Components/containers/Containers';
+import { useRoute } from '@react-navigation/native';
 
 type Props = {
     navigation: any
@@ -24,6 +26,8 @@ const Index = (props: Props) => {
     const {
         navigation
     } = props
+
+    const { item } = useRoute().params as any;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
 
@@ -31,22 +35,9 @@ const Index = (props: Props) => {
     const minQty = 1;
     const maxQty = 1500;
     const [qty, setQty] = useState(1);
-
-    const product = {
-        title: "ورق مرام 80جم",
-        unit: "كرتونة",
-        weight: "80 جرام/متر مربع",
-        seller: "احمد محمد",
-        location: "القاهرة، مصر الجديدة",
-        description:
-            "ورق طباعة ابيض نقي بجودة ممتازة، مناسب لجميع أنواع الطابعات. وزن 80 جرام وقياس A4.",
-        image: require('../../Assets/Images/order-details.jpg'),
-    };
-    const [state, setstate] = useState({
-        loading: false,
-        items: [{ flag: false }, { flag: false }]
-
-    });
+    console.log('==============item======================');
+    console.log(item);
+    console.log('====================================');
 
     const total = useMemo(() => pricePerUnit * qty, [pricePerUnit, qty]);
 
@@ -76,43 +67,42 @@ const Index = (props: Props) => {
 
         Alert.alert(
             "تم إرسال الطلب",
-            `لقد طلبت ${qty} ${product.unit} (السعر الكلي: ${total.toLocaleString()} جنيه).`
+            `لقد طلبت ${qty} ${item.unit} (السعر الكلي: ${total.toLocaleString()} جنيه).`
         );
     };
 
-
+    const fullDate = item.endDate;
+    const [date, time] = fullDate.split("T");
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView showsVerticalScrollIndicator={false}
-
-                showsHorizontalScrollIndicator={false}>
+        <Container showHint={false}>
+            <Content style={styles.formCon} noPadding >
                 <View >
-                    <Image source={product.image} style={styles.productImage} resizeMode="contain" />
+                    <Image source={item.paperPhoto} style={styles.productImage} resizeMode="contain" />
 
                     <View style={styles.info}>
-                        <Text style={styles.title}>{product.title}</Text>
-                        <Text style={styles.priceText}>{product.unit}</Text>
+                        <Text style={styles.title}>{item.title}</Text>
+                        <Text style={styles.priceText}>{item.categoryName + " " + item.paperName + " " + item.width + "جم " + item.paperSize}</Text>
                         <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                            <Text style={[styles.text1]}>{4}</Text>
+                            <Text style={[styles.text1]}>{"(" + item.userRateCount+ ")"}</Text>
                             <View style={[layout.rowBox]}>
                                 <Text style={{ color: theme.currenctText }}>{"⭐"}</Text>
-                                <Text style={[styles.text1]}>{"(" + 5 + ")"}</Text>
+                                <Text style={[styles.text1]}>{"(" + item.userRateCount+ ")"}</Text>
                             </View>
                         </View>
                         <View>
                             <Text style={styles.sellerTitle}>معلومات البائع</Text>
                             <View style={styles.sellerRow}>
                                 <Image
-                                    source={{ uri: "https://cdn-icons-png.flaticon.com/512/149/149071.png" }}
+                                    source={{ uri: item.userImages }}
                                     style={styles.sellerImage}
                                 />
                                 <View style={{ flex: 1 }}>
-                                    <Text style={styles.sellerName}>احمد محمد</Text>
+                                    <Text style={styles.sellerName}>{item.userName}</Text>
 
                                 </View>
                                 <View style={[layout.rowBox]}>
                                     <Text style={{ color: theme.currenctText }}>{"⭐"}</Text>
-                                    <Text style={[styles.text1]}>{"(" + 5 + ")"}</Text>
+                                    <Text style={[styles.text1]}>{"(" + item.userRateAverage + ")"}</Text>
                                 </View>
                             </View>
 
@@ -120,17 +110,18 @@ const Index = (props: Props) => {
 
                         <FlatList
                             showsVerticalScrollIndicator={false}
+                            scrollEnabled={false}
                             //   onRefresh={() =>{}}
                             //   refreshing={isFetching}
                             style={styles.list}
-                            data={state.items}
+                            data={item.paperOffersBranches}
                             keyExtractor={(items, index: number) => index.toString()}
                             // ItemSeparatorComponent={() => (state.loading ? null : <View style={styles.separator} />)}
                             renderItem={({ item }) => {
                                 return (
                                     <>
 
-                                        <SellerBranches loading={state.loading} onPress={function (): void {
+                                        <SellerBranches item={item} onPress={function (): void {
                                             throw new Error('Function not implemented.');
                                         }} />
                                         {/* } */}
@@ -148,26 +139,26 @@ const Index = (props: Props) => {
                                         <Text style={styles.qtyText}>-</Text>
                                     </TouchableOpacity>
                                     <Text style={styles.qtyValue}>{qty}</Text>
-                                    <TouchableOpacity style={styles.qtyBtn}  onPress={increase}>
+                                    <TouchableOpacity style={styles.qtyBtn} onPress={increase}>
                                         <Text style={styles.qtyText}>+</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
                             <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
                                 <Text style={styles.note}>اقل كمية للطلب</Text>
-                                <Text style={styles.note1}>2</Text>
+                                <Text style={styles.note1}>{item.min}</Text>
                             </View>
                             <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
                                 <Text style={styles.note}>تاريخ انتهاء العرض:</Text>
-                                <Text style={styles.note1}>2025/09/25 او حتي نفاذ الكمية</Text>
+                                <Text style={styles.note1}>{date + " " + "او حتي نفاذ الكمية"}</Text>
                             </View>
                             <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
                                 <Text style={styles.note}>طرق الاستلام:</Text>
-                                <Text style={styles.note1}>متاح توصيل</Text>
+                                <Text style={styles.note1}>   {item.includeDelivery ? "متاح توصيل" : "غير متاح توصيل"}</Text>
                             </View>
                             <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
                                 <Text style={styles.totalPrice}>اجمالي السعر:</Text>
-                                <Text style={styles.totalPriceValue}>1500 جنيها</Text>
+                                <Text style={styles.totalPriceValue}>{item.price + "جنيها"}</Text>
                             </View>
                             <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
                                 <Text style={styles.note}>{""}</Text>
@@ -185,27 +176,26 @@ const Index = (props: Props) => {
                         <View >
                             <Text style={styles.sectionTitle}>وصف المنتج</Text>
                             <Text style={styles.description}>
-                                ورق طباعة أبيض نقي بجودة ممتازة مناسب لجميع أنواع الطابعات.
-                                يتميز بالسطح الأملس والمثالي للنسخ والطباعة...
+                                {item.description}
                             </Text>
                             <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
                                 <Text style={styles.note}>النوع</Text>
-                                <Text style={styles.note1}>مرام</Text>
+                                <Text style={styles.note1}>{item.paperName}</Text>
                             </View>
                             <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
                                 <Text style={styles.note}>الحجم</Text>
-                                <Text style={styles.note1}>A4</Text>
+                                <Text style={styles.note1}>{item.paperSize}</Text>
                             </View>
                             <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
                                 <Text style={styles.note}>الوزن</Text>
-                                <Text style={styles.note1}>جرام/مترمربع</Text>
+                                <Text style={[styles.note1,{paddingBottom:PixelPerfect(8)}]}>{item.width + "جم "}</Text>
                             </View>
 
                         </View>
                     </View>
                 </View>
-            </ScrollView>
-        </SafeAreaView>
+            </Content>
+        </Container>
 
 
 
@@ -214,6 +204,13 @@ const Index = (props: Props) => {
 export default Index
 const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,) =>
     StyleSheet.create({
+        formCon: {
+            flex: 1,
+            backgroundColor: theme.mainColor,
+        
+            paddingHorizontal: PixelPerfect(8),
+
+        },
         container: {
             flex: 1,
             padding: PixelPerfect(12),
@@ -286,6 +283,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             fontSize: PixelPerfect(18),
             fontFamily: Fonts.medium,
             color: theme.black,
+            textAlign: "right"
         },
 
 
@@ -293,6 +291,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             color: theme.currenctText,
             fontSize: PixelPerfect(14),
             fontFamily: Fonts.medium,
+            textAlign:"right"
         },
 
 
@@ -310,7 +309,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
         qtyText: { color: theme.white, fontSize: 18 },
         qtyValue: { fontSize: PixelPerfect(32), fontFamily: Fonts.medium },
         note: { fontSize: PixelPerfect(16), fontFamily: Fonts.regular, color: theme.textColor, marginTop: PixelPerfect(8) },
-        note1: { fontSize: PixelPerfect(16), fontFamily: Fonts.regular, color: theme.black, marginTop: PixelPerfect(8) },
+        note1: { textAlign: "right", fontSize: PixelPerfect(16), fontFamily: Fonts.regular, color: theme.black, marginTop: PixelPerfect(8) },
         note2: { fontSize: PixelPerfect(10), fontFamily: Fonts.extraLight, color: theme.black, marginTop: PixelPerfect(2) },
         totalPrice: { fontSize: PixelPerfect(16), fontFamily: Fonts.medium, color: theme.textColor, marginTop: PixelPerfect(8) },
         totalPriceValue: { fontSize: PixelPerfect(14), fontFamily: Fonts.bold, color: theme.textColor, marginTop: PixelPerfect(8) },
@@ -323,6 +322,6 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             alignItems: "center",
         },
         orderBtnText: { color: theme.white, fontSize: PixelPerfect(16), fontFamily: Fonts.bold },
-        description: { fontSize: PixelPerfect(14), color: theme.black, fontFamily: Fonts.regular, marginVertical: PixelPerfect(4) },
+        description: {textAlign:"right", fontSize: PixelPerfect(14), color: theme.black, fontFamily: Fonts.regular, marginVertical: PixelPerfect(4) },
 
     });

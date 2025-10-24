@@ -18,3 +18,19 @@ export const GetAllNotificationsHandler = (params: any, cb?: (data: any, status:
     }
   };
 };
+
+/**
+ * GetPepars
+ * @param cb callback function
+ */
+export const GetRequests = (body:any,cb?: (data: any, status: any) => void) => {
+  return async (dispatch: Dispatch<IDispatch>) => {
+    try {
+      const { data, status } = await globalAPI.get('api/Request/GetRequests',body);
+      cb && cb(data, status);
+    } catch (error) {
+      console.log('GetRequests error = ', error);
+      cb && cb(error, 500);
+    }
+  };
+};
