@@ -12,7 +12,7 @@ import DeviceInfo from "react-native-device-info";
 export const GetSettingsHandler = (body:any,cb?: (data: any, status: any) => void) => {
   return async (dispatch: Dispatch<IDispatch>) => {
     try {
-      const { data, status } = await globalAPI.get('/api/Configuration/GetAllLookups',body);
+      const { data, status } = await globalAPI.post('/api/Configuration/GetAllLookups');
       console.log('GetSettingsHandler data = ', data.data, data.status);
       dispatch(SetAppSettings(data.data.setting));
       const paymentTypesithFlag = Array.isArray(data?.data?.paymentTypes)
@@ -45,7 +45,23 @@ export const GetSettingsHandler = (body:any,cb?: (data: any, status: any) => voi
   };
 };
 
-
+/**
+ * @param cb callback function
+ */
+export const LookUpHandler = (body: any, params: any, cb?: (data: any, status: any) => void) => {
+  return async (dispatch: Dispatch<IDispatch>) => {
+    try {
+      const { data, status } = await globalAPI.post('/api/Poll/AddMessage', body, { params: params });
+      if (data.status == 200) {
+        // dispatch(SetGuesterId(data.data))     
+      }
+      cb && cb(data, status);
+    } catch (error) {
+      console.log('ContactUs error = ', error);
+      cb && cb(error, 500);
+    }
+  };
+};
 
 /**
  * ContactUs
