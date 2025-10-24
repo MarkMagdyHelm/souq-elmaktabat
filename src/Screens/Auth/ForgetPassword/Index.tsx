@@ -1,5 +1,5 @@
-import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import React, { useContext, useEffect, useState } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { useContext,  useState } from 'react';
 import { IFont, ITheme } from '../../../Constants/interfaces';
 import { ThemeContext } from '../../../Constants/theming';
 import { Colors, PixelPerfect } from '../../../Constants/styleConstants';
@@ -7,15 +7,14 @@ import { t } from 'i18next';
 import { Container, Content } from '../../../Components/containers/Containers';
 import Inputs from '../../../Components/inputs';
 import Button from '../../../Components/touchables/Button';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../Store/store';
+import {  useDispatch } from 'react-redux';
 import useToastNotification from '../../../Components/CustomHooks/useToastNotification';
 import HeaderWithText from '../../../Components/Headers/HeaderWithText';
 import { Formik } from 'formik';
 import { validationSchema } from '../../../Validation/Signup';
-import { GetCitiesHandler, GetAllActivitiesHandler, GetAllRolesHandler, GetAllAvailableToolsHandler, GetSettingsHandler } from '../../../Apis/Appinfo';
-import { SendOTPByEmailHandler } from '../../../Apis/User';
-import { useNavigationState, useRoute } from '@react-navigation/native';
+import {  useRoute } from '@react-navigation/native';
+import { ForgetPasswordHandler } from '../../../Apis/User';
+import { AddOfferICon } from '../../../Assets/Svg';
 
 type Props = {
     navigation: any
@@ -23,7 +22,7 @@ type Props = {
 
 const Index = (props: Props) => {
     const { navigation } = props;
-    const {isForgetPassword} = useRoute().params as any;
+      const { email } = useRoute().params as any;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
 
 
@@ -34,18 +33,13 @@ const Index = (props: Props) => {
     });
     const dispatch = useDispatch();
     const showToast = useToastNotification();
-useEffect(() => {
-getSettings();
-}, []);
-   const getSettings = ()=>{
-    dispatch<any>(GetSettingsHandler({lookupIds:[2,3,4,5,6,7,9]},"signup"))
-   }
+
 const handleSubmit = (values)=>{
     setstate(old=>({...old,loadingSignin:true}))
-dispatch<any>(SendOTPByEmailHandler(values.Email,(res,status)=>{
+dispatch<any>(ForgetPasswordHandler(values,(res,status)=>{
     if (res.status == 200) {
          showToast({ type: 'ok', message: res?.message});
-         navigation.navigate("ConfirmtionCode",{email:values.Email,isForgetPassword:isForgetPassword})
+         navigation.navigate("signingit ")
     } else {
         showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
     }
@@ -54,15 +48,12 @@ dispatch<any>(SendOTPByEmailHandler(values.Email,(res,status)=>{
 }
     return (
         <Container showHint={false}>
-            <HeaderWithText title={t(isForgetPassword?"signtxt2":"signtxt1")} />
+            <HeaderWithText title={t("signtxt3")} />
             <View style={styles.con}>
-                <View style={styles.conhit1}>
-                    <Text style={[layout.textAlign, styles.txthit1]}>{t("signtxthint1")}</Text>
-                </View>
                 <Formik
                     validationSchema={validationSchema}
                     initialValues={{
-                        Email: "",
+                        Email: email,
                     }}
                     onSubmit={handleSubmit} >
                     {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue, setFieldTouched }) => {
@@ -73,18 +64,31 @@ dispatch<any>(SendOTPByEmailHandler(values.Email,(res,status)=>{
                                     noPadding
                                     style={styles.body}
                                     scrollEnabled={false}>
-                                    <Inputs label={t('Email')}
-                                        options={{
-                                            onBlur: handleBlur("Email"),
-                                            onChangeText: handleChange("Email"),
-                                            placeholder: t("Emailw"),
-                                            // maxLength: 30,
-                                            keyboardType: 'email-address',
-                                        }}
-                                        password={false}
-                                        showErrorr={(errors.Email && touched.Email) as boolean}
-                                        error={errors.Email as any}
-                                    />
+                                    <Inputs
+                                               label={t("pasword")}
+                                               options={{
+                                                 onBlur: handleBlur("Password"),
+                                                 onChangeText: handleChange("Password"),
+                                                 placeholder: t("paswordw"),
+                                                 maxLength: 30,
+                                               }}
+                                               password={true}
+                                               showErrorr={(errors.Password && touched.Password) as boolean}
+                                               error={errors.Password as any}
+                                             />
+                                   
+                                             <Inputs
+                                               label={t("confirmpasword")}
+                                               options={{
+                                                 onBlur: handleBlur("ConfirmPassword"),
+                                                 onChangeText: handleChange("ConfirmPassword"),
+                                                 placeholder: t("confirmpaswordw"),
+                                                 maxLength: 30,
+                                               }}
+                                               password={true}
+                                               showErrorr={(errors.ConfirmPassword && touched.ConfirmPassword) as boolean}
+                                               error={errors.ConfirmPassword as any}
+                                             />
                                     <View style={{ backgroundColor: theme.mainColor }}>
                                         <Button
                                             title={t('Next')}
@@ -97,17 +101,14 @@ dispatch<any>(SendOTPByEmailHandler(values.Email,(res,status)=>{
                                             style={styles.button}
                                         />
                                     </View>
-                                    <Pressable style={styles.signUpCon} onPress={() => { navigation.navigate("Signin") }}>
-                                        <Text style={styles.signUpText}>{t("Do you have account")}
-                                            <Text style={[styles.signUpText1]}>  {t("Sign in")}</Text>
-                                        </Text>
-                                    </Pressable>
+                                   
                                 </Content>
                             </>
                         )
                     }}
 
                 </Formik>
+                
             </View>
         </Container>
     );

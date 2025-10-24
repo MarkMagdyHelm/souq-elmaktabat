@@ -19,5 +19,6 @@ export const validationSchema2 = yup.object().shape({
            Addresses: yup
            .string()
            .required('Address is Required')
-           .label('Address')
+           .label('Address'),
+           ImageUrl: yup.object(),
 });
