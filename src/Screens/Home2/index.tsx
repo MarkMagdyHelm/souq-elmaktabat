@@ -1,4 +1,4 @@
-import { FlatList, Pressable, SectionList, StyleSheet, Text, View } from 'react-native'
+import { FlatList, Platform, Pressable, SectionList, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Container, Content } from '../../Components/containers/Containers'
 import { ThemeContext } from '../../Constants/theming'
@@ -20,6 +20,7 @@ import { GetAllPaperOffers } from '../../Apis/HomeApis'
 import { AddOfferICon } from '../../Assets/Svg'
 import DropDowenMenu from '../../Components/DropDowenMenus/DropDowenMenu'
 import CategoriesPopup from '../../Components/PopUps/categories'
+import { CheckActivison } from '../../Apis/User'
 
 
 type Props = {
@@ -131,6 +132,7 @@ const Index = (props: Props) => {
     useEffect(() => {
         getCategory()
         getAllPaperOffers()
+        dispatch<any>(CheckActivison())
     }, [])
     const toast = useToast();
     const toastNotfication = (config: any) => {
@@ -190,11 +192,14 @@ const Index = (props: Props) => {
     const handleSelectProduct = (item) => {
         navigation.navigate("ProductDetails", { item: item })
     }
+    console.log('====================================');
+    console.log(Platform.OS,isSeller,userdata);
+    console.log('====================================');
     return (
         <Container showHint={false}>
             <Content style={styles.formCon} noPadding >
 
-                <Text style={styles.textsection1}>الأقسام الرئيسية</Text>
+                <Text style={[layout.textAlign,styles.textsection1]}>الأقسام الرئيسية</Text>
                 <FlatList
                     data={state.categories}
                     horizontal
@@ -209,7 +214,7 @@ const Index = (props: Props) => {
                     )}
                 />
                 {state.sections.map((section) => (
-                    <View key={section.id} style={{ marginTop: PixelPerfect(24) }}>
+                    <View key={`section.id-${section.id}`} style={{ marginTop: PixelPerfect(24) }}>
                         <View
                             style={[layout.rowBox, styles.viewCon]}
                         >
@@ -282,7 +287,8 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             fontFamily: Fonts.bold,
             color: theme.active,
             paddingHorizontal: PixelPerfect(8),
-            fontSize: PixelPerfect(16)
+            fontSize: PixelPerfect(16),
+            lineHeight:25
         },
 
         textsection2: {

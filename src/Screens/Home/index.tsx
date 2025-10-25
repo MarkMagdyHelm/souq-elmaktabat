@@ -61,7 +61,7 @@ const Index = (props: Props) => {
     if (!isLogin) {
       assignID();
     }
-    dispatch<any>(CheckActivison())
+    
   }, [])
   const toast = useToast();
   const toastNotfication = (config: any) => {

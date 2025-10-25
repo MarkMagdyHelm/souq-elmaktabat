@@ -73,11 +73,12 @@ function App(): JSX.Element {
    });
    const getSettings = ()=>{
     dispatch<any>(GetSettingsHandler({lookupIds:[1]},"settings",(res,status)=>{
+
+      console.log('====androidSetting================================');
+      console.log(res);
+      console.log('====================================');
       if (Platform.OS === "android") {
         let androidSetting = res?.find((el:any)=>el.type == "Android");
-        console.log('====androidSetting================================');
-        console.log(res);
-        console.log('====================================');
         if (androidSetting.status == 1 && parseFloat(DeviceInfo.getVersion()) < parseFloat(androidSetting.targetVersion)) {
           setstate(old=>({...old,isForceUpdateOptional:false,forceUpdate:true}))
         }else if(androidSetting.status == 0 && parseFloat(DeviceInfo.getVersion()) < parseFloat(androidSetting.targetVersion)){
