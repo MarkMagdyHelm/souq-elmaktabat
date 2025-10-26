@@ -1,7 +1,7 @@
 import { Dispatch } from "react";
 import { IDispatch } from "../Constants/interfaces";
 import { globalAPI } from "../Constants/config";
-import { SetActivites, SetAppSettings, SetCountries, SetPayments, SetRoles, SetTools } from "../Store/actions/settings";
+import { SetActivites, SetAppSettings, SetCountries, SetOfferRequestStatus, SetPayments, SetRejectReasons, SetRoles, SetTools } from "../Store/actions/settings";
 import { Platform } from "react-native";
 import DeviceInfo from "react-native-device-info";
 
@@ -13,6 +13,7 @@ export const GetSettingsHandler = (body:any,cb?: (data: any, status: any) => voi
   return async (dispatch: Dispatch<IDispatch>) => {
     try {
       const { data, status } = await globalAPI.post('/api/Configuration/GetAllLookups',body);
+    
       console.log('GetSettingsHandler data = ', data.data, data.status);
       dispatch(SetAppSettings(data.data.setting));
       const paymentTypesithFlag = Array.isArray(data?.data?.paymentTypes)
@@ -21,11 +22,11 @@ export const GetSettingsHandler = (body:any,cb?: (data: any, status: any) => voi
           isSelected: false,
         }))
         : [];
-      console.log('==============paymentTypesithFlag======================');
-      console.log(paymentTypesithFlag);
-      console.log('====================================');
+     
       dispatch(SetPayments(paymentTypesithFlag));
       dispatch(SetCountries(data.data.country));
+      dispatch(SetRejectReasons(data.data.RejectReasons));
+       dispatch(SetOfferRequestStatus(data.data.OfferRequestStatus));
       const activitesWithFlag = data.data.activities.map(activity => ({
         ...activity,
         isSelected: false,

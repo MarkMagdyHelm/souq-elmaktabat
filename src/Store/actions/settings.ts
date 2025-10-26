@@ -13,7 +13,7 @@ import DeviceInfo from 'react-native-device-info';
 export const ChangeAppLanguage = (language: string) => ({
   type: ActionType.CHANGE_APP_LANGUAGE,
   payload: language,
-  
+
 });
 
 /**
@@ -61,6 +61,28 @@ export const SetCountries = (payload: boolean) => ({
   type: ActionType.SAVE_COUNTRIES,
   payload: payload,
 });
+
+
+
+/**
+ * SetRejectReasons
+ * @param payload array
+ */
+export const SetRejectReasons = (payload: boolean) => ({
+  type: ActionType.SAVE_REJECT_REASONS,
+  payload: payload,
+});
+
+/**
+ * SetOfferRequestStatus
+ * @param payload array
+ */
+export const SetOfferRequestStatus = (payload: boolean) => ({
+  type: ActionType.SAVE_OFFER_REQUEST_STATUS,
+  payload: payload,
+});
+
+
 
 /**
  * SetActivites

@@ -197,8 +197,7 @@ const Index = (props: Props) => {
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
                         <View
-                            style={styles.bodyCon}
-                        >
+                            style={styles.bodyCon}>
                             <HomeCategory item={item} />
                         </View>
                     )}

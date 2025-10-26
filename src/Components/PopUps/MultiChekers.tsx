@@ -11,8 +11,10 @@ import { Formik } from 'formik'
 import { validationSchema } from '../../Validation/activity'
 import Inputs from '../inputs/index'
 import { useKeyboard } from '../../Constants/UseKayboard'
-import { SetActivites, SetPayments, SetRoles, SetTools } from '../../Store/actions/settings'
+import { SetActivites, SetPayments, SetRejectReasons, SetRoles, SetTools } from '../../Store/actions/settings'
 import { useDispatch } from 'react-redux'
+import { validationSchemaReasons } from '../../Validation/reasons'
+
 type Props = {
     onCloseFn: (val: any) => void,
     currentFilter: any,
@@ -37,13 +39,12 @@ const MultiChekers = (props: Props) => {
     } = props
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
-    console.log('============currentFilter========================');
-    console.log(currentFilter);
-    console.log('====================================');
+
     const [state, setstate] = useState({
         items: items,
         selectFilter: currentFilter,
-        isScroll: false
+        isScroll: false,
+        isClickable:false
     });
     const dispatch = useDispatch();
     const flatListRef = useRef(null);
@@ -98,13 +99,38 @@ const MultiChekers = (props: Props) => {
                 };
             });
         }
+        if (type == "rejectReasons") {
+            setstate((old) => {
+                if (items[index].id == 1) {
+                    return {
+                        ...old,
+                        isClickable:true
+                    };
+
+                }
+                const updatedItems = old.items.map((item, i) =>
+                    i === index ? { ...item, isSelected: !item.isSelected } : item
+                );
+
+                const RejectReasonssSelected = updatedItems.filter((el) => el.isSelected);
+                dispatch(SetRejectReasons(updatedItems));
+
+
+                return {
+                    ...old,
+                    items: updatedItems,
+                    selectFilter: RejectReasonssSelected,
+                    isScroll: false
+                };
+            });
+        }
     };
 
     const keyboard = useKeyboard();
 
     const handleSubmmit = (values) => {
-        setstate((old) => {
-            if (values.activites != 0) {
+        if (values.activity.length != 0) {
+            setstate((old) => {
 
                 const newItem = {
                     arName: values.activity,
@@ -148,9 +174,23 @@ const MultiChekers = (props: Props) => {
                         isScroll: true,
                     };
                 }
+                if (type == "rejectReasons") {
 
-            }
-        });
+                    dispatch(SetRejectReasons(updatedItems));
+                    const RejectReasonssSelected = updatedItems.filter((el) => el.isSelected);
+
+                    return {
+                        ...old,
+                        items: updatedItems,
+                        selectFilter: RejectReasonssSelected,
+                        isScroll: true,
+                    };
+                }
+
+            });
+        } else {
+            handleSubmit2()
+        }
         //   handleSubmit2()
     };
     useEffect(() => {
@@ -219,7 +259,7 @@ const MultiChekers = (props: Props) => {
                     keyboardShouldPersistTaps="handled"
                 >
                     <Formik
-                        validationSchema={validationSchema}
+                        validationSchema={type == "rejectReasons" ? validationSchemaReasons : validationSchema}
                         initialValues={{
                             activity: "",
                         }}
@@ -291,7 +331,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             color: theme.black,
             marginBottom: PixelPerfect(20),
             textAlign: dir == "rtl" ? "right" : "left",
-  lineHeight:PixelPerfect(25)
+            lineHeight: PixelPerfect(25)
         },
         filterCon: {
             alignItems: "center",

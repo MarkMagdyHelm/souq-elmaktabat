@@ -72,7 +72,7 @@ function App(): JSX.Element {
       isForceUpdateOptional:true
    });
    const getSettings = ()=>{
-    dispatch<any>(GetSettingsHandler({lookupIds:[1]},(res,status)=>{
+    dispatch<any>(GetSettingsHandler({lookupIds:[1,2, 3, 4, 5, 6, 7,8, 9,10,11]},(res,status)=>{
       if (Platform.OS === "android") {
         let androidSetting = res?.find((el:any)=>el.type == "Android");
         console.log('====androidSetting================================');
