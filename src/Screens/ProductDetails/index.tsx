@@ -18,6 +18,9 @@ import { PixelPerfect } from '../../Constants/styleConstants';
 import SellerBranches from '../../Components/Cards/SellerBranches';
 import { Container, Content } from '../../Components/containers/Containers';
 import { useRoute } from '@react-navigation/native';
+import { AddPaperOfferRequest } from '../../Apis/Request';
+import { useDispatch } from 'react-redux';
+import { useToast } from 'react-native-toast-notifications';
 
 type Props = {
     navigation: any
@@ -35,9 +38,26 @@ const Index = (props: Props) => {
     const minQty = 1;
     const maxQty = 1500;
     const [qty, setQty] = useState(1);
-    console.log('==============item======================');
-    console.log(item);
-    console.log('====================================');
+    const [totalPrice, setTotalPrice] = useState(item.price);
+    const [selectedBranchId, setSelectedBranchId] = useState<number | null>(null);
+
+
+    const dispatch = useDispatch();
+    const [state, setState] = useState({
+        loading: false,
+    });
+
+    const toast = useToast();
+    const toastNotfication = (config: any) => {
+        toast.hideAll();
+        toast.show(config.message, {
+            type: config.type,
+            duration: 3000,
+            offset: 50,
+            animationType: "slide-in",
+            placement: "top",
+        } as any);
+    };
 
     const total = useMemo(() => pricePerUnit * qty, [pricePerUnit, qty]);
 
@@ -48,6 +68,7 @@ const Index = (props: Props) => {
                 Alert.alert("تنبيه", `الحد الأدنى للكمية هو ${minQty}.`);
                 return prev;
             }
+            setTotalPrice(next * item.price)
             return next;
         });
     };
@@ -55,21 +76,45 @@ const Index = (props: Props) => {
     const increase = () => {
         setQty((prev) => {
             const next = prev + 1;
+
             if (next > maxQty) {
                 Alert.alert("تنبيه", `الحد الأقصى للكمية هو ${maxQty}.`);
                 return prev;
             }
+            setTotalPrice(next * item.price)
             return next;
         });
     };
 
-    const onOrder = () => {
 
-        Alert.alert(
-            "تم إرسال الطلب",
-            `لقد طلبت ${qty} ${item.unit} (السعر الكلي: ${total.toLocaleString()} جنيه).`
+
+
+
+    const addPaperOfferRequest = () => {
+        setState((old) => ({ ...old, loading: true }));
+
+        dispatch<any>(
+            AddPaperOfferRequest({
+                paperOfferId: item.id, paperOfferBranchId: selectedBranchId,
+                quantity: qty, totalPrice: totalPrice
+            }, (res, status) => {
+                if (res.status === 200) {
+                    setState((old) => ({
+                        ...old,
+                        requests: res.data.items ?? [],
+                        loading: false,
+                    }));
+                } else {
+                    toastNotfication({
+                        type: "error",
+                        message: res?.Message ?? "حدث خطأ ما",
+                    });
+                    setState((old) => ({ ...old, loading: false }));
+                }
+            })
         );
     };
+
 
     const fullDate = item.endDate;
     const [date, time] = fullDate.split("T");
@@ -83,10 +128,10 @@ const Index = (props: Props) => {
                         <Text style={styles.title}>{item.title}</Text>
                         <Text style={styles.priceText}>{item.categoryName + " " + item.paperName + " " + item.width + "جم " + item.paperSize}</Text>
                         <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                            <Text style={[styles.text1]}>{"(" + item.userRateCount+ ")"}</Text>
+                            <Text style={[styles.text1]}>{"(" + item.userRateCount + ")"}</Text>
                             <View style={[layout.rowBox]}>
                                 <Text style={{ color: theme.currenctText }}>{"⭐"}</Text>
-                                <Text style={[styles.text1]}>{"(" + item.userRateCount+ ")"}</Text>
+                                <Text style={[styles.text1]}>{"(" + item.userRateCount + ")"}</Text>
                             </View>
                         </View>
                         <View>
@@ -121,9 +166,8 @@ const Index = (props: Props) => {
                                 return (
                                     <>
 
-                                        <SellerBranches item={item} onPress={function (): void {
-                                            throw new Error('Function not implemented.');
-                                        }} />
+                                        <SellerBranches item={item} onPress={() => setSelectedBranchId(item.id)}
+                                            selected={selectedBranchId === item.id} />
                                         {/* } */}
                                     </>
                                 );
@@ -158,7 +202,7 @@ const Index = (props: Props) => {
                             </View>
                             <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
                                 <Text style={styles.totalPrice}>اجمالي السعر:</Text>
-                                <Text style={styles.totalPriceValue}>{item.price + "جنيها"}</Text>
+                                <Text style={styles.totalPriceValue}>{totalPrice + "جنيها"}</Text>
                             </View>
                             <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
                                 <Text style={styles.note}>{""}</Text>
@@ -166,7 +210,9 @@ const Index = (props: Props) => {
                             </View>
 
 
-                            <TouchableOpacity style={styles.orderBtn}>
+                            <TouchableOpacity style={styles.orderBtn} onPress={() => {
+                                addPaperOfferRequest()
+                            }}>
                                 <Text style={styles.orderBtnText}>إرسال الطلب</Text>
                             </TouchableOpacity>
 
@@ -188,7 +234,7 @@ const Index = (props: Props) => {
                             </View>
                             <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
                                 <Text style={styles.note}>الوزن</Text>
-                                <Text style={[styles.note1,{paddingBottom:PixelPerfect(8)}]}>{item.width + "جم "}</Text>
+                                <Text style={[styles.note1, { paddingBottom: PixelPerfect(8) }]}>{item.width + "جم "}</Text>
                             </View>
 
                         </View>
@@ -207,7 +253,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
         formCon: {
             flex: 1,
             backgroundColor: theme.mainColor,
-        
+
             paddingHorizontal: PixelPerfect(8),
 
         },
@@ -291,7 +337,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             color: theme.currenctText,
             fontSize: PixelPerfect(14),
             fontFamily: Fonts.medium,
-            textAlign:"right"
+            textAlign: "right"
         },
 
 
@@ -322,6 +368,6 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             alignItems: "center",
         },
         orderBtnText: { color: theme.white, fontSize: PixelPerfect(16), fontFamily: Fonts.bold },
-        description: {textAlign:"right", fontSize: PixelPerfect(14), color: theme.black, fontFamily: Fonts.regular, marginVertical: PixelPerfect(4) },
+        description: { textAlign: "right", fontSize: PixelPerfect(14), color: theme.black, fontFamily: Fonts.regular, marginVertical: PixelPerfect(4) },
 
     });

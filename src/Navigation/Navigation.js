@@ -50,7 +50,7 @@ const Stacks = () => {
         };
       }}
 
-      initialRouteName={"MyOrders"}
+      initialRouteName={"Home2"}
 
     >
 

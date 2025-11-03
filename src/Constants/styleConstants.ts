@@ -32,7 +32,8 @@ export enum Colors {
   textTitle = '#222222',
   medGary = '#9E9E9E',
   grayTabBar = '#707F89',
-  bodyBackground = '#FEFEFE', // this color is light dark white in the body of screen under headers
+  bodyBackground = '#FEFEFE',
+  primary = "primary", // this color is light dark white in the body of screen under headers
 }
 
 export enum FontsRtl {

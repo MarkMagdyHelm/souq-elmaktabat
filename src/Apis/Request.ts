@@ -35,8 +35,8 @@ export const UpdateRequest = (body: any, cb?: (data: any, status: any) => void) 
     return async (dispatch: Dispatch<IDispatch>) => {
         try {
 
-            const { data, status } = await globalAPI.post('api/Request/UpdateRequest', 
-                 body
+            const { data, status } = await globalAPI.post('api/Request/UpdateRequest',
+                body
             );
             cb && cb(data, status);
         } catch (error) {
@@ -45,3 +45,29 @@ export const UpdateRequest = (body: any, cb?: (data: any, status: any) => void) 
         }
     };
 };
+
+/**
+ * AddPaperOfferRequest
+ * @param cb callback function
+ *  @param params {
+  "paperOfferId",
+  "paperOfferBranchId",
+  "quantity",
+  "totalPrice""
+}
+ */
+export const AddPaperOfferRequest = (body: any, cb?: (data: any, status: any) => void) => {
+    return async (dispatch: Dispatch<IDispatch>) => {
+        try {
+
+            const { data, status } = await globalAPI.post('api/Offer/AddPaperOfferRequest',
+                body
+            );
+            cb && cb(data, status);
+        } catch (error) {
+            console.log('AddPaperOfferRequest error = ', error);
+            cb && cb(error, 500);
+        }
+    };
+};
+
