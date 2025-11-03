@@ -13,7 +13,9 @@ const initialState = {
   activites:[],
   roles:[],
   tools:[],
-  payments:[]
+  payments:[],
+  paperwidth:[],
+  paperSize:[]
 };
 
 export default (state = initialState, { type, payload }: IReduser) => {
@@ -41,6 +43,10 @@ export default (state = initialState, { type, payload }: IReduser) => {
           return { ...state, roles: payload };
            case ActionType.SAVE_PAYMENTS:
           return { ...state, payments: payload };
+              case ActionType.SAVE_PAPERWIDTH:
+          return { ...state, paperwidth: payload };
+              case ActionType.SAVE_PAPERSIZE:
+          return { ...state, paperSize: payload };
     default:
       return state;
   }

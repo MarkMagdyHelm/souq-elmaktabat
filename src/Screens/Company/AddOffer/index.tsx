@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import React, { useContext, useState } from 'react';
 import { IFont, ITheme } from '../../../Constants/interfaces';
 import { ThemeContext } from '../../../Constants/theming';
@@ -7,14 +7,18 @@ import { t } from 'i18next';
 import { Container, Content } from '../../../Components/containers/Containers';
 import Inputs from '../../../Components/inputs';
 import Button from '../../../Components/touchables/Button';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useToastNotification from '../../../Components/CustomHooks/useToastNotification';
 import HeaderWithText from '../../../Components/Headers/HeaderWithText';
 import { Formik } from 'formik';
 import { validationSchema } from '../../../Validation/Signup';
-import { useRoute } from '@react-navigation/native';
-import { ForgetPasswordHandler } from '../../../Apis/User';
-import { AddOfferICon, ArrowDownIcon, ArrowUpIcon, CalenderIcon } from '../../../Assets/Svg';
+import { ArrowDownIcon, ArrowUpIcon, CalenderIcon } from '../../../Assets/Svg';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import moment from 'moment';
+import { RootState } from '../../../Store/store';
+import DropDowenMenu from '../../../Components/DropDowenMenus/DropDowenMenu';
+import RadiobuttonChoice from '../../../Components/PopUps/RadiobuttonChoice';
+import { amounts } from '../../../Helper';
 
 type Props = {
     navigation: any
@@ -35,17 +39,34 @@ const Index = (props: Props) => {
         showQuntity: false,
         showDate: false,
         showBranches: false,
-        isdelervable:false
+        isdelervable: false,
+        date: new Date(),
+        selectedPaperType:{ name: "", arName: "", id: "" },
+        selectedPaperSize:{ name: "", arName: "", id: "" },
+         selectedPaperQuntaity:{ name: "", arName: "", id: "" },
     });
     const dispatch = useDispatch();
     const showToast = useToastNotification();
-  const handelDelery =()=>{
-    setstate(old=>({...old,isdelervable:!old.isdelervable}))
-  }
+    const handelDelery = () => {
+        setstate(old => ({ ...old, isdelervable: !old.isdelervable }))
+    }
     const handleSubmit = (values) => {
         setstate(old => ({ ...old, loading: true }))
 
     }
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const onChange = (event, selectedDate) => {
+        setstate(old => ({ ...old, showDate: Platform.OS === 'ios' }));
+        if (selectedDate && selectedDate >= new Date()) {
+            setstate(old => ({ ...old, date: selectedDate }));
+        }
+    };
+    const { paperwidth, paperSize } = useSelector((state: RootState) => state.settings);
+    console.log('====================================');
+    console.log( paperSize);
+    console.log('====================================');
     return (
         <Container showHint={false}>
             <HeaderWithText title={t("addoffer1")} />
@@ -56,7 +77,7 @@ const Index = (props: Props) => {
 
                     }}
                     onSubmit={handleSubmit} >
-                    {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue, setFieldTouched }) => {
+                    {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue, setFieldTouched, setFieldError }) => {
 
                         return (
                             <>
@@ -75,7 +96,11 @@ const Index = (props: Props) => {
                                         <Text style={[layout.textAlign, styles.label]}>{t("paperType")}</Text>
                                         <View style={[layout.rowBox, styles.selectMenue]}>
                                             <Text style={styles.textselectmenu}>
-                                                {t("paperTypew")}
+                                                {typeof state.selectedPaperType.id !== "string"
+                                                    ? dir === "rtl"
+                                                        ? state.selectedPaperType.arName
+                                                        : state.selectedPaperType.name
+                                                    : t("paperTypew")}
                                             </Text>
                                             {state.showtype ? <ArrowUpIcon /> : <ArrowDownIcon />}
                                         </View>
@@ -92,7 +117,11 @@ const Index = (props: Props) => {
                                         <Text style={[layout.textAlign, styles.label]}>{t("paperSize")}</Text>
                                         <View style={[layout.rowBox, styles.selectMenue]}>
                                             <Text style={styles.textselectmenu}>
-                                                {t("paperSizew")}
+                                                {typeof state.selectedPaperSize.id !== "string"
+                                                    ? dir === "rtl"
+                                                        ? state.selectedPaperSize.arName
+                                                        : state.selectedPaperSize.name
+                                                    : t("paperSizew")}
                                             </Text>
                                             {state.showSize ? <ArrowUpIcon /> : <ArrowDownIcon />}
                                         </View>
@@ -175,9 +204,23 @@ const Index = (props: Props) => {
                                     >
                                         <Text style={[layout.textAlign, styles.label]}>{t("paperDate")}</Text>
                                         <View style={[layout.rowBox, styles.selectMenue, { marginBottom: PixelPerfect(4), }]}>
-                                            <Text style={styles.textselectmenu}>
-                                                {t("paperDate")}
-                                            </Text>
+                                            {state.showDate ?
+                                                <DateTimePicker
+                                                    value={state.date}
+                                                    mode="date"
+                                                    minimumDate={tomorrow}
+                                                    locale="ar"
+                                                    onChange={onChange}
+                                                />
+                                                : (Platform.OS == "android" && !state.showDate && state.date != new Date()) ? <View style={styles.dateCon}>
+                                                    <Text style={[styles.textselectmenu, { color: theme.black }]}>
+                                                        {moment(state.date).locale("en").format("YYYY/MM/DD")}
+                                                    </Text>
+                                                </View> :
+                                                    <Text style={styles.textselectmenu}>
+                                                        {t("paperDate")}
+                                                    </Text>}
+
                                             <CalenderIcon />
                                         </View>
                                         <Text style={[layout.textAlign, styles.hint]}>{t("paperDatew")}</Text>
@@ -205,26 +248,26 @@ const Index = (props: Props) => {
                                     <View
                                         style={styles.selectMenueCon}>
                                         <Text style={[layout.textAlign, styles.label]}>{t("paperDelivery")}</Text>
-                                        <View style={[layout.rowBox, styles.selectMenue,{borderWidth:0,marginBottom:0}]}>
-                                            <Pressable style={[layout.rowBox,styles.yesNocon]}
-                                            onPress={handelDelery}
+                                        <View style={[layout.rowBox, styles.selectMenue, { borderWidth: 0, marginBottom: 0 }]}>
+                                            <Pressable style={[layout.rowBox, styles.yesNocon]}
+                                                onPress={handelDelery}
                                             >
                                                 <View style={[styles.radioButton, { borderColor: state.isdelervable ? theme.active : theme.gray }]}>
-                                                            {state.isdelervable ? <View style={styles.radioButtonSelected} /> : null}
-                                                          </View>
-                                                <Text style={[styles.textselectmenu,{paddingHorizontal:PixelPerfect(5)}]}>
-                                                {t("yes")}
-                                            </Text>
+                                                    {state.isdelervable ? <View style={styles.radioButtonSelected} /> : null}
+                                                </View>
+                                                <Text style={[styles.textselectmenu, { paddingHorizontal: PixelPerfect(5) }]}>
+                                                    {t("yes")}
+                                                </Text>
                                             </Pressable>
-                                           <Pressable style={[layout.rowBox,styles.yesNocon]}
-                                            onPress={handelDelery}
-                                           >
+                                            <Pressable style={[layout.rowBox, styles.yesNocon]}
+                                                onPress={handelDelery}
+                                            >
                                                 <View style={[styles.radioButton, { borderColor: !state.isdelervable ? theme.active : theme.gray }]}>
-                                                            {!state.isdelervable ? <View style={styles.radioButtonSelected} /> : null}
-                                                          </View>
-                                                <Text style={[styles.textselectmenu,{paddingHorizontal:PixelPerfect(5)}]}>
-                                                {t("no")}
-                                            </Text>
+                                                    {!state.isdelervable ? <View style={styles.radioButtonSelected} /> : null}
+                                                </View>
+                                                <Text style={[styles.textselectmenu, { paddingHorizontal: PixelPerfect(5) }]}>
+                                                    {t("no")}
+                                                </Text>
                                             </Pressable>
                                         </View>
                                         {errors.Role && touched.Role && <Text style={styles.errorText}>{t(errors.Role as any)}</Text>}
@@ -238,7 +281,89 @@ const Index = (props: Props) => {
                                         loader={state.loading}
                                         disable={state.loading}
                                     />
+                                    {state.showtype && (
+                                        <DropDowenMenu
+                                            onCloseFn={(val) => {
+                                                if (typeof val?.id === "string") {
+                                                    setstate((old) => ({
+                                                        ...old,
+                                                        showtype: false,
+
+                                                    }));
+                                                    setFieldError("City", "You must pick a city!");
+                                                } else {
+                                                    setFieldValue("City", val.id);
+
+                                                    setstate((old) => ({
+                                                        ...old,
+                                                        showtype: false,
+                                                        selectedPaperType: val,
+                                                    }));
+                                                }
+                                            }}
+                                            title={t("paperTypew")}
+                                            currentFilter={state.selectedPaperType}
+                                            items={paperwidth}
+                                            style={{ flex: 0.3 }}
+                                        />
+                                    )}
+                                    {state.showSize && (
+                                        <DropDowenMenu
+                                            onCloseFn={(val) => {
+                                                if (typeof val?.id === "string") {
+                                                    setstate((old) => ({
+                                                        ...old,
+                                                        showSize: false,
+
+                                                    }));
+                                                    setFieldError("City", "You must pick a city!");
+                                                } else {
+                                                    setFieldValue("City", val.id);
+
+                                                    setstate((old) => ({
+                                                        ...old,
+                                                        showSize: false,
+                                                        selectedPaperSize: val,
+                                                    }));
+                                                }
+                                            }}
+                                            title={t("paperSizew")}
+                                            currentFilter={state.selectedPaperSize}
+                                            items={paperSize}
+                                            style={{ flex: 0.3 }}
+                                        />
+                                    )}
+                                        {state.showQuntity && (
+              <RadiobuttonChoice
+                onCloseFn={(val) => {
+                  setFieldTouched("Activities");
+                  if (val?.length === 0) {
+                    setFieldError("Activities", "You must choose a market!");
+                    setstate((old) => ({
+                      ...old,
+                      showQuntity: false,
+                    }));
+                  } else {
+                    setFieldValue("Activities", val);
+                    setstate((old) => ({
+                      ...old,
+                      showQuntity: false,
+                      selectedPaperQuntaity: val,
+                      forms: {  selectedPaperQuntaity: "" },
+                    }));
+                  }
+                }}
+                title={t("lessOffer")}
+                currentFilter={state.selectedPaperQuntaity}
+                items={amounts}
+                style={{ flex: 0.6 }}
+                type={"activities"}
+                hasTextInput={false}
+                textinputTitle={t('lessOfferw')}
+              />
+            )}
                                 </Content>
+
                             </>
                         )
                     }}
@@ -315,23 +440,27 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string) 
             fontSize: PixelPerfect(18),
             color: theme.mainColor,
         },
-          radioButton: {
-      height: PixelPerfect(20),
-      width: PixelPerfect(20),
-      borderRadius: PixelPerfect(20) / 2,
-      borderWidth: 2,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    radioButtonSelected: {
-      height: PixelPerfect(10),
-      width: PixelPerfect(10),
-      borderRadius: PixelPerfect(10) / 2,
-      backgroundColor: theme.active,
-    },
-    yesNocon:{
-        alignItems:"center",
-        flex:0.5
-    },
-    
+        radioButton: {
+            height: PixelPerfect(20),
+            width: PixelPerfect(20),
+            borderRadius: PixelPerfect(20) / 2,
+            borderWidth: 2,
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+        radioButtonSelected: {
+            height: PixelPerfect(10),
+            width: PixelPerfect(10),
+            borderRadius: PixelPerfect(10) / 2,
+            backgroundColor: theme.active,
+        },
+        yesNocon: {
+            alignItems: "center",
+            flex: 0.5
+        },
+        dateCon: {
+            backgroundColor: theme.optionText,
+            padding: PixelPerfect(5),
+            borderRadius: PixelPerfect(5)
+        }
     });

@@ -96,3 +96,21 @@ export const SetPayments = (payload: boolean) => ({
   type: ActionType.SAVE_PAYMENTS,
   payload: payload,
 });
+
+/**
+ * SetPaperSizes
+ * @param payload array
+ */
+export const SetPaperSize = (payload: boolean) => ({
+  type: ActionType.SAVE_PAPERSIZE,
+  payload: payload,
+});
+
+/**
+ * SetPaperWodth
+ * @param payload array
+ */
+export const SetPaperWidth = (payload: boolean) => ({
+  type: ActionType.SAVE_PAPERWIDTH,
+  payload: payload,
+});

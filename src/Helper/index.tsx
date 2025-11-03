@@ -104,3 +104,13 @@ export const SpotifyTransition = {
     // // { id: 8, arName: "مستورد", name: "Importer" },
     // // { id: 9, arName: "اخرى", name: "Importer" }
   ];
+
+  export const amounts = [
+  { id: 1, arName: "1", name: "1", isSelected: true },
+  { id: 2, arName: "20", name: "20", isSelected: false },
+  { id: 3, arName: "50", name: "50", isSelected: false },
+  { id: 4, arName: "100", name: "100", isSelected: false },
+  { id: 5, arName: "200", name: "200", isSelected: false },
+  { id: 6, arName: "500", name: "500", isSelected: false },
+  { id: 7, arName: "أخرى", name: "Others", isSelected: false },
+];

@@ -174,5 +174,7 @@ export default {
 "paperDelivery":"هل متاح التوصيل *",
 "yes":"نعم",
 "no":"لا",
-"addoffer":"اضف العرض"
+"addoffer":"اضف العرض",
+"lessOffer":"اقل كمية للطلب",
+"lessOfferw":"اكتب اقل كمية للطلب"
 };

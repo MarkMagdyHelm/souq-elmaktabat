@@ -21,6 +21,7 @@ import { AddOfferICon } from '../../Assets/Svg'
 import DropDowenMenu from '../../Components/DropDowenMenus/DropDowenMenu'
 import CategoriesPopup from '../../Components/PopUps/categories'
 import { CheckActivison } from '../../Apis/User'
+import { GetSettingsHandler } from '../../Apis/Appinfo'
 
 
 type Props = {
@@ -130,9 +131,10 @@ const Index = (props: Props) => {
         showCategories:false
     });
     useEffect(() => {
-        getCategory()
-        getAllPaperOffers()
-        dispatch<any>(CheckActivison())
+        getCategory();
+        getAllPaperOffers();
+        dispatch<any>(CheckActivison());
+        getSettings();
     }, [])
     const toast = useToast();
     const toastNotfication = (config: any) => {
@@ -192,9 +194,10 @@ const Index = (props: Props) => {
     const handleSelectProduct = (item) => {
         navigation.navigate("ProductDetails", { item: item })
     }
-    console.log('====================================');
-    console.log(Platform.OS,isSeller,userdata);
-    console.log('====================================');
+      const getSettings = ()=>{
+       dispatch<any>(GetSettingsHandler({lookupIds:[5,6]},"paper",(res,status)=>{
+       }))
+      }
     return (
         <Container showHint={false}>
             <Content style={styles.formCon} noPadding >

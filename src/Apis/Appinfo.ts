@@ -1,7 +1,7 @@
 import { Dispatch } from "react";
 import { IDispatch } from "../Constants/interfaces";
 import { globalAPI } from "../Constants/config";
-import { SetActivites, SetAppSettings, SetCountries, SetPayments, SetRoles, SetTools } from "../Store/actions/settings";
+import { SetActivites, SetAppSettings, SetCountries, SetPaperSize, SetPaperWidth, SetPayments, SetRoles, SetTools } from "../Store/actions/settings";
 import { Platform } from "react-native";
 import DeviceInfo from "react-native-device-info";
 
@@ -15,7 +15,7 @@ export const GetSettingsHandler = (body:any,action,cb?: (data: any, status: any)
       const { data, status } = await globalAPI.post('/api/Configuration/GetAllLookups',body);
       console.log('GetSettingsHandler data = ', data.data, data.status);
      if (action == "settings") { 
-       dispatch(SetAppSettings(data.data.setting));
+       dispatch(SetAppSettings(data.data.Setting));
      }
      if (action == "signup") {
        const paymentTypesithFlag = Array.isArray(data?.data?.PaymentTypes)
@@ -40,6 +40,10 @@ export const GetSettingsHandler = (body:any,action,cb?: (data: any, status: any)
        }));
        dispatch(SetTools(toolsWithFlag));
        dispatch(SetRoles(data.data.Roles));
+     }
+      if (action == "paper") { 
+       dispatch(SetPaperSize(data.data.PaperSizes));
+        dispatch(SetPaperWidth(data.data.PaperWidths));
      }
       cb && cb(data.data.Settings, data.status);
     } catch (error) {

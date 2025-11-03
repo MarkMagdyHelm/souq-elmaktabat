@@ -185,10 +185,7 @@ const Index = (props: Props) => {
                                             title={t('Next')}
                                             loader={state.loading}
                                             styleTitle={styles.buttonText}
-                                            onPress={() => {
-                                                handleSubmit();
-
-                                            }}
+                                            onPress={() => { handleSubmit();}}
                                             style={styles.button}
                                         />
                                     </View>
@@ -260,7 +257,6 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string) 
         },
         root: {
             flex: 1,
-            //   padding: 20
         },
         codeFieldRoot: {
             marginVertical: PixelPerfect(24),
@@ -276,7 +272,6 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string) 
             borderColor: theme.deactive,
             textAlign: 'center',
             color: Colors.secondColor,
-
         },
         focusCell: {
             borderColor: Colors.secondColor,

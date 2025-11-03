@@ -20,6 +20,7 @@ import { useToast } from 'react-native-toast-notifications'
 import { RootState } from '../../Store/store'
 import PushNotificationHandler from '../../Utilties'
 import { CheckActivison } from '../../Apis/User'
+import { GetSettingsHandler } from '../../Apis/Appinfo'
 
 let items = [{ flag: false }, { flag: true }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, { flag: true }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, { flag: false }]
 type Props = {

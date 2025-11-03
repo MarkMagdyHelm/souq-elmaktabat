@@ -4785,3 +4785,51 @@ export const CalenderIcon = (props) => (
     />
   </Svg>
 );
+
+export const Radio = (props) => (
+  <Svg
+    width={20}
+    height={20}
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <Rect
+      x={1}
+      y={1}
+      width={17.4286}
+      height={18}
+      rx={8.71429}
+      stroke="#888888"
+      strokeWidth={2}
+    />
+  </Svg>
+);
+
+export const RadioCheck = (props) => (
+  <Svg
+    width={20}
+    height={20}
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <Rect
+      x={1}
+      y={1}
+      width={17.4286}
+      height={18}
+      rx={8.71429}
+      fill="#3D4A78"
+      stroke="#3D4A78"
+      strokeWidth={2}
+    />
+    <Path
+      d="M4.28613 9.16667L7.33919 12.5L14.0004 7.5"
+      stroke="white"
+      strokeWidth={2}
+    />
+  </Svg>
+);
