@@ -23,6 +23,7 @@ import { useDispatch } from 'react-redux';
 import { useToast } from 'react-native-toast-notifications';
 import SignUpSuccess from '../../Components/PopUps/SignUpSuccess';
 import { t } from 'i18next';
+import HeaderWithText from '../../Components/Headers/HeaderWithText';
 
 type Props = {
     navigation: any
@@ -129,6 +130,7 @@ const Index = (props: Props) => {
     const [date, time] = fullDate.split("T");
     return (
         <Container showHint={false}>
+             <HeaderWithText title={"تفاصيل المنتج"} />
             <Content style={styles.formCon} noPadding >
                 <View >
                     <Image source={item.paperPhoto} style={styles.productImage} resizeMode="contain" />
