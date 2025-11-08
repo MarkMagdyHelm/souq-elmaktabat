@@ -1,5 +1,5 @@
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { FlatList, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import { ThemeContext } from '../../Constants/theming';
 import { PixelPerfect } from '../../Constants/styleConstants';
@@ -77,12 +77,12 @@ const Index = (props: Props) => {
     }, [selectedTab]);
 
 
-   
-   const getRequests = () => {
+
+    const getRequests = () => {
         setState((old) => ({ ...old, loading: true }));
 
         dispatch<any>(
-            GetRequests({ statusId: selectedTab==0?null:selectedTab, page: "1", pageSize: "10" }, (res, status) => {
+            GetRequests({ statusId: selectedTab == 0 ? null : selectedTab, page: "1", pageSize: "10" }, (res, status) => {
                 if (res.status === 200) {
                     setState((old) => ({
                         ...old,
@@ -104,23 +104,39 @@ const Index = (props: Props) => {
     const onDetailsClick = (item: any) => {
         navigation.navigate("OrderDetails", { item });
     };
+    useLayoutEffect(() => {
+        if (Platform.OS === 'android') {
+            navigation.setOptions({ gestureEnabled: false });
+        }
 
+        // Disable drawer swipe
+        const parent = navigation.getParent();
+        parent?.setOptions({ swipeEnabled: false });
+
+        return () => {
+            if (Platform.OS === 'android') {
+                navigation.setOptions({ gestureEnabled: true });
+            }
+            parent?.setOptions({ swipeEnabled: true });
+        };
+    }, [navigation]);
     return (
         <Container showHint={false}>
             <HeaderWithText title={"طلباتي"} />
 
             <View style={styles.bodyCon}>
-                {/* ✅ التابات */}
+
                 <FlatList
                     horizontal
                     inverted
+                    nestedScrollEnabled
                     data={offerStatusWithAll}
                     keyExtractor={(item) => item.id.toString()}
                     showsHorizontalScrollIndicator={false}
                     style={styles.tabsContainer}
                     contentContainerStyle={{
-                        paddingRight: PixelPerfect(16),
-                        marginHorizontal: PixelPerfect(10),
+                        // paddingRight: PixelPerfect(16),
+                        // marginHorizontal: PixelPerfect(10),
                     }}
                     renderItem={({ item }) => (
                         <TouchableOpacity
@@ -180,7 +196,9 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string) 
             flex: 0.8,
             backgroundColor: theme.mainColor,
         },
-        tabsContainer: { height: PixelPerfect(45), },
+        tabsContainer: {
+            height: PixelPerfect(45),
+        },
         tab: {
             height: PixelPerfect(35),
             backgroundColor: theme.gray2,

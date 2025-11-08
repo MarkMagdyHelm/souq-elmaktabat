@@ -17,7 +17,7 @@ import Product from '../../Components/Cards/Product'
 import { GetCategories } from '../../Apis/CommonApi'
 import { t } from 'i18next'
 import { GetAllPaperOffers } from '../../Apis/HomeApis'
-import { AddOfferICon } from '../../Assets/Svg'
+import { AddOfferICon, MoreIcon } from '../../Assets/Svg'
 import DropDowenMenu from '../../Components/DropDowenMenus/DropDowenMenu'
 import CategoriesPopup from '../../Components/PopUps/categories'
 import HeaderWithText from '../../Components/Headers/HeaderWithText'
@@ -120,7 +120,11 @@ const Index = (props: Props) => {
     return (
         <Container showHint={false}>
             <Content style={styles.formCon} noPadding >
-                <HeaderWithText title={"الرئيسية"} />
+            <View style={[layout.rowBox,styles.Header]}>
+                <Pressable onPress={()=>navigation.openDrawer()}>
+                <MoreIcon/>
+                </Pressable>
+            </View>
 
                 <Text style={[layout.textAlign, styles.textsection1]}>الأقسام الرئيسية</Text>
                 <FlatList
@@ -230,6 +234,10 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             position: "absolute",
             bottom: phoneHeight * 0.125,
             left: PixelPerfect(16)
+        },
+        Header:{
+            alignItems:"center",
+            padding:PixelPerfect(8)
         }
 
     });

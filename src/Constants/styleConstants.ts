@@ -80,11 +80,11 @@ export enum ScreenOptions {
   CURRENT_RESOLUTION = Math.sqrt(height * height + width * width),
   DesignResolution = {
     width: 375,
-    height: 812,
+    height: 949,
   } as any,
 }
 
-export const createPerfectPixel = (designSize = { width: 375, height: 812 }) => {
+export const createPerfectPixel = (designSize = { width: 375, height: 949 }) => {
   if (
     !designSize ||
     !designSize.width ||

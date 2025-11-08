@@ -56,6 +56,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             shadowRadius: 4,
             shadowOffset: { width: 0, height: 2 },
             elevation: 4, // Android shadow
+            height: PixelPerfect(52),
         },
         input: {
             flex: 1,
@@ -63,5 +64,6 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             fontFamily: Fonts.regular,
             marginHorizontal: PixelPerfect(8),
             color: "#000",
+            height: PixelPerfect(50),
         },
     });

@@ -21,7 +21,6 @@ import { GetAllPaperOffers, GetPapersHandler } from '../../Apis/HomeApis'
 import { t } from 'i18next'
 import MultiChekers from '../../Components/PopUps/MultiChekers'
 import { GetSettingsHandler } from '../../Apis/Appinfo'
-import BudgetPackage from '../../Components/PopUps/BudgetPackage'
 import PriceFilter from '../../Components/PopUps/PriceFilter'
 import { max } from 'moment'
 import HeaderWithText from '../../Components/Headers/HeaderWithText'
@@ -245,7 +244,10 @@ const Index = (props: Props) => {
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={styles.container}
-                    />}
+                      style={{backgroundColor:"blue"}}
+                    />
+                    
+                    }
 
 
                 <FlatList
@@ -303,7 +305,10 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
         },
 
         container: {
-            marginEnd: PixelPerfect(16)
+            justifyContent:"flex-end",
+            flex:1,
+            height:PixelPerfect(35),
+            backgroundColor:"red",
         },
         filterBtn: {
             height: PixelPerfect(33),
