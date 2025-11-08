@@ -17,6 +17,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../Store/store';
 import { UpdateRequest } from '../../Apis/Request';
 import { useToast } from 'react-native-toast-notifications';
+import HeaderWithText from '../../Components/Headers/HeaderWithText';
+import RatingScreen from '../../Components/PopUps/RatingScreen';
 type Props = {
     navigation: any
 }
@@ -29,6 +31,7 @@ const Index = (props: Props) => {
     const { item } = useRoute().params as any;
     const [state, setstate] = useState({
         loading: false,
+     
         requestStatus: 0,
 
     });
@@ -40,6 +43,7 @@ const Index = (props: Props) => {
     const [rejectReasonId, setRejectReasonId] = useState(null);
     const [statusId, setStatusIds] = useState(0);
     const [requestId, setRequestId] = useState(0);
+    const [viewRate, setViewRate] = useState(false);
     const [rejectReason, setRejectReason] = useState(null);
     const { rejectReasons, offerRequestStatus } = useSelector((state: RootState) => state.settings);
     const { isSeller } = useSelector((state: RootState) => state.auth);
@@ -78,6 +82,8 @@ const Index = (props: Props) => {
         }
     };
 
+
+ 
 
     const [date, time] = (item?.date ?? "").split("T");
 
@@ -131,6 +137,8 @@ const Index = (props: Props) => {
 
     return (
         <Container showHint={false}>
+            <HeaderWithText title={"تفاصيل الطلب"} />
+           
             {visibleCancelResones && <MultiChekers
                 onCloseFn={(val) => {
                     setVisibleCancelResones(false)
@@ -211,8 +219,8 @@ const Index = (props: Props) => {
                             {state.requestStatus === 1 && <View style={[styles.actions]}>
 
                                 <TouchableOpacity style={[layout.rowBox, styles.receiveBtn]} onPress={() => {
-                                 
-                                    updateRequest(item.requestId,5,null,null)
+
+                                    updateRequest(item.requestId, 5, null, null)
                                 }} >
                                     <View style={[styles.icon]}>
                                         <CheckIcon />
@@ -261,7 +269,9 @@ const Index = (props: Props) => {
                             </View>
                             )}
                             {state.requestStatus === 3 && <View style={[layout.dirRow, styles.actions]}>
-                                <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} onPress={() => { CallNumber(item.phoneNumber) }} >
+                                <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} onPress={() => {
+                                setViewRate(true)
+                                }} >
                                     <View style={[styles.icon]}>
                                         <RateIcon />
                                     </View>
@@ -317,7 +327,11 @@ const Index = (props: Props) => {
 
 
             </Content>
-
+            <RatingScreen
+                visible={viewRate}
+                onClose={() => setViewRate(false)}
+                onSubmit={() => setViewRate(false)}
+             />
         </Container>
     )
     // return (

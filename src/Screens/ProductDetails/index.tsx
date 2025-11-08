@@ -230,8 +230,8 @@ const Index = (props: Props) => {
                                 //error
                                 }
                                 else{
-                                 //   navigation.navigate("MyOrders")
-                                addPaperOfferRequest()
+                                   navigation.navigate("MyOrders")
+                               // addPaperOfferRequest()
                                 }
                             }}>
                                 <Text style={styles.orderBtnText}>إرسال الطلب</Text>
