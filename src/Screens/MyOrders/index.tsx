@@ -8,10 +8,12 @@ import { Container } from '../../Components/containers/Containers';
 import TabBar from '../../Components/TabBar/index';
 import HeaderWithText from '../../Components/Headers/HeaderWithText';
 import { useToast } from 'react-native-toast-notifications';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import MyOrderItem from '../../Components/Cards/MyOrderItem';
-import { GetRequests } from '../../Apis/Notification';
+import { RootState } from '../../Store/store';
+import { GetNamesByLang } from '../../Helper';
+import { GetRequests } from '../../Apis/Request';
 
 
 
@@ -44,6 +46,11 @@ const Index = (props: Props) => {
     });
 
     const [selectedTab, setSelectedTab] = useState(0);
+    const { offerRequestStatus } = useSelector((state: RootState) => state.settings);
+    const offerStatusWithAll = [
+        { id: 0, name: "All", arName: "الكل", paperOfferRequests: [] },
+        ...(offerRequestStatus || []),
+    ];
 
     const getStatusColor = (status: string) => {
         switch (status) {
@@ -57,35 +64,26 @@ const Index = (props: Props) => {
                 return theme.red;
             case "تم التسليم":
                 return theme.textColor;
-            case "منتهي":
+            case "طلب منتهي":
                 return theme.deactive;
             default:
                 return theme.black;
         }
     };
 
-    const tabs = [
-        { id: 0, label: "الكل" },
-        { id: 1, label: "قيد الانتظار" },
-        { id: 2, label: "طلب مقبول" },
-        { id: 3, label: "طلب ملغي" },
-        { id: 4, label: "تم التسليم" },
-        { id: 5, label: "منتهي" },
-    ];
 
     useEffect(() => {
         getRequests();
     }, [selectedTab]);
 
 
-    const getRequests = useCallback(() => {
+   
+   const getRequests = () => {
         setState((old) => ({ ...old, loading: true }));
+
         dispatch<any>(
-            GetRequests({ statusId: selectedTab, page: "1", pageSize: "10" }, (res, status) => {
+            GetRequests({ statusId: selectedTab==0?null:selectedTab, page: "1", pageSize: "10" }, (res, status) => {
                 if (res.status === 200) {
-                    console.log('===============lllll=====================');
-                    console.log(res.data.items);
-                    console.log('====================================');
                     setState((old) => ({
                         ...old,
                         requests: res.data.items ?? [],
@@ -100,8 +98,7 @@ const Index = (props: Props) => {
                 }
             })
         );
-    }, [dispatch, selectedTab]);
-
+    };
 
 
     const onDetailsClick = (item: any) => {
@@ -117,7 +114,7 @@ const Index = (props: Props) => {
                 <FlatList
                     horizontal
                     inverted
-                    data={tabs}
+                    data={offerStatusWithAll}
                     keyExtractor={(item) => item.id.toString()}
                     showsHorizontalScrollIndicator={false}
                     style={styles.tabsContainer}
@@ -130,12 +127,13 @@ const Index = (props: Props) => {
                             style={[
                                 styles.tab,
                                 selectedTab === item.id && {
-                                    backgroundColor: getStatusColor(item.label),
+                                    backgroundColor: getStatusColor(GetNamesByLang(item, "rtl")),
                                 },
                             ]}
-                            onPress={() =>{
-                                state.requests = []
-                                setSelectedTab(item.id)}}
+                            onPress={() => {
+                                setState((old) => ({ ...old, requests: [] }));
+                                setSelectedTab(item.id)
+                            }}
                         >
                             <Text
                                 style={[
@@ -143,7 +141,7 @@ const Index = (props: Props) => {
                                     selectedTab === item.id && { color: theme.white },
                                 ]}
                             >
-                                {item.label}
+                                {GetNamesByLang(item, "rtl")}
                             </Text>
                         </TouchableOpacity>
                     )}

@@ -33,26 +33,26 @@ const MyOrderItem = (props: Props) => {
                         <View style={[layout.rowBox, { alignItems: "center" }]}>
                             <Image source={{ uri: item.imageUrl }} style={styles.avatar} />
                             <View style={[layout.flexStart, { paddingHorizontal: PixelPerfect(8) }]}>
-                                <Text style={styles.name}>{item.userName}</Text>
-                                <Text style={styles.rating}>⭐ {item.userRateAverage}</Text>
+                                <Text style={[layout.textAlign,styles.name]}>{item.userName}</Text>
+                                <Text style={[layout.textAlign,styles.rating]}>⭐ {item.userRateAverage}</Text>
                             </View>
                         </View>
                     </View>
 
 
                     <View style={[layout.rowBox, styles.actions]}>
-                        <Text style={styles.product}>{item.category + " " + item.paperName + " " + item.paperSize}</Text>
+                        <Text style={[layout.textAlign,styles.product]}>{item.category + " " + item.paperName + " " + item.paperSize}</Text>
 
 
                     </View>
 
-                    <Text style={styles.quantity}>التاريخ : {date}  </Text>
+                    <Text style={[layout.textAlign,,styles.quantity]}>التاريخ : {date}  </Text>
 
 
 
                     <View style={[layout.rowBox, styles.actions]}>
-                        <Text style={styles.quantity}>الكمية: {item.quentity}</Text>
-                        <Text style={styles.price}>{item.price} جنيه</Text>
+                        <Text style={[layout.textAlign,styles.quantity]}>الكمية: {item.quentity}</Text>
+                        <Text style={[layout.textAlign,styles.price]}>{item.price} جنيه</Text>
                     </View>
 
                 </View>

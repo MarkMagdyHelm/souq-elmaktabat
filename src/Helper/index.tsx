@@ -7,17 +7,17 @@ export enum AsyncKeys {
   USER_DATA = 'USER_DATA',
   LANGUAGE = 'LANGUAGE',
 }
- export const CallNumber = async (phoneNumber) => {
-    const url = `tel:${phoneNumber}`;
-    const supported = await Linking.canOpenURL(url);
+export const CallNumber = async (phoneNumber) => {
+  const url = `tel:${phoneNumber}`;
+  const supported = await Linking.canOpenURL(url);
 
-    if (supported) {
-      await Linking.openURL(url);
-    } else {
-      Alert.alert("🚫 خطأ", "الاتصال غير مدعوم على هذا الجهاز");
-    }
-  };
-  
+  if (supported) {
+    await Linking.openURL(url);
+  } else {
+    Alert.alert("🚫 خطأ", "الاتصال غير مدعوم على هذا الجهاز");
+  }
+};
+
 export class PersistConfig {
   key: string;
   storage: AsyncStorage;
@@ -28,70 +28,76 @@ export class PersistConfig {
     this.whitelist = whitelist;
   }
 }
+
+
+export const GetNamesByLang =  (item: any, dir: any) => {
+  if (!item) return "";
+  return dir === "rtl" ? item.arName : item.name;
+}
+
 export const saveItem = async (key: string, data: any) => {
-    try {
-      await AsyncStorage.setItem(key, JSON.stringify(data));
-      return true;
-    } catch (error:any) {
-      console.log('saveItem', error.message);
-    }
-    return false;
-  };
-  
-  export const getItem = async (key: string) => {
-    try {
-      const retrievedItem: any = await AsyncStorage.getItem(key);
-      const item = JSON.parse(retrievedItem);
-      return item;
-    } catch (error:any) {
-      console.log('getItem', error.message);
-    }
-    return null;
-  };
+  try {
+    await AsyncStorage.setItem(key, JSON.stringify(data));
+    return true;
+  } catch (error: any) {
+    console.log('saveItem', error.message);
+  }
+  return false;
+};
 
-  export const removeItem = async (key: string) => {
-    try {
-      await AsyncStorage.removeItem(key);
-      return true;
-    } catch (error:any) {
-      console.log('removeItem', error.message);
-    }
-    return false;
-  };
+export const getItem = async (key: string) => {
+  try {
+    const retrievedItem: any = await AsyncStorage.getItem(key);
+    const item = JSON.parse(retrievedItem);
+    return item;
+  } catch (error: any) {
+    console.log('getItem', error.message);
+  }
+  return null;
+};
 
-  const AnimationSpec = {
-    animation: 'timing',
-    config: {
-      duration: 500,
-      easing: Easing.ease,
-    },
-  };
+export const removeItem = async (key: string) => {
+  try {
+    await AsyncStorage.removeItem(key);
+    return true;
+  } catch (error: any) {
+    console.log('removeItem', error.message);
+  }
+  return false;
+};
+
+const AnimationSpec = {
+  animation: 'timing',
+  config: {
+    duration: 500,
+    easing: Easing.ease,
+  },
+};
 export const SpotifyTransition = {
-    transitionSpec: {
-      open: AnimationSpec, //TransitionSpecs.TransitionIOSSpec,
-      close: AnimationSpec, //TransitionSpecs.TransitionIOSSpec,
-    },
-    cardStyleInterpolator: ({current, next}:any) => {
-      return {
-        cardStyle: {
-          transform: [
-            {
-              rotateY: next
-                ? next.progress.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: ['0deg', '180deg'],
-                  })
-                : current.progress.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: ['180deg', '0deg'],
-                  }),
-            },
-          ],
-        },
-      };
-    },
-  };
-  
+  transitionSpec: {
+    open: AnimationSpec, //TransitionSpecs.TransitionIOSSpec,
+    close: AnimationSpec, //TransitionSpecs.TransitionIOSSpec,
+  },
+  cardStyleInterpolator: ({ current, next }: any) => {
+    return {
+      cardStyle: {
+        transform: [
+          {
+            rotateY: next
+              ? next.progress.interpolate({
+                inputRange: [0, 1],
+                outputRange: ['0deg', '180deg'],
+              })
+              : current.progress.interpolate({
+                inputRange: [0, 1],
+                outputRange: ['180deg', '0deg'],
+              }),
+          },
+        ],
+      },
+    };
+  },
+};
 
   export const roles = [
     { id: 1, arName: "مورد", name: "Customer" },

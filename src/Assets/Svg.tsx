@@ -154,7 +154,7 @@ export const CancelIcon = (props: any) => (
 
 );
 export const CheckIcon1 = (props: any) => (
-  
+
   <Svg
     width={16}
     height={14}
@@ -229,10 +229,10 @@ export const PaperIcon = (props: any) => (
 );
 
 
- 
+
 
 export const StareIcon = (props: any) => (
- <Svg
+  <Svg
     width={32}
     height={32}
     viewBox="0 0 32 32"
@@ -251,7 +251,7 @@ export const StareIcon = (props: any) => (
 
 export const DoneIcon = (props: any) => (
 
- <Svg
+  <Svg
     width={64}
     height={64}
     viewBox="0 0 64 64"
@@ -314,8 +314,8 @@ export const Call2Icon = (props: any) => (
     />
   </Svg>
 );
-export  const RateIcon = (props: any) => (
-   <Svg
+export const RateIcon = (props: any) => (
+  <Svg
     width={16}
     height={16}
     viewBox="0 0 20 20"
@@ -4758,6 +4758,32 @@ export const AddOfferICon = (props) => (
     />
   </Svg>
 );
+
+
+export const HeartIcon = (props) => (
+  <Svg
+    width={22}
+    height={22}
+    viewBox="0 0 22 22"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <Path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M17.0103 5.2377C16.3146 4.44523 15.3709 4 14.3868 4C13.4027 4 12.459 4.44523 11.7633 5.2377L11.0485 6.05166L10.3336 5.2377C8.8847 3.58798 6.53557 3.58798 5.08667 5.2377C3.63778 6.88742 3.63778 9.56215 5.08667 11.2119L5.80155 12.0258L11.0485 18L16.2954 12.0258L17.0103 11.2119C17.7063 10.4198 18.0973 9.34524 18.0973 8.22479C18.0973 7.10433 17.7063 6.0298 17.0103 5.2377Z"
+      fill="white"
+      stroke="#888888"
+      strokeWidth={1.2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
+);
+
+
+
 
 export const CalenderIcon = (props) => (
   <Svg

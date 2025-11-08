@@ -11,7 +11,6 @@ import { RootState } from '../../Store/store'
 import Button from '../../Components/touchables/Button'
 
 
-let items = [{ flag: false }, { flag: true }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, { flag: true }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, { flag: false }]
 type Props = {
     navigation: any
 }

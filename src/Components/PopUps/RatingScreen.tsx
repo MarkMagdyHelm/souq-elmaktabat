@@ -17,7 +17,21 @@ import { IFont, ITheme } from '../../Constants/interfaces';
 import { ThemeContext } from '../../Constants/theming';
 import { PixelPerfect } from '../../Constants/styleConstants';
 
-const RatingScreen = ({ visible, onClose, onSubmit }) => {
+
+type Props = {
+  visible: boolean,
+  onSubmit?: (any:any) => void,
+  onClose?: () => void
+}
+
+const RatingScreen = (props: Props) => {
+  const {
+    visible,
+    onSubmit,
+    onClose,
+    
+  } = props
+
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
@@ -39,7 +53,7 @@ const RatingScreen = ({ visible, onClose, onSubmit }) => {
             {/* Header */}
             <View style={styles.header}>
               <Text style={styles.title}>تقييم البائع</Text>
-              <TouchableOpacity onPress={onClose}>
+              <TouchableOpacity onPress={()=>onClose()}>
                 <Text style={styles.close}>✕</Text>
               </TouchableOpacity>
             </View>

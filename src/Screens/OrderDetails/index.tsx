@@ -1,5 +1,5 @@
 import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { ThemeContext } from '../../Constants/theming';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import { PixelPerfect } from '../../Constants/styleConstants';
@@ -10,9 +10,17 @@ import { AddressIcon, Call2Icon, CancelIcon, CheckIcon, CheckIcon1, RateIcon } f
 import { Container, Content } from '../../Components/containers/Containers';
 import { useRoute } from '@react-navigation/native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { CallNumber } from '../../Helper';
+import { CallNumber, GetNamesByLang } from '../../Helper';
 import CancelOrder from '../../Components/PopUps/CancelOrder';
 import MultiChekers from '../../Components/PopUps/MultiChekers';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../Store/store';
+import { AddRate, UpdateRequest } from '../../Apis/Request';
+import { useToast } from 'react-native-toast-notifications';
+import HeaderWithText from '../../Components/Headers/HeaderWithText';
+import RatingScreen from '../../Components/PopUps/RatingScreen';
+import { number } from 'yup';
+import SignUpSuccess from '../../Components/PopUps/SignUpSuccess';
 type Props = {
     navigation: any
 }
@@ -25,6 +33,7 @@ const Index = (props: Props) => {
     const { item } = useRoute().params as any;
     const [state, setstate] = useState({
         loading: false,
+
         requestStatus: 0,
 
     });
@@ -33,6 +42,31 @@ const Index = (props: Props) => {
 
     const [visibleCancel, setVisibleCancel] = useState(false);
     const [visibleCancelResones, setVisibleCancelResones] = useState(false);
+    const [rejectReasonId, setRejectReasonId] = useState(null);
+    const [statusId, setStatusIds] = useState(0);
+    const [requestId, setRequestId] = useState(0);
+    const [viewRate, setViewRate] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
+    
+    const [rejectReason, setRejectReason] = useState(null);
+    const { rejectReasons, offerRequestStatus } = useSelector((state: RootState) => state.settings);
+    const { isSeller } = useSelector((state: RootState) => state.auth);
+
+
+    const dispatch = useDispatch();
+    const toast = useToast();
+
+
+    const toastNotfication = (config: any) => {
+        toast.hideAll();
+        toast.show(config.message, {
+            type: config.type,
+            duration: 3000,
+            offset: 50,
+            animationType: "slide-in",
+            placement: "top",
+        } as any);
+    };
 
     const translateStatus = (status: any) => {
         switch (status) {
@@ -53,6 +87,9 @@ const Index = (props: Props) => {
     };
 
 
+    console.log(item);
+
+
     const [date, time] = (item?.date ?? "").split("T");
 
 
@@ -62,30 +99,101 @@ const Index = (props: Props) => {
 
     }, []);
 
+    const body = Object.fromEntries(
+        Object.entries({
+            requestId,
+            statusId,
+            rejectReasonId,
+            rejectReason,
+        }).filter(([_, value]) => value !== null && value !== undefined && value !== 0)
+    );
+    const updateRequest = (
+        requestId?: number,
+        statusId?: number,
+        rejectReasonId?: number,
+        rejectReason?: string
+    ) => {
+        setstate(old => ({ ...old, loading: true }));
+        console.log('==================dddffffff==================');
+        console.log(statusId);
+        console.log('====================================');
+        dispatch<any>(
+            UpdateRequest(
+                { requestId, statusId, rejectReasonId, rejectReason, },
+                (res, status) => {
+                    if (res.status === 200) {
+                        console.log('==================dddddddd==================');
+                        console.log(res.data);
+                        console.log('====================================');
+                    } else {
+                        toastNotfication({
+                            type: "error",
+                            message: res?.Message ?? "حدث خطأ ما",
+                        });
+                    }
+
+                    setstate(old => ({ ...old, loading: false }));
+                }
+            )
+        );
+    };
+
+    const addRate = (
+        number?: string,
+        description?: string,
+        toUserId?: string,
+        paperOfferRequestId?: string
+    ) => {
+        setstate(old => ({ ...old, loading: true }));
+
+        dispatch<any>(
+            AddRate(
+                { number: number, description: description, toUserId: toUserId, paperOfferRequestId: paperOfferRequestId },
+                (res, status) => {
+                    if (res.status === 200) {
+                        setShowSuccess(true)
+                        setTimeout(() => {
+                            setShowSuccess(false)
+                           // navigation.navigate("MyOrders")
+                        }, 2000);
+                    } else {
+                        toastNotfication({
+                            type: "error",
+                            message: res?.Message ?? "حدث خطأ ما",
+                        });
+                    }
+
+                    setstate(old => ({ ...old, loading: false }));
+                }
+            )
+        );
+    };
 
 
-
-    const items = [{arName:"sssss", name: "sssss" }, { name: "sssss" }, { name: "sssss" }]
-
-
-
-
-
+    //const reasons=  rejectReasons.filter(item => item.isDisplayed && !isSeller);
 
     return (
         <Container showHint={false}>
+            <HeaderWithText title={"تفاصيل الطلب"} />
+
             {visibleCancelResones && <MultiChekers
                 onCloseFn={(val) => {
                     setVisibleCancelResones(false)
+                    console.log('=================rejectReasons===================');
+                    console.log(rejectReasons.filter(item => item.isSelected));
+                    console.log('====================================');
+
                 }}
                 title={"حدد اسباب الالغاء "}
                 currentFilter={""}
-                items={items}
+                items={rejectReasons}
                 style={{ flex: 0.6 }}
-                type="activities"
+                type="rejectReasons"
                 hasTextInput={true}
                 textinputTitle={'اكتب اسباب الالغاء'}
             />}
+            <SignUpSuccess show={showSuccess} title={"تم التقييم بنجاح"} />
+
             <CancelOrder visible={visibleCancel} onClose={() => setVisibleCancel(false)} onSubmit={() => {
                 setVisibleCancelResones(true)
                 setVisibleCancel(false)
@@ -102,7 +210,7 @@ const Index = (props: Props) => {
                                 <View style={[layout.rowBox, { alignItems: "center" }]}>
                                     <Image source={{ uri: item.imageUrl }} style={styles.avatar} />
                                     <View>
-                                        <Text style={styles.name}>{item.userName}</Text>
+                                        <Text style={[layout.textAlign, styles.name]}>{item.userName}</Text>
                                         <View style={[layout.rowBox]}>
                                             <Text style={{ color: theme.currenctText }}>{"⭐"}</Text>
                                             <Text style={[styles.rateText]}>{"(" + item.userRateCount + ")"}</Text>
@@ -149,7 +257,10 @@ const Index = (props: Props) => {
 
                             {state.requestStatus === 1 && <View style={[styles.actions]}>
 
-                                <TouchableOpacity style={[layout.rowBox, styles.receiveBtn]} >
+                                <TouchableOpacity style={[layout.rowBox, styles.receiveBtn]} onPress={() => {
+
+                                    updateRequest(item.requestId, 5, null, null)
+                                }} >
                                     <View style={[styles.icon]}>
                                         <CheckIcon />
                                     </View>
@@ -197,7 +308,9 @@ const Index = (props: Props) => {
                             </View>
                             )}
                             {state.requestStatus === 3 && <View style={[layout.dirRow, styles.actions]}>
-                                <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} onPress={() => { CallNumber(item.phoneNumber) }} >
+                                <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} onPress={() => {
+                                    setViewRate(true)
+                                }} >
                                     <View style={[styles.icon]}>
                                         <RateIcon />
                                     </View>
@@ -253,7 +366,13 @@ const Index = (props: Props) => {
 
 
             </Content>
-
+            <RatingScreen
+                visible={viewRate}
+                onClose={() => setViewRate(false)}
+                onSubmit={(val) => {
+                    addRate(val.rating, val.comment, item.userId, item.requestId)
+                }}
+            />
         </Container>
     )
     // return (

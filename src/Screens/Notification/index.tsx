@@ -10,11 +10,11 @@ import HeaderWithText from '../../Components/Headers/HeaderWithText';
 import Notification from '../../Components/Cards/Notification';
 import { useToast } from 'react-native-toast-notifications';
 import { useDispatch } from 'react-redux';
-import { GetAllNotificationsHandler, GetRequests } from '../../Apis/Notification';
+import { GetAllNotificationsHandler } from '../../Apis/Notification';
 import PollLoader from '../../Components/SkeltonLoaders/PollLoader';
 import OrderCard from '../../Components/Cards/OrderCard';
+import { GetRequests } from '../../Apis/Request';
 
-let items = [{ flag: false }, { flag: true }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, { flag: true }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, , { flag: false }]
 
 type Props = {
   navigation: any

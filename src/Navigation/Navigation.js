@@ -29,6 +29,10 @@ import Demo from '../Screens/Demo/index';
 import OrderDetails from '../Screens/OrderDetails/index';
 import ForgetPassword from '../Screens/Auth/ForgetPassword/Index';
 import AddOffer from '../Screens/Company/AddOffer/index'
+import SellerProfile from '../Screens/SellerProfile/index'
+import UserProfile from '../Screens/UserProfile/index'
+import Favoriate from '../Screens/Favoriate/index'
+
 
 const Stack = createStackNavigator();
 
@@ -50,7 +54,7 @@ const Stacks = () => {
         };
       }}
 
-      initialRouteName={isLogin?"Home2":'Demo'}
+      initialRouteName={"Home2"}
 
     >
 
@@ -63,6 +67,10 @@ const Stacks = () => {
       <Stack.Screen name="Orders" component={Orders} />
       <Stack.Screen name="Home2" component={Home2} />
       <Stack.Screen name="ProductDetails" component={ProductDetails} />
+      <Stack.Screen name="SellerProfile" component={SellerProfile} />
+      <Stack.Screen name="UserProfile" component={UserProfile} />
+      <Stack.Screen name="Favoriate" component={Favoriate} />
+      <Stack.Screen name="HomeMore" component={HomeMore} />
 
       <Stack.Screen name="Demo" component={Demo} />
       <Stack.Screen name="Signup" component={Signup} />

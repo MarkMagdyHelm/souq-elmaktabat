@@ -1,7 +1,7 @@
 import { Dispatch } from "react";
 import { IDispatch } from "../Constants/interfaces";
 import { globalAPI } from "../Constants/config";
-import { SetActivites, SetAppSettings, SetCountries, SetPaperSize, SetPaperWidth, SetPayments, SetRoles, SetTools } from "../Store/actions/settings";
+import { SetActivites, SetAppSettings, SetCountries, SetOfferRequestStatus, SetPaperSize, SetPaperWidth, SetPayments, SetRejectReasons, SetRoles, SetTools } from "../Store/actions/settings";
 import { Platform } from "react-native";
 import DeviceInfo from "react-native-device-info";
 
@@ -9,42 +9,51 @@ import DeviceInfo from "react-native-device-info";
  * GetAppSettings
  * @param cb callback function
  */
-export const GetSettingsHandler = (body:any,action,cb?: (data: any, status: any) => void) => {
+export const GetSettingsHandler = (body: any, action, cb?: (data: any, status: any) => void) => {
   return async (dispatch: Dispatch<IDispatch>) => {
     try {
-      const { data, status } = await globalAPI.post('/api/Configuration/GetAllLookups',body);
+      const { data, status } = await globalAPI.post('/api/Configuration/GetAllLookups', body);
+
       console.log('GetSettingsHandler data = ', data.data, data.status);
-     if (action == "settings") { 
-       dispatch(SetAppSettings(data.data.Setting));
-     }
-     if (action == "signup") {
-       const paymentTypesithFlag = Array.isArray(data?.data?.PaymentTypes)
-         ? data.data.PaymentTypes.map(payment => ({
-           ...payment,
-           isSelected: false,
-         }))
-         : [];
-       console.log('==============paymentTypesithFlag======================');
-       console.log(paymentTypesithFlag);
-       console.log('====================================');
-       dispatch(SetPayments(paymentTypesithFlag));
-       dispatch(SetCountries(data.data.country));
-       const activitesWithFlag = data.data.Activities.map(activity => ({
-         ...activity,
-         isSelected: false,
-       }));
-       dispatch(SetActivites(activitesWithFlag));
-       const toolsWithFlag = data.data.AvailableTools.map(tool => ({
-         ...tool,
-         isSelected: false,
-       }));
-       dispatch(SetTools(toolsWithFlag));
-       dispatch(SetRoles(data.data.Roles));
-     }
-      if (action == "paper") { 
-       dispatch(SetPaperSize(data.data.PaperSizes));
+      if (action == "settings") {
+        dispatch(SetAppSettings(data.data.Setting));
+      }
+      if (action == "signup") {
+        const paymentTypesithFlag = Array.isArray(data?.data?.PaymentTypes)
+          ? data.data.PaymentTypes.map(payment => ({
+            ...payment,
+            isSelected: false,
+          }))
+          : [];
+        console.log('==============paymentTypesithFlag======================');
+        console.log(paymentTypesithFlag);
+        console.log('====================================');
+        dispatch(SetPayments(paymentTypesithFlag));
+    
+        
+        const activitesWithFlag = data.data.Activities.map(activity => ({
+          ...activity,
+          isSelected: false,
+        }));
+        dispatch(SetActivites(activitesWithFlag));
+        const toolsWithFlag = data.data.AvailableTools.map(tool => ({
+          ...tool,
+          isSelected: false,
+        }));
+        dispatch(SetTools(toolsWithFlag));
+        dispatch(SetRoles(data.data.Roles));
+      }
+      if (action == "paper") {
+        dispatch(SetPaperSize(data.data.PaperSizes));
         dispatch(SetPaperWidth(data.data.PaperWidths));
-     }
+      }
+      if (action == "countries") {
+        dispatch(SetCountries(data.data.Countries));
+        dispatch(SetPaperSize(data.data.PaperSizes));
+        dispatch(SetRejectReasons(data.data.RejectReasons));
+        dispatch(SetOfferRequestStatus(data.data.OfferRequestStatus));
+      }
+
       cb && cb(data.data.Settings, data.status);
     } catch (error) {
       console.log('GetSettingsHandler error = ', error);
@@ -53,7 +62,23 @@ export const GetSettingsHandler = (body:any,action,cb?: (data: any, status: any)
   };
 };
 
-
+/**
+ * @param cb callback function
+ */
+export const LookUpHandler = (body: any, params: any, cb?: (data: any, status: any) => void) => {
+  return async (dispatch: Dispatch<IDispatch>) => {
+    try {
+      const { data, status } = await globalAPI.post('/api/Poll/AddMessage', body, { params: params });
+      if (data.status == 200) {
+        // dispatch(SetGuesterId(data.data))     
+      }
+      cb && cb(data, status);
+    } catch (error) {
+      console.log('ContactUs error = ', error);
+      cb && cb(error, 500);
+    }
+  };
+};
 
 /**
  * ContactUs
