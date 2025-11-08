@@ -4,17 +4,23 @@ import { ThemeContext } from '../../Constants/theming';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import { PixelPerfect } from '../../Constants/styleConstants';
 import Icon from "react-native-vector-icons/Ionicons";
-// type Props = {
-//     item: any
-// }
+type Props = {
+    onPress: any
+}
 
-const SearchBar = () => {
+const SearchBar = (props: any) => {
+    const {
+        onPress
+
+    } = props
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
     return (
         <View style={styles.container}>
             {/* Filter Icon */}
-            <Icon name="options-outline" size={22} color="#555" />
+            <Icon name="options-outline" size={22} color="#555" onPress={() => {
+                onPress()
+            }} />
 
             {/* Input */}
             <TextInput
@@ -42,7 +48,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
 
             borderRadius: PixelPerfect(15),
             paddingHorizontal: PixelPerfect(10),
-           
+
             marginVertical: PixelPerfect(8),
             marginHorizontal: PixelPerfect(8),
             shadowColor: "#000",

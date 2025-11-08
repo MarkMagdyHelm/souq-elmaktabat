@@ -4,6 +4,7 @@ import { ThemeContext } from '../../Constants/theming';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import { ColorWithOpacity, Colors, PixelPerfect, phoneWidth } from '../../Constants/styleConstants';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { HeartIcon } from '../../Assets/Svg';
 
 type Props = {
     item: any, onPress: () => void,
@@ -16,21 +17,22 @@ const Product = (props: Props) => {
     } = props;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
+    console.log(item);
+
     return (
         <Pressable
             onPress={onPress}
         >
-            <View
-                style={[styles.con]}
-            >
+            <View style={[styles.con]}>
+                {item.isFavourite ?  <Text style={styles.heart}> ♥</Text> :<HeartIcon style={styles.heart} />    }
                 <Image source={{ uri: item.paperPhoto }} style={[styles.image]} />
                 <Text style={[styles.text]}>{item.categoryName + " " + item.paperName + " " + item.width + "جم " + item.paperSize}</Text>
-                <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                    <Text style={[styles.text1]}>{item.price + "جنيها"}</Text>
+                <View style={[layout.dirRow, styles.priceRateRow]}>
                     <View style={[layout.rowBox]}>
-                        <Text>{"⭐"}</Text>
+                        <Text style={styles.star}>{"★"}</Text>
                         <Text style={[styles.text1]}>{"(" + item.userRateCount + ")"}</Text>
                     </View>
+                    <Text style={[styles.price]}>{item.price + " جنيها"}</Text>
                 </View>
                 <View style={[layout.rowBox, styles.con2]}>
                     <Image
@@ -38,7 +40,7 @@ const Product = (props: Props) => {
                         style={[styles.imageRound]}
                     />
                     <View style={{ marginHorizontal: PixelPerfect(4) }}>
-                        <Text style={[styles.text]}>{item.userName}</Text>
+                        <Text style={[styles.seller]}>{item.userName}</Text>
                         <Text style={[styles.text2]}>{item.countryName}</Text>
                     </View>
                 </View>
@@ -58,12 +60,13 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
     StyleSheet.create({
 
         con: {
-            width: PixelPerfect(163),
-            height: PixelPerfect(228),
+            width: PixelPerfect(170),
+            minHeight: PixelPerfect(228),
             backgroundColor: theme.white,
             borderRadius: PixelPerfect(12),
-            margin: PixelPerfect(8),
-            padding: PixelPerfect(8),
+            padding: PixelPerfect(12),
+            marginHorizontal:PixelPerfect(6),
+            marginVertical:PixelPerfect(2),
             shadowColor: theme.black,
             shadowOpacity: 0.1,
             shadowRadius: 4,
@@ -71,10 +74,12 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
         },
 
         con1: {
-            backgroundColor: "#007bff",
-            padding: PixelPerfect(6),
+            backgroundColor: theme.active,
+            paddingVertical: PixelPerfect(8),
+            paddingHorizontal: PixelPerfect(10),
             borderRadius: PixelPerfect(8),
-            marginTop: PixelPerfect(8),
+
+            marginTop: PixelPerfect(10),
             alignContent: "center",
             alignItems: "center"
         },
@@ -84,9 +89,9 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
 
         image: {
             height: PixelPerfect(80),
-            width: PixelPerfect(143),
+            width: PixelPerfect(145),
             borderRadius: PixelPerfect(10),
-            resizeMode: "contain"
+            resizeMode: "cover"
         },
 
         imageRound: {
@@ -96,17 +101,33 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             marginRight: PixelPerfect(4),
         },
         text: {
-            color: theme.black,
+            color: theme.active,
             fontSize: PixelPerfect(14),
             fontFamily: Fonts.medium,
+            marginTop: PixelPerfect(6)
         },
+        seller: {
+            color: theme.active,
+            fontSize: PixelPerfect(13),
+            fontFamily: Fonts.medium,
+        },
+        priceRateRow: {
+            justifyContent: 'space-between',
+            marginTop: PixelPerfect(6)
+        },
+        price: {
+            color: theme.active,
+            fontSize: PixelPerfect(14),
+            fontFamily: Fonts.bold
+        },
+        star: { color: '#FFA800', marginRight: PixelPerfect(2) },
         text1: {
-            color: theme.gray,
+            color: theme.deactive,
             fontSize: PixelPerfect(14),
             fontFamily: Fonts.medium,
         },
         text2: {
-            color: theme.black,
+            color: theme.deactive,
             fontSize: PixelPerfect(12),
             fontFamily: Fonts.extraLight,
         },
@@ -116,5 +137,12 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             fontFamily: Fonts.bold,
             alignItems: "center",
             alignContent: "center"
+        },
+        heart: {
+            position: 'absolute',
+            top: PixelPerfect(8),
+            left: PixelPerfect(8),
+            zIndex: 1,
+            color: theme.active
         },
     });

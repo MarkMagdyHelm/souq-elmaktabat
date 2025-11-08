@@ -39,14 +39,14 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Souq Elmaktabat wants to access your camera to use them properly</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string></string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Souq Elmaktabat need access to your microphone to use them properly</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Souq Elmaktabat would like to save photos from the app to use them properly</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Souq Elmaktabat would like to save photos from the app to use them properly</string>
-<key>NSMicrophoneUsageDescription</key>
-<string>Souq Elmaktabat need access to your microphone to use them properly</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

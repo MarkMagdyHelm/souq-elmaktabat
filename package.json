@@ -11,7 +11,7 @@
     "g-c-build_apk": "npx jetify && cd ./android  && ./gradlew clean && ./gradlew assembleRelease ",
     "g-c-build_abb": "npx jetify && cd ./android  && ./gradlew clean && ./gradlew bundleRelease",
     "pod_install": "rvm use ext-ruby-2.7.4 && cd ios && pod install && cd ..",
-    "push": "git add . && git commit -m 'frist apk' && git push origin staging2",
+    "push": "git add . && git commit -m 'frist apk' && git push origin main",
     "bootsplash": "npx react-native generate-bootsplash logo.svg --background='#FFFFFF' --logo-width=192 --assets-output=assets --flavor=main",
     "Fonts": " npx react-native-asset ",
     "clean": "cd android && ./gradlew clean && cd ..",
@@ -20,6 +20,7 @@
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.21.0",
     "@react-native-community/checkbox": "^0.5.20",
+    "@react-native-community/datetimepicker": "7.2.0",
     "@react-native-community/netinfo": "^11.2.1",
     "@react-native-community/push-notification-ios": "^1.11.0",
     "@react-native-firebase/app": "^21.0.0",

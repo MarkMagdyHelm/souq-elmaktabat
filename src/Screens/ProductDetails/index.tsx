@@ -21,6 +21,8 @@ import { useRoute } from '@react-navigation/native';
 import { AddPaperOfferRequest } from '../../Apis/Request';
 import { useDispatch } from 'react-redux';
 import { useToast } from 'react-native-toast-notifications';
+import SignUpSuccess from '../../Components/PopUps/SignUpSuccess';
+import { t } from 'i18next';
 
 type Props = {
     navigation: any
@@ -34,7 +36,7 @@ const Index = (props: Props) => {
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
 
-    const pricePerUnit = 500;
+    const pricePerUnit = item.price;
     const minQty = 1;
     const maxQty = 1500;
     const [qty, setQty] = useState(1);
@@ -45,6 +47,7 @@ const Index = (props: Props) => {
     const dispatch = useDispatch();
     const [state, setState] = useState({
         loading: false,
+        showSuccess: false
     });
 
     const toast = useToast();
@@ -102,8 +105,14 @@ const Index = (props: Props) => {
                     setState((old) => ({
                         ...old,
                         requests: res.data.items ?? [],
-                        loading: false,
+                        loading: false, showSuccess: true
                     }));
+         
+                    setTimeout(() => {
+                        setState(old => ({ ...old, showSuccess: false }));
+                        navigation.navigate("MyOrders")
+                    }, 2000);
+
                 } else {
                     toastNotfication({
                         type: "error",
@@ -211,7 +220,17 @@ const Index = (props: Props) => {
 
 
                             <TouchableOpacity style={styles.orderBtn} onPress={() => {
+                                
+                                if(qty<item.min){
+                                    //error
+                                }
+                                else if(selectedBranchId ===null){
+                                //error
+                                }
+                                else{
+                                 //   navigation.navigate("MyOrders")
                                 addPaperOfferRequest()
+                                }
                             }}>
                                 <Text style={styles.orderBtnText}>إرسال الطلب</Text>
                             </TouchableOpacity>
@@ -240,6 +259,7 @@ const Index = (props: Props) => {
                         </View>
                     </View>
                 </View>
+                <SignUpSuccess show={state.showSuccess} title={"تم ارسال طلبك بنجاح"} />
             </Content>
         </Container>
 

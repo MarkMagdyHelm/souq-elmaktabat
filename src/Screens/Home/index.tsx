@@ -20,6 +20,7 @@ import { useToast } from 'react-native-toast-notifications'
 import { RootState } from '../../Store/store'
 import PushNotificationHandler from '../../Utilties'
 import { CheckActivison } from '../../Apis/User'
+import { GetSettingsHandler } from '../../Apis/Appinfo'
 
 let items = [{ flag: false }, { flag: true }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, { flag: true }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, { flag: false }]
 type Props = {
@@ -61,7 +62,7 @@ const Index = (props: Props) => {
     if (!isLogin) {
       assignID();
     }
-    dispatch<any>(CheckActivison())
+    
   }, [])
   const toast = useToast();
   const toastNotfication = (config: any) => {
@@ -141,11 +142,7 @@ const Index = (props: Props) => {
           </View>
         </View>
         <TabBar />
-        {isSeller&&<View style={styles.addOffer}>
-          <Pressable onPress={()=>navigation.navigate("AddOffer")}>
-            <AddOfferICon />
-          </Pressable>
-        </View>}
+        
       </Container>
     </ViewShot>
   )
@@ -209,9 +206,5 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
     list: {
 
     },
-    addOffer: {
-      position: "absolute",
-      bottom: phoneHeight * 0.125,
-      left: PixelPerfect(16)
-    }
+  
   });

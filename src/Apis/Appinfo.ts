@@ -1,7 +1,7 @@
 import { Dispatch } from "react";
 import { IDispatch } from "../Constants/interfaces";
 import { globalAPI } from "../Constants/config";
-import { SetActivites, SetAppSettings, SetCountries, SetOfferRequestStatus, SetPayments, SetRejectReasons, SetRoles, SetTools } from "../Store/actions/settings";
+import { SetActivites, SetAppSettings, SetCountries, SetOfferRequestStatus, SetPaperSize, SetPaperWidth, SetPayments, SetRejectReasons, SetRoles, SetTools } from "../Store/actions/settings";
 import { Platform } from "react-native";
 import DeviceInfo from "react-native-device-info";
 
@@ -9,36 +9,52 @@ import DeviceInfo from "react-native-device-info";
  * GetAppSettings
  * @param cb callback function
  */
-export const GetSettingsHandler = (body:any,cb?: (data: any, status: any) => void) => {
+export const GetSettingsHandler = (body: any, action, cb?: (data: any, status: any) => void) => {
   return async (dispatch: Dispatch<IDispatch>) => {
     try {
-      const { data, status } = await globalAPI.post('/api/Configuration/GetAllLookups',body);
-    
+      const { data, status } = await globalAPI.post('/api/Configuration/GetAllLookups', body);
+
       console.log('GetSettingsHandler data = ', data.data, data.status);
-      dispatch(SetAppSettings(data.data.setting));
-      const paymentTypesithFlag = Array.isArray(data?.data?.paymentTypes)
-        ? data.data.paymentTypes.map(payment => ({
-          ...payment,
+      if (action == "settings") {
+        dispatch(SetAppSettings(data.data.Setting));
+      }
+      if (action == "signup") {
+        const paymentTypesithFlag = Array.isArray(data?.data?.PaymentTypes)
+          ? data.data.PaymentTypes.map(payment => ({
+            ...payment,
+            isSelected: false,
+          }))
+          : [];
+        console.log('==============paymentTypesithFlag======================');
+        console.log(paymentTypesithFlag);
+        console.log('====================================');
+        dispatch(SetPayments(paymentTypesithFlag));
+    
+        
+        const activitesWithFlag = data.data.Activities.map(activity => ({
+          ...activity,
           isSelected: false,
-        }))
-        : [];
-     
-      dispatch(SetPayments(paymentTypesithFlag));
-      dispatch(SetCountries(data.data.country));
-      dispatch(SetRejectReasons(data.data.RejectReasons));
-       dispatch(SetOfferRequestStatus(data.data.OfferRequestStatus));
-      const activitesWithFlag = data.data.activities.map(activity => ({
-        ...activity,
-        isSelected: false,
-      }));
-      dispatch(SetActivites(activitesWithFlag));
-      const toolsWithFlag = data.data.availableTools.map(tool => ({
-        ...tool,
-        isSelected: false,
-      }));
-      dispatch(SetTools(toolsWithFlag));
-      dispatch(SetRoles(data.data.roles));
-      cb && cb(data.data.setting, data.status);
+        }));
+        dispatch(SetActivites(activitesWithFlag));
+        const toolsWithFlag = data.data.AvailableTools.map(tool => ({
+          ...tool,
+          isSelected: false,
+        }));
+        dispatch(SetTools(toolsWithFlag));
+        dispatch(SetRoles(data.data.Roles));
+      }
+      if (action == "paper") {
+        dispatch(SetPaperSize(data.data.PaperSizes));
+        dispatch(SetPaperWidth(data.data.PaperWidths));
+      }
+      if (action == "countries") {
+        dispatch(SetCountries(data.data.Countries));
+        dispatch(SetPaperSize(data.data.PaperSizes));
+        dispatch(SetRejectReasons(data.data.RejectReasons));
+        dispatch(SetOfferRequestStatus(data.data.OfferRequestStatus));
+      }
+
+      cb && cb(data.data.Settings, data.status);
     } catch (error) {
       console.log('GetSettingsHandler error = ', error);
       cb && cb(error, 500);

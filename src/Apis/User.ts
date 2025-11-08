@@ -3,6 +3,7 @@ import { IDispatch } from "../Constants/interfaces";
 import { SetUserData, UserIsSeller, UserLogin, UserLogout } from "../Store/actions/auth";
 import { AsyncKeys, saveItem } from "../Helper";
 import { globalAPI } from "../Constants/config";
+import { Platform } from "react-native";
 
 
 
@@ -166,13 +167,11 @@ export const CheckActivison = (cb?: (data: any, status: any) => void) => {
   return async (dispatch: Dispatch<IDispatch>) => {
     try {
       const { data, status } = await globalAPI.get('api/User/CheckConfirmation');
-      console.log('CheckActivisonHandler data = ', data, status);
+      console.log('CheckActivisonHandler data = ',Platform.OS, data, status);
       // cb && cb(data,status);
 
        if (data.status == 200) {
-            if (data.data) {     
               dispatch<any>(UserIsSeller(data.data));
-            }
           }
     } catch (error) {
       console.log('CheckActivisonHandler error = ', error);

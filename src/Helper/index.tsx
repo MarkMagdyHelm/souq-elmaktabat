@@ -99,15 +99,24 @@ export const SpotifyTransition = {
   },
 };
 
+  export const roles = [
+    { id: 1, arName: "مورد", name: "Customer" },
+    { id: 2, arName: "مستهلك", name: "Merchant" },
+    // { id: 3, arName: "صاحب مكتبة", name: "Bookstore Owner" },
+    // { id: 4, arName: "صاحب مطبعة", name: "Printing Owner" },
+    // { id: 5, arName: "مكتب", name: "Office" },
+    // { id: 6, arName: "مدرسة", name: "School" },
+    // { id: 7, arName: "شركة توريدات", name: "Supply Company" },
+    // // { id: 8, arName: "مستورد", name: "Importer" },
+    // // { id: 9, arName: "اخرى", name: "Importer" }
+  ];
 
-export const roles = [
-  { id: 1, arName: "مورد", name: "Customer" },
-  { id: 2, arName: "مستهلك", name: "Merchant" },
-  // { id: 3, arName: "صاحب مكتبة", name: "Bookstore Owner" },
-  // { id: 4, arName: "صاحب مطبعة", name: "Printing Owner" },
-  // { id: 5, arName: "مكتب", name: "Office" },
-  // { id: 6, arName: "مدرسة", name: "School" },
-  // { id: 7, arName: "شركة توريدات", name: "Supply Company" },
-  // // { id: 8, arName: "مستورد", name: "Importer" },
-  // // { id: 9, arName: "اخرى", name: "Importer" }
+  export const amounts = [
+  { id: 1, arName: "1", name: "1", isSelected: true },
+  { id: 2, arName: "20", name: "20", isSelected: false },
+  { id: 3, arName: "50", name: "50", isSelected: false },
+  { id: 4, arName: "100", name: "100", isSelected: false },
+  { id: 5, arName: "200", name: "200", isSelected: false },
+  { id: 6, arName: "500", name: "500", isSelected: false },
+  { id: 7, arName: "أخرى", name: "Others", isSelected: false },
 ];

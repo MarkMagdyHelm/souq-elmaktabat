@@ -234,6 +234,7 @@ const Index = (props: Props) => {
         >
                 <SignUpSuccess
                 show={state.showSuccess}
+                title={t("regtxt8")}
                 />
             <HeaderWithText title={t("signtxt1")} />
             <Content

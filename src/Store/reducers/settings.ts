@@ -15,7 +15,10 @@ const initialState = {
   tools: [],
   payments: [],
   rejectReasons: [],
-  offerRequestStatus: []
+  offerRequestStatus: [],
+  paperwidth: [],
+  paperSize: [],
+  paperType: []
 };
 
 export default (state = initialState, { type, payload }: IReduser) => {
@@ -45,8 +48,14 @@ export default (state = initialState, { type, payload }: IReduser) => {
       return { ...state, payments: payload };
     case ActionType.SAVE_REJECT_REASONS:
       return { ...state, rejectReasons: payload };
-        case ActionType.SAVE_OFFER_REQUEST_STATUS:
+    case ActionType.SAVE_OFFER_REQUEST_STATUS:
       return { ...state, offerRequestStatus: payload };
+    case ActionType.SAVE_PAPERWIDTH:
+      return { ...state, paperwidth: payload };
+    case ActionType.SAVE_PAPERSIZE:
+      return { ...state, paperSize: payload };
+    case ActionType.PAPER_TYPE:
+      return { ...state, paperType: payload };
     default:
       return state;
   }
