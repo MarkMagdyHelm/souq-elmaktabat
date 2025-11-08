@@ -15,10 +15,12 @@ import CancelOrder from '../../Components/PopUps/CancelOrder';
 import MultiChekers from '../../Components/PopUps/MultiChekers';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../Store/store';
-import { UpdateRequest } from '../../Apis/Request';
+import { AddRate, UpdateRequest } from '../../Apis/Request';
 import { useToast } from 'react-native-toast-notifications';
 import HeaderWithText from '../../Components/Headers/HeaderWithText';
 import RatingScreen from '../../Components/PopUps/RatingScreen';
+import { number } from 'yup';
+import SignUpSuccess from '../../Components/PopUps/SignUpSuccess';
 type Props = {
     navigation: any
 }
@@ -31,7 +33,7 @@ const Index = (props: Props) => {
     const { item } = useRoute().params as any;
     const [state, setstate] = useState({
         loading: false,
-     
+
         requestStatus: 0,
 
     });
@@ -44,6 +46,8 @@ const Index = (props: Props) => {
     const [statusId, setStatusIds] = useState(0);
     const [requestId, setRequestId] = useState(0);
     const [viewRate, setViewRate] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
+    
     const [rejectReason, setRejectReason] = useState(null);
     const { rejectReasons, offerRequestStatus } = useSelector((state: RootState) => state.settings);
     const { isSeller } = useSelector((state: RootState) => state.auth);
@@ -83,7 +87,8 @@ const Index = (props: Props) => {
     };
 
 
- 
+    console.log(item);
+
 
     const [date, time] = (item?.date ?? "").split("T");
 
@@ -133,12 +138,44 @@ const Index = (props: Props) => {
         );
     };
 
+    const addRate = (
+        number?: string,
+        description?: string,
+        toUserId?: string,
+        paperOfferRequestId?: string
+    ) => {
+        setstate(old => ({ ...old, loading: true }));
+
+        dispatch<any>(
+            AddRate(
+                { number: number, description: description, toUserId: toUserId, paperOfferRequestId: paperOfferRequestId },
+                (res, status) => {
+                    if (res.status === 200) {
+                        setShowSuccess(true)
+                        setTimeout(() => {
+                            setShowSuccess(false)
+                           // navigation.navigate("MyOrders")
+                        }, 2000);
+                    } else {
+                        toastNotfication({
+                            type: "error",
+                            message: res?.Message ?? "حدث خطأ ما",
+                        });
+                    }
+
+                    setstate(old => ({ ...old, loading: false }));
+                }
+            )
+        );
+    };
+
+
     //const reasons=  rejectReasons.filter(item => item.isDisplayed && !isSeller);
 
     return (
         <Container showHint={false}>
             <HeaderWithText title={"تفاصيل الطلب"} />
-           
+
             {visibleCancelResones && <MultiChekers
                 onCloseFn={(val) => {
                     setVisibleCancelResones(false)
@@ -155,6 +192,8 @@ const Index = (props: Props) => {
                 hasTextInput={true}
                 textinputTitle={'اكتب اسباب الالغاء'}
             />}
+            <SignUpSuccess show={showSuccess} title={"تم التقييم بنجاح"} />
+
             <CancelOrder visible={visibleCancel} onClose={() => setVisibleCancel(false)} onSubmit={() => {
                 setVisibleCancelResones(true)
                 setVisibleCancel(false)
@@ -270,7 +309,7 @@ const Index = (props: Props) => {
                             )}
                             {state.requestStatus === 3 && <View style={[layout.dirRow, styles.actions]}>
                                 <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} onPress={() => {
-                                setViewRate(true)
+                                    setViewRate(true)
                                 }} >
                                     <View style={[styles.icon]}>
                                         <RateIcon />
@@ -330,8 +369,10 @@ const Index = (props: Props) => {
             <RatingScreen
                 visible={viewRate}
                 onClose={() => setViewRate(false)}
-                onSubmit={() => setViewRate(false)}
-             />
+                onSubmit={(val) => {
+                    addRate(val.rating, val.comment, item.userId, item.requestId)
+                }}
+            />
         </Container>
     )
     // return (

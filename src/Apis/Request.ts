@@ -71,3 +71,18 @@ export const AddPaperOfferRequest = (body: any, cb?: (data: any, status: any) =>
     };
 };
 
+export const AddRate = (body: any, cb?: (data: any, status: any) => void) => {
+    return async (dispatch: Dispatch<IDispatch>) => {
+        try {
+
+            const { data, status } = await globalAPI.post('api/User/AddRate',
+                body
+            );
+            cb && cb(data, status);
+        } catch (error) {
+            console.log('AddRate error = ', error);
+            cb && cb(error, 500);
+        }
+    };
+};
+
