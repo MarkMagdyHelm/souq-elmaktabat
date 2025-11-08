@@ -186,5 +186,6 @@ export default {
     "Favorite List": "القائمة المفضلة",
     "Branches": "الفروع",
     "Invite Friends": "دعوة الاصدقاء",
-    "Change Password":"تغيير كلمة السر"
+    "Change Password":"تغيير كلمة السر",
+    "Reset":"إعادة ضبط"
 };

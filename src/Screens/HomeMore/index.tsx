@@ -24,6 +24,7 @@ import { GetSettingsHandler } from '../../Apis/Appinfo'
 import PriceFilter from '../../Components/PopUps/PriceFilter'
 import { max } from 'moment'
 import HeaderWithText from '../../Components/Headers/HeaderWithText'
+import FilterMultiChecker from '../../Components/PopUps/FilterMultiChecker'
 type Props = {
     navigation: any
 }
@@ -161,7 +162,7 @@ const Index = (props: Props) => {
         <Container showHint={false}>
             <HeaderWithText title={"عروض الورق"} />
             <View style={{ flex: 1, paddingHorizontal: PixelPerfect(16) }}>
-                {state.viewCountries && <MultiChekers
+                {state.viewCountries && <FilterMultiChecker   
                     onCloseFn={(val) => {
                         if (Array.isArray(val)) {
                             setstate(old => ({
@@ -175,7 +176,7 @@ const Index = (props: Props) => {
                     title={"اختار المحافظة"}
                     currentFilter={""}
                     items={countries}
-                    style={{ flex: 0.8 }}
+                    style={{ flex: 0.6 }}
                     type="countries"
                     hasTextInput={false}
 
@@ -194,7 +195,7 @@ const Index = (props: Props) => {
                     title={"اختار نوع الورق"}
                     currentFilter={""}
                     items={state.papers}
-                    style={{ flex: 0.8 }}
+                    style={{ flex: 0.6 }}
                     type="paperType"
                     hasTextInput={false}
 

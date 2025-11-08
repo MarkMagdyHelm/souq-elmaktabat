@@ -2,7 +2,7 @@ import { FlatList, Platform, Pressable, ScrollView, StyleSheet, Text, View, View
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { IFont, ITheme } from '../../Constants/interfaces'
 import { ThemeContext } from '../../Constants/theming'
-import { Colors, PixelPerfect } from '../../Constants/styleConstants'
+import { Colors, PixelPerfect, phoneWidth } from '../../Constants/styleConstants'
 import { t } from 'i18next'
 import Modal from 'react-native-modal';
 import { CheckBoxEmptyIcon, CheckBoxIcon, CloseIcon } from '../../Assets/Svg'
@@ -26,7 +26,7 @@ type Props = {
     textinputTitle?: string
 }
 
-const MultiChekers = (props: Props) => {
+const FilterMultiChecker = (props: Props) => {
     const {
         onCloseFn,
         currentFilter,
@@ -44,12 +44,11 @@ const MultiChekers = (props: Props) => {
         items: items,
         selectFilter: currentFilter,
         isScroll: false,
-        isClickable:false
+        isClickable: false
     });
     const dispatch = useDispatch();
     const flatListRef = useRef(null);
-    console.log("---------------------------");
-    console.log(items)
+
     const handelCheck = (index: number) => {
         if (type == "activities") {
             setstate((old) => {
@@ -100,16 +99,40 @@ const MultiChekers = (props: Props) => {
                 };
             });
         }
-
-        if (type == "countries") {
+        if (type == "rejectReasons") {
             setstate((old) => {
                 if (items[index].id == 1) {
                     return {
                         ...old,
-                        isClickable:true
+                        isClickable: true
                     };
 
                 }
+                const updatedItems = old.items.map((item, i) =>
+                    i === index ? { ...item, isSelected: !item.isSelected } : item
+                );
+
+                const RejectReasonssSelected = updatedItems.filter((el) => el.isSelected);
+                dispatch(SetRejectReasons(updatedItems));
+
+
+                return {
+                    ...old,
+                    items: updatedItems,
+                    selectFilter: RejectReasonssSelected,
+                    isScroll: false
+                };
+            });
+        }
+        if (type == "countries") {
+            setstate((old) => {
+                // if (items[index].id == 1) {
+                //     return {
+                //         ...old,
+                //         isClickable:true
+                //     };
+
+                // }
                 const updatedItems = old.items.map((item, i) =>
                     i === index ? { ...item, isSelected: !item.isSelected } : item
                 );
@@ -126,7 +149,56 @@ const MultiChekers = (props: Props) => {
                 };
             });
         }
+        if (type == "paperType") {
+            setstate((old) => {
+                if (items[index].id == 1) {
+                    return {
+                        ...old,
+                        isClickable: true
+                    };
 
+                }
+                const updatedItems = old.items.map((item, i) =>
+                    i === index ? { ...item, isSelected: !item.isSelected } : item
+                );
+
+                const paperTypeSelected = updatedItems.filter((el) => el.isSelected);
+                dispatch(SetPaperType(updatedItems));
+
+
+                return {
+                    ...old,
+                    items: updatedItems,
+                    selectFilter: paperTypeSelected,
+                    isScroll: false
+                };
+            });
+        }
+        if (type == "paperSize") {
+            setstate((old) => {
+                if (items[index].id == 1) {
+                    return {
+                        ...old,
+                        isClickable: true
+                    };
+
+                }
+                const updatedItems = old.items.map((item, i) =>
+                    i === index ? { ...item, isSelected: !item.isSelected } : item
+                );
+
+                const paperSizeSelected = updatedItems.filter((el) => el.isSelected);
+                dispatch(SetPaperSize(updatedItems));
+
+
+                return {
+                    ...old,
+                    items: updatedItems,
+                    selectFilter: paperSizeSelected,
+                    isScroll: false
+                };
+            });
+        }
     };
 
     const keyboard = useKeyboard();
@@ -203,7 +275,7 @@ const MultiChekers = (props: Props) => {
                     };
                 }
 
-                
+
                 if (type == "paperType") {
 
                     dispatch(SetPaperType(updatedItems));
@@ -229,7 +301,7 @@ const MultiChekers = (props: Props) => {
                     };
                 }
 
-                
+
 
             });
         } else {
@@ -248,6 +320,30 @@ const MultiChekers = (props: Props) => {
     }, [state.items])
     const handleSubmit2 = () => {
         onCloseFn && onCloseFn(state.selectFilter)
+    }
+    const handleReset = ()=>{
+        if (type == "countries") {
+            setstate((old) => {
+                // if (items[index].id == 1) {
+                //     return {
+                //         ...old,
+                //         isClickable:true
+                //     };
+
+                // }
+                const updatedItems = old.items.map((item, i) =>
+                  ( { ...item, isSelected: false } )
+                );
+
+                dispatch(SetCountries(updatedItems));
+                return {
+                    ...old,
+                    items: updatedItems,
+                    selectFilter: [],
+                    isScroll: false
+                };
+            });
+        }
     }
     return (
         <Modal
@@ -271,7 +367,7 @@ const MultiChekers = (props: Props) => {
                         <CloseIcon />
                     </Pressable>
                 </View>
-                <View style={[styles.listCon, !hasTextInput && { flex: 0.7 }]}>
+                <View style={[styles.listCon, { flex: 0.95 }]}>
                     <FlatList
                         ref={flatListRef}
                         showsVerticalScrollIndicator={false}
@@ -296,69 +392,35 @@ const MultiChekers = (props: Props) => {
                         ListFooterComponent={() => (<View style={{ height: PixelPerfect(10) }} />)}
                     />
                 </View>
-                {hasTextInput ? <ScrollView
-                    automaticallyAdjustKeyboardInsets
-                    showsVerticalScrollIndicator={false}
-                    style={{ flex: 0.05, paddingHorizontal: PixelPerfect(20) }}
-                    keyboardShouldPersistTaps="handled"
-                >
-                    <Formik
-                        validationSchema={type == "rejectReasons" ? validationSchemaReasons : validationSchema}
-                        initialValues={{
-                            activity: "",
-                        }}
-                        onSubmit={handleSubmmit} >
-                        {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue, setFieldTouched }) => {
-                            console.log('====================================');
-                            console.log(errors);
-                            console.log('====================================');
-                            return (
-                                <>
-                                    <Inputs
-                                        // label={t('Email')}
-                                        options={{
-                                            onBlur: handleBlur("activity"),
-                                            onChangeText: handleChange("activity"),
-                                            placeholder: textinputTitle,
-                                            maxLength: 30,
-                                            keyboardType: 'email-address',
-                                            // onSubmitEditing:handleSubmmit
-                                        }}
-                                        password={false}
-                                        showErrorr={(errors.activity && touched.activity) as boolean}
-                                        error={errors.activity as any}
 
-                                    />
-                                    <Button
-                                        title={t('Save')}
-                                        styleTitle={styles.buttonText}
-                                        onPress={handleSubmit}
-                                        style={styles.button}
-                                    />
-                                </>
-                            )
-                        }}
+                <View style={[layout.rowBox, {
+                    width: phoneWidth ,
+                    paddingHorizontal: PixelPerfect(16),
+                    alignItems: "center",
+                    backgroundColor: "red",
+                    justifyContent: "space-between"
+                }]}>
 
-                    </Formik>
+                    <Button
+                        title={t('Save')}
+                        styleTitle={styles.buttonText}
+                        onPress={handleSubmit2}
+                        style={styles.button}
+                    />
+                    <Button
+                        title={t('Reset')}
+                        styleTitle={styles.buttonText}
+                        onPress={handleReset}
+                        style={styles.button}
+                    />
+                </View>
 
-                </ScrollView>
-                    :
-                    <View style={{ flex: 0.2, paddingHorizontal: PixelPerfect(16) }}>
-
-                        <Button
-                            title={t('Save')}
-                            styleTitle={styles.buttonText}
-                            onPress={handleSubmit2}
-                            style={styles.button}
-                        />
-                    </View>
-                }
             </View>
         </Modal>
     )
 }
 
-export default MultiChekers
+export default FilterMultiChecker
 
 const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,) =>
     StyleSheet.create({
@@ -411,8 +473,9 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             height: PixelPerfect(50),
             alignItems: "center",
             justifyContent: "center",
-            marginTop: PixelPerfect(10),
-
+            // marginTop: PixelPerfect(10),
+            width: (phoneWidth - PixelPerfect(32)) * 0.48
+            // flex:0.5
         },
         buttonText: {
             fontFamily: Fonts.bold,
