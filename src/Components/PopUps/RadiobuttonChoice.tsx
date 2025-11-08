@@ -38,9 +38,6 @@ const RadiobuttonChoice = (props: Props) => {
     } = props
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
-    console.log('============currentFilter========================');
-    console.log(currentFilter);
-    console.log('====================================');
     const [state, setstate] = useState({
         items: items,
         selectFilter: currentFilter,
@@ -80,14 +77,14 @@ const RadiobuttonChoice = (props: Props) => {
     const keyboard = useKeyboard();
 
     const handleSubmmit = (values) => {
+        const newItem = {
+            arName: values.activity,
+            isSelected: true,
+            name: values.activity,
+        };
         setstate((old) => {
             if (values.activites != 0) {
 
-                const newItem = {
-                    arName: values.activity,
-                    isSelected: true,
-                    name: values.activity,
-                };
 
                 const exists = old.items.some(
                     (el) => el.arName == values.activity || el.name == values.activity
@@ -101,13 +98,17 @@ const RadiobuttonChoice = (props: Props) => {
                    return {
                 ...old,
                 items: updatedItems,
-                selectFilter: newItem,
+                selectFilter: [newItem],
                 isScroll: false
             };
 
             }
         });
-          handleSubmit2()
+        console.log('==============newItem======================');
+        console.log(newItem);
+        console.log('====================================');
+        
+          handleSubmit2(newItem)
     };
     useEffect(() => {
         if (state.isScroll) {
@@ -118,18 +119,22 @@ const RadiobuttonChoice = (props: Props) => {
             }, 100);
         }
     }, [state.items])
-    const handleSubmit2 = () => {
-        onCloseFn && onCloseFn(state.selectFilter)
+    const handleSubmit2 = (newItem: any) => {
+        console.log('==============handleSubmit2======================');
+        console.log(newItem);
+        console.log('====================================');
+        
+        onCloseFn && onCloseFn(newItem)
     }
     return (
         <Modal
             backdropOpacity={0.2}
             //    backdropColor='#00000'
             onBackButtonPress={() => {
-                onCloseFn && onCloseFn(state.selectFilter)
+                onCloseFn && onCloseFn(state.selectFilter[0])
             }}
             onBackdropPress={() => {
-                onCloseFn && onCloseFn(state.selectFilter)
+                onCloseFn && onCloseFn(state.selectFilter[0])
             }}
             isVisible={true}
             style={{ margin: 0, justifyContent: keyboard ? "flex-start" : "flex-end", marginTop: keyboard ? PixelPerfect(40) : 0 }}
@@ -139,7 +144,7 @@ const RadiobuttonChoice = (props: Props) => {
                     <Text style={styles.title}>{title}</Text>
                     <Pressable style={styles.CloseCon}
                         unstable_pressDelay={100}
-                        onPress={() => { onCloseFn && onCloseFn(state.selectFilter) }}>
+                        onPress={() => { onCloseFn && onCloseFn(state.selectFilter[0]) }}>
                         <CloseIcon />
                     </Pressable>
                 </View>
@@ -218,7 +223,7 @@ const RadiobuttonChoice = (props: Props) => {
                         <Button
                             title={t('Save')}
                             styleTitle={styles.buttonText}
-                            onPress={handleSubmit2}
+                            onPress={() => handleSubmit2(state.selectFilter[0])}
                             style={styles.button}
                         />
                     </View>

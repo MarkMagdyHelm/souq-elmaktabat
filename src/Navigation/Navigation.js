@@ -96,7 +96,7 @@ const Drawers = () => {
           drawerType: Platform.OS == "ios" ? "front" : 'front',
           gestureEnabled: false,
           drawerStyle: {
-            width: phoneWidth - PixelPerfect(87),
+            width: phoneWidth,
           },
         };
       }}

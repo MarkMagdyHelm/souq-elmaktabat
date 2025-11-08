@@ -174,7 +174,17 @@ export default {
 "paperDelivery":"هل متاح التوصيل *",
 "yes":"نعم",
 "no":"لا",
-"addoffer":"اضف العرض",
-"lessOffer":"اقل كمية للطلب",
-"lessOfferw":"اكتب اقل كمية للطلب"
+    "addoffer":"اضف العرض",
+    "lessOffer":"اقل كمية للطلب",
+    "lessOfferw":"اكتب اقل كمية للطلب",
+    //Menu items
+    "The Account": "الحساب",
+    "My Orders": "طلباتي",
+    "My Offers": "عروضي",
+    "Purchase Orders": "طلبات الشراء",
+    "Ratings": "التقييمات",
+    "Favorite List": "القائمة المفضلة",
+    "Branches": "الفروع",
+    "Invite Friends": "دعوة الاصدقاء",
+    "Change Password":"تغيير كلمة السر"
 };

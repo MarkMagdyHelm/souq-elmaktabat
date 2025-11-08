@@ -169,8 +169,9 @@ export const CheckActivison = (cb?: (data: any, status: any) => void) => {
       const { data, status } = await globalAPI.get('api/User/CheckConfirmation');
       console.log('CheckActivisonHandler data = ',Platform.OS, data, status);
       // cb && cb(data,status);
-
-       if (data.status == 200) {
+      
+      if (data.status == 200) {
+         console.log('CheckActivisonHandler data = ',Platform.OS, data, status);
               dispatch<any>(UserIsSeller(data.data));
           }
     } catch (error) {

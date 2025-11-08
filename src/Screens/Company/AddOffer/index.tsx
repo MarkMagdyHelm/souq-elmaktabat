@@ -41,9 +41,9 @@ const Index = (props: Props) => {
         showBranches: false,
         isdelervable: false,
         date: new Date(),
-        selectedPaperType:{ name: "", arName: "", id: "" },
-        selectedPaperSize:{ name: "", arName: "", id: "" },
-         selectedPaperQuntaity:{ name: "", arName: "", id: "" },
+        selectedPaperType: { name: "", arName: "", id: "" },
+        selectedPaperSize: { name: "", arName: "", id: "" },
+        selectedPaperQuntaity: { name: "", arName: "", id: "" },
     });
     const dispatch = useDispatch();
     const showToast = useToastNotification();
@@ -65,7 +65,7 @@ const Index = (props: Props) => {
     };
     const { paperwidth, paperSize } = useSelector((state: RootState) => state.settings);
     console.log('====================================');
-    console.log( paperSize);
+    console.log(state.selectedPaperSize.arName);
     console.log('====================================');
     return (
         <Container showHint={false}>
@@ -172,7 +172,11 @@ const Index = (props: Props) => {
                                         <Text style={[layout.textAlign, styles.label]}>{t("papermintoorder")}</Text>
                                         <View style={[layout.rowBox, styles.selectMenue]}>
                                             <Text style={styles.textselectmenu}>
-                                                {t("papermintoordew")}
+                                                {typeof state.selectedPaperQuntaity.id !== "string"
+                                                    ? dir === "rtl"
+                                                        ? state.selectedPaperQuntaity.arName
+                                                        : state.selectedPaperQuntaity.name
+                                                    : t("papermintoordew")}
                                             </Text>
                                             {state.showQuntity ? <ArrowUpIcon /> : <ArrowDownIcon />}
                                         </View>
@@ -333,35 +337,42 @@ const Index = (props: Props) => {
                                             style={{ flex: 0.3 }}
                                         />
                                     )}
-                                        {state.showQuntity && (
-              <RadiobuttonChoice
-                onCloseFn={(val) => {
-                  setFieldTouched("Activities");
-                  if (val?.length === 0) {
-                    setFieldError("Activities", "You must choose a market!");
-                    setstate((old) => ({
-                      ...old,
-                      showQuntity: false,
-                    }));
-                  } else {
-                    setFieldValue("Activities", val);
-                    setstate((old) => ({
-                      ...old,
-                      showQuntity: false,
-                      selectedPaperQuntaity: val,
-                      forms: {  selectedPaperQuntaity: "" },
-                    }));
-                  }
-                }}
-                title={t("lessOffer")}
-                currentFilter={state.selectedPaperQuntaity}
-                items={amounts}
-                style={{ flex: 0.6 }}
-                type={"activities"}
-                hasTextInput={false}
-                textinputTitle={t('lessOfferw')}
-              />
-            )}
+                                    {state.showQuntity && (
+                                        <RadiobuttonChoice
+                                            onCloseFn={(val) => {
+                                             
+                                                setFieldTouched("Activities");
+                                                if (!val?.hasOwnProperty("isSelected")) {
+
+                                                    setFieldError("Activities", "You must choose a market!");
+                                                    setstate((old) => ({
+                                                        ...old,
+                                                        showQuntity: false,
+                                                    }));
+                                                } else {
+                                                    console.log('==============dddddd======================');
+                                                    console.log(val,val.hasOwnProperty("id"));
+                                                    console.log(typeof val);
+                                                    console.log('====================================');
+
+                                                    setFieldValue("Activities", val);
+                                                    setstate((old) => ({
+                                                        ...old,
+                                                        showQuntity: false,
+                                                        selectedPaperQuntaity: val,
+                                                        forms: { selectedPaperQuntaity: "" },
+                                                    }));
+                                                }
+                                            }}
+                                            title={t("lessOffer")}
+                                            currentFilter={state.selectedPaperQuntaity}
+                                            items={amounts}
+                                            style={{ flex: 0.6 }}
+                                            type={"activities"}
+                                            hasTextInput={false}
+                                            textinputTitle={t('lessOfferw')}
+                                        />
+                                    )}
                                 </Content>
 
                             </>
