@@ -1,200 +1,420 @@
-import { FlatList, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useContext, useState } from 'react'
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { ThemeContext } from '../../Constants/theming';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import { PixelPerfect } from '../../Constants/styleConstants';
-import SellerBranches from '../../Components/Cards/SellerBranches';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScrollView } from 'react-native-gesture-handler';
-import { Call2Icon, CancelIcon, CheckIcon } from '../../Assets/Svg';
-import RatingScreen from '../../Components/PopUps/RatingScreen';
+import { t } from 'i18next';
+
+
+import { AddressIcon, Call2Icon, CancelIcon, CheckIcon, CheckIcon1, RateIcon } from '../../Assets/Svg';
+
+import { Container, Content } from '../../Components/containers/Containers';
+import { useRoute } from '@react-navigation/native';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { CallNumber, GetNamesByLang } from '../../Helper';
 import CancelOrder from '../../Components/PopUps/CancelOrder';
-import DoneRate from '../../Components/PopUps/DoneRate';
 import MultiChekers from '../../Components/PopUps/MultiChekers';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../Store/store';
+import { AddRate, UpdateRequest } from '../../Apis/Request';
+import { useToast } from 'react-native-toast-notifications';
+import HeaderWithText from '../../Components/Headers/HeaderWithText';
+import RatingScreen from '../../Components/PopUps/RatingScreen';
+import { number } from 'yup';
+import SignUpSuccess from '../../Components/PopUps/SignUpSuccess';
 type Props = {
-    item: any, onAccept: any, onReject: any
+    navigation: any
 }
 
-const MyOrderItem = (props: Props) => {
+const Index = (props: Props) => {
     const {
-        item, onAccept
+        navigation
     } = props;
-    const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
-    const styles = useStyles(Fonts, theme, dark, dir);
+
+    const { item } = useRoute().params as any;
     const [state, setstate] = useState({
         loading: false,
-        items: [{ flag: false }, { flag: false }]
+
+        requestStatus: 0,
 
     });
-    const [visible, setVisible] = useState(true);
+    const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
+    const styles = useStyles(Fonts, theme, dark, dir, state.requestStatus);
+
+    const [visibleCancel, setVisibleCancel] = useState(false);
+    const [visibleCancelResones, setVisibleCancelResones] = useState(false);
+    const [rejectReasonId, setRejectReasonId] = useState(null);
+    const [statusId, setStatusIds] = useState(0);
+    const [requestId, setRequestId] = useState(0);
+    const [viewRate, setViewRate] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
+    
+    const [rejectReason, setRejectReason] = useState(null);
+    const { rejectReasons, offerRequestStatus } = useSelector((state: RootState) => state.settings);
+    const { isSeller } = useSelector((state: RootState) => state.auth);
 
 
-    const handleSubmit = (data) => {
-        console.log('Rating submitted:', data);
+    const dispatch = useDispatch();
+    const toast = useToast();
+
+
+    const toastNotfication = (config: any) => {
+        toast.hideAll();
+        toast.show(config.message, {
+            type: config.type,
+            duration: 3000,
+            offset: 50,
+            animationType: "slide-in",
+            placement: "top",
+        } as any);
     };
 
-     const categories = [
-        { id: "1", title: "ورق", image: "https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg" },
-        { id: "2", title: "أحبار", image: "https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg" },
-        { id: "3", title: "مطابع", image: "https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg" },
-    ];
+    const translateStatus = (status: any) => {
+        switch (status) {
+            case t("statusPending"):
+            case "قيد الانتظار":
+                return 0;
+            case t("statusAccepted"):
+            case "طلب مقبول":
+                return 1;
+            case t("statusCancelled"):
+            case "طلب ملغي":
+                return 2;
+            case t("statusDelivered"):
+            case "تم التسليم":
+                return 3;
+            case t("statusCompleted"):
+            case "طلب منتهي":
+                return 4;
+            case t("statusNew"):
+            case "طلب جديد":
+                return 5;
 
-    // return (
-    //     <SafeAreaView style={styles.container}>
-    //         <ScrollView showsVerticalScrollIndicator={false}
-    //             showsHorizontalScrollIndicator={false}>
-    //             <View style={styles.card}>
-
-    //                 <View style={[layout.dirRow, styles.row]}>
-    //                     <View style={styles.con1}>
-    //                         <View style={[layout.dirRow, { justifyContent: "space-between", alignItems: "center" }]}>
-    //                             <TouchableOpacity style={styles.statusBtn} onPress={() => { }}>
-    //                                 <Text style={styles.statusText}>طلب مقبول</Text>
-
-    //                             </TouchableOpacity>
-    //                             <View style={[layout.rowBox, { alignItems: "center" }]}>
-    //                                 <Image source={{ uri: "https://i.pravatar.cc/100" }} style={styles.avatar} />
-    //                                 <Text style={styles.name}>مكتبة النور</Text>
-    //                             </View>
-    //                         </View>
-    //                         <View style={styles.actions}>
-    //                             <SellerBranches loading={state.loading} onPress={function (): void {
-    //                                 throw new Error('Function not implemented.');
-    //                             }} />
-    //                         </View>
-    //                         <Text style={styles.product}>ورق مرام 80جم</Text>
+        }
+    };
 
 
-
-    //                         <View style={styles.actions}>
-    //                             <Text style={styles.date}>التاريخ: </Text>
-    //                             <Text style={styles.date1}>15 ديسمبر 2025</Text>
-    //                         </View>
-
-    //                         <View style={styles.actions}>
-    //                             <Text style={styles.date}>الكمية: </Text>
-    //                             <Text style={styles.date1}>15</Text>
-    //                         </View>
-
-    //                         <View style={styles.actions}>
-    //                             <Text style={styles.date}>الاجمالي: </Text>
-    //                             <Text style={styles.total}>1500 جنيها</Text>
-    //                         </View>
-
-    //                         <View style={[layout.dirRow, styles.actions]}>
-    //                             <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} onPress={() => onAccept(item)}>
-    //                                 <View style={[styles.icon]}>
-    //                                     <Call2Icon />
-    //                                 </View>
-    //                                 <Text style={styles.acceptText}>تواصل الان</Text>
-
-    //                             </TouchableOpacity>
-
-    //                         </View>
-
-    //                         <View style={[layout.dirRow, styles.actions]}>
-
-    //                             <TouchableOpacity style={[layout.rowBox, styles.receiveBtn]} onPress={() => onAccept(item)}>
-    //                                  <View style={[styles.icon]}>
-    //                                      <CheckIcon />
-    //                                      </View>
-
-    //                                 <Text style={styles.receiveText}>تم التسليم</Text>
-
-    //                             </TouchableOpacity>
-    //                         </View>
-
-    //                          <View style={[layout.dirRow, styles.actions]}>
-
-    //                             <TouchableOpacity style={[layout.rowBox, styles.cancelBtn]} onPress={() => onAccept(item)}>
-    //                                   <View style={[styles.icon]}>
-    //                                      <CancelIcon />
-    //                                      </View>
-    //                                 <Text style={styles.cancelText}>الغاء الطلب</Text>
-
-    //                             </TouchableOpacity>
-    //                         </View>
-
-    //                         {/* وصف المنتج */}
-    //                         <View >
-    //                             <View style={styles.actions}>
-    //                                 <Text style={styles.description}>وصف المنتج: </Text>
-    //                                 <Text style={styles.description1}>ورق طباعة أبيض نقي بجودة ممتازة، مناسب لجميع أنواع الطابعات النافثة للحبر والليزر. العبوة تحتوي على 500 ورقة بحجم A4 قياسي. الورق مصنوع من ألياف طبيعية عالية الجودة مما يضمن طباعة واضحة ونتائج احترافية.</Text>
-    //                             </View>
-    //                             <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-    //                                 <Text style={styles.note}>النوع</Text>
-    //                                 <Text style={styles.note1}>مرام</Text>
-    //                             </View>
-    //                             <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-    //                                 <Text style={styles.note}>الحجم</Text>
-    //                                 <Text style={styles.note1}>A4</Text>
-    //                             </View>
-    //                             <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-    //                                 <Text style={styles.note}>الوزن</Text>
-    //                                 <Text style={styles.note1}>جرام/مترمربع</Text>
-    //                             </View>
-
-    //                         </View>
-
-    //                         <Text style={styles.cancel}>تم الغاء الطلب بواسطه المشتري</Text>
-    //                         {/*التقييم*/}
-    //                         <Text style={styles.rate}>تقييمك للبائع : </Text>
-    //                         <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-    //                             <Text style={styles.rating}>{"(5)"} ⭐⭐⭐⭐ </Text>
-    //                             <Text style={styles.dateRate}>18 مايو 2025</Text>
-
-    //                         </View>
-
-    //                         <Text style={styles.rateNote}>جودة ممتازة وسعر مناسب. الورق أبيض نقي والطباعة عليه واضحة جداً. أنصح بالشراء.</Text>
-    //                     </View>
-    //                 </View>
+    console.log(item);
 
 
+    const [date, time] = (item?.date ?? "").split("T");
 
-    //                 {/* <View style={[layout.dirRow, styles.actions]}>
 
-    //             <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} onPress={() => onAccept(item)}>
-    //                 <Text style={styles.acceptText}>تواصل الان</Text>
+    useEffect(() => {
 
-    //             </TouchableOpacity>
-    //         </View> */}
-    //             </View>
+        setstate(old => ({ ...old, requestStatus: translateStatus(item.status) }));
 
-    //         </ScrollView>
+    }, []);
 
-    //     </SafeAreaView >
-    // )
+    const body = Object.fromEntries(
+        Object.entries({
+            requestId,
+            statusId,
+            rejectReasonId,
+            rejectReason,
+        }).filter(([_, value]) => value !== null && value !== undefined && value !== 0)
+    );
+    const updateRequest = (
+        requestId?: number,
+        statusId?: number,
+        rejectReasonId?: number,
+        rejectReason?: string
+    ) => {
+        setstate(old => ({ ...old, loading: true }));
+        console.log('==================dddffffff==================');
+        console.log(statusId);
+        console.log('====================================');
+        dispatch<any>(
+            UpdateRequest(
+                { requestId, statusId, rejectReasonId, rejectReason, },
+                (res, status) => {
+                    if (res.status === 200) {
+                        console.log('==================dddddddd==================');
+                        console.log(res.data);
+                        console.log('====================================');
+                    } else {
+                        toastNotfication({
+                            type: "error",
+                            message: res?.Message ?? t("Something Went wrong"),
+                        });
+                    }
+
+                    setstate(old => ({ ...old, loading: false }));
+                }
+            )
+        );
+    };
+
+    const addRate = (
+        number?: string,
+        description?: string,
+        toUserId?: string,
+        paperOfferRequestId?: string
+    ) => {
+        setstate(old => ({ ...old, loading: true }));
+
+        dispatch<any>(
+            AddRate(
+                { number: number, description: description, toUserId: toUserId, paperOfferRequestId: paperOfferRequestId },
+                (res, status) => {
+                    if (res.status === 200) {
+                        setShowSuccess(true)
+                        setTimeout(() => {
+                            setShowSuccess(false)
+                            navigation.reset({
+                                index: 0,
+                                routes: [
+                                    { name: 'Home2' },
+                                ],
+                            });
+                        }, 2000);
+                    } else {
+                        toastNotfication({
+                            type: "error",
+                            message: res?.Message ?? t("Something Went wrong"),
+                        });
+                    }
+
+                    setstate(old => ({ ...old, loading: false }));
+                }
+            )
+        );
+    };
+
+
+   
+
     return (
+        <Container showHint={false}>
+            <HeaderWithText title={t("orderDetailsTitle")} />
 
-        <View style={{ flex: 1, justifyContent: 'center' }}>
-
-            <DoneRate
-                visible={visible}
-                onClose={() => setVisible(false)}
-                onSubmit={handleSubmit}
-            />
-            <MultiChekers
+            {visibleCancelResones && <MultiChekers
                 onCloseFn={(val) => {
+                    setVisibleCancelResones(false)
+                    console.log('=================rejectReasons===================');
+                    console.log(rejectReasons.filter(item => item.isSelected));
+                    console.log('====================================');
 
                 }}
-                title={"tyutuyh"}
-                currentFilter={"jkklj"}
-                items={categories}
+                title={t("selectCancelReasons")}
+                currentFilter={""}
+                items={rejectReasons}
                 style={{ flex: 0.6 }}
-                type="activities"
+                type="rejectReasons"
                 hasTextInput={true}
-                textinputTitle={'marketwwww'}
+                textinputTitle={t("writeCancelReasons")}
+            />}
+            <SignUpSuccess show={showSuccess} title={t("ratingSuccess")} />
+
+            <CancelOrder visible={visibleCancel} onClose={() => setVisibleCancel(false)} onSubmit={() => {
+                setVisibleCancelResones(true)
+                setVisibleCancel(false)
+            }} />
+            <Content style={styles.formCon} noPadding >
+                <View style={styles.card}>
+
+                    <View style={[layout.dirRow, styles.row]}>
+                        <View style={styles.con1}>
+                            <View style={[layout.dirRow, { justifyContent: "space-between", alignItems: "center" }]}>
+                                <TouchableOpacity style={styles.statusBtn} onPress={() => { }}>
+                                    <Text style={[layout.textAlign,styles.statusText]}>{item.status}</Text>
+                                </TouchableOpacity>
+                                <View style={[layout.rowBox, { alignItems: "center" }]}>
+                                    <Image source={{ uri: item.imageUrl }} style={styles.avatar} />
+                                    <View>
+                                        <Text style={[layout.textAlign, styles.name]}>{item.userName}</Text>
+                                        <View style={[layout.rowBox]}>
+                                            <Text style={{ color: theme.currenctText }}>{"⭐"}</Text>
+                                            <Text style={[layout.textAlign,styles.rateText]}>{"(" + item.userRateCount + ")"}</Text>
+                                        </View>
+                                    </View>
+
+                                </View>
+                            </View>
+                            <View style={[layout.rowBox, styles.actions, { alignItems: "center" }]}>
+
+                                <AddressIcon color={Colors.white} />
+
+                                <Text style={[layout.textAlign, styles.date1, { marginHorizontal: PixelPerfect(8) }]}>{item.branch}</Text>
+                            </View>
+                            <Text style={[layout.textAlign,styles.product]}>{item.category + " " + item.paperName + " " + item.paperSize}</Text>
+
+
+
+                            <View style={styles.actions}>
+                                <Text style={[layout.textAlign,styles.date]}>{t("date")}</Text>
+                                <Text style={[layout.textAlign,styles.date1]}>{date}</Text>
+                            </View>
+
+                            <View style={styles.actions}>
+                                <Text style={[layout.textAlign,styles.date]}>{t("quantity")}</Text>
+                                <Text style={[layout.textAlign,styles.date1]}>{item.quentity} {t("carton")} </Text>
+                            </View>
+
+                            <View style={styles.actions}>
+                                <Text style={[layout.textAlign,styles.date]}>{t("total")}</Text>
+                                <Text style={[layout.textAlign,styles.total]}>{item.price} {t("pound")}</Text>
+                            </View>
+
+                            {state.requestStatus === 1 && <View style={[layout.dirRow, styles.actions]}>
+                                <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} onPress={() => { CallNumber(item.phoneNumber) }} >
+                                    <View style={[styles.icon]}>
+                                        <Call2Icon />
+                                    </View>
+                                    <Text style={[layout.textAlign,styles.acceptText]}>{t("contactNow")}</Text>
+
+                                </TouchableOpacity>
+
+                            </View>}
+
+                            {state.requestStatus === 1 && <View style={[styles.actions]}>
+
+                                <TouchableOpacity style={[layout.rowBox, styles.receiveBtn]} onPress={() => {
+
+                                    updateRequest(item.requestId, 5, null, null)
+                                }} >
+                                    <View style={[styles.icon]}>
+                                        <CheckIcon />
+                                    </View>
+
+                                    <Text style={styles.receiveText}>{t("delivered")}</Text>
+
+                                </TouchableOpacity>
+                                <Text style={[layout.textAlign,styles.deliveryNote]}>{t("deliveryNote")}</Text>
+
+                            </View>}
+
+
+
+                            {state.requestStatus === 5 && <View style={[layout.dirRow, styles.actions]}>
+                                <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} 
+                                onPress={() => { CallNumber(item.phoneNumber) }} >
+                                    <View style={[styles.icon]}>
+                                        <CheckIcon1 />
+                                    </View>
+                                    <Text style={[layout.textAlign,styles.acceptText]}>{t("accept")}</Text>
+
+                                </TouchableOpacity>
+
+                            </View>}
+                            {(state.requestStatus === 5) && (<View style={[layout.dirRow, styles.actions]}>
+
+                                <TouchableOpacity style={[layout.rowBox, styles.cancelBtn]} >
+                                    <View style={[styles.icon]}>
+                                        <CancelIcon />
+                                    </View>
+                                    <Text style={[layout.textAlign,styles.cancelText]}>{t("reject")}</Text>
+
+                                </TouchableOpacity>
+                            </View>
+                            )}
+
+                            {(state.requestStatus === 0) && (<View style={[layout.dirRow, styles.actions]}>
+
+                                <TouchableOpacity style={[layout.rowBox, styles.cancelBtn]} onPress={() => setVisibleCancel(true)} >
+                                    <View style={[styles.icon]}>
+                                        <CancelIcon />
+                                    </View>
+                                    <Text style={[layout.textAlign,styles.cancelText]}>{t("cancelOrder")}</Text>
+
+                                </TouchableOpacity>
+                            </View>
+                            )}
+                            {state.requestStatus === 3 && !item.isRated && <View style={[layout.dirRow, styles.actions]}>
+                                <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} onPress={() => {
+                                    setViewRate(true)
+                                }} >
+                                    <View style={[styles.icon]}>
+                                        <RateIcon />
+                                    </View>
+                                    <Text style={[layout.textAlign,styles.acceptText]}>{t("rateSeller")}</Text>
+
+                                </TouchableOpacity>
+
+                            </View>}
+                            {/* وصف المنتج */}
+                            <View style={styles.actions}>
+                                <Text style={[layout.textAlign,styles.description]}>{t("productDescription")}</Text>
+                                <Text style={[layout.textAlign,styles.description1]}>{item.description}</Text>
+                            </View>
+                            {/* <View >
+
+                                <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
+                                    <Text style={styles.note}>النوع</Text>
+                                    <Text style={styles.note1}>{item.paperName}</Text>
+                                </View>
+                                <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
+                                    <Text style={styles.note}>الحجم</Text>
+                                    <Text style={styles.note1}>{item.paperSize}</Text>
+                                </View>
+                                <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
+                                    <Text style={styles.note}>الوزن</Text>
+                                    <Text style={styles.note1}>{item.width}</Text>
+                                </View>
+
+                            </View>
+                             */}
+
+                            {state.requestStatus === 2 && <View >
+                                <Text style={[layout.textAlign,styles.cancel]}>{item.rejectBy}</Text>
+                                <Text style={[layout.textAlign,styles.cancel]}>{t("cancelReason")}</Text>
+
+                            </View>
+                            }
+                            {(state.requestStatus === 2 || state.requestStatus === 4) &&
+                                <Text style={styles.date1}>{item.rejectReason}</Text>
+                            }
+                            {/*التقييم*/}
+                            {/* <Text style={styles.rate}>تقييمك للبائع : </Text>
+                            <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
+                                <Text style={styles.rating}>{"(5)"} ⭐⭐⭐⭐ </Text>
+                                <Text style={styles.dateRate}>18 مايو 2025</Text>
+
+                            </View>
+
+                            <Text style={styles.rateNote}>جودة ممتازة وسعر مناسب. الورق أبيض نقي والطباعة عليه واضحة جداً. أنصح بالشراء.</Text> */}
+                        </View>
+                    </View>
+                </View>
+
+
+            </Content>
+            <RatingScreen
+                visible={viewRate}
+                onClose={() => setViewRate(false)}
+                onSubmit={(val) => {
+                    addRate(val.rating, val.comment, item.userId, item.requestId)
+                }}
             />
-        </View>
+        </Container>
     )
+    // return (
+
+    //     <View style={{ flex: 1, justifyContent: 'center' }}>
+
+    //         <DoneRate
+    //             visible={visible}
+    //             onClose={() => setVisible(false)}
+    //             onSubmit={handleSubmit}
+    //         />
+
+    //     </View>
+    // )
 }
 
-export default MyOrderItem
+export default Index
 
-const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,) =>
+const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string, requestStatus: number) =>
     StyleSheet.create({
         container: {
             flex: 1,
+
+        },
+        formCon: {
+            flex: 1,
+            backgroundColor: theme.mainColor,
+            marginTop: PixelPerfect(36),
+            paddingHorizontal: PixelPerfect(8),
 
         },
         card: {
@@ -234,6 +454,11 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             , textAlign: "right",
 
         },
+        deliveryNote: {
+            fontSize: PixelPerfect(14), color: theme.black, fontFamily: Fonts.extraLight
+            , textAlign: "right",
+
+        },
         rate: { fontSize: PixelPerfect(16), color: theme.babyBlue, fontFamily: Fonts.medium },
         rateNote: { fontSize: PixelPerfect(14), color: theme.black, fontFamily: Fonts.extraLight, paddingVertical: PixelPerfect(4) },
         dateRate: { fontSize: PixelPerfect(14), color: theme.black, fontFamily: Fonts.extraLight },
@@ -258,7 +483,6 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             backgroundColor: theme.babyBlue,
             borderRadius: PixelPerfect(6),
             paddingVertical: PixelPerfect(10),
-
             alignItems: "center",
             justifyContent: "center"
         },
@@ -298,7 +522,18 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
 
         statusBtn: {
             flex: 0.40,
-            backgroundColor: theme.green,
+            backgroundColor:
+                requestStatus === 0
+                    ? theme.currenctText
+                    : requestStatus === 1
+                        ? theme.green
+                        : requestStatus === 2
+                            ? theme.red
+                            : requestStatus === 3
+                                ? theme.textColor
+                                : requestStatus === 4
+                                    ? theme.deactive
+                                    : theme.currenctText,
             borderRadius: PixelPerfect(6),
             padding: PixelPerfect(4),
             alignItems: "center",
@@ -328,4 +563,13 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             color: theme.red
         },
         rejectText: { fontSize: PixelPerfect(16), color: theme.youtube, fontFamily: Fonts.bold, },
+
+
+        rateText: {
+            color: theme.currenctText,
+            fontSize: PixelPerfect(14),
+            fontFamily: Fonts.medium,
+            textAlign: "right"
+        },
+
     });

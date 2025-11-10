@@ -13,7 +13,7 @@ import DeviceInfo from 'react-native-device-info';
 export const ChangeAppLanguage = (language: string) => ({
   type: ActionType.CHANGE_APP_LANGUAGE,
   payload: language,
-  
+
 });
 
 /**
@@ -62,6 +62,28 @@ export const SetCountries = (payload: boolean) => ({
   payload: payload,
 });
 
+
+
+/**
+ * SetRejectReasons
+ * @param payload array
+ */
+export const SetRejectReasons = (payload: boolean) => ({
+  type: ActionType.SAVE_REJECT_REASONS,
+  payload: payload,
+});
+
+/**
+ * SetOfferRequestStatus
+ * @param payload array
+ */
+export const SetOfferRequestStatus = (payload: boolean) => ({
+  type: ActionType.SAVE_OFFER_REQUEST_STATUS,
+  payload: payload,
+});
+
+
+
 /**
  * SetActivites
  * @param payload array
@@ -96,3 +118,31 @@ export const SetPayments = (payload: boolean) => ({
   type: ActionType.SAVE_PAYMENTS,
   payload: payload,
 });
+
+/**
+ * SetPaperSizes
+ * @param payload array
+ */
+export const SetPaperSize = (payload: boolean) => ({
+  type: ActionType.SAVE_PAPERSIZE,
+  payload: payload,
+});
+
+/**
+ * SetPaperWodth
+ * @param payload array
+ */
+export const SetPaperWidth = (payload: boolean) => ({
+  type: ActionType.SAVE_PAPERWIDTH,
+  payload: payload,
+});
+
+/**
+ * SetPaperType
+ * @param payload array
+ */
+export const SetPaperType = (payload: boolean) => ({
+  type: ActionType.PAPER_TYPE,
+  payload: payload,
+});
+

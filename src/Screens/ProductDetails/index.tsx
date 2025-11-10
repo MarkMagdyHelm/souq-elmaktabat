@@ -16,6 +16,14 @@ import {
 } from "react-native";
 import { PixelPerfect } from '../../Constants/styleConstants';
 import SellerBranches from '../../Components/Cards/SellerBranches';
+import { Container, Content } from '../../Components/containers/Containers';
+import { useRoute } from '@react-navigation/native';
+import { AddPaperOfferRequest } from '../../Apis/Request';
+import { useDispatch } from 'react-redux';
+import { useToast } from 'react-native-toast-notifications';
+import SignUpSuccess from '../../Components/PopUps/SignUpSuccess';
+import { t } from 'i18next';
+import HeaderWithText from '../../Components/Headers/HeaderWithText';
 
 type Props = {
     navigation: any
@@ -24,29 +32,36 @@ const Index = (props: Props) => {
     const {
         navigation
     } = props
+
+    const { item } = useRoute().params as any;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
 
-    const pricePerUnit = 500;
+    const pricePerUnit = item.price;
     const minQty = 1;
     const maxQty = 1500;
     const [qty, setQty] = useState(1);
+    const [totalPrice, setTotalPrice] = useState(item.price);
+    const [selectedBranchId, setSelectedBranchId] = useState<number | null>(null);
 
-    const product = {
-        title: "ورق مرام 80جم",
-        unit: "كرتونة",
-        weight: "80 جرام/متر مربع",
-        seller: "احمد محمد",
-        location: "القاهرة، مصر الجديدة",
-        description:
-            "ورق طباعة ابيض نقي بجودة ممتازة، مناسب لجميع أنواع الطابعات. وزن 80 جرام وقياس A4.",
-        image: require('../../Assets/Images/order-details.jpg'),
-    };
-    const [state, setstate] = useState({
+
+    const dispatch = useDispatch();
+    const [state, setState] = useState({
         loading: false,
-        items: [{ flag: false }, { flag: false }]
-
+        showSuccess: false
     });
+
+    const toast = useToast();
+    const toastNotfication = (config: any) => {
+        toast.hideAll();
+        toast.show(config.message, {
+            type: config.type,
+            duration: 3000,
+            offset: 50,
+            animationType: "slide-in",
+            placement: "top",
+        } as any);
+    };
 
     const total = useMemo(() => pricePerUnit * qty, [pricePerUnit, qty]);
 
@@ -54,9 +69,10 @@ const Index = (props: Props) => {
         setQty((prev) => {
             const next = prev - 1;
             if (next < minQty) {
-                Alert.alert("تنبيه", `الحد الأدنى للكمية هو ${minQty}.`);
+                Alert.alert(t("alert"), `${t("minQuantityAlert")} ${minQty}.`);
                 return prev;
             }
+            setTotalPrice(next * item.price)
             return next;
         });
     };
@@ -64,55 +80,85 @@ const Index = (props: Props) => {
     const increase = () => {
         setQty((prev) => {
             const next = prev + 1;
+
             if (next > maxQty) {
-                Alert.alert("تنبيه", `الحد الأقصى للكمية هو ${maxQty}.`);
+                Alert.alert(t("alert"), `${t("maxQuantityAlert")} ${maxQty}.`);
                 return prev;
             }
+            setTotalPrice(next * item.price)
             return next;
         });
     };
 
-    const onOrder = () => {
 
-        Alert.alert(
-            "تم إرسال الطلب",
-            `لقد طلبت ${qty} ${product.unit} (السعر الكلي: ${total.toLocaleString()} جنيه).`
+
+
+
+    const addPaperOfferRequest = () => {
+        setState((old) => ({ ...old, loading: true }));
+
+        dispatch<any>(
+            AddPaperOfferRequest({
+                paperOfferId: item.id, paperOfferBranchId: selectedBranchId,
+                quantity: qty, totalPrice: totalPrice
+            }, (res, status) => {
+                if (res.status === 200) {
+                    setState((old) => ({
+                        ...old,
+                        requests: res.data.items ?? [],
+                        loading: false, showSuccess: true
+                    }));
+
+                    setTimeout(() => {
+                        setState(old => ({ ...old, showSuccess: false }));
+                        navigation.navigate("MyOrders")
+                    }, 2000);
+
+                } else {
+                    toastNotfication({
+                        type: "error",
+                        message: res?.Message ?? t("Something Went wrong"),
+                    });
+                    setState((old) => ({ ...old, loading: false }));
+                }
+            })
         );
     };
 
 
+    const fullDate = item.endDate;
+    const [date, time] = fullDate.split("T");
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView showsVerticalScrollIndicator={false}
-
-                showsHorizontalScrollIndicator={false}>
+        <Container showHint={false}>
+            <HeaderWithText title={t("productDetailsTitle")} />
+            <Content style={styles.formCon} noPadding >
                 <View >
-                    <Image source={product.image} style={styles.productImage} resizeMode="contain" />
+                    <Image source={item.paperPhoto} style={styles.productImage} resizeMode="contain" />
 
                     <View style={styles.info}>
-                        <Text style={styles.title}>{product.title}</Text>
-                        <Text style={styles.priceText}>{product.unit}</Text>
+                        <Text style={[layout.textAlign,styles.title]}>{item.title}</Text>
+                        <Text style={[layout.textAlign,styles.priceText]}>{item.categoryName + " " + item.paperName + " " + item.width + t("GM") + " " + item.paperSize}</Text>
                         <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                            <Text style={[styles.text1]}>{4}</Text>
+                            <Text style={[layout.dirRow,styles.text1]}>{"(" + item.userRateCount + ")"}</Text>
                             <View style={[layout.rowBox]}>
                                 <Text style={{ color: theme.currenctText }}>{"⭐"}</Text>
-                                <Text style={[styles.text1]}>{"(" + 5 + ")"}</Text>
+                                <Text style={[layout.textAlign,styles.text1]}>{"(" + item.userRateCount + ")"}</Text>
                             </View>
                         </View>
                         <View>
-                            <Text style={styles.sellerTitle}>معلومات البائع</Text>
+                            <Text style={[layout.textAlign,styles.sellerTitle]}>{t("sellerInfo")}</Text>
                             <View style={styles.sellerRow}>
                                 <Image
-                                    source={{ uri: "https://cdn-icons-png.flaticon.com/512/149/149071.png" }}
+                                    source={{ uri: item.userImages }}
                                     style={styles.sellerImage}
                                 />
                                 <View style={{ flex: 1 }}>
-                                    <Text style={styles.sellerName}>احمد محمد</Text>
+                                    <Text style={[layout.textAlign,styles.sellerName]}>{item.userName}</Text>
 
                                 </View>
                                 <View style={[layout.rowBox]}>
                                     <Text style={{ color: theme.currenctText }}>{"⭐"}</Text>
-                                    <Text style={[styles.text1]}>{"(" + 5 + ")"}</Text>
+                                    <Text style={[layout.textAlign,styles.text1]}>{"(" + item.userRateAverage + ")"}</Text>
                                 </View>
                             </View>
 
@@ -120,19 +166,19 @@ const Index = (props: Props) => {
 
                         <FlatList
                             showsVerticalScrollIndicator={false}
+                            scrollEnabled={false}
                             //   onRefresh={() =>{}}
                             //   refreshing={isFetching}
                             style={styles.list}
-                            data={state.items}
+                            data={item.paperOffersBranches}
                             keyExtractor={(items, index: number) => index.toString()}
                             // ItemSeparatorComponent={() => (state.loading ? null : <View style={styles.separator} />)}
                             renderItem={({ item }) => {
                                 return (
                                     <>
 
-                                        <SellerBranches loading={state.loading} onPress={function (): void {
-                                            throw new Error('Function not implemented.');
-                                        }} />
+                                        <SellerBranches item={item} onPress={() => setSelectedBranchId(item.id)}
+                                            selected={selectedBranchId === item.id} />
                                         {/* } */}
                                     </>
                                 );
@@ -142,70 +188,88 @@ const Index = (props: Props) => {
 
 
                             <View style={[layout.rowBox, { justifyContent: "space-between", alignItems: "center" }]}>
-                                <Text style={styles.sectionTitle}>حدد الكمية</Text>
+                                <Text style={styles.sectionTitle}>{t("selectQuantity")}</Text>
                                 <View style={[layout.dirRow, styles.quantityRow]}>
                                     <TouchableOpacity style={styles.qtyBtn} onPress={decrease} >
                                         <Text style={styles.qtyText}>-</Text>
                                     </TouchableOpacity>
                                     <Text style={styles.qtyValue}>{qty}</Text>
-                                    <TouchableOpacity style={styles.qtyBtn}  onPress={increase}>
+                                    <TouchableOpacity style={styles.qtyBtn} onPress={increase}>
                                         <Text style={styles.qtyText}>+</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
-                            <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                                <Text style={styles.note}>اقل كمية للطلب</Text>
-                                <Text style={styles.note1}>2</Text>
+                            <View style={[layout.rowBox, { justifyContent: "space-between" ,marginVertical:PixelPerfect(4)}]}>
+                                <Text style={[layout.textAlign,styles.note]}>{t("minOrderQuantity")}</Text>
+                                <Text style={[layout.textAlign,styles.note1]}>{item.min}</Text>
                             </View>
-                            <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                                <Text style={styles.note}>تاريخ انتهاء العرض:</Text>
-                                <Text style={styles.note1}>2025/09/25 او حتي نفاذ الكمية</Text>
+                            <View style={[layout.rowBox, { justifyContent: "space-between",marginVertical:PixelPerfect(4) }]}>
+                                <Text style={[layout.textAlign,styles.note]}>{t("offerEndDate")}</Text>
+                                <Text style={[layout.textAlign,styles.note1]}>{date + " " + t("orUntilOutOfStock")}</Text>
                             </View>
-                            <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                                <Text style={styles.note}>طرق الاستلام:</Text>
-                                <Text style={styles.note1}>متاح توصيل</Text>
+                            <View style={[layout.rowBox, { justifyContent: "space-between",marginVertical:PixelPerfect(4) }]}>
+                                <Text style={[layout.textAlign,styles.note]}>{t("deliveryMethods")}</Text>
+                                <Text style={[layout.textAlign,styles.note1]}>   {item.includeDelivery ? t("deliveryAvailable") : t("deliveryNotAvailable")}</Text>
                             </View>
-                            <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                                <Text style={styles.totalPrice}>اجمالي السعر:</Text>
-                                <Text style={styles.totalPriceValue}>1500 جنيها</Text>
+                            <View style={[layout.rowBox, { justifyContent: "space-between",marginTop:PixelPerfect(4) }]}>
+                                <Text style={[layout.textAlign,styles.totalPrice]}>{t("totalPrice")}</Text>
+                                <Text style={[layout.textAlign,styles.totalPriceValue]}>{totalPrice + " " + t("pound")}</Text>
                             </View>
-                            <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                                <Text style={styles.note}>{""}</Text>
-                                <Text style={styles.note2}>غير شامل اي مصاريف اخري</Text>
+                            <View style={[layout.rowBox, { justifyContent: "space-between"}]}>
+                                <Text style={[layout.textAlign,styles.note]}>{""}</Text>
+                                <Text style={[layout.textAlign,styles.note2]}>{t("excludingOtherFees")}</Text>
                             </View>
 
 
-                            <TouchableOpacity style={styles.orderBtn}>
-                                <Text style={styles.orderBtnText}>إرسال الطلب</Text>
+                            <TouchableOpacity style={styles.orderBtn} onPress={() => {
+
+                                if (qty < item.min) {
+                                    toastNotfication({
+                                        type: "error",
+                                        message:"Quantity less than min quantity"
+                                    });
+                                }
+                                else if (selectedBranchId === null) {
+                                    toastNotfication({
+                                        type: "error",
+                                        message:"Please select Branch"
+                                    });
+                                }
+                                else {
+                                    navigation.navigate("MyOrders")
+                                    // addPaperOfferRequest()
+                                }
+                            }}>
+                                <Text style={[layout.textAlign,styles.orderBtnText]}>{t("sendOrder")}</Text>
                             </TouchableOpacity>
 
                         </View>
 
                         {/* وصف المنتج */}
                         <View >
-                            <Text style={styles.sectionTitle}>وصف المنتج</Text>
-                            <Text style={styles.description}>
-                                ورق طباعة أبيض نقي بجودة ممتازة مناسب لجميع أنواع الطابعات.
-                                يتميز بالسطح الأملس والمثالي للنسخ والطباعة...
+                            <Text style={[layout.textAlign,styles.sectionTitle]}>{t("productDescription")}</Text>
+                            <Text style={[layout.textAlign,styles.description]}>
+                                {item.description}
                             </Text>
-                            <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                                <Text style={styles.note}>النوع</Text>
-                                <Text style={styles.note1}>مرام</Text>
+                            <View style={[layout.rowBox, { justifyContent: "space-between",marginVertical:PixelPerfect(4) }]}>
+                                <Text style={[layout.textAlign,styles.note]}>{t("type")}</Text>
+                                <Text style={[layout.textAlign,styles.note1]}>{item.paperName}</Text>
                             </View>
-                            <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                                <Text style={styles.note}>الحجم</Text>
-                                <Text style={styles.note1}>A4</Text>
+                            <View style={[layout.rowBox, { justifyContent: "space-between",marginVertical:PixelPerfect(4) }]}>
+                                <Text style={[layout.textAlign,styles.note]}>{t("size")}</Text>
+                                <Text style={[layout.textAlign,styles.note1]}>{item.paperSize}</Text>
                             </View>
-                            <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                                <Text style={styles.note}>الوزن</Text>
-                                <Text style={styles.note1}>جرام/مترمربع</Text>
+                            <View style={[layout.rowBox, { justifyContent: "space-between",marginVertical:PixelPerfect(4) }]}>
+                                <Text style={[layout.textAlign,styles.note]}>{t("weight")}</Text>
+                                <Text style={[layout.textAlign,styles.note1, { paddingBottom: PixelPerfect(8) }]}>{item.width + t("GM") + " "}</Text>
                             </View>
 
                         </View>
                     </View>
                 </View>
-            </ScrollView>
-        </SafeAreaView>
+                <SignUpSuccess show={state.showSuccess} title={t("orderSentSuccess")} />
+            </Content>
+        </Container>
 
 
 
@@ -214,6 +278,13 @@ const Index = (props: Props) => {
 export default Index
 const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,) =>
     StyleSheet.create({
+        formCon: {
+            flex: 1,
+            backgroundColor: theme.mainColor,
+
+            paddingHorizontal: PixelPerfect(8),
+
+        },
         container: {
             flex: 1,
             padding: PixelPerfect(12),
@@ -252,7 +323,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             fontSize: PixelPerfect(16),
             color: theme.black,
             fontFamily: Fonts.bold,
-            textAlign: "right",
+       
             marginBottom: PixelPerfect(4),
         },
         rowSpace: {
@@ -286,6 +357,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             fontSize: PixelPerfect(18),
             fontFamily: Fonts.medium,
             color: theme.black,
+            textAlign: "right"
         },
 
 
@@ -293,6 +365,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             color: theme.currenctText,
             fontSize: PixelPerfect(14),
             fontFamily: Fonts.medium,
+            textAlign: "right"
         },
 
 
@@ -310,7 +383,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
         qtyText: { color: theme.white, fontSize: 18 },
         qtyValue: { fontSize: PixelPerfect(32), fontFamily: Fonts.medium },
         note: { fontSize: PixelPerfect(16), fontFamily: Fonts.regular, color: theme.textColor, marginTop: PixelPerfect(8) },
-        note1: { fontSize: PixelPerfect(16), fontFamily: Fonts.regular, color: theme.black, marginTop: PixelPerfect(8) },
+        note1: { textAlign: "right", fontSize: PixelPerfect(16), fontFamily: Fonts.regular, color: theme.black, marginTop: PixelPerfect(8) },
         note2: { fontSize: PixelPerfect(10), fontFamily: Fonts.extraLight, color: theme.black, marginTop: PixelPerfect(2) },
         totalPrice: { fontSize: PixelPerfect(16), fontFamily: Fonts.medium, color: theme.textColor, marginTop: PixelPerfect(8) },
         totalPriceValue: { fontSize: PixelPerfect(14), fontFamily: Fonts.bold, color: theme.textColor, marginTop: PixelPerfect(8) },
@@ -323,6 +396,6 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             alignItems: "center",
         },
         orderBtnText: { color: theme.white, fontSize: PixelPerfect(16), fontFamily: Fonts.bold },
-        description: { fontSize: PixelPerfect(14), color: theme.black, fontFamily: Fonts.regular, marginVertical: PixelPerfect(4) },
+        description: { textAlign: "right", fontSize: PixelPerfect(14), color: theme.black, fontFamily: Fonts.regular, marginVertical: PixelPerfect(4) },
 
     });

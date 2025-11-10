@@ -5,6 +5,7 @@ import { IFont, ITheme } from '../../Constants/interfaces';
 import { PixelPerfect } from '../../Constants/styleConstants';
 import { Call2Icon } from '../../Assets/Svg';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { t } from 'i18next';
 type Props = {
     item: any, onAccept: any, onReject: any
 }
@@ -36,14 +37,14 @@ const SellesOrder = (props: Props) => {
                         <Text style={styles.product}>{item.product}</Text>
 
                         <TouchableOpacity style={styles.statusBtn} onPress={() => onAccept(item)}>
-                            <Text style={styles.acceptText}>طلب مقبول</Text>
+                            <Text style={styles.acceptText}>{t("statusAccepted")}</Text>
 
                         </TouchableOpacity>
                     </View>
 
                     <View style={[layout.rowBox, styles.actions]}>
-                        <Text style={styles.quantity}>الكمية: {item.quantity}</Text>
-                        <Text style={styles.price}>{item.price} جنيه</Text>
+                        <Text style={styles.quantity}>{t("quantity")} {item.quantity}</Text>
+                        <Text style={styles.price}>{item.price} {t("pound")}</Text>
                     </View>
 
                 </View>
@@ -57,7 +58,7 @@ const SellesOrder = (props: Props) => {
                     <View style={[styles.icon]}>
                         <Call2Icon />
                     </View>
-                    <Text style={styles.acceptText}>تواصل الان</Text>
+                    <Text style={styles.acceptText}>{t("contactNow")}</Text>
 
                 </TouchableOpacity>
             </View>

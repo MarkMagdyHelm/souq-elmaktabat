@@ -178,7 +178,7 @@ const themes = {
     sepreator: "#EDEBEB",
     grayLigth: "#F2F2F7",
     rateBorder: "#E4E5E740",
-
+    categorypopupitemBg:"#F9F9F9"
   },
 } as any;
 const LayoutDirectionRtl = StyleSheet.create({

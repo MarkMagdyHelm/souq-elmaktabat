@@ -29,7 +29,7 @@ type Props = {
 
 const Index = (props: Props) => {
     const { navigation } = props;
-    const {email} = useRoute().params as any;
+    const { email, isForgetPassword } = useRoute().params as any;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
     const [state, setstate] = useState({
@@ -81,39 +81,44 @@ const Index = (props: Props) => {
             .padStart(2, "0")}`;
     };
 
-    const handleResend = ()=>{
-         setIsRunning(true)
-    dispatch<any>(SendOTPByEmailHandler(email,(res,status)=>{
-        if (res.status == 200) {
-             showToast({ type: 'ok', message: res?.message});
-             navigation.navigate("ConfirmtionCode",{email:email})
-        } else {
-            showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
-        }
-         setstate(old=>({...old,loadingSignin:false}))
-    }))
+    const handleResend = () => {
+        setIsRunning(true)
+        dispatch<any>(SendOTPByEmailHandler(email, (res, status) => {
+            if (res.status == 200) {
+                showToast({ type: 'ok', message: res?.message });
+                //  navigation.navigate("ConfirmtionCode",{email:email})
+            } else {
+                showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
+            }
+            setstate(old => ({ ...old, loadingSignin: false }))
+        }))
     }
-    const handleSubmit = (values)=>{
-        setstate(old=>({...old,loading:true}));
-let body = {...values,email:email};
-    dispatch<any>(ConfirmEmailHandler(body,(res,status)=>{
-        if (res.status == 200) {
-             showToast({ type: 'ok', message: res?.message});
-             navigation.navigate("RegisterInformation",{email:email})
-        } else {
-            showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
-        }
-         setstate(old=>({...old,loading:false}))
-    }))
+    const handleSubmit = (values) => {
+        setstate(old => ({ ...old, loading: true }));
+        let body = { ...values, email: email };
+        dispatch<any>(ConfirmEmailHandler(body, (res, status) => {
+            if (res.status == 200) {
+                showToast({ type: 'ok', message: res?.message });
+                if (isForgetPassword) {
+                    navigation.navigate("ForgetPassword", { email: email })
+                } else {
+
+                    navigation.navigate("RegisterInformation", { email: email })
+                }
+            } else {
+                showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
+            }
+            setstate(old => ({ ...old, loading: false }))
+        }))
     }
-    
+
     return (
         <Container showHint={false}>
             <HeaderWithText title={t("confirmtxt1")} />
             <View style={styles.con}>
                 <View style={styles.conhit1}>
                     <Text style={[layout.textAlign, styles.txthittitle1]}>{t("confirmtxt1")}</Text>
-                    <Text style={[layout.textAlign, styles.txthit1]}>{t("contxthint1")}</Text>
+                    <Text style={[layout.textAlign, styles.txthit1]}>{t("contxthint1")} {email}</Text>
                 </View>
                 <Formik
                     validationSchema={validationSchema}
@@ -121,7 +126,7 @@ let body = {...values,email:email};
                         verifyCode: "",
                     }}
                     onSubmit={handleSubmit} >
-                    {({ handleChange, handleBlur, handleSubmit, values, errors , touched, setFieldValue, setFieldTouched }) => {
+                    {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue, setFieldTouched }) => {
 
                         return (
                             <>
@@ -162,7 +167,7 @@ let body = {...values,email:email};
                                         )}
                                     />
                                     {(errors.verifyCode && touched.verifyCode) && <Text style={styles.errorText}>{t(errors?.verifyCode)}</Text>}
-                                    {isRunning&&<View style={[layout.rowBox, layout.center]}>
+                                    {isRunning && <View style={[layout.rowBox, layout.center]}>
 
                                         <TimerIcone />
                                         <Text style={styles.timertxt}>
@@ -171,8 +176,8 @@ let body = {...values,email:email};
                                     </View>}
                                     <Pressable style={styles.signUpCon} onPress={handleResend}
                                         disabled={isRunning}>
-                                        <Text style={[styles.signUpText,isRunning&&{color:theme.deactive}]}>{t("confirmtxt3")}
-                                            <Text style={[styles.signUpText1,isRunning&&{color:theme.deactive}]}>{t("confirmtxt4")}</Text>
+                                        <Text style={[styles.signUpText, isRunning && { color: theme.deactive }]}>{t("confirmtxt3")}
+                                            <Text style={[styles.signUpText1, isRunning && { color: theme.deactive }]}>{t("confirmtxt4")}</Text>
                                         </Text>
                                     </Pressable>
                                     <View style={{ backgroundColor: theme.mainColor }}>
@@ -180,10 +185,7 @@ let body = {...values,email:email};
                                             title={t('Next')}
                                             loader={state.loading}
                                             styleTitle={styles.buttonText}
-                                            onPress={() => {
-                                                handleSubmit();
-
-                                            }}
+                                            onPress={() => { handleSubmit();}}
                                             style={styles.button}
                                         />
                                     </View>
@@ -218,7 +220,8 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string) 
             fontFamily: Fonts.regular,
             fontSize: PixelPerfect(16),
             color: theme.black,
-            marginTop: PixelPerfect(8)
+            marginTop: PixelPerfect(8),
+            lineHeight: PixelPerfect(20)
         },
         body: {
             marginTop: PixelPerfect(30),
@@ -254,7 +257,6 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string) 
         },
         root: {
             flex: 1,
-            //   padding: 20
         },
         codeFieldRoot: {
             marginVertical: PixelPerfect(24),
@@ -270,7 +272,6 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string) 
             borderColor: theme.deactive,
             textAlign: 'center',
             color: Colors.secondColor,
-
         },
         focusCell: {
             borderColor: Colors.secondColor,
@@ -281,7 +282,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string) 
             color: theme.black,
             textAlign: "center",
             paddingHorizontal: PixelPerfect(2),
-            marginTop:Platform.OS=="ios"? PixelPerfect(5):0,
+            marginTop: Platform.OS == "ios" ? PixelPerfect(5) : 0,
 
         },
         errorText: {

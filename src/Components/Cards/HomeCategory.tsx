@@ -26,7 +26,7 @@ const HomeCategory = (props: Props) => {
 
                     source={{ uri: item?.image, cache: 'reload' }}
                 />
-                <Text style={styles.text}>{item.title}</Text>
+                <Text style={styles.text}>{item.arName}</Text>
             </View>
         </Pressable>
     )

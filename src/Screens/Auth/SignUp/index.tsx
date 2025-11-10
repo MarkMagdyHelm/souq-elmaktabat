@@ -13,8 +13,9 @@ import useToastNotification from '../../../Components/CustomHooks/useToastNotifi
 import HeaderWithText from '../../../Components/Headers/HeaderWithText';
 import { Formik } from 'formik';
 import { validationSchema } from '../../../Validation/Signup';
-import { GetCitiesHandler, GetAllActivitiesHandler, GetAllRolesHandler, GetAllAvailableToolsHandler } from '../../../Apis/Appinfo';
+import { GetCitiesHandler, GetAllActivitiesHandler, GetAllRolesHandler, GetAllAvailableToolsHandler, GetSettingsHandler } from '../../../Apis/Appinfo';
 import { SendOTPByEmailHandler } from '../../../Apis/User';
+import { useNavigationState, useRoute } from '@react-navigation/native';
 
 type Props = {
     navigation: any
@@ -22,8 +23,10 @@ type Props = {
 
 const Index = (props: Props) => {
     const { navigation } = props;
+    const { isForgetPassword } = useRoute().params as any;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
-    
+
+
     const styles = useStyles(Fonts, theme, dark, dir);
     const [state, setstate] = useState({
         showRols: false,
@@ -31,28 +34,27 @@ const Index = (props: Props) => {
     });
     const dispatch = useDispatch();
     const showToast = useToastNotification();
-// useEffect(() => {
-// dispatch<any>(GetCitiesHandler());
-// dispatch<any>(GetAllActivitiesHandler());
-// dispatch<any>(GetAllRolesHandler());
-// dispatch<any>(GetAllAvailableToolsHandler());
-// }, []);
-
-const handleSubmit = (values)=>{
-    setstate(old=>({...old,loadingSignin:true}))
-dispatch<any>(SendOTPByEmailHandler(values.Email,(res,status)=>{
-    if (res.status == 200) {
-         showToast({ type: 'ok', message: res?.message});
-         navigation.navigate("ConfirmtionCode",{email:values.Email})
-    } else {
-        showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
+    useEffect(() => {
+        getSettings();
+    }, []);
+    const getSettings = () => {
+        dispatch<any>(GetSettingsHandler({ lookupIds: [2, 3, 4, 5, 6, 7, 9] }))
     }
-     setstate(old=>({...old,loadingSignin:false}))
-}))
-}
+    const handleSubmit = (values) => {
+        setstate(old => ({ ...old, loadingSignin: true }))
+        dispatch<any>(SendOTPByEmailHandler(values.Email, (res, status) => {
+            if (res.status == 200) {
+                showToast({ type: 'ok', message: res?.message });
+                navigation.navigate("ConfirmtionCode", { email: values.Email, isForgetPassword: isForgetPassword })
+            } else {
+                showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
+            }
+            setstate(old => ({ ...old, loadingSignin: false }))
+        }))
+    }
     return (
         <Container showHint={false}>
-            <HeaderWithText title={t("signtxt1")} />
+            <HeaderWithText title={t(isForgetPassword ? "signtxt2" : "signtxt1")} />
             <View style={styles.con}>
                 <View style={styles.conhit1}>
                     <Text style={[layout.textAlign, styles.txthit1]}>{t("signtxthint1")}</Text>
@@ -64,7 +66,7 @@ dispatch<any>(SendOTPByEmailHandler(values.Email,(res,status)=>{
                     }}
                     onSubmit={handleSubmit} >
                     {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue, setFieldTouched }) => {
-                       
+
                         return (
                             <>
                                 <Content
@@ -76,7 +78,7 @@ dispatch<any>(SendOTPByEmailHandler(values.Email,(res,status)=>{
                                             onBlur: handleBlur("Email"),
                                             onChangeText: handleChange("Email"),
                                             placeholder: t("Emailw"),
-                                            maxLength: 30,
+                                            // maxLength: 30,
                                             keyboardType: 'email-address',
                                         }}
                                         password={false}
@@ -120,7 +122,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string) 
             paddingHorizontal: PixelPerfect(16)
         },
         conhit1: {
-        marginTop: PixelPerfect(27),
+            marginTop: PixelPerfect(27),
         },
         txthit1: {
             fontFamily: Fonts.regular,
@@ -129,7 +131,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string) 
         },
         body: {
             marginTop: PixelPerfect(30),
-            flex:0.9
+            flex: 0.9
         },
         button: {
             backgroundColor: Colors.secondColor,

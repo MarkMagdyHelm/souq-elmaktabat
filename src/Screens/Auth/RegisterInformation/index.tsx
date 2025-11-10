@@ -1,4 +1,4 @@
-import { Keyboard, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { IFont, ITheme } from '../../../Constants/interfaces';
 import { ThemeContext } from '../../../Constants/theming';
@@ -7,7 +7,7 @@ import { t } from 'i18next';
 import { Container, Content } from '../../../Components/containers/Containers';
 import { useKeyboard } from '../../../Constants/UseKayboard';
 import Button from '../../../Components/touchables/Button';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import {  useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../Store/store';
 import useToastNotification from '../../../Components/CustomHooks/useToastNotification';
 import { FormikProps } from 'formik';
@@ -20,7 +20,7 @@ import FormStep1 from './Componnent/FormStep1';
 import FormStep2 from './Componnent/FormStep2';
 // import FormStep3 from './Componnent/FormStep3';
 
-import { loginHandler, SignUpHandler } from '../../../Apis/User';
+import {  SignUpHandler } from '../../../Apis/User';
 import FormStep4 from './Componnent/FormStep4';
 import FormStep5 from './Componnent/FormStep5';
 import SignUpSuccess from '../../../Components/PopUps/SignUpSuccess';
@@ -34,6 +34,9 @@ const Index = (props: Props) => {
     const { navigation } = props;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const { countries, activites, roles,tools,payments } = useSelector((state: RootState) => state.settings);
+    console.log('=======countries=============================');
+    console.log(countries);
+    console.log('====================================');
     const styles = useStyles(Fonts, theme, dark, dir);
     const { email } = useRoute().params as any;
     const [state, setstate] = useState({
@@ -79,7 +82,9 @@ const Index = (props: Props) => {
     }
     useEffect(() => {
         setActiveStep(1);
+
     }, []);
+      
     const handleagreeonterms = () => {
         setstate(old => {
             let forms = old.forms;
@@ -130,7 +135,7 @@ const Index = (props: Props) => {
             }];
             body.Description = ""
             body.ImageUrl2 = ""
-            body.ImageUrl = ""
+            body.ImageUrl = formikRef2?.current?.values?.ImageUrl
             body.CompanyName = ""
         }else{
                body.OtherPhoneNumbers = state.otherPhones;
@@ -229,6 +234,7 @@ const Index = (props: Props) => {
         >
                 <SignUpSuccess
                 show={state.showSuccess}
+                title={t("regtxt8")}
                 />
             <HeaderWithText title={t("signtxt1")} />
             <Content
@@ -391,7 +397,8 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string) 
             fontFamily: Fonts.medium,
             fontSize: PixelPerfect(18),
             color: theme.black,
-            marginBottom: PixelPerfect(10)
+            marginBottom: PixelPerfect(10),
+             lineHeight:PixelPerfect(20)
         },
         selectMenue: {
             justifyContent: "space-between",

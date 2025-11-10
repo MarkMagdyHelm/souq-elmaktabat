@@ -12,12 +12,27 @@ import {
   Modal
 } from 'react-native';
 
-import { EyeIcon, StareIcon } from '../../Assets/Svg';
+import { EyeIcon, StareIcon, StareIconGray } from '../../Assets/Svg';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import { ThemeContext } from '../../Constants/theming';
 import { PixelPerfect } from '../../Constants/styleConstants';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { t } from 'i18next';
 
-const RatingScreen = ({ visible, onClose, onSubmit }) => {
+type Props = {
+  visible: boolean,
+  onSubmit?: (any: any) => void,
+  onClose?: () => void
+}
+
+const RatingScreen = (props: Props) => {
+  const {
+    visible,
+    onSubmit,
+    onClose,
+
+  } = props
+
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
@@ -38,8 +53,8 @@ const RatingScreen = ({ visible, onClose, onSubmit }) => {
           <View style={styles.container1}>
             {/* Header */}
             <View style={styles.header}>
-              <Text style={styles.title}>تقييم البائع</Text>
-              <TouchableOpacity onPress={onClose}>
+              <Text style={styles.title}>{t("rateSellerTitle")}</Text>
+              <TouchableOpacity onPress={() => onClose()}>
                 <Text style={styles.close}>✕</Text>
               </TouchableOpacity>
             </View>
@@ -56,14 +71,14 @@ const RatingScreen = ({ visible, onClose, onSubmit }) => {
           <View style={{ height: PixelPerfect(8), backgroundColor: theme.accordianBody, }}></View>
           <View style={[styles.container1, { marginTop: PixelPerfect(10) }]}>
             {/* Stars */}
-            <Text style={styles.subtitle}>قيم البائع</Text>
+            <Text style={styles.subtitle}>{t("rateSellerSubtitle")}</Text>
             <View style={styles.starsRow}>
               {[1, 2, 3, 4, 5].map((star) => (
                 <TouchableOpacity key={star} onPress={() => handleRating(star)}>
-                  <StareIcon
+                  <Icon
                     name={star <= rating ? 'star' : 'star-o'}
-                    size={PixelPerfect(32)}
-                    color="#f5b50a"
+                    size={32}
+                    color={star <= rating ? '#FFD700' : '#B0B0B0'} // دهبي للعادية، رمادي للدفولت
                     style={styles.star}
                   />
                 </TouchableOpacity>
@@ -71,10 +86,10 @@ const RatingScreen = ({ visible, onClose, onSubmit }) => {
             </View>
 
             {/* Comment */}
-            <Text style={styles.commentLabel}>اكتب تعليقك (اختياري)</Text>
+            <Text style={styles.commentLabel}>{t("writeComment")}</Text>
             <TextInput
               style={styles.textInput}
-              placeholder="قيم تجربتك"
+              placeholder={t("rateExperience")}
               value={comment}
               onChangeText={setComment}
               textAlign="right"
@@ -83,7 +98,7 @@ const RatingScreen = ({ visible, onClose, onSubmit }) => {
 
             {/* Save Button */}
             <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-              <Text style={styles.saveText}>حفظ</Text>
+              <Text style={styles.saveText}>{t("save")}</Text>
             </TouchableOpacity>
           </View>
 

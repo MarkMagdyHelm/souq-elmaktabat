@@ -13,8 +13,8 @@ import { useDispatch } from 'react-redux';
 import { GetAllNotificationsHandler } from '../../Apis/Notification';
 import PollLoader from '../../Components/SkeltonLoaders/PollLoader';
 import OrderCard from '../../Components/Cards/OrderCard';
+import { GetRequests } from '../../Apis/Request';
 
-let items = [{ flag: false }, { flag: true }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, { flag: true }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, , { flag: false }]
 
 type Props = {
   navigation: any
@@ -27,33 +27,33 @@ const Index = (props: Props) => {
   const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
   const styles = useStyles(Fonts, theme, dark, dir);
   const dispatch = useDispatch();
-  const ordersData = [
-    {
-      id: "1",
-      name: "احمد محمد",
-      rating: "5",
-      product: "ورق مرام 80جم",
-      quantity: "10 كرتونه",
-      price: "1500",
-      time: "منذ 15 دقيقة",
-      avatar: "https://i.pravatar.cc/100",
-    },
-    {
-      id: "2",
-      name: "احمد محمد",
-      rating: "5",
-      product: "ورق مرام 80جم",
-      quantity: "10 كرتونه",
-      price: "1500",
-      time: "منذ 15 دقيقة",
-      avatar: "https://via.placeholder.com/100",
-    },
-  ];
+  // const ordersData = [
+  //   {
+  //     id: "1",
+  //     name: "احمد محمد",
+  //     rating: "5",
+  //     product: "ورق مرام 80جم",
+  //     quantity: "10 كرتونه",
+  //     price: "1500",
+  //     time: "منذ 15 دقيقة",
+  //     avatar: "https://i.pravatar.cc/100",
+  //   },
+  //   {
+  //     id: "2",
+  //     name: "احمد محمد",
+  //     rating: "5",
+  //     product: "ورق مرام 80جم",
+  //     quantity: "10 كرتونه",
+  //     price: "1500",
+  //     time: "منذ 15 دقيقة",
+  //     avatar: "https://via.placeholder.com/100",
+  //   },
+  // ];
 
   const [state, setstate] = useState({
     loading: false,
-    items: [{ flag: false }, { flag: false }, { flag: false }, { flag: false }, , { flag: false }]
-
+    items: [{ flag: false }, { flag: false }, { flag: false }, { flag: false }, , { flag: false }],
+    requests: []
   });
   const toast = useToast();
   const toastNotfication = (config: any) => {
@@ -68,6 +68,7 @@ const Index = (props: Props) => {
   }
   useEffect(() => {
     getNotifications()
+    getRequests()
   }, []);
 
   const getNotifications = () => {
@@ -81,6 +82,27 @@ const Index = (props: Props) => {
       setstate(old => ({ ...old, loading: false }));
     }))
   };
+  const getRequests = () => {
+    setstate(old => ({ ...old, loading: true }));
+
+    dispatch<any>(
+      GetRequests({ page: "1", pageSize: "10" }, (res, status) => {
+        if (res.status === 200) {
+          console.log('===============requests=====================');
+          console.log(res.data.items);
+          console.log('====================================');
+          setstate(old => ({ ...old, requests: res.data.items, loading: false }));
+        } else {
+          toastNotfication({
+            type: "error",
+            message: res?.Message ?? t("Something Went wrong"),
+          });
+          setstate(old => ({ ...old, loading: false }));
+        }
+      })
+    );
+  };
+
   const handlePress = (item) => {
     switch (item.type) {
       case 0:
@@ -97,7 +119,7 @@ const Index = (props: Props) => {
         break;
     }
   }
-  const [tab, setTab] = useState("orders");
+  const [tab, setTab] = useState("requests");
   const handleAccept = (item) => {
     console.log("قبول الطلب:", item);
   };
@@ -105,6 +127,10 @@ const Index = (props: Props) => {
   const handleReject = (item) => {
     console.log("رفض الطلب:", item);
   };
+  const handleSelectRequest = (item:any) => {
+    navigation.navigate("OrderDetails", { item: item })
+  };
+
   return (
     <Container showHint={false}>
       <HeaderWithText title={t("")} />
@@ -118,7 +144,7 @@ const Index = (props: Props) => {
               onPress={() => setTab("orders")}
             >
               <Text style={[styles.tabText, tab === "orders" && styles.activeTabText]}>
-                الطلبات
+                {t("orders")}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -128,18 +154,21 @@ const Index = (props: Props) => {
               <Text
                 style={[styles.tabText, tab === "notifications" && styles.activeTabText]}
               >
-                الاشعارات
+                {t("notifications")}
               </Text>
             </TouchableOpacity>
           </View>
         </View>
 
-        {tab === "orders" ? (
+        {tab === "requests" ? (
           <FlatList
-            data={ordersData}
+            data={state.requests}
+
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <OrderCard item={item} onAccept={handleAccept} onReject={handleReject} />
+              <OrderCard item={item} onAccept={handleAccept} onReject={handleReject} onPress={() =>
+                handleSelectRequest(item)
+              } />
             )}
             contentContainerStyle={{ paddingBottom: PixelPerfect(16), paddingHorizontal: PixelPerfect(16) }}
           />
@@ -148,7 +177,7 @@ const Index = (props: Props) => {
             showsVerticalScrollIndicator={false}
             //   onRefresh={() =>{}}
             //   refreshing={isFetching}
-            style={styles.list}
+
             data={state.items}
             keyExtractor={(items, index: number) => index.toString()}
             ItemSeparatorComponent={() => (state.loading ? null : <View style={styles.separator} />)}
@@ -178,8 +207,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
       flex: 0.8,
       backgroundColor: theme.mainColor,
     },
-    list: {
-    },
+
     separator: {
       height: PixelPerfect(1),
       backgroundColor: theme.border
@@ -187,8 +215,9 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
 
 
     container: {
-      flex: 1, height: PixelPerfect(40), backgroundColor: theme.white, paddingHorizontal: PixelPerfect(8),
-      
+      height: PixelPerfect(40), backgroundColor: theme.white, paddingHorizontal: PixelPerfect(8), marginBottom: PixelPerfect(16)
+
+
     },
     tabs: { flexDirection: "row", height: PixelPerfect(40) },
     tab: {
@@ -200,7 +229,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
       alignItems: "center",
       backgroundColor: theme.gray2
     },
-    activeTab: { backgroundColor: theme.babyBlue  , fontFamily: Fonts.medium  },
-    tabText: { fontSize: PixelPerfect(18), color: theme.black , fontFamily: Fonts.medium },
-    activeTabText: { color: theme.white, fontFamily: Fonts.medium ,fontSize: PixelPerfect(18) },
+    activeTab: { backgroundColor: theme.babyBlue, fontFamily: Fonts.medium },
+    tabText: { fontSize: PixelPerfect(18), color: theme.black, fontFamily: Fonts.medium },
+    activeTabText: { color: theme.white, fontFamily: Fonts.medium, fontSize: PixelPerfect(18) },
   })

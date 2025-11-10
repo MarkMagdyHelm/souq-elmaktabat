@@ -16,18 +16,13 @@ import { EyeIcon, StareIcon } from '../../Assets/Svg';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import { ThemeContext } from '../../Constants/theming';
 import { PixelPerfect } from '../../Constants/styleConstants';
+import { t } from 'i18next';
 
 const CancelOrder = ({ visible, onClose, onSubmit }) => {
-    const [rating, setRating] = useState(0);
-    const [comment, setComment] = useState('');
+
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
-    const handleRating = (value) => setRating(value);
-
-    const handleSave = () => {
-        onSubmit({ rating, comment });
-        onClose();
-    };
+  
 
     return (
 
@@ -38,26 +33,26 @@ const CancelOrder = ({ visible, onClose, onSubmit }) => {
 
                     {/* Header */}
                     <View style={[layout.rowBox, styles.header]}>
-                        <Text style={styles.title}>الغاء الطلب</Text>
-                        <TouchableOpacity onPress={onClose}>
+                        <Text style={styles.title}>{t("cancelOrder")}</Text>
+                        <TouchableOpacity onPress={() => { onClose()}}>
                             <Text style={styles.close}>✕</Text>
                         </TouchableOpacity>
                     </View>
 
 
                     {/* Seller Name */}
-                    <Text style={styles.closeTitle}> هل أنت متأكد أنك تريد الغاء هذا الطلب؟</Text>
+                    <Text style={styles.closeTitle}>{t("confirmCancelOrder")}</Text>
 
                     <View style={[layout.dirRow, styles.actions]}>
 
-                        <TouchableOpacity style={[layout.rowBox, styles.cancelBtn]} onPress={() => { }}>
+                        <TouchableOpacity style={[layout.rowBox, styles.cancelBtn]} onPress={() => { onSubmit()}}>
 
-                            <Text style={styles.cancelText}>نعم، إلغاء الطلب</Text>
+                            <Text style={styles.cancelText}>{t("yesCancelOrder")}</Text>
 
                         </TouchableOpacity>
-                        <TouchableOpacity style={[layout.rowBox, styles.backBtn]} onPress={() => { }}>
+                        <TouchableOpacity style={[layout.rowBox, styles.backBtn]} onPress={() => { onClose()}}>
 
-                            <Text style={styles.backText}>لا، رجوع</Text>
+                            <Text style={styles.backText}>{t("noGoBack")}</Text>
 
                         </TouchableOpacity>
                     </View>

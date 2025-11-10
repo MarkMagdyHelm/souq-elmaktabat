@@ -9,12 +9,14 @@ import { SuccessIcon } from '../../Assets/Svg'
 import Button from '../touchables/Button'
 type Props = {
   show: boolean,
+  title: string,
   onCloseFn?: () => void
 }
 
 const SignUpSuccess = (props: Props) => {
   const {
     show,
+    title,
     onCloseFn,
     
   } = props
@@ -26,7 +28,7 @@ const SignUpSuccess = (props: Props) => {
       backdropOpacity={0.2}
       //    backdropColor='#00000'
       onBackButtonPress={() => {
-        //  onCloseFn&&onCloseFn()
+          // onCloseFn&&onCloseFn()
       }}
       onBackdropPress={() => {
           // onCloseFn&&onCloseFn()
@@ -36,7 +38,7 @@ const SignUpSuccess = (props: Props) => {
     >
       <View style={[styles.con]}>
         <SuccessIcon />
-        <Text style={styles.title}>{t("regtxt8")}</Text>
+        <Text style={styles.title}>{title}</Text>
       </View>
     </Modal>
   )

@@ -1,13 +1,13 @@
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
+import { FlatList, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Container } from '../../Components/containers/Containers'
 import { ThemeContext } from '../../Constants/theming'
 import { IFont, ITheme } from '../../Constants/interfaces'
 import { t } from 'i18next'
-import { ColorWithOpacity, Colors, PixelPerfect, phoneWidth } from '../../Constants/styleConstants'
+import { ColorWithOpacity, Colors, PixelPerfect, phoneHeight, phoneWidth } from '../../Constants/styleConstants'
 import TabBar from '../../Components/TabBar/index';
 import Category from '../../Components/Cards/Category';
-import { CallIcon, PaperIcon, SharIcon } from '../../Assets/Svg'
+import { AddOfferICon, CallIcon, PaperIcon, SharIcon } from '../../Assets/Svg'
 import moment from 'moment';
 import 'moment/locale/ar'
 import ViewShot from "react-native-view-shot";
@@ -19,6 +19,8 @@ import { AssignDeviceIdToGuestHandler } from '../../Apis/Auth'
 import { useToast } from 'react-native-toast-notifications'
 import { RootState } from '../../Store/store'
 import PushNotificationHandler from '../../Utilties'
+import { CheckActivison } from '../../Apis/User'
+import { GetSettingsHandler } from '../../Apis/Appinfo'
 
 let items = [{ flag: false }, { flag: true }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, { flag: true }, { flag: false }, { flag: false }, { flag: false }, { flag: false }, { flag: false }]
 type Props = {
@@ -32,8 +34,10 @@ const Index = (props: Props) => {
   const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
   const styles = useStyles(Fonts, theme, dark, dir);
   const ref = useRef() as any;
-  const { isLogin } = useSelector((state: RootState) => state.auth);
-
+  const { isLogin, userdata, isSeller } = useSelector((state: RootState) => state.auth);
+  console.log('=============userdata=======================');
+  console.log(Platform.OS, isSeller);
+  console.log('====================================');
   const handleScreenShot = () => {
     ref.current.capture().then((uri: any) => {
       Share.open({ url: uri })
@@ -58,6 +62,7 @@ const Index = (props: Props) => {
     if (!isLogin) {
       assignID();
     }
+    
   }, [])
   const toast = useToast();
   const toastNotfication = (config: any) => {
@@ -137,6 +142,7 @@ const Index = (props: Props) => {
           </View>
         </View>
         <TabBar />
+        
       </Container>
     </ViewShot>
   )
@@ -199,5 +205,6 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
     },
     list: {
 
-    }
+    },
+  
   });

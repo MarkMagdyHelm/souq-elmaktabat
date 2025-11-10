@@ -1,20 +1,26 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { FlatList, Platform, Pressable, SectionList, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { Container } from '../../Components/containers/Containers'
+import { Container, Content } from '../../Components/containers/Containers'
 import { ThemeContext } from '../../Constants/theming'
 import { IFont, ITheme } from '../../Constants/interfaces'
-import { PixelPerfect, phoneWidth } from '../../Constants/styleConstants'
+import { PixelPerfect, phoneHeight, phoneWidth } from '../../Constants/styleConstants'
 import TabBar from '../../Components/TabBar/index';
 
-import 'moment/locale/ar'
 
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useToast } from 'react-native-toast-notifications'
 import { RootState } from '../../Store/store'
 import HomeCategory from '../../Components/Cards/HomeCategory'
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 import Product from '../../Components/Cards/Product'
+import { AddFavouritePaperOffer, GetCategories } from '../../Apis/CommonApi'
+import { t } from 'i18next'
+import { GetAllPaperOffers } from '../../Apis/HomeApis'
+import { AddOfferICon, MoreIcon } from '../../Assets/Svg'
+import CategoriesPopup from '../../Components/PopUps/categories'
+import { CheckActivison } from '../../Apis/User'
+import { GetSettingsHandler } from '../../Apis/Appinfo'
 
 
 type Props = {
@@ -28,100 +34,23 @@ const Index = (props: Props) => {
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
     const ref = useRef() as any;
-    const { isLogin } = useSelector((state: RootState) => state.auth);
-    const categories = [
-        { id: "1", title: "ورق", image: "https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg" },
-        { id: "2", title: "أحبار", image: "https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg" },
-        { id: "3", title: "مطابع", image: "https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg" },
-    ];
+    const { isLogin, userdata, isSeller } = useSelector((state: RootState) => state.auth);
 
-    const sections = [
-        {
-            id: "1",
-            title: "أحدث عروض الورق",
-            products: [
-                {
-                    id: "p1",
-                    name: "ورق A4 80 جم",
-                    price: "500 جنيه",
-                    rating: 5,
-                    seller: "مكتبة وصفه",
-                    image: "https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg",
-                },
-                {
-                    id: "p2",
-                    name: "نصف ريم 70 جم",
-                    price: "300-500 جنيه",
-                    rating: 5,
-                    seller: "مكتبة وصفه",
-                    image: "https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg",
-                },
-                {
-                    id: "p2",
-                    name: "نصف ريم 70 جم",
-                    price: "300-500 جنيه",
-                    rating: 5,
-                    seller: "مكتبة وصفه",
-                    image: "https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg",
-                },
-                {
-                    id: "p2",
-                    name: "نصف ريم 70 جم",
-                    price: "300-500 جنيه",
-                    rating: 5,
-                    seller: "مكتبة وصفه",
-                    image: "https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg",
-                },
-            ],
-        },
-        {
-            id: "2",
-            title: "أحدث عروض الأحبار",
-            products: [
-                {
-                    id: "p2",
-                    name: "نصف ريم 70 جم",
-                    price: "300-500 جنيه",
-                    rating: 5,
-                    seller: "مكتبة وصفه",
-                    image: "https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg",
-                },
-                {
-                    id: "p2",
-                    name: "نصف ريم 70 جم",
-                    price: "300-500 جنيه",
-                    rating: 5,
-                    seller: "مكتبة وصفه",
-                    image: "https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg",
-                },
-                {
-                    id: "p2",
-                    name: "نصف ريم 70 جم",
-                    price: "300-500 جنيه",
-                    rating: 5,
-                    seller: "مكتبة وصفه",
-                    image: "https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg",
-                },
-                {
-                    id: "p2",
-                    name: "نصف ريم 70 جم",
-                    price: "300-500 جنيه",
-                    rating: 5,
-                    seller: "مكتبة وصفه",
-                    image: "https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg",
-                },
-            ],
-        },
-    ];
 
     const dispatch = useDispatch();
     const [state, setstate] = useState({
         loading: false,
         isFetching: false,
-
+        categories: [],
+        sections: [],
+        showCategories: false
     });
     useEffect(() => {
-
+        getCategory();
+        getAllPaperOffers();
+        dispatch<any>(CheckActivison());
+        getSettings();
+      
     }, [])
     const toast = useToast();
     const toastNotfication = (config: any) => {
@@ -134,36 +63,116 @@ const Index = (props: Props) => {
             placement: 'top',
         } as any);
     }
+    const getAllPaperOffers = () => {
+        setstate(old => ({ ...old, loading: true }));
+
+        dispatch<any>(
+            GetAllPaperOffers({ page: "1", pageSize: "10" }, (res, status) => {
+                if (res.status === 200) {
+                    const sec = {
+                        title: t("latestOffers") + " " + res.data.items[0].categoryName,
+                        id:res.data.items[0].id,
+                        products: res.data.items ?? [],
+                    };
+
+                    setstate(old => ({ ...old, sections: [sec], loading: false }));
+                } else {
+                    toastNotfication({
+                        type: "error",
+                        message: res?.Message ?? t("Something Went wrong"),
+                    });
+                    setstate(old => ({ ...old, loading: false }));
+                }
+            })
+        );
+    };
 
 
 
+    const getCategory = () => {
+        setstate(old => ({ ...old, loading: true }))
+        dispatch<any>(GetCategories((res, status) => {
+            if (res.status === 200) {
+                const updatedCategories = res.data.map(item => ({
+                    ...item,
+                    image: 'https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg', // هنا الصورة اللي انت عايزها
+                }));
+
+                setstate(old => ({ ...old, categories: updatedCategories }));
+
+
+            } else {
+                toastNotfication({ type: 'error', message: res?.Message ?? t("Something Went wrong") });
+            }
+            setstate(old => ({ ...old, loading: false }))
+        }))
+    };
+
+    const addFavouritePaperOffer = (id:any) => {
+        setstate(old => ({ ...old, loading: true }))
+
+        
+        dispatch<any>(AddFavouritePaperOffer(id,(res, status) => {
+            if (res.status === 200) {
+                setTimeout(() => {
+                    getAllPaperOffers();
+                }, 1000);
+               
+            } else {
+                toastNotfication({ type: 'error', message: res?.Message ?? t("Something Went wrong") });
+            }
+            setstate(old => ({ ...old, loading: false }))
+        }))
+    };
+    
+
+
+
+    const handleSelectProduct = (item) => {
+        navigation.navigate("ProductDetails", { item: item })
+    }
+    const getSettings = () => {
+        dispatch<any>(GetSettingsHandler({ lookupIds: [2,5,6,10,11] }, "countries", (res, status) => {
+        }))
+    }
+   
     return (
         <Container showHint={false}>
-            <ScrollView style={{ flex: 1, padding: PixelPerfect(10) }}>
-                <Text style={styles.textsection1}>الأقسام الرئيسية</Text>
+            <Content style={styles.formCon} noPadding >
+            <View style={[layout.rowBox,styles.Header]}>
+                <Pressable onPress={()=>navigation.openDrawer()}>
+                <MoreIcon/>
+                </Pressable>
+            </View>
+
+                <Text style={[layout.textAlign, styles.textsection1]}>{t("mainCategories")}</Text>
                 <FlatList
-                    data={categories}
+                    data={state.categories}
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
                         <View
-                            style={styles.bodyCon}
-                        >
+                            style={styles.bodyCon}>
                             <HomeCategory item={item} />
                         </View>
                     )}
                 />
-                {sections.map((section) => (
-                    <View key={section.id} style={{ marginTop: PixelPerfect(24) }}>
+                {state.sections.map((section) => (
+                    <View key={`section.id-${section.id}`}
+                        style={{ marginTop: PixelPerfect(24) }}>
                         <View
                             style={[layout.rowBox, styles.viewCon]}
                         >
                             <Text style={styles.textsection1}>
                                 {section.title}
                             </Text>
-                            <TouchableOpacity>
-                                <Text style={styles.textsection2}>المزيد</Text>
+                            <TouchableOpacity onPress={() => {
+                                 
+                                navigation.navigate("HomeMore", { sectionId: section.id })
+                            }
+                            }>
+                                <Text style={styles.textsection2}>{t("more")}</Text>
                             </TouchableOpacity>
                         </View>
 
@@ -173,22 +182,45 @@ const Index = (props: Props) => {
                             inverted
                             keyExtractor={(item) => item.id}
                             showsHorizontalScrollIndicator={false}
-                            renderItem={({ item }) => <Product item={item} />}
+                            renderItem={({ item }) => <Product item={item} onPress={() =>
+                                handleSelectProduct(item)
+                            } onFavPress={()=>{
+                                addFavouritePaperOffer(item.id)
+                            }} />}
                         />
                     </View>
                 ))}
-            </ScrollView>
+            </Content>
             <TabBar />
+            {isSeller && <View style={styles.addOffer}>
+                <Pressable onPress={() => setstate(old => ({ ...old, showCategories: true }))}>
+                    <AddOfferICon />
+                </Pressable>
+            </View>}
+            {state.showCategories && (
+                <CategoriesPopup
+                    onCloseFn={() => { setstate(old => ({ ...old, showCategories: false })) }}
+                    title={t("categoriespopup")}
+                    items={state.categories}
+                    style={{ flex: 0.45 }}
+                />
+            )}
         </Container>
 
     )
+
 }
 
 export default Index
 
 const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,) =>
     StyleSheet.create({
-
+        formCon: {
+            flex: 1,
+            backgroundColor: theme.mainColor,
+            paddingVertical: PixelPerfect(20),
+            paddingHorizontal: PixelPerfect(8)
+        },
         bodyCon: {
             height: PixelPerfect(96),
             width: (phoneWidth / 3.2),
@@ -207,7 +239,8 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             fontFamily: Fonts.bold,
             color: theme.active,
             paddingHorizontal: PixelPerfect(8),
-            fontSize: PixelPerfect(16)
+            fontSize: PixelPerfect(16),
+            lineHeight: 25
         },
 
         textsection2: {
@@ -218,6 +251,14 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             fontSize: PixelPerfect(14),
 
         },
-
+        addOffer: {
+            position: "absolute",
+            bottom: phoneHeight * 0.125,
+            left: PixelPerfect(16)
+        },
+        Header:{
+            alignItems:"center",
+            padding:PixelPerfect(8)
+        }
 
     });

@@ -32,7 +32,8 @@ export enum Colors {
   textTitle = '#222222',
   medGary = '#9E9E9E',
   grayTabBar = '#707F89',
-  bodyBackground = '#FEFEFE', // this color is light dark white in the body of screen under headers
+  bodyBackground = '#FEFEFE',
+  primary = "primary", // this color is light dark white in the body of screen under headers
 }
 
 export enum FontsRtl {
@@ -79,11 +80,11 @@ export enum ScreenOptions {
   CURRENT_RESOLUTION = Math.sqrt(height * height + width * width),
   DesignResolution = {
     width: 375,
-    height: 812,
+    height: 949,
   } as any,
 }
 
-export const createPerfectPixel = (designSize = { width: 375, height: 812 }) => {
+export const createPerfectPixel = (designSize = { width: 375, height: 949 }) => {
   if (
     !designSize ||
     !designSize.width ||

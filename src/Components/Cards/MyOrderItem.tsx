@@ -1,53 +1,59 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { ThemeContext } from '../../Constants/theming';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import { Colors, PixelPerfect } from '../../Constants/styleConstants';
 import { Call2Icon } from '../../Assets/Svg';
+import { t } from 'i18next';
 type Props = {
-    item: any, onAccept: any, onReject: any
+    item: any, onDetailsClick: any
 }
+
+
+
 
 const MyOrderItem = (props: Props) => {
     const {
-        item, onAccept
+        item, onDetailsClick
     } = props;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
-    const styles = useStyles(Fonts, theme, dark, dir);
+    const styles = useStyles(Fonts, theme, dark, dir, item.status);
     const [show, setshow] = useState(false);
+    const fullDate = item.date;
+    const [date, time] = fullDate.split("T");
     return (
         <View style={styles.card}>
 
             <View style={[layout.dirRow, styles.row]}>
                 <View style={styles.con1}>
                     <View style={[layout.dirRow, { justifyContent: "space-between", alignItems: "center" }]}>
-                        <TouchableOpacity style={styles.statusBtn} onPress={() => onAccept(item)}>
-                            <Text style={styles.statusText}>طلب مقبول</Text>
+                        <View style={styles.statusBtn}>
+                            <Text style={styles.statusText}>{item.status}</Text>
+                        </View>
 
-                        </TouchableOpacity>
                         <View style={[layout.rowBox, { alignItems: "center" }]}>
-                            <Image source={{ uri: item.avatar }} style={styles.avatar} />
+                            <Image source={{ uri: item.imageUrl }} style={styles.avatar} />
                             <View style={[layout.flexStart, { paddingHorizontal: PixelPerfect(8) }]}>
-                                <Text style={styles.name}>{item.name}</Text>
-                                <Text style={styles.rating}>⭐ {item.rating}</Text>
+                                <Text style={[layout.textAlign,styles.name]}>{item.userName}</Text>
+                                <Text style={[layout.textAlign,styles.rating]}>⭐ {item.userRateAverage}</Text>
                             </View>
                         </View>
                     </View>
 
 
                     <View style={[layout.rowBox, styles.actions]}>
-                        <Text style={styles.product}>{item.product}</Text>
+                        <Text style={[layout.textAlign,styles.product]}>{item.category + " " + item.paperName + " " + item.paperSize}</Text>
 
 
                     </View>
 
-                    <Text style={styles.quantity}>التاريخ: 15 ديسمبر 2025 {item.quantity}</Text>
+                    <Text style={[layout.textAlign,,styles.quantity]}>{t("date")} {date}  </Text>
 
 
 
                     <View style={[layout.rowBox, styles.actions]}>
-                        <Text style={styles.quantity}>الكمية: {item.quantity}</Text>
-                        <Text style={styles.price}>{item.price} جنيه</Text>
+                        <Text style={[layout.textAlign,styles.quantity]}>{t("quantity")} {item.quentity}</Text>
+                        <Text style={[layout.textAlign,styles.price]}>{item.price} {t("pound")}</Text>
                     </View>
 
                 </View>
@@ -57,9 +63,9 @@ const MyOrderItem = (props: Props) => {
 
             <View style={[layout.dirRow, styles.actions]}>
 
-                <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} onPress={() => onAccept(item)}>
-                  
-                    <Text style={styles.acceptText}>عرض التفاصيل</Text>
+                <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} onPress={() => onDetailsClick(item)}>
+
+                    <Text style={styles.acceptText}>{t("viewDetails")}</Text>
 
                 </TouchableOpacity>
             </View>
@@ -69,7 +75,7 @@ const MyOrderItem = (props: Props) => {
 
 export default MyOrderItem
 
-const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,) =>
+const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string, status: any) =>
     StyleSheet.create({
         card: {
             backgroundColor: theme.white,
@@ -110,8 +116,18 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
         },
 
         statusBtn: {
-            flex: 0.60,
-            backgroundColor: theme.green,
+            flex: 0.40,
+            backgroundColor:
+                status === "قيد الانتظار"
+                    ? theme.currenctText
+                    : status === "طلب مقبول"
+                        ? theme.green
+                        : status === "طلب ملغي"
+                            ? theme.red
+                            : status === "تم التسليم"
+                                ? theme.textColor : status === "طلب منتهي" ? theme.deactive
+                                    : theme.currenctText,
+
             borderRadius: PixelPerfect(4),
             padding: PixelPerfect(4),
             alignItems: "center",

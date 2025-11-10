@@ -34,6 +34,16 @@ export const UserLogin = () => ({
 });
 
 /**
+* UserIsSeller
+*/
+export const UserIsSeller = (payload:boolean) => {
+  console.log('UserIsSeller payload = ',payload);
+  return {
+    type: ActionType.USER_ISRESELLER,
+    payload: payload,
+  }
+}
+/**
 * UserLogout
 */
 export const UserLogout = () => ({

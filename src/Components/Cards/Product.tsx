@@ -4,48 +4,55 @@ import { ThemeContext } from '../../Constants/theming';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import { ColorWithOpacity, Colors, PixelPerfect, phoneWidth } from '../../Constants/styleConstants';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { HeartIcon } from '../../Assets/Svg';
+import { t } from 'i18next';
 
 type Props = {
-    item: any
+    item: any, onPress: () => void,
+    onFavPress: () => void,
 }
 
 const Product = (props: Props) => {
     const {
-        item
+        item,
+        onPress,
+        onFavPress
     } = props;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
-    const [show, setshow] = useState(false);
+
     return (
         <Pressable
-            onPress={() => setshow(true)}
+            onPress={onPress}
         >
-            <View
-                style={[styles.con]}
-            >
-                <Image source={{ uri: item.image }} style={[styles.image]} />
-                <Text style={[styles.text]}>{item.name}</Text>
-                <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                    <Text style={[styles.text1]}>{item.price}</Text>
+            <View style={[styles.con]}>
+                <Pressable style={{padding:8}} onPress={ onFavPress }>
+                    {item.isFavourite ? <Text style={styles.heart}> ♥</Text> : <HeartIcon style={styles.heart} />}
+                </Pressable>
+
+                <Image source={{ uri: item.paperPhoto }} resizeMode="contain" style={[styles.image]} />
+                <Text style={[styles.text]}>{item.categoryName + " " + item.paperName + " " + item.width + t("GM") + " " + item.paperSize}</Text>
+                <View style={[layout.dirRow, styles.priceRateRow]}>
                     <View style={[layout.rowBox]}>
-                        <Text>{"⭐"}</Text>
-                        <Text style={[styles.text1]}>{"(" + item.rating + ")"}</Text>
+                        <Text style={styles.star}>{"★"}</Text>
+                        <Text style={[styles.text1]}>{"(" + item.userRateCount + ")"}</Text>
                     </View>
+                    <Text style={[styles.price]}>{item.price + " " + t("pound")}</Text>
                 </View>
                 <View style={[layout.rowBox, styles.con2]}>
                     <Image
-                        source={{ uri: "https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg" }}
+                        source={{ uri: item.userImages }}
                         style={[styles.imageRound]}
                     />
                     <View style={{ marginHorizontal: PixelPerfect(4) }}>
-                        <Text style={[styles.text]}>{item.seller}</Text>
-                        <Text style={[styles.text2]}>{"القاهرة"}</Text>
+                        <Text style={[styles.seller]}>{item.userName}</Text>
+                        <Text style={[styles.text2]}>{item.countryName}</Text>
                     </View>
                 </View>
                 <TouchableOpacity
                     style={[styles.con1]}
                 >
-                    <Text style={[styles.text3]}>عرض التفاصيل</Text>
+                    <Text style={[styles.text3]}>{t("viewDetails")}</Text>
                 </TouchableOpacity>
             </View>
         </Pressable>
@@ -58,12 +65,13 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
     StyleSheet.create({
 
         con: {
-            width: PixelPerfect(163),
-            height: PixelPerfect(228),
+            width: PixelPerfect(175),
+            minHeight: PixelPerfect(228),
             backgroundColor: theme.white,
             borderRadius: PixelPerfect(12),
-            margin: PixelPerfect(8),
-            padding: PixelPerfect(8),
+            padding: PixelPerfect(12),
+            marginHorizontal: PixelPerfect(6),
+            marginVertical: PixelPerfect(2),
             shadowColor: theme.black,
             shadowOpacity: 0.1,
             shadowRadius: 4,
@@ -71,11 +79,14 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
         },
 
         con1: {
-            backgroundColor: "#007bff",
-            padding: PixelPerfect(6),
-            borderRadius: PixelPerfect(8),
-            marginTop: PixelPerfect(8),
+            height: PixelPerfect(30),
+            lineHeight: PixelPerfect(30),
+            backgroundColor: theme.active,
+            paddingHorizontal: PixelPerfect(10),
+            borderRadius: PixelPerfect(4),
+            marginTop: PixelPerfect(10),
             alignContent: "center",
+            textAlignVertical: "center",
             alignItems: "center"
         },
         con2: {
@@ -84,9 +95,9 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
 
         image: {
             height: PixelPerfect(80),
-            width: PixelPerfect(143),
+            width: PixelPerfect(145),
             borderRadius: PixelPerfect(10),
-            resizeMode: "contain"
+            resizeMode: "cover"
         },
 
         imageRound: {
@@ -96,17 +107,33 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             marginRight: PixelPerfect(4),
         },
         text: {
-            color: theme.black,
+            color: theme.active,
             fontSize: PixelPerfect(14),
             fontFamily: Fonts.medium,
+            marginTop: PixelPerfect(6)
         },
+        seller: {
+            color: theme.active,
+            fontSize: PixelPerfect(13),
+            fontFamily: Fonts.medium,
+        },
+        priceRateRow: {
+            justifyContent: 'space-between',
+            marginTop: PixelPerfect(6)
+        },
+        price: {
+            color: theme.active,
+            fontSize: PixelPerfect(14),
+            fontFamily: Fonts.bold
+        },
+        star: { color: '#FFA800', marginRight: PixelPerfect(2) },
         text1: {
-            color: theme.gray,
+            color: theme.deactive,
             fontSize: PixelPerfect(14),
             fontFamily: Fonts.medium,
         },
         text2: {
-            color: theme.black,
+            color: theme.deactive,
             fontSize: PixelPerfect(12),
             fontFamily: Fonts.extraLight,
         },
@@ -116,5 +143,11 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             fontFamily: Fonts.bold,
             alignItems: "center",
             alignContent: "center"
+        },
+        heart: {
+            position: 'absolute',
+
+            zIndex: 1,
+            color: theme.active
         },
     });

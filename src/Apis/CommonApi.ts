@@ -35,6 +35,23 @@ export const GetCategories = (cb?: (data: any, status: any) => void) => {
     }
   };
 };
+/**
+ * AddFavouritePaperOffer
+ * @param cb callback function
+ */
+export const AddFavouritePaperOffer = (id:any,cb?: (data: any, status: any) => void) => {
+  return async (dispatch: Dispatch<IDispatch>) => {
+    try {
+      const { data, status } = await globalAPI.post('api/Configuration/AddFavouritePaperOffer?Id='+id);
+      cb && cb(data ?? {}, status); // تأمين بسيط لو data طلعت null
+
+    } catch (error) {
+      console.log('AddFavouritePaperOffer error = ', error);
+      cb && cb(error, 500);
+    }
+  };
+};
+
 
 /**
  * GetAllActivities

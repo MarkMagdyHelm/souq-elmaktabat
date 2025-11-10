@@ -36,10 +36,10 @@ const index = (props: Props) => {
 
     return (
         <View style={[layout.rowBox, styles.containner]}>
-            <Pressable style={styles.tapcon} onPress={()=>onPress("Home")}>
-                <HomeIcon color={(!isDrawerOpen&&route.name === "Home") ? theme.active : theme.deactive} />
-                <Text style={[styles.tabText, { color: (!isDrawerOpen&&route.name === "Home") ? theme.active : theme.deactive,
-                        fontFamily:(!isDrawerOpen&&route.name === "Home")? Fonts.bold : Fonts.regular,
+            <Pressable style={styles.tapcon} onPress={()=>onPress("Home2")}>
+                <HomeIcon color={(!isDrawerOpen&&route.name === "Home2") ? theme.active : theme.deactive} />
+                <Text style={[styles.tabText, { color: (!isDrawerOpen&&route.name === "Home2") ? theme.active : theme.deactive,
+                        fontFamily:(!isDrawerOpen&&route.name === "Home2")? Fonts.bold : Fonts.regular,
                  }]}>{t('Home')}</Text>
             </Pressable>
             <Pressable style={styles.tapcon}  onPress={()=>onPress("Polls")}>
