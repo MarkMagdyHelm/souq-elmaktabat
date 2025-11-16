@@ -236,8 +236,8 @@ const Index = (props: Props) => {
                                     });
                                 }
                                 else {
-                                    navigation.navigate("MyOrders")
-                                    // addPaperOfferRequest()
+                                    // navigation.navigate("MyOrders")
+                                     addPaperOfferRequest()
                                 }
                             }}>
                                 <Text style={[layout.textAlign,styles.orderBtnText]}>{t("sendOrder")}</Text>

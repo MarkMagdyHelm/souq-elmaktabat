@@ -4,7 +4,7 @@ import { ThemeContext } from '../../Constants/theming';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import { ColorWithOpacity, Colors, PixelPerfect, phoneWidth } from '../../Constants/styleConstants';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { HeartIcon } from '../../Assets/Svg';
+import { HeartIcon, RateIcone } from '../../Assets/Svg';
 import { t } from 'i18next';
 
 type Props = {
@@ -27,14 +27,16 @@ const Product = (props: Props) => {
         >
             <View style={[styles.con]}>
                 <Pressable style={{padding:8}} onPress={ onFavPress }>
-                    {item.isFavourite ? <Text style={styles.heart}> ♥</Text> : <HeartIcon style={styles.heart} />}
+                    <HeartIcon style={styles.heart} 
+                    color={!item.isFavourite ?theme.white:theme.red}
+                    />
                 </Pressable>
 
                 <Image source={{ uri: item.paperPhoto }} resizeMode="contain" style={[styles.image]} />
                 <Text style={[styles.text]}>{item.categoryName + " " + item.paperName + " " + item.width + t("GM") + " " + item.paperSize}</Text>
                 <View style={[layout.dirRow, styles.priceRateRow]}>
                     <View style={[layout.rowBox]}>
-                        <Text style={styles.star}>{"★"}</Text>
+                       <RateIcone/>
                         <Text style={[styles.text1]}>{"(" + item.userRateCount + ")"}</Text>
                     </View>
                     <Text style={[styles.price]}>{item.price + " " + t("pound")}</Text>
@@ -80,14 +82,13 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
 
         con1: {
             height: PixelPerfect(30),
-            lineHeight: PixelPerfect(30),
             backgroundColor: theme.active,
             paddingHorizontal: PixelPerfect(10),
             borderRadius: PixelPerfect(4),
             marginTop: PixelPerfect(10),
-            alignContent: "center",
-            textAlignVertical: "center",
-            alignItems: "center"
+            justifyContent: "center",
+            alignItems: "center",
+            
         },
         con2: {
             alignItems: "center", marginTop: PixelPerfect(4)

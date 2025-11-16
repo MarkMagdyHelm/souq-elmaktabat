@@ -4794,7 +4794,7 @@ export const HeartIcon = (props) => (
       fillRule="evenodd"
       clipRule="evenodd"
       d="M17.0103 5.2377C16.3146 4.44523 15.3709 4 14.3868 4C13.4027 4 12.459 4.44523 11.7633 5.2377L11.0485 6.05166L10.3336 5.2377C8.8847 3.58798 6.53557 3.58798 5.08667 5.2377C3.63778 6.88742 3.63778 9.56215 5.08667 11.2119L5.80155 12.0258L11.0485 18L16.2954 12.0258L17.0103 11.2119C17.7063 10.4198 18.0973 9.34524 18.0973 8.22479C18.0973 7.10433 17.7063 6.0298 17.0103 5.2377Z"
-      fill="white"
+      fill={props.color}
       stroke="#888888"
       strokeWidth={1.2}
       strokeLinecap="round"
@@ -5066,3 +5066,20 @@ export const LockIcon = (props) => (
   </Svg>
 );
 
+export const RateIcone = (props) => (
+  <Svg
+    width={15}
+    height={14}
+    viewBox="0 0 15 14"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <Path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M7.5 0L9.8175 4.60778L15 5.35121L11.25 8.93586L12.135 14L7.5 11.6078L2.865 14L3.75 8.93586L0 5.35121L5.1825 4.60778L7.5 0Z"
+      fill="#FFB001"
+    />
+  </Svg>
+);

@@ -80,7 +80,8 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
       color: theme.black,
       textAlign: "center",
       paddingHorizontal: PixelPerfect(30),
-      paddingTop: PixelPerfect(16)
+      marginTop: PixelPerfect(16),
+     
     },
     button: {
       alignItems: "center",
@@ -105,7 +106,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
     buttonText2: {
       fontFamily: Fonts.bold,
       fontSize: PixelPerfect(20),
-      lineHeight: 30,
+     lineHeight:PixelPerfect(25),
       color: Colors.secondColor
     },
   })

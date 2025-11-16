@@ -83,6 +83,9 @@ const Index = (props: Props) => {
 
         dispatch<any>(
             GetRequests({ statusId: selectedTab == 0 ? null : selectedTab, page: "1", pageSize: "10" }, (res, status) => {
+                console.log('====================================');
+                console.log(status,res);
+                console.log('====================================');
                 if (res.status === 200) {
                     setState((old) => ({
                         ...old,

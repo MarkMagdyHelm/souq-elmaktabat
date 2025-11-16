@@ -8,23 +8,19 @@ import TabBar from '../../Components/TabBar/index';
 
 import 'moment/locale/ar'
 
-import { useDispatch, useSelector } from 'react-redux'
-
-import { useToast } from 'react-native-toast-notifications'
-import { RootState } from '../../Store/store'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-import Product from '../../Components/Cards/Product'
-import SearchBar from '../../Components/Cards/SearchBar'
+import { useDispatch, useSelector } from 'react-redux';
+import { useToast } from 'react-native-toast-notifications';
+import { RootState } from '../../Store/store';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import Product from '../../Components/Cards/Product';
+import SearchBar from '../../Components/Cards/SearchBar';
 import Icon from "react-native-vector-icons/Ionicons";
-import { useRoute } from '@react-navigation/native'
-import { GetAllPaperOffers, GetPapersHandler } from '../../Apis/HomeApis'
-import { t } from 'i18next'
-import MultiChekers from '../../Components/PopUps/MultiChekers'
-import { GetSettingsHandler } from '../../Apis/Appinfo'
-import PriceFilter from '../../Components/PopUps/PriceFilter'
-import { max } from 'moment'
-import HeaderWithText from '../../Components/Headers/HeaderWithText'
-import FilterMultiChecker from '../../Components/PopUps/FilterMultiChecker'
+import { useRoute } from '@react-navigation/native';
+import { GetAllPaperOffers, GetPapersHandler } from '../../Apis/HomeApis';
+import { t } from 'i18next';
+import PriceFilter from '../../Components/PopUps/PriceFilter';
+import HeaderWithText from '../../Components/Headers/HeaderWithText';
+import FilterMultiChecker from '../../Components/PopUps/FilterMultiChecker';
 type Props = {
     navigation: any
 }
@@ -69,21 +65,7 @@ const Index = (props: Props) => {
         getPapers()
     }, [])
     useEffect(() => {
-        console.log('=================countries===================');
-        console.log(state.countries);
-        console.log('====================================');
-        console.log('=================paperSize===================');
-        console.log(state.paperSize);
-        console.log('====================================');
-        console.log('=================paperType===================');
-        console.log(state.paperType);
-        console.log('====================================');
-        console.log('=================maxPrice===================');
-        console.log(state.maxPrice);
-        console.log('====================================');
-        console.log('=================minPrice===================');
-        console.log(state.minPrice);
-        console.log('====================================');
+      
         getAllPaperOffers()
     }, [state.countries, state.paperSize, state.paperType, state.minPrice, state.maxPrice])
 

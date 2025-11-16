@@ -74,6 +74,9 @@ const Index = (props: Props) => {
   const getNotifications = () => {
     setstate(old => ({ ...old, loading: true }))
     dispatch<any>(GetAllNotificationsHandler({}, (res, status) => {
+      console.log('=============GetAllNotificationsHandler=======================');
+      console.log("GetAllNotificationsHandler", res);
+      console.log('====================================');
       if (res.status == 200) {
         setstate(old => ({ ...old, items: res.data }));
       } else {
@@ -127,7 +130,7 @@ const Index = (props: Props) => {
   const handleReject = (item) => {
     console.log("رفض الطلب:", item);
   };
-  const handleSelectRequest = (item:any) => {
+  const handleSelectRequest = (item: any) => {
     navigation.navigate("OrderDetails", { item: item })
   };
 
@@ -224,12 +227,12 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
       height: PixelPerfect(50),
       marginHorizontal: PixelPerfect(4),
       flex: 1,
-      padding: PixelPerfect(10),
       borderRadius: PixelPerfect(8),
       alignItems: "center",
-      backgroundColor: theme.gray2
+      backgroundColor: theme.gray2,
+      justifyContent: "center"
     },
-    activeTab: { backgroundColor: theme.babyBlue, fontFamily: Fonts.medium },
+    activeTab: { backgroundColor: theme.babyBlue },
     tabText: { fontSize: PixelPerfect(18), color: theme.black, fontFamily: Fonts.medium },
     activeTabText: { color: theme.white, fontFamily: Fonts.medium, fontSize: PixelPerfect(18) },
   })

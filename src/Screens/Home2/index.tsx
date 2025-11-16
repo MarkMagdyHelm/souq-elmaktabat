@@ -182,7 +182,9 @@ const Index = (props: Props) => {
                             inverted
                             keyExtractor={(item) => item.id}
                             showsHorizontalScrollIndicator={false}
-                            renderItem={({ item }) => <Product item={item} onPress={() =>
+                            renderItem={({ item }) => 
+                            <Product item={item} 
+                            onPress={() =>
                                 handleSelectProduct(item)
                             } onFavPress={()=>{
                                 addFavouritePaperOffer(item.id)
