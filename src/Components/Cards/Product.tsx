@@ -134,7 +134,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             fontFamily: Fonts.medium,
         },
         text2: {
-           marginTop:PixelPerfect(4),
+          marginTop:PixelPerfect(4),
             color: theme.deactive,
             fontSize: PixelPerfect(12),
             fontFamily: Fonts.extraLight,
