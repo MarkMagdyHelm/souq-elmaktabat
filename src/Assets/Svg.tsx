@@ -5068,8 +5068,8 @@ export const LockIcon = (props) => (
 
 export const RateIcone = (props) => (
   <Svg
-    width={15}
-    height={14}
+    width={12}
+    height={12}
     viewBox="0 0 15 14"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

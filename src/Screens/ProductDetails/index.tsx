@@ -24,6 +24,7 @@ import { useToast } from 'react-native-toast-notifications';
 import SignUpSuccess from '../../Components/PopUps/SignUpSuccess';
 import { t } from 'i18next';
 import HeaderWithText from '../../Components/Headers/HeaderWithText';
+import { RateIcone } from '../../Assets/Svg';
 
 type Props = {
     navigation: any
@@ -141,7 +142,7 @@ const Index = (props: Props) => {
                         <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
                             <Text style={[layout.dirRow,styles.text1]}>{"(" + item.userRateCount + ")"}</Text>
                             <View style={[layout.rowBox]}>
-                                <Text style={{ color: theme.currenctText }}>{"⭐"}</Text>
+                            <RateIcone/>
                                 <Text style={[layout.textAlign,styles.text1]}>{"(" + item.userRateCount + ")"}</Text>
                             </View>
                         </View>
@@ -157,7 +158,7 @@ const Index = (props: Props) => {
 
                                 </View>
                                 <View style={[layout.rowBox]}>
-                                    <Text style={{ color: theme.currenctText }}>{"⭐"}</Text>
+                                <RateIcone/>
                                     <Text style={[layout.textAlign,styles.text1]}>{"(" + item.userRateAverage + ")"}</Text>
                                 </View>
                             </View>

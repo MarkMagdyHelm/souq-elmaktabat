@@ -33,9 +33,9 @@ const Product = (props: Props) => {
                 </Pressable>
 
                 <Image source={{ uri: item.paperPhoto }} resizeMode="contain" style={[styles.image]} />
-                <Text style={[styles.text]}>{item.categoryName + " " + item.paperName + " " + item.width + t("GM") + " " + item.paperSize}</Text>
+                <Text style={[layout.textAlign,styles.text]}>{item.categoryName + " " + item.paperName + " " + item.width + t("GM") + " " + item.paperSize}</Text>
                 <View style={[layout.dirRow, styles.priceRateRow]}>
-                    <View style={[layout.rowBox]}>
+                    <View style={[layout.rowBox,{alignItems:"center"}]}>
                        <RateIcone/>
                         <Text style={[styles.text1]}>{"(" + item.userRateCount + ")"}</Text>
                     </View>
@@ -52,8 +52,7 @@ const Product = (props: Props) => {
                     </View>
                 </View>
                 <TouchableOpacity
-                    style={[styles.con1]}
-                >
+                    style={[styles.con1]} >
                     <Text style={[styles.text3]}>{t("viewDetails")}</Text>
                 </TouchableOpacity>
             </View>
@@ -120,7 +119,8 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
         },
         priceRateRow: {
             justifyContent: 'space-between',
-            marginTop: PixelPerfect(6)
+            marginTop: PixelPerfect(6),
+           
         },
         price: {
             color: theme.active,
@@ -134,6 +134,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             fontFamily: Fonts.medium,
         },
         text2: {
+           marginTop:PixelPerfect(4),
             color: theme.deactive,
             fontSize: PixelPerfect(12),
             fontFamily: Fonts.extraLight,
@@ -141,13 +142,13 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
         text3: {
             color: theme.white,
             fontSize: PixelPerfect(14),
+            lineHeight:PixelPerfect(28),
             fontFamily: Fonts.bold,
             alignItems: "center",
             alignContent: "center"
         },
         heart: {
             position: 'absolute',
-
             zIndex: 1,
             color: theme.active
         },

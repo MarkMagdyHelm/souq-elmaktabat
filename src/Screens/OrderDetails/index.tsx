@@ -6,7 +6,7 @@ import { PixelPerfect } from '../../Constants/styleConstants';
 import { t } from 'i18next';
 
 
-import { AddressIcon, Call2Icon, CancelIcon, CheckIcon, CheckIcon1, RateIcon } from '../../Assets/Svg';
+import { AddressIcon, Call2Icon, CancelIcon, CheckIcon, CheckIcon1, RateIcon, RateIcone } from '../../Assets/Svg';
 
 import { Container, Content } from '../../Components/containers/Containers';
 import { useRoute } from '@react-navigation/native';
@@ -224,7 +224,7 @@ const Index = (props: Props) => {
                                     <View>
                                         <Text style={[layout.textAlign, styles.name]}>{item.userName}</Text>
                                         <View style={[layout.rowBox]}>
-                                            <Text style={{ color: theme.currenctText }}>{"⭐"}</Text>
+                                                 <RateIcone/>
                                             <Text style={[layout.textAlign,styles.rateText]}>{"(" + item.userRateCount + ")"}</Text>
                                         </View>
                                     </View>
