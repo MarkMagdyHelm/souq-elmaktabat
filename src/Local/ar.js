@@ -203,7 +203,7 @@ export default {
     "quantity": "الكمية: ",
     "carton": "كرتونه",
     "total": "الاجمالي: ",
-    "pound": "جنيها",
+    "pound": " جنيها ",
     "contactNow": "تواصل الان",
     "delivered": "تم التسليم",
     "deliveryNote": "في حاله استلام الطلب اضغط علي تم التسليم",
@@ -304,5 +304,8 @@ export default {
     //MoreComponent
     "library": "مكتبة",
     //SearchBar
-    "search": "بحث"
+    "search": "بحث",
+       "carton_price":" سعر الكرتونه ",
+       "select_branch":" اختار الفرع",
+       "select_price":"حدد السعر"
 };

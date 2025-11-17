@@ -1,10 +1,12 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, GestureResponderEvent, PanResponder, PanResponderGestureState, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Animated, GestureResponderEvent, PanResponder, PanResponderGestureState, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Modal from 'react-native-modal';
 import { ThemeContext } from '../../Constants/theming';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import { Colors, PixelPerfect } from '../../Constants/styleConstants';
 import Button from '../touchables/Button';
+import { t } from 'i18next';
+import { CloseIcon } from '../../Assets/Svg';
 
 type Props = {
     show: boolean,
@@ -27,7 +29,7 @@ const PriceFilter = (props: Props) => {
     const [maxValue, setMaxValue] = useState<number>(initialMax);
     const minX = useRef(new Animated.Value(0)).current;
     const maxX = useRef(new Animated.Value(0)).current;
-    
+
     const valueToX = (value: number) => ((value - min) / (max - min)) * trackWidth;
     const xToValue = (x: number) => Math.round(min + (clamp(x, 0, trackWidth) / trackWidth) * (max - min));
 
@@ -107,10 +109,10 @@ const PriceFilter = (props: Props) => {
         >
             <View style={styles.container}>
                 <View style={styles.headerRow}>
-                    <TouchableOpacity onPress={() => onCloseFn && onCloseFn(false)}>
-                        <Text style={styles.close}>✕</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.title}>حدد السعر</Text>
+                    <Pressable style={{paddingHorizontal:PixelPerfect(4)}} onPress={() => onCloseFn && onCloseFn(false)}>
+                        <CloseIcon />
+                    </Pressable>
+                    <Text style={[layout.textAlign, styles.title]}>{t('select_price')}</Text>
                 </View>
 
                 {/* Slider */}
@@ -130,7 +132,7 @@ const PriceFilter = (props: Props) => {
                         ]}
                     />
                     {/* Bubble value over min thumb */}
-                    <Animated.View 
+                    <Animated.View
                         style={[
                             styles.bubbleContainer,
                             {
@@ -144,7 +146,7 @@ const PriceFilter = (props: Props) => {
                         <View style={styles.bubbleTail} />
                     </Animated.View>
                     {/* Bubble value over max thumb */}
-                    <Animated.View 
+                    <Animated.View
                         style={[
                             styles.bubbleContainer,
                             {
@@ -158,14 +160,14 @@ const PriceFilter = (props: Props) => {
                         <View style={styles.bubbleTail} />
                     </Animated.View>
                     {/* Min Thumb */}
-                    <Animated.View 
-                        style={[styles.thumb, { transform: [{ translateX: minX }] }]} 
-                        {...minThumbPan.panHandlers} 
+                    <Animated.View
+                        style={[styles.thumb, { transform: [{ translateX: minX }] }]}
+                        {...minThumbPan.panHandlers}
                     />
                     {/* Max Thumb */}
-                    <Animated.View 
-                        style={[styles.thumb, { transform: [{ translateX: maxX }] }]} 
-                        {...maxThumbPan.panHandlers} 
+                    <Animated.View
+                        style={[styles.thumb, { transform: [{ translateX: maxX }] }]}
+                        {...maxThumbPan.panHandlers}
                     />
                 </View>
 
@@ -224,7 +226,7 @@ export default PriceFilter;
 const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,) =>
     StyleSheet.create({
         container: {
-            flex: 0.55,
+            flex: 0.42,
             paddingHorizontal: PixelPerfect(16),
             paddingVertical: PixelPerfect(20),
             backgroundColor: Colors.white,
@@ -239,7 +241,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
         },
         close: {
             fontSize: PixelPerfect(20),
-            marginHorizontal:PixelPerfect(10),
+            marginHorizontal: PixelPerfect(10),
         },
         title: {
             flex: 1,
@@ -291,14 +293,14 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             height: PixelPerfect(6),
             borderRadius: PixelPerfect(6),
             backgroundColor: '#cfe0ff',
-          
+
         },
         activeTrack: {
             position: 'absolute',
             height: PixelPerfect(6),
             borderRadius: PixelPerfect(6),
             backgroundColor: theme.babyBlue,
-           
+
         },
         thumb: {
             position: 'absolute',

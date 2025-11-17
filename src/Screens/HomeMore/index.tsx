@@ -146,11 +146,17 @@ const Index = (props: Props) => {
             <View style={{ flex: 1, paddingHorizontal: PixelPerfect(16) }}>
                 {state.viewCountries && <FilterMultiChecker   
                     onCloseFn={(val) => {
+
                         if (Array.isArray(val)) {
                             setstate(old => ({
                                 ...old,
                                 viewCountries: false,
                                 countries: val.map(item => item.id)
+                            }));
+                        }else{
+                            setstate(old => ({
+                                ...old,
+                                viewCountries: false,
                             }));
                         }
 
@@ -165,11 +171,17 @@ const Index = (props: Props) => {
                 />}
                 {state.viewPaperType && <FilterMultiChecker
                     onCloseFn={(val) => {
+                        
                         if (Array.isArray(val)) {
                             setstate(old => ({
                                 ...old,
                                 viewPaperType: false,
                                 paperType: val.map(item => item.id)
+                            }));
+                        }else{
+                            setstate(old => ({
+                                ...old,
+                                viewPaperType: false,
                             }));
                         }
 
@@ -189,6 +201,11 @@ const Index = (props: Props) => {
                                 ...old,
                                 viewPaperSize: false,
                                 paperSize: val.map(item => item.id)
+                            }));
+                        }else{
+                            setstate(old => ({
+                                ...old,
+                                viewPaperSize: false,
                             }));
                         }
                         

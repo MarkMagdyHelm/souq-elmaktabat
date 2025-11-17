@@ -47,8 +47,8 @@ const Product = (props: Props) => {
                         style={[styles.imageRound]}
                     />
                     <View style={{ marginHorizontal: PixelPerfect(4) }}>
-                        <Text style={[layout.textAlign, styles.seller]}>{item.userName}</Text>
-                        <Text style={[layout.textAlign,styles.text2]}>{item.countryName}</Text>
+                        <Text style={[layout.textAlign,styles.seller]}>{item.userName}</Text>
+                        <Text style={[styles.text2]}>{item.countryName}</Text>
                     </View>
                 </View>
                 <TouchableOpacity
@@ -74,9 +74,9 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             marginHorizontal: PixelPerfect(6),
             marginVertical: PixelPerfect(2),
             shadowColor: theme.black,
-            shadowOpacity: 0.1,
-            shadowRadius: 4,
-            elevation: 2,
+            shadowOpacity: PixelPerfect(0.1),
+            shadowRadius: PixelPerfect(8),
+            elevation: PixelPerfect(2),
         },
 
         con1: {
@@ -116,6 +116,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             color: theme.active,
             fontSize: PixelPerfect(13),
             fontFamily: Fonts.medium,
+            lineHeight:PixelPerfect(20)
         },
         priceRateRow: {
             justifyContent: 'space-between',
@@ -132,9 +133,9 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             color: theme.deactive,
             fontSize: PixelPerfect(14),
             fontFamily: Fonts.medium,
+          marginTop:Platform.OS=="ios"?2:0
         },
         text2: {
-          marginTop:PixelPerfect(4),
             color: theme.deactive,
             fontSize: PixelPerfect(12),
             fontFamily: Fonts.extraLight,

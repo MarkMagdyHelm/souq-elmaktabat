@@ -25,6 +25,8 @@ import SignUpSuccess from '../../Components/PopUps/SignUpSuccess';
 import { t } from 'i18next';
 import HeaderWithText from '../../Components/Headers/HeaderWithText';
 import { RateIcone } from '../../Assets/Svg';
+import Stars from '../../Helper/Stars';
+import Space from '../../Helper/Space';
 
 type Props = {
     navigation: any
@@ -137,59 +139,57 @@ const Index = (props: Props) => {
                     <Image source={item.paperPhoto} style={styles.productImage} resizeMode="contain" />
 
                     <View style={styles.info}>
-                        <Text style={[layout.textAlign,styles.title]}>{item.title}</Text>
-                        <Text style={[layout.textAlign,styles.priceText]}>{item.categoryName + " " + item.paperName + " " + item.width + t("GM") + " " + item.paperSize}</Text>
-                        <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                            <Text style={[layout.dirRow,styles.text1]}>{"(" + item.userRateCount + ")"}</Text>
-                            <View style={[layout.rowBox]}>
-                            <RateIcone/>
-                                <Text style={[layout.textAlign,styles.text1]}>{"(" + item.userRateCount + ")"}</Text>
-                            </View>
+                        <Text style={[layout.textAlign, styles.title]}>{item.categoryName + " " + item.paperName + " " + item.width + t("GM") + " " + item.paperSize}</Text>
+                        <Text style={[layout.textAlign, styles.priceText]}>{t("carton_price") + item.price + t("pound")}</Text>
+                        <View style={[layout.rowBox, { marginVertical: PixelPerfect(2) }]}>
+                            <Stars rating={item.userRateCount} />
                         </View>
+                        <Space />
+                        {/* seller Info  */}
                         <View>
-                            <Text style={[layout.textAlign,styles.sellerTitle]}>{t("sellerInfo")}</Text>
+                            <Text style={[layout.textAlign, styles.sellerTitle]}>{t("sellerInfo")}</Text>
                             <View style={styles.sellerRow}>
                                 <Image
                                     source={{ uri: item.userImages }}
                                     style={styles.sellerImage}
                                 />
                                 <View style={{ flex: 1 }}>
-                                    <Text style={[layout.textAlign,styles.sellerName]}>{item.userName}</Text>
-
+                                    <Text style={[layout.textAlign, styles.sellerName]}>{item.userName}</Text>
                                 </View>
-                                <View style={[layout.rowBox]}>
-                                <RateIcone/>
-                                    <Text style={[layout.textAlign,styles.text1]}>{"(" + item.userRateAverage + ")"}</Text>
-                                </View>
+                                <Stars rating={1.5} />
                             </View>
-
                         </View>
+                        <Space />
+                        {/* "select branch" */}
+                        <View > 
+                            <Text style={[layout.textAlign, styles.sellerTitle]}>{t("select_branch")}</Text>
 
-                        <FlatList
-                            showsVerticalScrollIndicator={false}
-                            scrollEnabled={false}
-                            //   onRefresh={() =>{}}
-                            //   refreshing={isFetching}
-                            style={styles.list}
-                            data={item.paperOffersBranches}
-                            keyExtractor={(items, index: number) => index.toString()}
-                            // ItemSeparatorComponent={() => (state.loading ? null : <View style={styles.separator} />)}
-                            renderItem={({ item }) => {
-                                return (
-                                    <>
+                            <FlatList
+                                showsVerticalScrollIndicator={false}
+                                scrollEnabled={false}
+                                //   onRefresh={() =>{}}
+                                //   refreshing={isFetching}
+                                style={styles.list}
+                                data={item.paperOffersBranches}
+                                keyExtractor={(items, index: number) => index.toString()}
+                                // ItemSeparatorComponent={() => (state.loading ? null : <View style={styles.separator} />)}
+                                renderItem={({ item }) => {
+                                    return (
+                                        <>
+                                            <SellerBranches item={item} onPress={() => setSelectedBranchId(item.id)}
+                                                selected={selectedBranchId === item.id} />
 
-                                        <SellerBranches item={item} onPress={() => setSelectedBranchId(item.id)}
-                                            selected={selectedBranchId === item.id} />
-                                        {/* } */}
-                                    </>
-                                );
-                            }} />
+                                        </>
+                                    );
+                                }} />
+                     </View>
+                     <Space />
                         {/* تحديد الكمية */}
                         <View>
 
 
                             <View style={[layout.rowBox, { justifyContent: "space-between", alignItems: "center" }]}>
-                                <Text style={styles.sectionTitle}>{t("selectQuantity")}</Text>
+                                <Text style={styles.sellerTitle}>{t("selectQuantity")}</Text>
                                 <View style={[layout.dirRow, styles.quantityRow]}>
                                     <TouchableOpacity style={styles.qtyBtn} onPress={decrease} >
                                         <Text style={styles.qtyText}>-</Text>
@@ -200,25 +200,25 @@ const Index = (props: Props) => {
                                     </TouchableOpacity>
                                 </View>
                             </View>
-                            <View style={[layout.rowBox, { justifyContent: "space-between" ,marginVertical:PixelPerfect(4)}]}>
-                                <Text style={[layout.textAlign,styles.note]}>{t("minOrderQuantity")}</Text>
-                                <Text style={[layout.textAlign,styles.note1]}>{item.min}</Text>
+                            <View style={[layout.rowBox, { justifyContent: "space-between", marginVertical: PixelPerfect(4) }]}>
+                                <Text style={[layout.textAlign, styles.note]}>{t("minOrderQuantity")}</Text>
+                                <Text style={[layout.textAlign, styles.note1]}>{item.min}</Text>
                             </View>
-                            <View style={[layout.rowBox, { justifyContent: "space-between",marginVertical:PixelPerfect(4) }]}>
-                                <Text style={[layout.textAlign,styles.note]}>{t("offerEndDate")}</Text>
-                                <Text style={[layout.textAlign,styles.note1]}>{date + " " + t("orUntilOutOfStock")}</Text>
+                            <View style={[layout.rowBox, { justifyContent: "space-between", marginVertical: PixelPerfect(4) }]}>
+                                <Text style={[layout.textAlign, styles.note]}>{t("offerEndDate")}</Text>
+                                <Text style={[layout.textAlign, styles.note1]}>{date + " " + t("orUntilOutOfStock")}</Text>
                             </View>
-                            <View style={[layout.rowBox, { justifyContent: "space-between",marginVertical:PixelPerfect(4) }]}>
-                                <Text style={[layout.textAlign,styles.note]}>{t("deliveryMethods")}</Text>
-                                <Text style={[layout.textAlign,styles.note1]}>   {item.includeDelivery ? t("deliveryAvailable") : t("deliveryNotAvailable")}</Text>
+                            <View style={[layout.rowBox, { justifyContent: "space-between", marginVertical: PixelPerfect(4) }]}>
+                                <Text style={[layout.textAlign, styles.note]}>{t("deliveryMethods")}</Text>
+                                <Text style={[layout.textAlign, styles.note1]}>   {item.includeDelivery ? t("deliveryAvailable") : t("deliveryNotAvailable")}</Text>
                             </View>
-                            <View style={[layout.rowBox, { justifyContent: "space-between",marginTop:PixelPerfect(4) }]}>
-                                <Text style={[layout.textAlign,styles.totalPrice]}>{t("totalPrice")}</Text>
-                                <Text style={[layout.textAlign,styles.totalPriceValue]}>{totalPrice + " " + t("pound")}</Text>
+                            <View style={[layout.rowBox, { justifyContent: "space-between", marginTop: PixelPerfect(4) }]}>
+                                <Text style={[layout.textAlign, styles.totalPrice]}>{t("totalPrice")}</Text>
+                                <Text style={[layout.textAlign, styles.totalPriceValue]}>{totalPrice + " " + t("pound")}</Text>
                             </View>
-                            <View style={[layout.rowBox, { justifyContent: "space-between"}]}>
-                                <Text style={[layout.textAlign,styles.note]}>{""}</Text>
-                                <Text style={[layout.textAlign,styles.note2]}>{t("excludingOtherFees")}</Text>
+                            <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
+                                <Text style={[layout.textAlign, styles.note]}>{""}</Text>
+                                <Text style={[layout.textAlign, styles.note2]}>{t("excludingOtherFees")}</Text>
                             </View>
 
 
@@ -227,43 +227,43 @@ const Index = (props: Props) => {
                                 if (qty < item.min) {
                                     toastNotfication({
                                         type: "error",
-                                        message:"Quantity less than min quantity"
+                                        message: "Quantity less than min quantity"
                                     });
                                 }
                                 else if (selectedBranchId === null) {
                                     toastNotfication({
                                         type: "error",
-                                        message:"Please select Branch"
+                                        message: "Please select Branch"
                                     });
                                 }
                                 else {
                                     // navigation.navigate("MyOrders")
-                                     addPaperOfferRequest()
+                                    addPaperOfferRequest()
                                 }
                             }}>
-                                <Text style={[layout.textAlign,styles.orderBtnText]}>{t("sendOrder")}</Text>
+                                <Text style={[layout.textAlign, styles.orderBtnText]}>{t("sendOrder")}</Text>
                             </TouchableOpacity>
 
                         </View>
-
+                        <Space />
                         {/* وصف المنتج */}
                         <View >
-                            <Text style={[layout.textAlign,styles.sectionTitle]}>{t("productDescription")}</Text>
-                            <Text style={[layout.textAlign,styles.description]}>
+                            <Text style={[layout.textAlign, styles.sellerTitle]}>{t("productDescription")}</Text>
+                            <Text style={[layout.textAlign, styles.description]}>
                                 {item.description}
                             </Text>
-                            <View style={[layout.rowBox, { justifyContent: "space-between",marginVertical:PixelPerfect(4) }]}>
+                            {/* <View style={[layout.rowBox, { justifyContent: "space-between",marginVertical:PixelPerfect(8) }]}>
                                 <Text style={[layout.textAlign,styles.note]}>{t("type")}</Text>
                                 <Text style={[layout.textAlign,styles.note1]}>{item.paperName}</Text>
                             </View>
-                            <View style={[layout.rowBox, { justifyContent: "space-between",marginVertical:PixelPerfect(4) }]}>
+                            <View style={[layout.rowBox, { justifyContent: "space-between",marginVertical:PixelPerfect(8) }]}>
                                 <Text style={[layout.textAlign,styles.note]}>{t("size")}</Text>
                                 <Text style={[layout.textAlign,styles.note1]}>{item.paperSize}</Text>
                             </View>
-                            <View style={[layout.rowBox, { justifyContent: "space-between",marginVertical:PixelPerfect(4) }]}>
+                            <View style={[layout.rowBox, { justifyContent: "space-between",marginVertical:PixelPerfect(8) }]}>
                                 <Text style={[layout.textAlign,styles.note]}>{t("weight")}</Text>
                                 <Text style={[layout.textAlign,styles.note1, { paddingBottom: PixelPerfect(8) }]}>{item.width + t("GM") + " "}</Text>
-                            </View>
+                            </View> */}
 
                         </View>
                     </View>
@@ -321,10 +321,11 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             paddingHorizontal: PixelPerfect(4),
         },
         title: {
+            lineHeight: PixelPerfect(25),
             fontSize: PixelPerfect(16),
             color: theme.black,
             fontFamily: Fonts.bold,
-       
+
             marginBottom: PixelPerfect(4),
         },
         rowSpace: {
@@ -335,6 +336,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
 
         },
         priceText: {
+            lineHeight: PixelPerfect(25),
             fontSize: PixelPerfect(16),
             color: theme.babyBlue,
             fontFamily: Fonts.medium,
@@ -347,6 +349,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             marginBottom: PixelPerfect(8),
         },
         sellerTitle: {
+            lineHeight: PixelPerfect(25),
             fontSize: PixelPerfect(18),
             fontFamily: Fonts.medium,
             marginBottom: PixelPerfect(4),
@@ -355,6 +358,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
         sellerImage: { width: PixelPerfect(32), height: PixelPerfect(32), borderRadius: PixelPerfect(25), marginLeft: PixelPerfect(4) },
 
         sellerName: {
+            lineHeight: PixelPerfect(25),
             fontSize: PixelPerfect(18),
             fontFamily: Fonts.medium,
             color: theme.black,
@@ -366,13 +370,13 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             color: theme.currenctText,
             fontSize: PixelPerfect(14),
             fontFamily: Fonts.medium,
-            textAlign: "right"
+            textAlign: "right",
+            marginTop: Platform.OS == "ios" ? 3 : 0
         },
 
-
-        sectionTitle: { fontSize: PixelPerfect(18), fontFamily: Fonts.medium, color: theme.babyBlue },
-        quantityRow: { alignItems: "center" },
+        quantityRow: { alignItems: "center",alignContent:"center",alignSelf:"center" },
         qtyBtn: {
+     
             width: PixelPerfect(40),
             height: PixelPerfect(40),
             backgroundColor: theme.textColor,
@@ -382,21 +386,29 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             alignItems: "center"
         },
         qtyText: { color: theme.white, fontSize: 18 },
-        qtyValue: { fontSize: PixelPerfect(32), fontFamily: Fonts.medium },
-        note: { fontSize: PixelPerfect(16), fontFamily: Fonts.regular, color: theme.textColor, marginTop: PixelPerfect(8) },
-        note1: { textAlign: "right", fontSize: PixelPerfect(16), fontFamily: Fonts.regular, color: theme.black, marginTop: PixelPerfect(8) },
-        note2: { fontSize: PixelPerfect(10), fontFamily: Fonts.extraLight, color: theme.black, marginTop: PixelPerfect(2) },
-        totalPrice: { fontSize: PixelPerfect(16), fontFamily: Fonts.medium, color: theme.textColor, marginTop: PixelPerfect(8) },
-        totalPriceValue: { fontSize: PixelPerfect(14), fontFamily: Fonts.bold, color: theme.textColor, marginTop: PixelPerfect(8) },
+        qtyValue: {lineHeight:PixelPerfect(50),
+           
+             fontSize: PixelPerfect(32), fontFamily: Fonts.medium },
+        note: { fontSize: PixelPerfect(16), fontFamily: Fonts.regular, color: theme.textColor, lineHeight: PixelPerfect(20) },
+        note1: { textAlign: "right", fontSize: PixelPerfect(16), fontFamily: Fonts.regular, color: theme.black, lineHeight: PixelPerfect(20) },
+        note2: { fontSize: PixelPerfect(10), fontFamily: Fonts.extraLight, color: theme.black, lineHeight: PixelPerfect(20) },
+        totalPrice: { fontSize: PixelPerfect(16), fontFamily: Fonts.medium, color: theme.textColor, lineHeight: PixelPerfect(25)  },
+        totalPriceValue: {
+            fontSize: PixelPerfect(14), fontFamily: Fonts.bold, color: theme.textColor, lineHeight: PixelPerfect(20) 
+        },
 
         orderBtn: {
+         height:PixelPerfect(50),
             backgroundColor: theme.babyBlue,
             borderRadius: PixelPerfect(8),
             padding: PixelPerfect(12),
             marginVertical: PixelPerfect(8),
             alignItems: "center",
         },
-        orderBtnText: { color: theme.white, fontSize: PixelPerfect(16), fontFamily: Fonts.bold },
-        description: { textAlign: "right", fontSize: PixelPerfect(14), color: theme.black, fontFamily: Fonts.regular, marginVertical: PixelPerfect(4) },
+        orderBtnText: {     lineHeight: PixelPerfect(25) , color: theme.white, fontSize: PixelPerfect(16), fontFamily: Fonts.bold },
+        description: {lineHeight: PixelPerfect(20) , 
+            textAlign: "right", fontSize: PixelPerfect(14),
+             color: theme.black, fontFamily: Fonts.regular
+             , marginBottom: PixelPerfect(8) },
 
     });

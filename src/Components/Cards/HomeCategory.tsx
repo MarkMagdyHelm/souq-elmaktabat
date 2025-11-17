@@ -3,6 +3,7 @@ import React, { useContext,  } from 'react'
 import { ThemeContext } from '../../Constants/theming';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import { Colors, PixelPerfect } from '../../Constants/styleConstants';
+import { GetNamesByLang } from '../../Helper';
 
 type Props = {
     item: any
@@ -26,7 +27,7 @@ const HomeCategory = (props: Props) => {
 
                     source={{ uri: item?.image, cache: 'reload' }}
                 />
-                <Text style={styles.text}>{item.arName}</Text>
+                <Text style={styles.text}>{GetNamesByLang(item,dir)}</Text>
             </View>
         </Pressable>
     )

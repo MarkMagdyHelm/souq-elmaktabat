@@ -303,5 +303,8 @@ export default {
     //MoreComponent
     "library": "Library",
     //SearchBar
-    "search": "Search"
+    "search": "Search",
+    "carton_price":"سعر الكرتونه ",
+     "select_branch":" اختار الفرع",
+     "select_price":"حدد السعر"
 };

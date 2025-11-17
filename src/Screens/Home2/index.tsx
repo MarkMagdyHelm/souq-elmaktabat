@@ -50,7 +50,7 @@ const Index = (props: Props) => {
         getAllPaperOffers();
         dispatch<any>(CheckActivison());
         getSettings();
-      
+
     }, [])
     const toast = useToast();
     const toastNotfication = (config: any) => {
@@ -71,7 +71,7 @@ const Index = (props: Props) => {
                 if (res.status === 200) {
                     const sec = {
                         title: t("latestOffers") + " " + res.data.items[0].categoryName,
-                        id:res.data.items[0].id,
+                        id: res.data.items[0].id,
                         products: res.data.items ?? [],
                     };
 
@@ -108,23 +108,23 @@ const Index = (props: Props) => {
         }))
     };
 
-    const addFavouritePaperOffer = (id:any) => {
+    const addFavouritePaperOffer = (id: any) => {
         setstate(old => ({ ...old, loading: true }))
 
-        
-        dispatch<any>(AddFavouritePaperOffer(id,(res, status) => {
+
+        dispatch<any>(AddFavouritePaperOffer(id, (res, status) => {
             if (res.status === 200) {
                 setTimeout(() => {
                     getAllPaperOffers();
                 }, 1000);
-               
+
             } else {
                 toastNotfication({ type: 'error', message: res?.Message ?? t("Something Went wrong") });
             }
             setstate(old => ({ ...old, loading: false }))
         }))
     };
-    
+
 
 
 
@@ -132,33 +132,45 @@ const Index = (props: Props) => {
         navigation.navigate("ProductDetails", { item: item })
     }
     const getSettings = () => {
-        dispatch<any>(GetSettingsHandler({ lookupIds: [2,5,6,10,11] }, "countries", (res, status) => {
+        dispatch<any>(GetSettingsHandler({ lookupIds: [2, 5, 6, 10, 11] }, "countries", (res, status) => {
         }))
     }
-   
+
     return (
         <Container showHint={false}>
             <Content style={styles.formCon} noPadding >
-            <View style={[layout.rowBox,styles.Header]}>
-                <Pressable onPress={()=>navigation.openDrawer()}>
-                <MoreIcon/>
-                </Pressable>
-            </View>
+                <View style={[layout.rowBox, styles.Header]}>
+                    <Pressable onPress={() => navigation.openDrawer()}>
+                        <MoreIcon />
+                    </Pressable>
+                </View>
 
                 <Text style={[layout.textAlign, styles.textsection1]}>{t("mainCategories")}</Text>
-                <FlatList
+                {/* <FlatList
                     data={state.categories}
                     horizontal
                     inverted
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => (
-                        <View
-                            style={styles.bodyCon}>
-                            <HomeCategory item={item} />
-                        </View>
+                    contentContainerStyle={styles.listContainer}
+                    renderItem={({ item, index }) => (
+                     <HomeCategory/>
+                           
+                       
                     )}
-                />
+                /> */}
+
+                <View style={[layout.rowBox, {marginHorizontal:PixelPerfect(8)}]}>
+                    <View style={{flex: 1,alignItems:"flex-end"}}>
+                        <HomeCategory item={state.categories[0]} />
+                    </View>
+                    <View style={{ flex: 1, alignItems:"center"}}>
+                        <HomeCategory item={state.categories[1]} />
+                    </View>
+                    <View style={{ flex: 1,alignItems:"flex-start"}}>
+                        <HomeCategory item={state.categories[2]} />
+                    </View>
+                </View>
                 {state.sections.map((section) => (
                     <View key={`section.id-${section.id}`}
                         style={{ marginTop: PixelPerfect(24) }}>
@@ -169,7 +181,7 @@ const Index = (props: Props) => {
                                 {section.title}
                             </Text>
                             <TouchableOpacity onPress={() => {
-                                 
+
                                 navigation.navigate("HomeMore", { sectionId: section.id })
                             }
                             }>
@@ -183,13 +195,13 @@ const Index = (props: Props) => {
                             inverted
                             keyExtractor={(item) => item.id}
                             showsHorizontalScrollIndicator={false}
-                            renderItem={({ item }) => 
-                            <Product item={item} 
-                            onPress={() =>
-                                handleSelectProduct(item)
-                            } onFavPress={()=>{
-                                addFavouritePaperOffer(item.id)
-                            }} />}
+                            renderItem={({ item }) =>
+                                <Product item={item}
+                                    onPress={() =>
+                                        handleSelectProduct(item)
+                                    } onFavPress={() => {
+                                        addFavouritePaperOffer(item.id)
+                                    }} />}
                         />
                     </View>
                 ))}
@@ -226,12 +238,23 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
         },
         bodyCon: {
             height: PixelPerfect(96),
-            width: (phoneWidth / 3.2),
+            width: "100%",
             alignItems: "center",
             justifyContent: "center",
+            alignSelf: "center",
+            alignContent: "center",
+            backgroundColor: "blue",
             marginTop: PixelPerfect(10)
         },
+        // itemSpacing: {
+        // marginHorizontal:10
+        // },
+        listContainer: {
+            width: "100%",
+            backgroundColor: "red",
+            //  marginHorizontal:PixelPerfect(8)
 
+        },
         viewCon: {
             justifyContent: "space-between",
             alignItems: "center",
@@ -259,9 +282,9 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             bottom: phoneHeight * 0.125,
             left: PixelPerfect(16)
         },
-        Header:{
-            alignItems:"center",
-            padding:PixelPerfect(8)
+        Header: {
+            alignItems: "center",
+            padding: PixelPerfect(8)
         }
 
     });

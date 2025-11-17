@@ -22,6 +22,8 @@ import HeaderWithText from '../../Components/Headers/HeaderWithText';
 import RatingScreen from '../../Components/PopUps/RatingScreen';
 import { number } from 'yup';
 import SignUpSuccess from '../../Components/PopUps/SignUpSuccess';
+import Stars from '../../Helper/Stars';
+import Space from '../../Helper/Space';
 type Props = {
     navigation: any
 }
@@ -48,7 +50,7 @@ const Index = (props: Props) => {
     const [requestId, setRequestId] = useState(0);
     const [viewRate, setViewRate] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
-    
+
     const [rejectReason, setRejectReason] = useState(null);
     const { rejectReasons, offerRequestStatus } = useSelector((state: RootState) => state.settings);
     const { isSeller } = useSelector((state: RootState) => state.auth);
@@ -182,7 +184,7 @@ const Index = (props: Props) => {
     };
 
 
-   
+
 
     return (
         <Container showHint={false}>
@@ -211,49 +213,55 @@ const Index = (props: Props) => {
                 setVisibleCancel(false)
             }} />
             <Content style={styles.formCon} noPadding >
-                <View style={styles.card}>
+                <View >
 
                     <View style={[layout.dirRow, styles.row]}>
                         <View style={styles.con1}>
+
+
+                            {/* userDetails */}
                             <View style={[layout.dirRow, { justifyContent: "space-between", alignItems: "center" }]}>
                                 <TouchableOpacity style={styles.statusBtn} onPress={() => { }}>
-                                    <Text style={[layout.textAlign,styles.statusText]}>{item.status}</Text>
+                                    <Text style={[layout.textAlign, styles.statusText]}>{item.status}</Text>
                                 </TouchableOpacity>
                                 <View style={[layout.rowBox, { alignItems: "center" }]}>
                                     <Image source={{ uri: item.imageUrl }} style={styles.avatar} />
                                     <View>
                                         <Text style={[layout.textAlign, styles.name]}>{item.userName}</Text>
-                                        <View style={[layout.rowBox]}>
-                                                 <RateIcone/>
-                                            <Text style={[layout.textAlign,styles.rateText]}>{"(" + item.userRateCount + ")"}</Text>
-                                        </View>
+                                        <Stars rating={item.userRateCount} />
                                     </View>
 
                                 </View>
                             </View>
+
+                            {/* address */}
                             <View style={[layout.rowBox, styles.actions, { alignItems: "center" }]}>
 
                                 <AddressIcon color={Colors.white} />
-
                                 <Text style={[layout.textAlign, styles.date1, { marginHorizontal: PixelPerfect(8) }]}>{item.branch}</Text>
                             </View>
-                            <Text style={[layout.textAlign,styles.product]}>{item.category + " " + item.paperName + " " + item.paperSize}</Text>
+                            <Text style={[layout.textAlign, styles.date, { marginHorizontal: PixelPerfect(8) }]}>{item.branch}</Text>
+
+                            <Space />
 
 
+                            {/* productDetails */}
+
+                            <Text style={[layout.textAlign, styles.product]}>{item.category + " " + item.paperName + " " + item.paperSize}</Text>
 
                             <View style={styles.actions}>
-                                <Text style={[layout.textAlign,styles.date]}>{t("date")}</Text>
-                                <Text style={[layout.textAlign,styles.date1]}>{date}</Text>
+                                <Text style={[layout.textAlign, styles.date]}>{t("date")}</Text>
+                                <Text style={[layout.textAlign, styles.date1]}>{date}</Text>
                             </View>
 
                             <View style={styles.actions}>
-                                <Text style={[layout.textAlign,styles.date]}>{t("quantity")}</Text>
-                                <Text style={[layout.textAlign,styles.date1]}>{item.quentity} {t("carton")} </Text>
+                                <Text style={[layout.textAlign, styles.date]}>{t("quantity")}</Text>
+                                <Text style={[layout.textAlign, styles.date1]}>{item.quentity} {t("carton")} </Text>
                             </View>
 
                             <View style={styles.actions}>
-                                <Text style={[layout.textAlign,styles.date]}>{t("total")}</Text>
-                                <Text style={[layout.textAlign,styles.total]}>{item.price} {t("pound")}</Text>
+                                <Text style={[layout.textAlign, styles.date]}>{t("total")}</Text>
+                                <Text style={[layout.textAlign, styles.total]}>{item.price} {t("pound")}</Text>
                             </View>
 
                             {state.requestStatus === 1 && <View style={[layout.dirRow, styles.actions]}>
@@ -261,7 +269,7 @@ const Index = (props: Props) => {
                                     <View style={[styles.icon]}>
                                         <Call2Icon />
                                     </View>
-                                    <Text style={[layout.textAlign,styles.acceptText]}>{t("contactNow")}</Text>
+                                    <Text style={[layout.textAlign, styles.acceptText]}>{t("contactNow")}</Text>
 
                                 </TouchableOpacity>
 
@@ -280,19 +288,19 @@ const Index = (props: Props) => {
                                     <Text style={styles.receiveText}>{t("delivered")}</Text>
 
                                 </TouchableOpacity>
-                                <Text style={[layout.textAlign,styles.deliveryNote]}>{t("deliveryNote")}</Text>
+                                <Text style={[layout.textAlign, styles.deliveryNote]}>{t("deliveryNote")}</Text>
 
                             </View>}
 
 
 
                             {state.requestStatus === 5 && <View style={[layout.dirRow, styles.actions]}>
-                                <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} 
-                                onPress={() => { CallNumber(item.phoneNumber) }} >
+                                <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]}
+                                    onPress={() => { CallNumber(item.phoneNumber) }} >
                                     <View style={[styles.icon]}>
                                         <CheckIcon1 />
                                     </View>
-                                    <Text style={[layout.textAlign,styles.acceptText]}>{t("accept")}</Text>
+                                    <Text style={[layout.textAlign, styles.acceptText]}>{t("accept")}</Text>
 
                                 </TouchableOpacity>
 
@@ -303,7 +311,7 @@ const Index = (props: Props) => {
                                     <View style={[styles.icon]}>
                                         <CancelIcon />
                                     </View>
-                                    <Text style={[layout.textAlign,styles.cancelText]}>{t("reject")}</Text>
+                                    <Text style={[layout.textAlign, styles.cancelText]}>{t("reject")}</Text>
 
                                 </TouchableOpacity>
                             </View>
@@ -315,7 +323,7 @@ const Index = (props: Props) => {
                                     <View style={[styles.icon]}>
                                         <CancelIcon />
                                     </View>
-                                    <Text style={[layout.textAlign,styles.cancelText]}>{t("cancelOrder")}</Text>
+                                    <Text style={[layout.textAlign, styles.cancelText]}>{t("cancelOrder")}</Text>
 
                                 </TouchableOpacity>
                             </View>
@@ -327,15 +335,18 @@ const Index = (props: Props) => {
                                     <View style={[styles.icon]}>
                                         <RateIcon />
                                     </View>
-                                    <Text style={[layout.textAlign,styles.acceptText]}>{t("rateSeller")}</Text>
+                                    <Text style={[layout.textAlign, styles.acceptText]}>{t("rateSeller")}</Text>
 
                                 </TouchableOpacity>
 
                             </View>}
+
+                            <Space />
+
                             {/* وصف المنتج */}
                             <View style={styles.actions}>
-                                <Text style={[layout.textAlign,styles.description]}>{t("productDescription")}</Text>
-                                <Text style={[layout.textAlign,styles.description1]}>{item.description}</Text>
+                                <Text style={[layout.textAlign, styles.description]}>{t("productDescription")}</Text>
+                                <Text style={[layout.textAlign, styles.description1]}>{item.description}</Text>
                             </View>
                             {/* <View >
 
@@ -354,15 +365,15 @@ const Index = (props: Props) => {
 
                             </View>
                              */}
-
+                          {/* cancleResons */}
                             {state.requestStatus === 2 && <View >
-                                <Text style={[layout.textAlign,styles.cancel]}>{item.rejectBy}</Text>
-                                <Text style={[layout.textAlign,styles.cancel]}>{t("cancelReason")}</Text>
+                                <Text style={[layout.textAlign, styles.cancel]}>{item.rejectBy}</Text>
+                                <Text style={[layout.textAlign, styles.cancel]}>{t("cancelReason")}</Text>
 
                             </View>
                             }
                             {(state.requestStatus === 2 || state.requestStatus === 4) &&
-                                <Text style={styles.date1}>{item.rejectReason}</Text>
+                                <Text style={[layout.textAlign,styles.date1]}>{item.rejectReason}</Text>
                             }
                             {/*التقييم*/}
                             {/* <Text style={styles.rate}>تقييمك للبائع : </Text>
@@ -382,6 +393,7 @@ const Index = (props: Props) => {
             <RatingScreen
                 visible={viewRate}
                 onClose={() => setViewRate(false)}
+                item={item}
                 onSubmit={(val) => {
                     addRate(val.rating, val.comment, item.userId, item.requestId)
                 }}
@@ -417,44 +429,32 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string, 
             paddingHorizontal: PixelPerfect(8),
 
         },
-        card: {
-            backgroundColor: theme.white,
 
-            flexDirection: "column",
-            ...Platform.select({
-                ios: {
-                    shadowColor: theme.black,
-                    shadowOpacity: 0.06,
-                    shadowOffset: { width: 0, height: 6 },
-                    shadowRadius: PixelPerfect(10),
-                },
-                android: {
-                    elevation: PixelPerfect(3),
-                },
-            }),
-        },
         icon: {
             paddingHorizontal: PixelPerfect(2)
         },
         time: { fontSize: PixelPerfect(14), textAlign: "left", color: theme.deactive, fontFamily: Fonts.medium },
         row: { alignItems: "center" },
         avatar: { width: PixelPerfect(32), height: PixelPerfect(32), borderRadius: PixelPerfect(20) },
-        name: { fontSize: PixelPerfect(18), fontFamily: Fonts.medium, color: theme.black, paddingHorizontal: PixelPerfect(4) },
+        name: { lineHeight: PixelPerfect(25), fontSize: PixelPerfect(18), fontFamily: Fonts.medium, color: theme.black, paddingHorizontal: PixelPerfect(4) },
         rating: { fontSize: PixelPerfect(12), color: theme.currenctText, paddingEnd: PixelPerfect(8), paddingTop: PixelPerfect(4) },
-        product: { fontSize: PixelPerfect(18), marginTop: PixelPerfect(8), color: theme.babyBlue, fontFamily: Fonts.bold },
-        date: { fontSize: PixelPerfect(16), color: theme.textColor, fontFamily: Fonts.regular },
+        product: { lineHeight: PixelPerfect(25), fontSize: PixelPerfect(18), color: theme.babyBlue, fontFamily: Fonts.bold },
+        date: { lineHeight: PixelPerfect(25), fontSize: PixelPerfect(16), color: theme.textColor, fontFamily: Fonts.regular },
         date1: {
+            lineHeight: PixelPerfect(25),
             fontSize: PixelPerfect(16), color: theme.black, fontFamily: Fonts.medium
             , textAlign: "right"
         },
 
-        description: { fontSize: PixelPerfect(18), color: theme.babyBlue, fontFamily: Fonts.medium },
+        description: { lineHeight: PixelPerfect(25), fontSize: PixelPerfect(18), color: theme.babyBlue, fontFamily: Fonts.medium },
         description1: {
+            lineHeight: PixelPerfect(25),
             fontSize: PixelPerfect(14), color: theme.black, fontFamily: Fonts.regular
             , textAlign: "right",
 
         },
         deliveryNote: {
+            lineHeight:PixelPerfect(20),
             fontSize: PixelPerfect(14), color: theme.black, fontFamily: Fonts.extraLight
             , textAlign: "right",
 
@@ -467,9 +467,10 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string, 
 
         note1: { fontSize: PixelPerfect(16), fontFamily: Fonts.regular, color: theme.black, marginTop: PixelPerfect(8) },
 
-        cancel: { fontSize: PixelPerfect(16), fontFamily: Fonts.medium, color: theme.red, marginTop: PixelPerfect(8) },
+        cancel: {lineHeight:PixelPerfect(20), fontSize: PixelPerfect(16), fontFamily: Fonts.medium, color: theme.red, marginTop: PixelPerfect(8) },
 
         total: {
+            lineHeight: PixelPerfect(25),
             fontSize: PixelPerfect(16), color: theme.textColor, fontFamily: Fonts.medium
             , textAlign: "right"
         },
@@ -480,6 +481,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string, 
         actions: { marginTop: PixelPerfect(8) },
         acceptBtn: {
             flex: 1,
+            height:PixelPerfect(50),
             backgroundColor: theme.babyBlue,
             borderRadius: PixelPerfect(6),
             paddingVertical: PixelPerfect(10),
@@ -488,6 +490,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string, 
         },
         receiveBtn: {
             flex: 1,
+            height:PixelPerfect(50),
             borderWidth: 1,
             borderColor: theme.babyBlue,
             borderRadius: PixelPerfect(6),
@@ -498,6 +501,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string, 
 
         cancelBtn: {
             flex: 1,
+            height:PixelPerfect(50),
             borderWidth: 1,
             borderColor: theme.red,
             borderRadius: PixelPerfect(6),
@@ -506,15 +510,10 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string, 
             justifyContent: "center"
         },
 
-        callBtn: {
-
-            marginLeft: PixelPerfect(6),
-            height: PixelPerfect(20),
-            width: PixelPerfect(20),
-
-        },
+    
 
         statusText: {
+            lineHeight:PixelPerfect(20),
             fontFamily: Fonts.medium,
             fontSize: PixelPerfect(14),
             color: theme.white
@@ -522,6 +521,8 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string, 
 
         statusBtn: {
             flex: 0.40,
+            height:PixelPerfect(30),
+            width:PixelPerfect(80),
             backgroundColor:
                 requestStatus === 0
                     ? theme.currenctText
@@ -540,6 +541,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string, 
         },
         rejectBtn: {
             flex: 1,
+            height:PixelPerfect(50),
             marginRight: PixelPerfect(5),
             borderWidth: PixelPerfect(1),
             borderColor: theme.youtube,
@@ -548,16 +550,19 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string, 
             alignItems: "center",
         },
         acceptText: {
+            lineHeight: PixelPerfect(25),
             fontSize: PixelPerfect(16),
             fontFamily: Fonts.bold,
             color: theme.white
         },
         receiveText: {
+            lineHeight: PixelPerfect(25),
             fontSize: PixelPerfect(16),
             fontFamily: Fonts.bold,
             color: theme.babyBlue
         },
         cancelText: {
+            lineHeight: PixelPerfect(25),
             fontSize: PixelPerfect(16),
             fontFamily: Fonts.bold,
             color: theme.red

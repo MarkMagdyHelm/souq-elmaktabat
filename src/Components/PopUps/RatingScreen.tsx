@@ -12,15 +12,18 @@ import {
   Modal
 } from 'react-native';
 
-import { EyeIcon, StareIcon, StareIconGray } from '../../Assets/Svg';
+import { CloseIcon } from '../../Assets/Svg';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import { ThemeContext } from '../../Constants/theming';
 import { PixelPerfect } from '../../Constants/styleConstants';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { t } from 'i18next';
+import Space from '../../Helper/Space';
+import { GetNamesByLang } from '../../Helper';
 
 type Props = {
   visible: boolean,
+  item:any,
   onSubmit?: (any: any) => void,
   onClose?: () => void
 }
@@ -28,6 +31,7 @@ type Props = {
 const RatingScreen = (props: Props) => {
   const {
     visible,
+    item,
     onSubmit,
     onClose,
 
@@ -43,33 +47,36 @@ const RatingScreen = (props: Props) => {
     onSubmit({ rating, comment });
     onClose();
   };
+  console.log("item");
+  console.log(item);
+  
 
   return (
 
     <Modal transparent visible={visible} animationType="fade">
-      <View style={styles.overlay}>
+      <View style={[styles.overlay]}>
 
         <View style={styles.container}>
           <View style={styles.container1}>
             {/* Header */}
-            <View style={styles.header}>
-              <Text style={styles.title}>{t("rateSellerTitle")}</Text>
+            <View style={[layout.rowBox, styles.header]}>
+              <Text style={[layout.textAlign, styles.title]}>{t("rateSellerTitle")}</Text>
               <TouchableOpacity onPress={() => onClose()}>
-                <Text style={styles.close}>✕</Text>
+                <CloseIcon />
               </TouchableOpacity>
             </View>
 
             <View style={[layout.rowBox, { marginVertical: PixelPerfect(16), alignItems: "center" }]}>
               <Image
-                source={{ uri: "https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg" }}
+                source={{ uri: item.imageUrl }}
                 style={[styles.imageRound]}
               />
               {/* Seller Name */}
-              <Text style={styles.sellerName}>مكتبة النور</Text>
+              <Text style={styles.sellerName}>{item.userName}</Text>
             </View>
           </View>
-          <View style={{ height: PixelPerfect(8), backgroundColor: theme.accordianBody, }}></View>
-          <View style={[styles.container1, { marginTop: PixelPerfect(10) }]}>
+          <Space />
+          <View style={[styles.container1]}>
             {/* Stars */}
             <Text style={styles.subtitle}>{t("rateSellerSubtitle")}</Text>
             <View style={styles.starsRow}>
@@ -116,7 +123,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
       flex: 1,
       backgroundColor: 'rgba(0,0,0,0.4)',
       justifyContent: "flex-end",
-      alignItems: 'center',
+      alignItems: 'flex-end',
 
     },
     container: {
@@ -132,34 +139,34 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
 
     },
     header: {
-      flexDirection: 'row-reverse',
+
       justifyContent: 'space-between',
       alignItems: 'center',
     },
-    title: { fontSize: PixelPerfect(18), fontFamily: Fonts.medium, color: theme.textColor },
-    close: { fontSize: PixelPerfect(24), color: theme.deactive },
-    sellerName: { textAlign: 'right', fontSize: PixelPerfect(18), fontFamily: Fonts.medium, color: theme.black, paddingHorizontal: PixelPerfect(4) },
-    subtitle: { textAlign: 'center', fontSize: PixelPerfect(18), fontFamily: Fonts.medium, marginVertical: PixelPerfect(8), color: theme.textColor },
+    title: { lineHeight: PixelPerfect(25), fontSize: PixelPerfect(18), fontFamily: Fonts.medium, color: theme.textColor },
+    sellerName: { lineHeight: PixelPerfect(25), textAlign: 'right', fontSize: PixelPerfect(18), fontFamily: Fonts.medium, color: theme.black, paddingHorizontal: PixelPerfect(4) },
+    subtitle: { lineHeight: PixelPerfect(25), textAlign: 'center', fontSize: PixelPerfect(18), fontFamily: Fonts.medium, marginVertical: PixelPerfect(8), color: theme.textColor },
     starsRow: { flexDirection: 'row', justifyContent: 'center', marginVertical: PixelPerfect(8) },
     star: { marginHorizontal: PixelPerfect(5) },
-    commentLabel: { textAlign: 'right', fontSize: PixelPerfect(18), fontFamily: Fonts.medium, color: theme.black, marginTop: PixelPerfect(32) },
+    commentLabel: { lineHeight: PixelPerfect(25), textAlign: 'right', fontSize: PixelPerfect(18), fontFamily: Fonts.medium, color: theme.black, marginTop: PixelPerfect(32) },
     textInput: {
       borderWidth: PixelPerfect(1),
       borderColor: theme.optionText,
       borderRadius: PixelPerfect(8),
       padding: PixelPerfect(10),
       marginTop: PixelPerfect(6),
-      minHeight: PixelPerfect(70),
+      minHeight: PixelPerfect(80),
       color: theme.deactive,
       fontFamily: Fonts.medium
     },
     saveButton: {
+      height: PixelPerfect(50),
       backgroundColor: theme.babyBlue,
       borderRadius: PixelPerfect(8),
       paddingVertical: PixelPerfect(16),
       marginVertical: PixelPerfect(16),
     },
-    saveText: { textAlign: 'center', fontSize: PixelPerfect(14), color: theme.white, fontFamily: Fonts.bold },
+    saveText: { lineHeight: PixelPerfect(25), textAlign: 'center', fontSize: PixelPerfect(20), color: theme.white, fontFamily: Fonts.bold },
     imageRound: {
       height: PixelPerfect(32),
       width: PixelPerfect(32),

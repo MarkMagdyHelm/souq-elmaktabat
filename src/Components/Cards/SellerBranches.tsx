@@ -27,7 +27,8 @@ const SellerBranches = (props: Props) => {
         }).start();
     }, [selected]);
     return (
-        <TouchableOpacity onPress={onPress} style={[layout.rowBox, { justifyContent: 'space-between', alignItems: 'center' }]}>
+        <TouchableOpacity onPress={onPress}
+         style={[layout.rowBox, styles.container]}>
             <View style={[styles.con]}>
                 <View style={[layout.rowBox, styles.bodyCon]}>
                     <View style={styles.iconCon}>
@@ -61,17 +62,19 @@ const SellerBranches = (props: Props) => {
 }
 export default SellerBranches
 const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,) => StyleSheet.create({
+    container:{ justifyContent: 'space-between',backgroundColor:theme.accordianBody, alignItems: 'center' },
     con: { paddingVertical: PixelPerfect(4) },
     iconCon: {
         width: PixelPerfect(24),
         height: PixelPerfect(24), alignItems: "center", justifyContent: "center"
     },
     bodyCon: { alignContent: "center", alignItems: "center" },
-    textTitle: { fontFamily: Fonts.regular, color: theme.black, fontSize: PixelPerfect(16), marginHorizontal: PixelPerfect(5) },
-    textBody: { fontFamily: Fonts.extraLight, color: theme.black, fontSize: PixelPerfect(14), marginVertical: PixelPerfect(8) },
+    textTitle: {     lineHeight:PixelPerfect(25),fontFamily: Fonts.regular, color: theme.black, fontSize: PixelPerfect(16), marginHorizontal: PixelPerfect(5) },
+    textBody: {    lineHeight:PixelPerfect(25), fontFamily: Fonts.extraLight, color: theme.black, fontSize: PixelPerfect(14), marginVertical: PixelPerfect(4) },
     radioOuter: {
         width: PixelPerfect(22),
         height: PixelPerfect(22),
+        lineHeight:PixelPerfect(25),
         borderRadius: PixelPerfect(22),
         borderWidth: 2,
         borderColor: theme.textColor,
