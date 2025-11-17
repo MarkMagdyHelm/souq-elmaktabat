@@ -141,7 +141,7 @@ const Index = (props: Props) => {
                         <Text style={[layout.textAlign,styles.priceText]}>{item.categoryName + " " + item.paperName + " " + item.width + t("GM") + " " + item.paperSize}</Text>
                         <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
                             <Text style={[layout.dirRow,styles.text1]}>{"(" + item.userRateCount + ")"}</Text>
-                            <View style={[layout.rowBox]}>
+                            <View style={[layout.rowBox,{alignItems:"center"}]}>
                             <RateIcone/>
                                 <Text style={[layout.textAlign,styles.text1]}>{"(" + item.userRateCount + ")"}</Text>
                             </View>
@@ -157,7 +157,7 @@ const Index = (props: Props) => {
                                     <Text style={[layout.textAlign,styles.sellerName]}>{item.userName}</Text>
 
                                 </View>
-                                <View style={[layout.rowBox]}>
+                                <View style={[layout.rowBox,{alignItems:"center"}]}>
                                 <RateIcone/>
                                     <Text style={[layout.textAlign,styles.text1]}>{"(" + item.userRateAverage + ")"}</Text>
                                 </View>
@@ -252,15 +252,15 @@ const Index = (props: Props) => {
                             <Text style={[layout.textAlign,styles.description]}>
                                 {item.description}
                             </Text>
-                            <View style={[layout.rowBox, { justifyContent: "space-between",marginVertical:PixelPerfect(4) }]}>
+                            <View style={[layout.rowBox, { justifyContent: "space-between",marginVertical:PixelPerfect(8) }]}>
                                 <Text style={[layout.textAlign,styles.note]}>{t("type")}</Text>
                                 <Text style={[layout.textAlign,styles.note1]}>{item.paperName}</Text>
                             </View>
-                            <View style={[layout.rowBox, { justifyContent: "space-between",marginVertical:PixelPerfect(4) }]}>
+                            <View style={[layout.rowBox, { justifyContent: "space-between",marginVertical:PixelPerfect(8) }]}>
                                 <Text style={[layout.textAlign,styles.note]}>{t("size")}</Text>
                                 <Text style={[layout.textAlign,styles.note1]}>{item.paperSize}</Text>
                             </View>
-                            <View style={[layout.rowBox, { justifyContent: "space-between",marginVertical:PixelPerfect(4) }]}>
+                            <View style={[layout.rowBox, { justifyContent: "space-between",marginVertical:PixelPerfect(8) }]}>
                                 <Text style={[layout.textAlign,styles.note]}>{t("weight")}</Text>
                                 <Text style={[layout.textAlign,styles.note1, { paddingBottom: PixelPerfect(8) }]}>{item.width + t("GM") + " "}</Text>
                             </View>
@@ -366,7 +366,8 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             color: theme.currenctText,
             fontSize: PixelPerfect(14),
             fontFamily: Fonts.medium,
-            textAlign: "right"
+            textAlign: "right",
+              marginTop:Platform.OS=="ios"?3:0
         },
 
 
@@ -383,11 +384,12 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
         },
         qtyText: { color: theme.white, fontSize: 18 },
         qtyValue: { fontSize: PixelPerfect(32), fontFamily: Fonts.medium },
-        note: { fontSize: PixelPerfect(16), fontFamily: Fonts.regular, color: theme.textColor, marginTop: PixelPerfect(8) },
-        note1: { textAlign: "right", fontSize: PixelPerfect(16), fontFamily: Fonts.regular, color: theme.black, marginTop: PixelPerfect(8) },
-        note2: { fontSize: PixelPerfect(10), fontFamily: Fonts.extraLight, color: theme.black, marginTop: PixelPerfect(2) },
-        totalPrice: { fontSize: PixelPerfect(16), fontFamily: Fonts.medium, color: theme.textColor, marginTop: PixelPerfect(8) },
-        totalPriceValue: { fontSize: PixelPerfect(14), fontFamily: Fonts.bold, color: theme.textColor, marginTop: PixelPerfect(8) },
+        note: { fontSize: PixelPerfect(16), fontFamily: Fonts.regular, color: theme.textColor,lineHeight: PixelPerfect(20)},
+        note1: { textAlign: "right", fontSize: PixelPerfect(16), fontFamily: Fonts.regular, color: theme.black, lineHeight: PixelPerfect(20) },
+        note2: { fontSize: PixelPerfect(10), fontFamily: Fonts.extraLight, color: theme.black, lineHeight: PixelPerfect(20)},
+        totalPrice: { fontSize: PixelPerfect(16), fontFamily: Fonts.medium, color: theme.textColor, },
+        totalPriceValue: {
+            fontSize: PixelPerfect(14), fontFamily: Fonts.bold, color: theme.textColor, },
 
         orderBtn: {
             backgroundColor: theme.babyBlue,
