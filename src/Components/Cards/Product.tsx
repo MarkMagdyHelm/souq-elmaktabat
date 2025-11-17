@@ -37,9 +37,9 @@ const Product = (props: Props) => {
                 <View style={[layout.dirRow, styles.priceRateRow]}>
                     <View style={[layout.rowBox,{alignItems:"center"}]}>
                        <RateIcone/>
-                        <Text style={[styles.text1]}>{"(" + item.userRateCount + ")"}</Text>
+                        <Text style={[layout.textAlign,styles.text1]}>{"(" + item.userRateCount + ")"}</Text>
                     </View>
-                    <Text style={[styles.price]}>{item.price + " " + t("pound")}</Text>
+                    <Text style={[layout.textAlign,styles.price]}>{item.price + " " + t("pound")}</Text>
                 </View>
                 <View style={[layout.rowBox, styles.con2]}>
                     <Image
@@ -47,8 +47,8 @@ const Product = (props: Props) => {
                         style={[styles.imageRound]}
                     />
                     <View style={{ marginHorizontal: PixelPerfect(4) }}>
-                        <Text style={[styles.seller]}>{item.userName}</Text>
-                        <Text style={[styles.text2]}>{item.countryName}</Text>
+                        <Text style={[layout.textAlign, styles.seller]}>{item.userName}</Text>
+                        <Text style={[layout.textAlign,styles.text2]}>{item.countryName}</Text>
                     </View>
                 </View>
                 <TouchableOpacity

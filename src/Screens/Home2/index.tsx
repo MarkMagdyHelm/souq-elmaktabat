@@ -149,6 +149,7 @@ const Index = (props: Props) => {
                 <FlatList
                     data={state.categories}
                     horizontal
+                    inverted
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
