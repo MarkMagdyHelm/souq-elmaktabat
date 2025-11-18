@@ -243,7 +243,7 @@ export default {
     "myOrders": "طلباتي",
     "all": "الكل",
     //Notification
-    "orders": "الطلبات",
+    "requests": "الطلبات",
     "notifications": "الاشعارات",
     //HomeMore
     "price": "السعر",

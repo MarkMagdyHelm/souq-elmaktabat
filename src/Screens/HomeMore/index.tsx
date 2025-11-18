@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Container } from '../../Components/containers/Containers'
 import { ThemeContext } from '../../Constants/theming'
@@ -21,6 +21,7 @@ import { t } from 'i18next';
 import PriceFilter from '../../Components/PopUps/PriceFilter';
 import HeaderWithText from '../../Components/Headers/HeaderWithText';
 import FilterMultiChecker from '../../Components/PopUps/FilterMultiChecker';
+import { AddFavouritePaperOffer } from '../../Apis/CommonApi'
 type Props = {
     navigation: any
 }
@@ -59,15 +60,18 @@ const Index = (props: Props) => {
         countries: null,
         paperSize: null,
         paperType: null,
+        requestsPage: 1,
+        hasMoreRequests: true,
+        loadingMore: false,
     });
     useEffect(() => {
 
         getPapers()
     }, [])
     useEffect(() => {
-      
-        getAllPaperOffers()
-    }, [state.countries, state.paperSize, state.paperType, state.minPrice, state.maxPrice])
+        setstate(old => ({ ...old, sections: [] }))
+        getAllPaperOffers(1)
+    }, [state.countries, state.paperSize, state.paperType,])
 
     const toast = useToast();
     const toastNotfication = (config: any) => {
@@ -81,6 +85,22 @@ const Index = (props: Props) => {
         } as any);
     }
 
+    const addFavouritePaperOffer = (id: any) => {
+        setstate(old => ({ ...old, loading: true }))
+
+
+        dispatch<any>(AddFavouritePaperOffer(id, (res, status) => {
+            if (res.status === 200) {
+                setTimeout(() => {
+                    getAllPaperOffers();
+                }, 1000);
+
+            } else {
+                toastNotfication({ type: 'error', message: res?.Message ?? t("Something Went wrong") });
+            }
+            setstate(old => ({ ...old, loading: false }))
+        }))
+    };
 
     const getPapers = () => {
         setstate(old => ({ ...old, loading: true }))
@@ -95,14 +115,34 @@ const Index = (props: Props) => {
         }))
     };
 
-    const getAllPaperOffers = () => {
-        setstate(old => ({ ...old, loading: true }));
-
+    const getAllPaperOffers = (page: number = 1, loadMore: boolean = false) => {
+        if (loadMore) {
+            setstate(old => ({ ...old, loadingMore: true }));
+        } else {
+            setstate(old => ({ ...old, loading: true }));
+        }
+    
         dispatch<any>(
-            GetAllPaperOffers({ countries: state.countries, paperSizeId: state.paperSize, paperId: state.paperType, minPrice: state.minPrice, maxPrice: state.maxPrice, page: "1", pageSize: "10" }, (res, status) => {
+            GetAllPaperOffers({
+                countries: state.countries, paperSizeId: state.paperSize,
+                paperId: state.paperType, minPrice: state.minPrice, maxPrice: state.maxPrice,
+                page: page.toString(), pageSize: "10"
+            }, (res, status) => {
                 if (res.status === 200) {
+                    console.log('===============itemsitemsitems=====================');
+                    console.log(res.data.items);
+                    console.log('====================================');
 
-                    setstate(old => ({ ...old, sections: res.data.items, loading: false }));
+
+                    const newItems = res.data.items;
+                    setstate(old => ({
+                        ...old,
+                        sections: loadMore ? [...old.sections, ...newItems] : newItems,
+                        requestsPage: page,
+                        hasMoreRequests: newItems.length === 10,
+                        loading: false,
+                        loadingMore: false,
+                      }));
                 } else {
                     toastNotfication({
                         type: "error",
@@ -114,7 +154,25 @@ const Index = (props: Props) => {
         );
     };
 
+    const handleLoadMore = () => {
+        if (!state.loadingMore && state.hasMoreRequests) {
+            getAllPaperOffers(state.requestsPage + 1, true);
+        }
+    };
 
+    const handleRefresh = () => {
+        setstate(old => ({ ...old, sections: [] }))
+        getAllPaperOffers(1);
+    };
+
+    const renderFooter = () => {
+        if (!state.loadingMore) return null;
+        return (
+            <View style={styles.footerLoader}>
+                <ActivityIndicator size="small" color={theme.babyBlue} />
+            </View>
+        );
+    };
 
     const renderItem = ({ item }) => (
         <TouchableOpacity style={styles.filterBtn} onPress={() => {
@@ -144,7 +202,7 @@ const Index = (props: Props) => {
         <Container showHint={false}>
             <HeaderWithText title={t("paperOffers")} />
             <View style={{ flex: 1, paddingHorizontal: PixelPerfect(16) }}>
-                {state.viewCountries && <FilterMultiChecker   
+                {state.viewCountries && <FilterMultiChecker
                     onCloseFn={(val) => {
 
                         if (Array.isArray(val)) {
@@ -153,7 +211,7 @@ const Index = (props: Props) => {
                                 viewCountries: false,
                                 countries: val.map(item => item.id)
                             }));
-                        }else{
+                        } else {
                             setstate(old => ({
                                 ...old,
                                 viewCountries: false,
@@ -171,14 +229,14 @@ const Index = (props: Props) => {
                 />}
                 {state.viewPaperType && <FilterMultiChecker
                     onCloseFn={(val) => {
-                        
+
                         if (Array.isArray(val)) {
                             setstate(old => ({
                                 ...old,
                                 viewPaperType: false,
                                 paperType: val.map(item => item.id)
                             }));
-                        }else{
+                        } else {
                             setstate(old => ({
                                 ...old,
                                 viewPaperType: false,
@@ -202,13 +260,13 @@ const Index = (props: Props) => {
                                 viewPaperSize: false,
                                 paperSize: val.map(item => item.id)
                             }));
-                        }else{
+                        } else {
                             setstate(old => ({
                                 ...old,
                                 viewPaperSize: false,
                             }));
                         }
-                        
+
                     }}
                     title={t("choosePaperSize")}
                     currentFilter={""}
@@ -225,11 +283,12 @@ const Index = (props: Props) => {
                     else {
                         setstate(old => ({ ...old, minPrice: null, maxPrice: null, viewPrice: false }))
                     }
-                    getAllPaperOffers()
+                    setstate(old => ({ ...old, sections: [] }))
+                    getAllPaperOffers(1)
                 }} />
 
                 <SearchBar onPress={() => {
-                   
+
                     setstate(old => ({ ...old, viewFilter: !state.viewFilter }))
                 }} />
                 {state.viewFilter &&
@@ -242,8 +301,8 @@ const Index = (props: Props) => {
                         contentContainerStyle={styles.container}
 
                     />
-                    
-                    }
+
+                }
 
 
                 <FlatList
@@ -252,13 +311,20 @@ const Index = (props: Props) => {
                     showsVerticalScrollIndicator={false}
                     renderItem={({ item }) => <Product item={item} onPress={() => {
                         handleSelectProduct(item)
-                    }} onFavPress={()=>{
-
+                    }} onFavPress={() => {
+                        addFavouritePaperOffer(item.id)
                     }} />}
                     numColumns={2}
-                    style={{  height:"100%"}}
-                
-                    columnWrapperStyle={{ marginHorizontal: PixelPerfect(16), marginVertical: PixelPerfect(4), justifyContent: 'space-between' }} // optional spacing
+                    style={{ height: "100%" }}
+                    columnWrapperStyle={{
+                        marginHorizontal: PixelPerfect(16),
+                        marginVertical: PixelPerfect(4), justifyContent: 'space-between'
+                    }}
+                    onEndReached={handleLoadMore}
+                    onEndReachedThreshold={0.5}
+                    ListFooterComponent={renderFooter}
+                    refreshing={state.loading}
+                    onRefresh={handleRefresh}
                 />
 
             </View>
@@ -305,11 +371,11 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
         },
 
         container: {
-            justifyContent:"flex-end",
-            flex:1,
-            height:PixelPerfect(35),
-            marginBottom:PixelPerfect(8),
-          
+            justifyContent: "flex-end",
+            flex: 1,
+            height: PixelPerfect(35),
+            marginBottom: PixelPerfect(8),
+
         },
         filterBtn: {
             height: PixelPerfect(33),
@@ -325,5 +391,9 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             fontSize: PixelPerfect(14),
             fontFamily: Fonts.regular,
             color: "#000",
+        },
+        footerLoader: {
+            paddingVertical: PixelPerfect(20),
+            alignItems: 'center',
         },
     });

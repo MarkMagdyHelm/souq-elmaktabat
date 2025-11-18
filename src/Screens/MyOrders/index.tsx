@@ -1,4 +1,4 @@
-import { FlatList, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import { ThemeContext } from '../../Constants/theming';
@@ -43,6 +43,9 @@ const Index = (props: Props) => {
     const [state, setState] = useState({
         loading: false,
         requests: [],
+        requestsPage: 1,
+        hasMoreRequests: true,
+        loadingMore: false,
     });
 
     const [selectedTab, setSelectedTab] = useState(0);
@@ -78,31 +81,61 @@ const Index = (props: Props) => {
 
 
 
-    const getRequests = () => {
-        setState((old) => ({ ...old, loading: true }));
-
+    const getRequests = (page: number = 1, loadMore: boolean = false) => {
+        if (loadMore) {
+            setState(old => ({ ...old, loadingMore: true }));
+        } else {
+            setState(old => ({ ...old, loading: true }));
+        }
+    
         dispatch<any>(
-            GetRequests({ statusId: selectedTab == 0 ? null : selectedTab, page: "1", pageSize: "10" }, (res, status) => {
-                console.log('====================================');
-                console.log(status,res);
-                console.log('====================================');
-                if (res.status === 200) {
-                    setState((old) => ({
-                        ...old,
-                        requests: res.data.items ?? [],
-                        loading: false,
-                    }));
-                } else {
-                    toastNotfication({
-                        type: "error",
-                        message: res?.Message ?? t("Something Went wrong"),
-                    });
-                    setState((old) => ({ ...old, loading: false }));
-                }
-            })
+            
+          GetRequests({ statusId: selectedTab == 0 ? null : selectedTab, 
+             page: page.toString(), pageSize: "10" }, (res, status) => {
+            if (res.status === 200) {
+              console.log('===============requests=====================');
+              console.log(res.data.items);
+              console.log('====================================');
+    
+              const newItems = res.data.items;
+              setState(old => ({
+                ...old,
+                requests: loadMore ? [...old.requests, ...newItems] : newItems,
+                requestsPage: page,
+                hasMoreRequests: newItems.length === 10,
+                loading: false,
+                loadingMore: false,
+              }));
+            } else {
+              toastNotfication({
+                type: "error",
+                message: res?.Message ?? t("Something Went wrong"),
+              });
+              setState(old => ({ ...old, loading: false, loadingMore: false }));
+            }
+          })
         );
-    };
-
+      };
+    
+      const handleLoadMore = () => {
+          if (!state.loadingMore && state.hasMoreRequests) {
+            getRequests(state.requestsPage + 1, true);
+          } 
+      };
+    
+      const handleRefresh = () => {
+        setState(old => ({ ...old, requests: [] }))
+          getRequests(1);
+      };
+    
+      const renderFooter = () => {
+        if (!state.loadingMore) return null;
+        return (
+          <View style={styles.footerLoader}>
+            <ActivityIndicator size="small" color={theme.babyBlue} />
+          </View>
+        );
+      };
 
     const onDetailsClick = (item: any) => {
         navigation.navigate("OrderDetails", { item });
@@ -179,11 +212,18 @@ const Index = (props: Props) => {
                         paddingHorizontal: PixelPerfect(16),
 
                     }}
+                    onEndReached={handleLoadMore}
+                    onEndReachedThreshold={0.5}
+                    ListFooterComponent={renderFooter}
+                    refreshing={state.loading}
+                    onRefresh={handleRefresh}
                     style={{
                         height: "100%",
                     }}
 
                 />
+
+
             </View>
 
             <TabBar />
@@ -211,4 +251,8 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string) 
             justifyContent: "center",
         },
         tabText: { textAlign: "center", color: theme.black, fontSize: PixelPerfect(16), fontFamily: Fonts.medium },
+        footerLoader: {
+            paddingVertical: PixelPerfect(20),
+            alignItems: 'center',
+          },
     });

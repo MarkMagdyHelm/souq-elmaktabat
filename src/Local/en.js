@@ -242,7 +242,7 @@ export default {
     "myOrders": "My Orders",
     "all": "All",
     //Notification
-    "orders": "Orders",
+    "requests": "Orders",
     "notifications": "Notifications",
     //HomeMore
     "price": "Price",

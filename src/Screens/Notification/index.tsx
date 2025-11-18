@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import { ThemeContext } from '../../Constants/theming';
@@ -14,6 +14,7 @@ import { GetAllNotificationsHandler } from '../../Apis/Notification';
 import PollLoader from '../../Components/SkeltonLoaders/PollLoader';
 import OrderCard from '../../Components/Cards/OrderCard';
 import { GetRequests } from '../../Apis/Request';
+import MyOrderItem from '../../Components/Cards/MyOrderItem';
 
 
 type Props = {
@@ -27,35 +28,19 @@ const Index = (props: Props) => {
   const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
   const styles = useStyles(Fonts, theme, dark, dir);
   const dispatch = useDispatch();
-  // const ordersData = [
-  //   {
-  //     id: "1",
-  //     name: "احمد محمد",
-  //     rating: "5",
-  //     product: "ورق مرام 80جم",
-  //     quantity: "10 كرتونه",
-  //     price: "1500",
-  //     time: "منذ 15 دقيقة",
-  //     avatar: "https://i.pravatar.cc/100",
-  //   },
-  //   {
-  //     id: "2",
-  //     name: "احمد محمد",
-  //     rating: "5",
-  //     product: "ورق مرام 80جم",
-  //     quantity: "10 كرتونه",
-  //     price: "1500",
-  //     time: "منذ 15 دقيقة",
-  //     avatar: "https://via.placeholder.com/100",
-  //   },
-  // ];
 
   const [state, setstate] = useState({
     loading: false,
-    items: [{ flag: false }, { flag: false }, { flag: false }, { flag: false }, , { flag: false }],
-    requests: []
+    items: [],
+    requests: [],
+    // Pagination states
+    requestsPage: 1,
+    hasMoreRequests: true,
+    loadingMore: false,
   });
+  const [tab, setTab] = useState("notifications");
   const toast = useToast();
+
   const toastNotfication = (config: any) => {
     toast.hideAll();
     toast.show(config.message, {
@@ -66,44 +51,67 @@ const Index = (props: Props) => {
       placement: 'top',
     } as any);
   }
+
   useEffect(() => {
-    getNotifications()
-    getRequests()
+    getNotifications();
   }, []);
 
   const getNotifications = () => {
     setstate(old => ({ ...old, loading: true }))
-    dispatch<any>(GetAllNotificationsHandler({}, (res, status) => {
-      console.log('=============GetAllNotificationsHandler=======================');
-      console.log("GetAllNotificationsHandler", res);
-      console.log('====================================');
-      if (res.status == 200) {
-        setstate(old => ({ ...old, items: res.data }));
-      } else {
-        toastNotfication({ type: 'error', message: res?.Message ?? t("Something Went wrong") });
-      }
-      setstate(old => ({ ...old, loading: false }));
-    }))
+    dispatch<any>(GetAllNotificationsHandler({},
+      (res, status) => {
+        console.log('=============GetAllNotificationsHandler=======================');
+        console.log("GetAllNotificationsHandler", res);
+        console.log('====================================');
+        if (res.status == 200) {
+          setstate(old => ({ ...old, items: res.data }));
+        } else { toastNotfication({ type: 'error', message: res?.Message ?? t("Something Went wrong") }); }
+        setstate(old => ({ ...old, loading: false }));
+      }))
   };
-  const getRequests = () => {
-    setstate(old => ({ ...old, loading: true }));
+  const getRequests = (page: number = 1, loadMore: boolean = false) => {
+    if (loadMore) {
+      setstate(old => ({ ...old, loadingMore: true }));
+    } else {
+      setstate(old => ({ ...old, loading: true }));
+    }
 
     dispatch<any>(
-      GetRequests({ page: "1", pageSize: "10" }, (res, status) => {
+      GetRequests({ page: page.toString(), pageSize: "10" }, (res, status) => {
         if (res.status === 200) {
           console.log('===============requests=====================');
           console.log(res.data.items);
           console.log('====================================');
-          setstate(old => ({ ...old, requests: res.data.items, loading: false }));
+
+          const newItems = res.data.items;
+          setstate(old => ({
+            ...old,
+            requests: loadMore ? [...old.requests, ...newItems] : newItems,
+            requestsPage: page,
+            hasMoreRequests: newItems.length === 10,
+            loading: false,
+            loadingMore: false,
+          }));
         } else {
           toastNotfication({
             type: "error",
             message: res?.Message ?? t("Something Went wrong"),
           });
-          setstate(old => ({ ...old, loading: false }));
+          setstate(old => ({ ...old, loading: false, loadingMore: false }));
         }
       })
     );
+  };
+
+  const handleLoadMore = () => {
+    if (!state.loadingMore && state.hasMoreRequests) {
+      getRequests(state.requestsPage + 1, true);
+    }
+  };
+
+  const handleRefresh = () => {
+    setstate(old => ({ ...old, requests: [] }))
+    getRequests(1);
   };
 
   const handlePress = (item) => {
@@ -117,63 +125,76 @@ const Index = (props: Props) => {
       case 2:
         navigation.navigate("Polls")
         break;
-
       default:
         break;
     }
   }
-  const [tab, setTab] = useState("requests");
-  const handleAccept = (item) => {
-    console.log("قبول الطلب:", item);
-  };
 
-  const handleReject = (item) => {
-    console.log("رفض الطلب:", item);
-  };
   const handleSelectRequest = (item: any) => {
     navigation.navigate("OrderDetails", { item: item })
   };
 
+  const renderFooter = () => {
+    if (!state.loadingMore) return null;
+    return (
+      <View style={styles.footerLoader}>
+        <ActivityIndicator size="small" color={theme.babyBlue} />
+      </View>
+    );
+  };
+
   return (
     <Container showHint={false}>
-      <HeaderWithText title={t("")} />
+      <HeaderWithText title={t("notifications")} />
       <View style={styles.bodyCon}>
 
         <View style={styles.container}>
           {/* Tabs */}
           <View style={styles.tabs}>
-            <TouchableOpacity
-              style={[styles.tab, tab === "orders" && styles.activeTab]}
-              onPress={() => setTab("orders")}
+            <Pressable
+              style={[styles.tab, tab === "requests" && styles.activeTab]}
+              onPress={() => {
+                setTab("requests");
+                if (state.requests.length === 0) {
+                  getRequests(1);
+                }
+              }}
             >
-              <Text style={[styles.tabText, tab === "orders" && styles.activeTabText]}>
-                {t("orders")}
+              <Text style={[styles.tabText, tab === "requests" && styles.activeTabText]}>
+                {t("requests")}
               </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Pressable>
+            <Pressable
               style={[styles.tab, tab === "notifications" && styles.activeTab]}
-              onPress={() => setTab("notifications")}
+              onPress={() => {
+                setTab("notifications");
+                if (state.items.length === 0) {
+                  getNotifications();
+                }
+              }}
             >
               <Text
                 style={[styles.tabText, tab === "notifications" && styles.activeTabText]}
               >
                 {t("notifications")}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
 
         {tab === "requests" ? (
           <FlatList
             data={state.requests}
-
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <OrderCard item={item} onAccept={handleAccept} onReject={handleReject} onPress={() =>
-                handleSelectRequest(item)
-              } />
+              <MyOrderItem item={item} onDetailsClick={() => handleSelectRequest(item)} />
             )}
             contentContainerStyle={{ paddingBottom: PixelPerfect(16), paddingHorizontal: PixelPerfect(16) }}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={renderFooter}
+            refreshing={state.loading}
+            onRefresh={handleRefresh}
           />
         ) : (
           <FlatList
@@ -210,19 +231,20 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
       flex: 0.8,
       backgroundColor: theme.mainColor,
     },
-
     separator: {
       height: PixelPerfect(1),
       backgroundColor: theme.border
     },
-
-
     container: {
-      height: PixelPerfect(40), backgroundColor: theme.white, paddingHorizontal: PixelPerfect(8), marginBottom: PixelPerfect(16)
-
-
+      height: PixelPerfect(40),
+      backgroundColor: theme.white,
+      paddingHorizontal: PixelPerfect(8),
+      marginBottom: PixelPerfect(16)
     },
-    tabs: { flexDirection: "row", height: PixelPerfect(40) },
+    tabs: {
+      flexDirection: "row",
+      height: PixelPerfect(40)
+    },
     tab: {
       height: PixelPerfect(50),
       marginHorizontal: PixelPerfect(4),
@@ -232,7 +254,21 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
       backgroundColor: theme.gray2,
       justifyContent: "center"
     },
-    activeTab: { backgroundColor: theme.babyBlue },
-    tabText: { fontSize: PixelPerfect(18), color: theme.black, fontFamily: Fonts.medium },
-    activeTabText: { color: theme.white, fontFamily: Fonts.medium, fontSize: PixelPerfect(18) },
+    activeTab: {
+      backgroundColor: theme.babyBlue
+    },
+    tabText: {
+      fontSize: PixelPerfect(18),
+      color: theme.black,
+      fontFamily: Fonts.medium
+    },
+    activeTabText: {
+      color: theme.white,
+      fontFamily: Fonts.medium,
+      fontSize: PixelPerfect(18)
+    },
+    footerLoader: {
+      paddingVertical: PixelPerfect(20),
+      alignItems: 'center',
+    },
   })
