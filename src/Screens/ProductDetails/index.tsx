@@ -27,6 +27,7 @@ import HeaderWithText from '../../Components/Headers/HeaderWithText';
 import { RateIcone } from '../../Assets/Svg';
 import Stars from '../../Helper/Stars';
 import Space from '../../Helper/Space';
+import { AddFavouritePaperOffer } from '../../Apis/CommonApi';
 
 type Props = {
     navigation: any
@@ -93,6 +94,18 @@ const Index = (props: Props) => {
         });
     };
 
+    const addFavouritePaperOffer = (id: any) => {
+        setState(old => ({ ...old, loading: true }))
+
+        dispatch<any>(AddFavouritePaperOffer(id, (res, status) => {
+            if (res.status === 200) {
+            
+            } else {
+                toastNotfication({ type: 'error', message: res?.Message ?? t("Something Went wrong") });
+            }
+            setState(old => ({ ...old, loading: false }))
+        }))
+    };
 
 
 
@@ -133,20 +146,27 @@ const Index = (props: Props) => {
     const [date, time] = fullDate.split("T");
     return (
         <Container showHint={false}>
-            <HeaderWithText title={t("productDetailsTitle")} />
+            <HeaderWithText title={t("productDetailsTitle")}
+             isShareVisible={true} onFavClick={()=>
+            {
+                console.log(item);    
+                 addFavouritePaperOffer(item.id) 
+            }} onShareClick={()=> console.log() }/>
             <Content style={styles.formCon} noPadding >
                 <View >
                     <Image source={item.paperPhoto} style={styles.productImage} resizeMode="contain" />
 
-                    <View style={styles.info}>
-                        <Text style={[layout.textAlign, styles.title]}>{item.categoryName + " " + item.paperName + " " + item.width + t("GM") + " " + item.paperSize}</Text>
-                        <Text style={[layout.textAlign, styles.priceText]}>{t("carton_price") + item.price + t("pound")}</Text>
-                        <View style={[layout.rowBox, { marginVertical: PixelPerfect(2) }]}>
-                            <Stars rating={item.userRateCount} />
+                    <View>
+                        <View style={styles.info}>
+                            <Text style={[layout.textAlign, styles.title]}>{item.categoryName + " " + item.paperName + " " + item.width + t("GM") + " " + item.paperSize}</Text>
+                            <Text style={[layout.textAlign, styles.priceText]}>{t("carton_price") + item.price + t("pound")}</Text>
+                            <View style={[layout.rowBox, { marginVertical: PixelPerfect(2) }]}>
+                                <Stars rating={item.userRateCount} />
+                            </View>
                         </View>
                         <Space />
                         {/* seller Info  */}
-                        <View>
+                        <View style={styles.info}>
                             <Text style={[layout.textAlign, styles.sellerTitle]}>{t("sellerInfo")}</Text>
                             <View style={styles.sellerRow}>
                                 <Image
@@ -161,7 +181,7 @@ const Index = (props: Props) => {
                         </View>
                         <Space />
                         {/* "select branch" */}
-                        <View > 
+                        <View style={styles.info}>
                             <Text style={[layout.textAlign, styles.sellerTitle]}>{t("select_branch")}</Text>
 
                             <FlatList
@@ -169,7 +189,7 @@ const Index = (props: Props) => {
                                 scrollEnabled={false}
                                 //   onRefresh={() =>{}}
                                 //   refreshing={isFetching}
-                                style={styles.list}
+                              
                                 data={item.paperOffersBranches}
                                 keyExtractor={(items, index: number) => index.toString()}
                                 // ItemSeparatorComponent={() => (state.loading ? null : <View style={styles.separator} />)}
@@ -182,10 +202,10 @@ const Index = (props: Props) => {
                                         </>
                                     );
                                 }} />
-                     </View>
-                     <Space />
+                        </View>
+                        <Space />
                         {/* تحديد الكمية */}
-                        <View>
+                        <View style={styles.info}>
 
 
                             <View style={[layout.rowBox, { justifyContent: "space-between", alignItems: "center" }]}>
@@ -247,7 +267,7 @@ const Index = (props: Props) => {
                         </View>
                         <Space />
                         {/* وصف المنتج */}
-                        <View >
+                        <View style={styles.info}>
                             <Text style={[layout.textAlign, styles.sellerTitle]}>{t("productDescription")}</Text>
                             <Text style={[layout.textAlign, styles.description]}>
                                 {item.description}
@@ -283,33 +303,8 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             flex: 1,
             backgroundColor: theme.mainColor,
 
-            paddingHorizontal: PixelPerfect(8),
+        },
 
-        },
-        container: {
-            flex: 1,
-            padding: PixelPerfect(12),
-        },
-        card: {
-            backgroundColor: theme.white,
-            borderRadius: PixelPerfect(14),
-            padding: PixelPerfect(12),
-            flexDirection: "column",
-            ...Platform.select({
-                ios: {
-                    shadowColor: theme.black,
-                    shadowOpacity: 0.06,
-                    shadowOffset: { width: 0, height: 6 },
-                    shadowRadius: PixelPerfect(10),
-                },
-                android: {
-                    elevation: PixelPerfect(3),
-                },
-            }),
-        },
-        list: {
-            marginHorizontal: PixelPerfect(4)
-        },
         productImage: {
             width: "100%",
             height: PixelPerfect(187),
@@ -318,7 +313,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             marginBottom: PixelPerfect(10),
         },
         info: {
-            paddingHorizontal: PixelPerfect(4),
+            paddingHorizontal: PixelPerfect(16),
         },
         title: {
             lineHeight: PixelPerfect(25),
@@ -374,41 +369,44 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             marginTop: Platform.OS == "ios" ? 3 : 0
         },
 
-        quantityRow: { alignItems: "center",alignContent:"center",alignSelf:"center" },
+        quantityRow: { alignItems: "center", alignContent: "center", alignSelf: "center" },
         qtyBtn: {
-     
+
             width: PixelPerfect(40),
             height: PixelPerfect(40),
             backgroundColor: theme.textColor,
             borderRadius: PixelPerfect(8),
-            marginHorizontal: PixelPerfect(10),
             justifyContent: "center",
             alignItems: "center"
         },
         qtyText: { color: theme.white, fontSize: 18 },
-        qtyValue: {lineHeight:PixelPerfect(50),
-           
-             fontSize: PixelPerfect(32), fontFamily: Fonts.medium },
+        qtyValue: {
+            lineHeight: PixelPerfect(50),
+            marginHorizontal: PixelPerfect(20),
+            fontSize: PixelPerfect(32), fontFamily: Fonts.medium
+        },
         note: { fontSize: PixelPerfect(16), fontFamily: Fonts.regular, color: theme.textColor, lineHeight: PixelPerfect(20) },
         note1: { textAlign: "right", fontSize: PixelPerfect(16), fontFamily: Fonts.regular, color: theme.black, lineHeight: PixelPerfect(20) },
         note2: { fontSize: PixelPerfect(10), fontFamily: Fonts.extraLight, color: theme.black, lineHeight: PixelPerfect(20) },
-        totalPrice: { fontSize: PixelPerfect(16), fontFamily: Fonts.medium, color: theme.textColor, lineHeight: PixelPerfect(25)  },
+        totalPrice: { fontSize: PixelPerfect(16), fontFamily: Fonts.medium, color: theme.textColor, lineHeight: PixelPerfect(25) },
         totalPriceValue: {
-            fontSize: PixelPerfect(14), fontFamily: Fonts.bold, color: theme.textColor, lineHeight: PixelPerfect(20) 
+            fontSize: PixelPerfect(14), fontFamily: Fonts.bold, color: theme.textColor, lineHeight: PixelPerfect(20)
         },
 
         orderBtn: {
-         height:PixelPerfect(50),
+            height: PixelPerfect(50),
             backgroundColor: theme.babyBlue,
             borderRadius: PixelPerfect(8),
             padding: PixelPerfect(12),
             marginVertical: PixelPerfect(8),
             alignItems: "center",
         },
-        orderBtnText: {     lineHeight: PixelPerfect(25) , color: theme.white, fontSize: PixelPerfect(16), fontFamily: Fonts.bold },
-        description: {lineHeight: PixelPerfect(20) , 
+        orderBtnText: { lineHeight: PixelPerfect(25), color: theme.white, fontSize: PixelPerfect(16), fontFamily: Fonts.bold },
+        description: {
+            lineHeight: PixelPerfect(20),
             textAlign: "right", fontSize: PixelPerfect(14),
-             color: theme.black, fontFamily: Fonts.regular
-             , marginBottom: PixelPerfect(8) },
+            color: theme.black, fontFamily: Fonts.regular
+            , marginBottom: PixelPerfect(8)
+        },
 
     });

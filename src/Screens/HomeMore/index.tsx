@@ -315,10 +315,11 @@ const Index = (props: Props) => {
                         addFavouritePaperOffer(item.id)
                     }} />}
                     numColumns={2}
-                    style={{ height: "100%" }}
+                    style={{ height: "100%",width:"100%"}}
                     columnWrapperStyle={{
                         marginHorizontal: PixelPerfect(16),
-                        marginVertical: PixelPerfect(4), justifyContent: 'space-between'
+                        marginVertical: PixelPerfect(4),
+                         justifyContent: 'space-between'
                     }}
                     onEndReached={handleLoadMore}
                     onEndReachedThreshold={0.5}

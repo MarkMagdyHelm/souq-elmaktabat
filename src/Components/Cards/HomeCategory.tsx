@@ -7,18 +7,22 @@ import { GetNamesByLang } from '../../Helper';
 
 type Props = {
     item: any
+    onPress:any
 }
 
 const HomeCategory = (props: Props) => {
     const {
-        item
+        item,
+        onPress
     } = props;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
  
     return (
         <Pressable   
-            onPress={() =>{}}
+            onPress={() =>{
+                onPress()
+            }}
         >
             <View
                 style={[styles.con]}

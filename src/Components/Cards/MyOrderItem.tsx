@@ -5,6 +5,7 @@ import { IFont, ITheme } from '../../Constants/interfaces';
 import { Colors, PixelPerfect } from '../../Constants/styleConstants';
 import { Call2Icon } from '../../Assets/Svg';
 import { t } from 'i18next';
+import Stars from '../../Helper/Stars';
 type Props = {
     item: any, onDetailsClick: any
 }
@@ -34,26 +35,27 @@ const MyOrderItem = (props: Props) => {
                         <View style={[layout.rowBox, { alignItems: "center" }]}>
                             <Image source={{ uri: item.imageUrl }} style={styles.avatar} />
                             <View style={[layout.flexStart, { paddingHorizontal: PixelPerfect(8) }]}>
-                                <Text style={[layout.textAlign,styles.name]}>{item.userName}</Text>
-                                <Text style={[layout.textAlign,styles.rating]}>⭐ {item.userRateAverage}</Text>
+                                <Text style={[layout.textAlign, styles.name]}>{item.userName}</Text>
+                                <Stars rating={item.userRateAverage} />
+
                             </View>
                         </View>
                     </View>
 
 
                     <View style={[layout.rowBox, styles.actions]}>
-                        <Text style={[layout.textAlign,styles.product]}>{item.category + " " + item.paperName + " " + item.paperSize}</Text>
+                        <Text style={[layout.textAlign, styles.product]}>{item.category + " " + item.paperName + " " + item.paperSize}</Text>
 
 
                     </View>
 
-                    <Text style={[layout.textAlign,,styles.quantity]}>{t("date")} {date}  </Text>
+                    <Text style={[layout.textAlign, , styles.quantity]}>{t("date")} {date}  </Text>
 
 
 
                     <View style={[layout.rowBox, styles.actions]}>
-                        <Text style={[layout.textAlign,styles.quantity]}>{t("quantity")} {item.quentity}</Text>
-                        <Text style={[layout.textAlign,styles.price]}>{item.price} {t("pound")}</Text>
+                        <Text style={[layout.textAlign, styles.quantity]}>{t("quantity")} {item.quentity}</Text>
+                        <Text style={[layout.textAlign, styles.price]}>{item.price} {t("pound")}</Text>
                     </View>
 
                 </View>
@@ -98,6 +100,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string, 
         actions: { justifyContent: "space-between", marginTop: PixelPerfect(8) },
         acceptBtn: {
             flex: 1,
+            height: PixelPerfect(45),
             marginLeft: PixelPerfect(5),
             backgroundColor: theme.babyBlue,
             borderRadius: PixelPerfect(6),
@@ -116,7 +119,8 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string, 
         },
 
         statusBtn: {
-            flex: 0.40,
+            flex: 0.35,
+            height: PixelPerfect(30),
             backgroundColor:
                 status === "قيد الانتظار"
                     ? theme.currenctText
@@ -142,11 +146,13 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string, 
             alignItems: "center",
         },
         acceptText: {
+            lineHeight: PixelPerfect(22),
             fontFamily: Fonts.bold,
             fontSize: PixelPerfect(16),
             color: theme.white
         },
         statusText: {
+            lineHeight: PixelPerfect(20),
             fontFamily: Fonts.medium,
             fontSize: PixelPerfect(14),
             color: theme.white

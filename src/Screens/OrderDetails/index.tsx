@@ -215,140 +215,140 @@ const Index = (props: Props) => {
             <Content style={styles.formCon} noPadding >
                 <View >
 
-                    <View style={[layout.dirRow, styles.row]}>
-                        <View style={styles.con1}>
 
-
-                            {/* userDetails */}
-                            <View style={[layout.dirRow, { justifyContent: "space-between", alignItems: "center" }]}>
-                                <TouchableOpacity style={styles.statusBtn} onPress={() => { }}>
-                                    <Text style={[layout.textAlign, styles.statusText]}>{item.status}</Text>
-                                </TouchableOpacity>
-                                <View style={[layout.rowBox, { alignItems: "center" }]}>
-                                    <Image source={{ uri: item.imageUrl }} style={styles.avatar} />
-                                    <View>
-                                        <Text style={[layout.textAlign, styles.name]}>{item.userName}</Text>
-                                        <Stars rating={item.userRateCount} />
-                                    </View>
-
+                    {/* userDetails */}
+                    <View style={styles.con1} >
+                        <View style={[layout.dirRow, { justifyContent: "space-between", alignItems: "center" }]}>
+                            <TouchableOpacity style={styles.statusBtn}>
+                                <Text style={[layout.textAlign, styles.statusText]}>{item.status}</Text>
+                            </TouchableOpacity>
+                            <View style={[layout.rowBox, { alignItems: "center" }]}>
+                                <Image source={{ uri: item.imageUrl }} style={styles.avatar} />
+                                <View>
+                                    <Text style={[layout.textAlign, styles.name]}>{item.userName}</Text>
+                                    <Stars rating={item.userRateCount} />
                                 </View>
+
                             </View>
+                        </View>
 
-                            {/* address */}
-                            <View style={[layout.rowBox, styles.actions, { alignItems: "center" }]}>
+                        {/* address */}
+                        <View style={[layout.rowBox, styles.actions, { alignItems: "center" }]}>
 
-                                <AddressIcon color={Colors.white} />
-                                <Text style={[layout.textAlign, styles.date1, { marginHorizontal: PixelPerfect(8) }]}>{item.branch}</Text>
-                            </View>
-                            <Text style={[layout.textAlign, styles.date, { marginHorizontal: PixelPerfect(8) }]}>{item.branch}</Text>
-
-                            <Space />
-
-
-                            {/* productDetails */}
-
-                            <Text style={[layout.textAlign, styles.product]}>{item.category + " " + item.paperName + " " + item.paperSize}</Text>
-
-                            <View style={styles.actions}>
-                                <Text style={[layout.textAlign, styles.date]}>{t("date")}</Text>
-                                <Text style={[layout.textAlign, styles.date1]}>{date}</Text>
-                            </View>
-
-                            <View style={styles.actions}>
-                                <Text style={[layout.textAlign, styles.date]}>{t("quantity")}</Text>
-                                <Text style={[layout.textAlign, styles.date1]}>{item.quentity} {t("carton")} </Text>
-                            </View>
-
-                            <View style={styles.actions}>
-                                <Text style={[layout.textAlign, styles.date]}>{t("total")}</Text>
-                                <Text style={[layout.textAlign, styles.total]}>{item.price} {t("pound")}</Text>
-                            </View>
-
-                            {state.requestStatus === 1 && <View style={[layout.dirRow, styles.actions]}>
-                                <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} onPress={() => { CallNumber(item.phoneNumber) }} >
-                                    <View style={[styles.icon]}>
-                                        <Call2Icon />
-                                    </View>
-                                    <Text style={[layout.textAlign, styles.acceptText]}>{t("contactNow")}</Text>
-
-                                </TouchableOpacity>
-
-                            </View>}
-
-                            {state.requestStatus === 1 && <View style={[styles.actions]}>
-
-                                <TouchableOpacity style={[layout.rowBox, styles.receiveBtn]} onPress={() => {
-
-                                    updateRequest(item.requestId, 5, null, null)
-                                }} >
-                                    <View style={[styles.icon]}>
-                                        <CheckIcon />
-                                    </View>
-
-                                    <Text style={styles.receiveText}>{t("delivered")}</Text>
-
-                                </TouchableOpacity>
-                                <Text style={[layout.textAlign, styles.deliveryNote]}>{t("deliveryNote")}</Text>
-
-                            </View>}
+                            <AddressIcon color={Colors.white} />
+                            <Text style={[layout.textAlign, styles.date1, { marginHorizontal: PixelPerfect(8) }]}>{item.branch}</Text>
+                        </View>
+                        <Text style={[layout.textAlign, styles.date,
+                        { marginHorizontal: PixelPerfect(8) }]}>{item.branch}</Text>
+                    </View>
+                    <Space />
 
 
+                    {/* productDetails */}
+                    <View style={styles.con1} >
+                        <Text style={[layout.textAlign, styles.product]}>{item.category + " " + item.paperName + " " + item.paperSize}</Text>
 
-                            {state.requestStatus === 5 && <View style={[layout.dirRow, styles.actions]}>
-                                <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]}
-                                    onPress={() => { CallNumber(item.phoneNumber) }} >
-                                    <View style={[styles.icon]}>
-                                        <CheckIcon1 />
-                                    </View>
-                                    <Text style={[layout.textAlign, styles.acceptText]}>{t("accept")}</Text>
+                        <View style={styles.actions}>
+                            <Text style={[layout.textAlign, styles.date]}>{t("date")}</Text>
+                            <Text style={[layout.textAlign, styles.date1]}>{date}</Text>
+                        </View>
 
-                                </TouchableOpacity>
+                        <View style={styles.actions}>
+                            <Text style={[layout.textAlign, styles.date]}>{t("quantity")}</Text>
+                            <Text style={[layout.textAlign, styles.date1]}>{item.quentity} {t("carton")} </Text>
+                        </View>
 
-                            </View>}
-                            {(state.requestStatus === 5) && (<View style={[layout.dirRow, styles.actions]}>
+                        <View style={styles.actions}>
+                            <Text style={[layout.textAlign, styles.date]}>{t("total")}</Text>
+                            <Text style={[layout.textAlign, styles.total]}>{item.price} {t("pound")}</Text>
+                        </View>
 
-                                <TouchableOpacity style={[layout.rowBox, styles.cancelBtn]} >
-                                    <View style={[styles.icon]}>
-                                        <CancelIcon />
-                                    </View>
-                                    <Text style={[layout.textAlign, styles.cancelText]}>{t("reject")}</Text>
+                        {state.requestStatus === 1 && <View style={[layout.dirRow, styles.actions]}>
+                            <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} onPress={() => { CallNumber(item.phoneNumber) }} >
+                                <View style={[styles.icon]}>
+                                    <Call2Icon />
+                                </View>
+                                <Text style={[layout.textAlign, styles.acceptText]}>{t("contactNow")}</Text>
 
-                                </TouchableOpacity>
-                            </View>
-                            )}
+                            </TouchableOpacity>
 
-                            {(state.requestStatus === 0) && (<View style={[layout.dirRow, styles.actions]}>
+                        </View>}
 
-                                <TouchableOpacity style={[layout.rowBox, styles.cancelBtn]} onPress={() => setVisibleCancel(true)} >
-                                    <View style={[styles.icon]}>
-                                        <CancelIcon />
-                                    </View>
-                                    <Text style={[layout.textAlign, styles.cancelText]}>{t("cancelOrder")}</Text>
+                        {state.requestStatus === 1 && <View style={[styles.actions]}>
 
-                                </TouchableOpacity>
-                            </View>
-                            )}
-                            {state.requestStatus === 3 && !item.isRated && <View style={[layout.dirRow, styles.actions]}>
-                                <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} onPress={() => {
-                                    setViewRate(true)
-                                }} >
-                                    <View style={[styles.icon]}>
-                                        <RateIcon />
-                                    </View>
-                                    <Text style={[layout.textAlign, styles.acceptText]}>{t("rateSeller")}</Text>
+                            <TouchableOpacity style={[layout.rowBox, styles.receiveBtn]} onPress={() => {
 
-                                </TouchableOpacity>
+                                updateRequest(item.requestId, 5, null, null)
+                            }} >
+                                <View style={[styles.icon]}>
+                                    <CheckIcon />
+                                </View>
 
-                            </View>}
+                                <Text style={styles.receiveText}>{t("delivered")}</Text>
 
-                            <Space />
+                            </TouchableOpacity>
+                            <Text style={[layout.textAlign, styles.deliveryNote]}>{t("deliveryNote")}</Text>
 
-                            {/* وصف المنتج */}
-                            <View style={styles.actions}>
-                                <Text style={[layout.textAlign, styles.description]}>{t("productDescription")}</Text>
-                                <Text style={[layout.textAlign, styles.description1]}>{item.description}</Text>
-                            </View>
-                            {/* <View >
+                        </View>}
+
+
+
+                        {state.requestStatus === 5 && <View style={[layout.dirRow, styles.actions]}>
+                            <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]}
+                                onPress={() => { CallNumber(item.phoneNumber) }} >
+                                <View style={[styles.icon]}>
+                                    <CheckIcon1 />
+                                </View>
+                                <Text style={[layout.textAlign, styles.acceptText]}>{t("accept")}</Text>
+
+                            </TouchableOpacity>
+
+                        </View>}
+                        {(state.requestStatus === 5) && (<View style={[layout.dirRow, styles.actions]}>
+
+                            <TouchableOpacity style={[layout.rowBox, styles.cancelBtn]} >
+                                <View style={[styles.icon]}>
+                                    <CancelIcon />
+                                </View>
+                                <Text style={[layout.textAlign, styles.cancelText]}>{t("reject")}</Text>
+
+                            </TouchableOpacity>
+                        </View>
+                        )}
+
+                        {(state.requestStatus === 0) && (<View style={[layout.dirRow, styles.actions]}>
+
+                            <TouchableOpacity style={[layout.rowBox, styles.cancelBtn]} onPress={() => setVisibleCancel(true)} >
+                                <View style={[styles.icon]}>
+                                    <CancelIcon />
+                                </View>
+                                <Text style={[layout.textAlign, styles.cancelText]}>{t("cancelOrder")}</Text>
+
+                            </TouchableOpacity>
+                        </View>
+                        )}
+                        {state.requestStatus === 3 && !item.isRated && <View style={[layout.dirRow, styles.actions]}>
+                            <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} onPress={() => {
+                                setViewRate(true)
+                            }} >
+                                <View style={[styles.icon]}>
+                                    <RateIcon />
+                                </View>
+                                <Text style={[layout.textAlign, styles.acceptText]}>{t("rateSeller")}</Text>
+
+                            </TouchableOpacity>
+
+                        </View>}
+                    </View>
+                    <Space />
+
+                    {/* وصف المنتج */}
+                    <View style={styles.con1} >
+                        <View style={styles.actions}>
+                            <Text style={[layout.textAlign, styles.description]}>{t("productDescription")}</Text>
+                            <Text style={[layout.textAlign, styles.description1]}>{item.description}</Text>
+                        </View>
+                        {/* <View >
 
                                 <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
                                     <Text style={styles.note}>النوع</Text>
@@ -365,18 +365,18 @@ const Index = (props: Props) => {
 
                             </View>
                              */}
-                          {/* cancleResons */}
-                            {state.requestStatus === 2 && <View >
-                                <Text style={[layout.textAlign, styles.cancel]}>{item.rejectBy}</Text>
-                                <Text style={[layout.textAlign, styles.cancel]}>{t("cancelReason")}</Text>
+                        {/* cancleResons */}
+                        {state.requestStatus === 2 && <View >
+                            <Text style={[layout.textAlign, styles.cancel]}>{item.rejectBy}</Text>
+                            <Text style={[layout.textAlign, styles.cancel]}>{t("cancelReason")}</Text>
 
-                            </View>
-                            }
-                            {(state.requestStatus === 2 || state.requestStatus === 4) &&
-                                <Text style={[layout.textAlign,styles.date1]}>{item.rejectReason}</Text>
-                            }
-                            {/*التقييم*/}
-                            {/* <Text style={styles.rate}>تقييمك للبائع : </Text>
+                        </View>
+                        }
+                        {(state.requestStatus === 2 || state.requestStatus === 4) &&
+                            <Text style={[layout.textAlign, styles.date1]}>{item.rejectReason}</Text>
+                        }
+                        {/*التقييم*/}
+                        {/* <Text style={styles.rate}>تقييمك للبائع : </Text>
                             <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
                                 <Text style={styles.rating}>{"(5)"} ⭐⭐⭐⭐ </Text>
                                 <Text style={styles.dateRate}>18 مايو 2025</Text>
@@ -384,8 +384,8 @@ const Index = (props: Props) => {
                             </View>
 
                             <Text style={styles.rateNote}>جودة ممتازة وسعر مناسب. الورق أبيض نقي والطباعة عليه واضحة جداً. أنصح بالشراء.</Text> */}
-                        </View>
                     </View>
+
                 </View>
 
 
@@ -398,7 +398,7 @@ const Index = (props: Props) => {
                     addRate(val.rating, val.comment, item.userId, item.requestId)
                 }}
             />
-        </Container>
+        </Container >
     )
     // return (
 
@@ -418,16 +418,10 @@ export default Index
 
 const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string, requestStatus: number) =>
     StyleSheet.create({
-        container: {
-            flex: 1,
-
-        },
+     
         formCon: {
             flex: 1,
-            backgroundColor: theme.mainColor,
-            marginTop: PixelPerfect(36),
-            paddingHorizontal: PixelPerfect(8),
-
+        
         },
 
         icon: {
@@ -454,7 +448,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string, 
 
         },
         deliveryNote: {
-            lineHeight:PixelPerfect(20),
+            lineHeight: PixelPerfect(20),
             fontSize: PixelPerfect(14), color: theme.black, fontFamily: Fonts.extraLight
             , textAlign: "right",
 
@@ -467,7 +461,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string, 
 
         note1: { fontSize: PixelPerfect(16), fontFamily: Fonts.regular, color: theme.black, marginTop: PixelPerfect(8) },
 
-        cancel: {lineHeight:PixelPerfect(20), fontSize: PixelPerfect(16), fontFamily: Fonts.medium, color: theme.red, marginTop: PixelPerfect(8) },
+        cancel: { lineHeight: PixelPerfect(20), fontSize: PixelPerfect(16), fontFamily: Fonts.medium, color: theme.red, marginTop: PixelPerfect(8) },
 
         total: {
             lineHeight: PixelPerfect(25),
@@ -481,7 +475,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string, 
         actions: { marginTop: PixelPerfect(8) },
         acceptBtn: {
             flex: 1,
-            height:PixelPerfect(50),
+            height: PixelPerfect(50),
             backgroundColor: theme.babyBlue,
             borderRadius: PixelPerfect(6),
             paddingVertical: PixelPerfect(10),
@@ -490,7 +484,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string, 
         },
         receiveBtn: {
             flex: 1,
-            height:PixelPerfect(50),
+            height: PixelPerfect(50),
             borderWidth: 1,
             borderColor: theme.babyBlue,
             borderRadius: PixelPerfect(6),
@@ -501,7 +495,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string, 
 
         cancelBtn: {
             flex: 1,
-            height:PixelPerfect(50),
+            height: PixelPerfect(50),
             borderWidth: 1,
             borderColor: theme.red,
             borderRadius: PixelPerfect(6),
@@ -510,19 +504,18 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string, 
             justifyContent: "center"
         },
 
-    
+
 
         statusText: {
-            lineHeight:PixelPerfect(20),
+            lineHeight: PixelPerfect(25),
             fontFamily: Fonts.medium,
             fontSize: PixelPerfect(14),
             color: theme.white
         },
 
         statusBtn: {
-            flex: 0.40,
-            height:PixelPerfect(30),
-            width:PixelPerfect(80),
+            flex: 0.35,
+            height: PixelPerfect(34),
             backgroundColor:
                 requestStatus === 0
                     ? theme.currenctText
@@ -541,7 +534,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string, 
         },
         rejectBtn: {
             flex: 1,
-            height:PixelPerfect(50),
+            height: PixelPerfect(50),
             marginRight: PixelPerfect(5),
             borderWidth: PixelPerfect(1),
             borderColor: theme.youtube,

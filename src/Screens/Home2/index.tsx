@@ -160,15 +160,18 @@ const Index = (props: Props) => {
                     )}
                 /> */}
 
-                <View style={[layout.rowBox, {marginHorizontal:PixelPerfect(8)}]}>
-                    <View style={{flex: 1,alignItems:"flex-end"}}>
-                        <HomeCategory item={state.categories[0]} />
+                <View style={[layout.rowBox, { marginHorizontal: PixelPerfect(8) }]}>
+                    <View style={{ flex: 1, alignItems: "flex-end" }} >
+                        <HomeCategory item={state.categories[0]} onPress={() => {
+                            console.log("pressed");
+                            navigation.navigate("HomeMore", { sectionId: 1 });
+                        }} />
                     </View>
-                    <View style={{ flex: 1, alignItems:"center"}}>
-                        <HomeCategory item={state.categories[1]} />
+                    <View style={{ flex: 1, alignItems: "center" }}>
+                        <HomeCategory item={state.categories[1]}onPress={() => {}} />
                     </View>
-                    <View style={{ flex: 1,alignItems:"flex-start"}}>
-                        <HomeCategory item={state.categories[2]} />
+                    <View style={{ flex: 1, alignItems: "flex-start" }}>
+                        <HomeCategory item={state.categories[2]} onPress={() => {}} />
                     </View>
                 </View>
                 {state.sections.map((section) => (

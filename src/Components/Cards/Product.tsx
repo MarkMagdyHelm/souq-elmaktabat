@@ -74,13 +74,13 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             marginHorizontal: PixelPerfect(6),
             marginVertical: PixelPerfect(2),
             shadowColor: theme.black,
-            shadowOpacity: PixelPerfect(0.1),
+            // shadowOpacity: PixelPerfect(0.1),
             shadowRadius: PixelPerfect(8),
             elevation: PixelPerfect(2),
         },
 
         con1: {
-            height: PixelPerfect(30),
+            height: PixelPerfect(36),
             backgroundColor: theme.active,
             paddingHorizontal: PixelPerfect(10),
             borderRadius: PixelPerfect(4),
