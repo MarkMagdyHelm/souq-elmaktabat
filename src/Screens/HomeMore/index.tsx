@@ -317,7 +317,6 @@ const Index = (props: Props) => {
                     numColumns={2}
                     style={{ height: "100%",width:"100%"}}
                     columnWrapperStyle={{
-                        marginHorizontal: PixelPerfect(16),
                         marginVertical: PixelPerfect(4),
                          justifyContent: 'space-between'
                     }}
