@@ -159,8 +159,8 @@ const Index = (props: Props) => {
                        
                     )}
                 /> */}
+                <View style={[layout.rowBox, {justifyContent:"space-between",paddingHorizontal:PixelPerfect(16),paddingTop:PixelPerfect(5)}]}>
 
-                <View style={[layout.rowBox, { marginHorizontal: PixelPerfect(8) }]}>
                     <View style={{ flex: 1, alignItems: "flex-end" }} >
                         <HomeCategory item={state.categories[0]} onPress={() => {
                             console.log("pressed");
@@ -267,7 +267,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
         textsection1: {
             fontFamily: Fonts.bold,
             color: theme.active,
-            paddingHorizontal: PixelPerfect(8),
+            paddingHorizontal: PixelPerfect(16),
             fontSize: PixelPerfect(16),
             lineHeight: 25
         },

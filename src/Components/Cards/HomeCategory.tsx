@@ -2,7 +2,7 @@ import { Image,  Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useContext,  } from 'react'
 import { ThemeContext } from '../../Constants/theming';
 import { IFont, ITheme } from '../../Constants/interfaces';
-import { Colors, PixelPerfect } from '../../Constants/styleConstants';
+import { Colors, phoneWidth, PixelPerfect } from '../../Constants/styleConstants';
 import { GetNamesByLang } from '../../Helper';
 
 type Props = {
@@ -46,8 +46,8 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
 
         con: {
             borderRadius: PixelPerfect(10),
-            height: PixelPerfect(86),
-            width: PixelPerfect(96),
+            height: PixelPerfect(96),
+            width:(phoneWidth- PixelPerfect(92))/3,
             alignItems: "center",
             backgroundColor: Colors.whiteGray,
             justifyContent: 'center',
