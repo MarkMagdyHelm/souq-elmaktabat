@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import useToastNotification from '../../../Components/CustomHooks/useToastNotification';
 import HeaderWithText from '../../../Components/Headers/HeaderWithText';
 import { Formik } from 'formik';
-import { validationSchema } from '../../../Validation/Signup';
+import { validationSchema } from '../../../Validation/AddOffer';
 import { ArrowDownIcon, ArrowUpIcon, CalenderIcon } from '../../../Assets/Svg';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
@@ -51,7 +51,7 @@ const Index = (props: Props) => {
         setstate(old => ({ ...old, isdelervable: !old.isdelervable }))
     }
     const handleSubmit = (values) => {
-        setstate(old => ({ ...old, loading: true }))
+        // setstate(old => ({ ...old, loading: true }))
 
     }
     const tomorrow = new Date();
@@ -65,7 +65,7 @@ const Index = (props: Props) => {
     };
     const { paperwidth, paperSize } = useSelector((state: RootState) => state.settings);
     console.log('====================================');
-    console.log(state.selectedPaperSize.arName);
+    console.log(paperwidth,paperSize);
     console.log('====================================');
     return (
         <Container showHint={false}>
@@ -74,11 +74,23 @@ const Index = (props: Props) => {
                 <Formik
                     validationSchema={validationSchema}
                     initialValues={{
-
+                        paperId: 0,
+                        paperSizeId: 0,
+                        width: 0,
+                        min: 0,
+                        price: 0,
+                        description: "",
+                        endDate: "",
+                        branches: [
+                          0
+                        ],
+                        includeDelivery: false
                     }}
                     onSubmit={handleSubmit} >
                     {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue, setFieldTouched, setFieldError }) => {
-
+console.log('====================================');
+console.log(errors,touched);
+console.log('====================================');
                         return (
                             <>
                                 <Content
@@ -89,7 +101,7 @@ const Index = (props: Props) => {
                                     <Pressable
                                         style={styles.selectMenueCon}
                                         onPress={() => {
-
+                                            setFieldTouched("paperId")
                                             setstate((old) => ({ ...old, showtype: true }));
                                         }}
                                     >
@@ -104,13 +116,13 @@ const Index = (props: Props) => {
                                             </Text>
                                             {state.showtype ? <ArrowUpIcon /> : <ArrowDownIcon />}
                                         </View>
-                                        {errors.Role && touched.Role && <Text style={styles.errorText}>{t(errors.Role as any)}</Text>}
+                                        {errors.paperId && touched.paperId && <Text style={styles.errorText}>{t(errors.paperId as any)}</Text>}
                                     </Pressable>
 
                                     <Pressable
                                         style={styles.selectMenueCon}
                                         onPress={() => {
-
+                                            setFieldTouched("paperSizeId")
                                             setstate((old) => ({ ...old, showSize: true }));
                                         }}
                                     >
@@ -125,7 +137,7 @@ const Index = (props: Props) => {
                                             </Text>
                                             {state.showSize ? <ArrowUpIcon /> : <ArrowDownIcon />}
                                         </View>
-                                        {errors.Role && touched.Role && <Text style={styles.errorText}>{t(errors.Role as any)}</Text>}
+                                        {errors.paperSizeId && touched.paperSizeId && <Text style={styles.errorText}>{t(errors.paperSizeId as any)}</Text>}
                                     </Pressable>
 
                                     <Inputs
@@ -294,9 +306,9 @@ const Index = (props: Props) => {
                                                         showtype: false,
 
                                                     }));
-                                                    setFieldError("City", "You must pick a city!");
+                                                    setFieldError("paperId", "You must pick a paper type!");
                                                 } else {
-                                                    setFieldValue("City", val.id);
+                                                    setFieldValue("paperId", val.id);
 
                                                     setstate((old) => ({
                                                         ...old,
@@ -320,9 +332,9 @@ const Index = (props: Props) => {
                                                         showSize: false,
 
                                                     }));
-                                                    setFieldError("City", "You must pick a city!");
+                                                    setFieldError("paperSizeId", "You must pick a page size!");
                                                 } else {
-                                                    setFieldValue("City", val.id);
+                                                    setFieldValue("paperSizeId", val.id);
 
                                                     setstate((old) => ({
                                                         ...old,

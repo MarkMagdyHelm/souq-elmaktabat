@@ -131,8 +131,8 @@ const Index = (props: Props) => {
     const handleSelectProduct = (item) => {
         navigation.navigate("ProductDetails", { item: item })
     }
-    const getSettings = () => {
-        dispatch<any>(GetSettingsHandler({ lookupIds: [2, 5, 6, 10, 11] }, "countries", (res, status) => {
+    const getSettings = (action="countries") => {
+        dispatch<any>(GetSettingsHandler({ lookupIds: [2, 5, 6, 10, 11] }, action, (res, status) => {
         }))
     }
 
@@ -217,7 +217,10 @@ const Index = (props: Props) => {
             </View>}
             {state.showCategories && (
                 <CategoriesPopup
-                    onCloseFn={() => { setstate(old => ({ ...old, showCategories: false })) }}
+                    onCloseFn={() => {
+                        
+                        getSettings("paper")
+                        setstate(old => ({ ...old, showCategories: false })) }}
                     title={t("categoriespopup")}
                     items={state.categories}
                     style={{ flex: 0.45 }}
