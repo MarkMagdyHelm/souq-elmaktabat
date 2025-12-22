@@ -1,5 +1,5 @@
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState,useEffect } from 'react';
 import { IFont, ITheme } from '../../../Constants/interfaces';
 import { ThemeContext } from '../../../Constants/theming';
 import { Colors, PixelPerfect } from '../../../Constants/styleConstants';
@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import useToastNotification from '../../../Components/CustomHooks/useToastNotification';
 import HeaderWithText from '../../../Components/Headers/HeaderWithText';
 import { Formik } from 'formik';
-import { validationSchema } from '../../../Validation/AddOffer';
+import { validationSchema2 } from '../../../Validation/AddOffer';
 import { ArrowDownIcon, ArrowUpIcon, CalenderIcon } from '../../../Assets/Svg';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
@@ -19,6 +19,7 @@ import { RootState } from '../../../Store/store';
 import DropDowenMenu from '../../../Components/DropDowenMenus/DropDowenMenu';
 import RadiobuttonChoice from '../../../Components/PopUps/RadiobuttonChoice';
 import { amounts } from '../../../Helper';
+import { GetMyBranches } from '../../../Apis/User';
 
 type Props = {
     navigation: any
@@ -44,6 +45,8 @@ const Index = (props: Props) => {
         selectedPaperType: { name: "", arName: "", id: "" },
         selectedPaperSize: { name: "", arName: "", id: "" },
         selectedPaperQuntaity: { name: "", arName: "", id: "" },
+        brances:[],
+        selectedBrances:[]
     });
     const dispatch = useDispatch();
     const showToast = useToastNotification();
@@ -64,29 +67,41 @@ const Index = (props: Props) => {
         }
     };
     const { paperwidth, paperSize } = useSelector((state: RootState) => state.settings);
-    console.log('====================================');
-    console.log(paperwidth,paperSize);
-    console.log('====================================');
+   useEffect(() => {
+getBranches()
+     return () => {
+
+     };
+   }, []);
+   const getBranches = ()=>{
+    dispatch<any>(GetMyBranches((res,status)=>{
+        console.log('====================================');
+        console.log(res,status);
+        console.log('====================================');
+    }))
+   }
     return (
         <Container showHint={false}>
             <HeaderWithText title={t("addoffer1")} />
             <View style={styles.con}>
                 <Formik
-                    validationSchema={validationSchema}
+                    validationSchema={validationSchema2}
                     initialValues={{
-                        paperId: 0,
-                        paperSizeId: 0,
-                        width: 0,
-                        min: 0,
-                        price: 0,
+                        paperId: "",
+                        paperSizeId: "",
+                        width: "",
+                        min: "",
+                        price: "",
                         description: "",
                         endDate: "",
-                        branches: [
-                          0
-                        ],
+                        branches: [],
                         includeDelivery: false
                     }}
-                    onSubmit={handleSubmit} >
+                    onSubmit={(values)=>{
+                        console.log('====================================');
+                        console.log(values);
+                        console.log('====================================');
+                    }} >
                     {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue, setFieldTouched, setFieldError }) => {
 console.log('====================================');
 console.log(errors,touched);
@@ -143,8 +158,8 @@ console.log('====================================');
                                     <Inputs
                                         label={t("paperWight")}
                                         options={{
-                                            onBlur: handleBlur("PhoneNumber"),
-                                            onChangeText: handleChange("PhoneNumber"),
+                                            onBlur: handleBlur("width"),
+                                            onChangeText: handleChange("width"),
                                             placeholder: t("paperWightw"),
                                             maxLength: 5,
                                             keyboardType: "number-pad",
@@ -152,15 +167,15 @@ console.log('====================================');
                                         password={false}
                                         isPhone={false}
                                         input={{}}
-                                        showErrorr={(errors.PhoneNumber && touched.PhoneNumber) as boolean}
-                                        error={errors.PhoneNumber as any}
+                                        showErrorr={(errors.width && touched.width) as boolean}
+                                        error={errors.width as any}
                                     />
 
                                     <Inputs
                                         label={t("paperPrice")}
                                         options={{
-                                            onBlur: handleBlur("PhoneNumber"),
-                                            onChangeText: handleChange("PhoneNumber"),
+                                            onBlur: handleBlur("price"),
+                                            onChangeText: handleChange("price"),
                                             placeholder: t("paperPricew"),
                                             maxLength: 5,
                                             keyboardType: "number-pad",
@@ -168,10 +183,9 @@ console.log('====================================');
                                         password={false}
                                         isPhone={false}
                                         input={{}}
-                                        showErrorr={(errors.PhoneNumber && touched.PhoneNumber) as boolean}
-                                        error={errors.PhoneNumber as any}
+                                        showErrorr={(errors.price && touched.price) as boolean}
+                                        error={errors.price as any}
                                     />
-
 
 
                                     <Pressable
@@ -198,8 +212,8 @@ console.log('====================================');
                                     <Inputs
                                         label={t("paperdis")}
                                         options={{
-                                            onBlur: handleBlur("Addresses"),
-                                            onChangeText: handleChange("Addresses"),
+                                            onBlur: handleBlur("description"),
+                                            onChangeText: handleChange("description"),
                                             numberOfLines: 2,
                                             placeholder: t("paperdisw"),
                                             maxLength: 250,
@@ -209,8 +223,8 @@ console.log('====================================');
                                         inputCon={{ height: 74, paddingTop: 17 }}
                                         input={{ height: 74, verticalAlign: "top" }}
                                         password={false}
-                                        showErrorr={(errors.Addresses && touched.Addresses) as boolean}
-                                        error={errors.Addresses as any}
+                                        showErrorr={(errors.description && touched.description) as boolean}
+                                        error={errors.description as any}
                                     />
                                     <Pressable
                                         style={styles.selectMenueCon}
@@ -257,7 +271,7 @@ console.log('====================================');
                                             </Text>
                                             {state.showBranches ? <ArrowUpIcon /> : <ArrowDownIcon />}
                                         </View>
-                                        {errors.Role && touched.Role && <Text style={styles.errorText}>{t(errors.Role as any)}</Text>}
+                                        {errors.branches && touched.branches && <Text style={styles.errorText}>{t(errors.branches as any)}</Text>}
                                     </Pressable>
 
 
@@ -323,6 +337,7 @@ console.log('====================================');
                                             style={{ flex: 0.3 }}
                                         />
                                     )}
+                               
                                     {state.showSize && (
                                         <DropDowenMenu
                                             onCloseFn={(val) => {
@@ -385,12 +400,39 @@ console.log('====================================');
                                             textinputTitle={t('lessOfferw')}
                                         />
                                     )}
+                                     {state.showBranches && (
+            <MultiChekers
+              onCloseFn={(val) => {
+                if (val?.length === 0) {
+                  setFieldError("Activities", "You must choose a market!");
+                  setstate((old) => ({
+                    ...old,
+                    showBranches: false,
+                  }));
+                } else {
+                  setFieldValue("Activities", val);
+                  setstate((old) => ({
+                    ...old,
+                    showBranches: false,
+                    selectedBrances: val,
+                  }));
+                }
+              }}
+              title={t("Marketw")}
+              currentFilter={state.selectedBrances}
+              items={activites}
+              style={{ flex: 0.6 }}
+              type="activities"
+              hasTextInput={true}
+              textinputTitle={t('marketwwww')}
+            />
+          )}
                                 </Content>
 
                             </>
                         )
                     }}
-
+  
                 </Formik>
 
             </View>

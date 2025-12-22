@@ -206,3 +206,25 @@ export const ForgetPasswordHandler = (body:any, cb?: (data: any,status:any) => v
       }
     };
   };
+
+    /**
+ * GetMyBranches
+ * @param cb callback function
+ */
+export const GetMyBranches = (cb?: (data: any, status: any) => void) => {
+  return async (dispatch: Dispatch<IDispatch>) => {
+    try {
+      const { data, status } = await globalAPI.get('api/User/GetMyBranches');
+      console.log('GetMyBranchesHandler data = ',Platform.OS, data, status);
+      
+      
+      if (data.status == 200) {
+         console.log('GetMyBranchesHandler data = ',Platform.OS, data, status);
+         cb && cb(data,status);
+          }
+    } catch (error) {
+      console.log('GetMyBranchesHandler error = ', error);
+      cb && cb(error, 500);
+    }
+  };
+};
