@@ -38,7 +38,7 @@ const Index = (props: Props) => {
         getSettings();
     }, []);
     const getSettings = () => {
-        dispatch<any>(GetSettingsHandler({ lookupIds: [2, 3, 4, 5, 6, 7, 9] }))
+        dispatch<any>(GetSettingsHandler({ lookupIds: [2, 3, 4, 5, 6, 7, 9] },"signup"))
     }
     const handleSubmit = (values) => {
         setstate(old => ({ ...old, loadingSignin: true }))

@@ -20,6 +20,7 @@ import DropDowenMenu from '../../../Components/DropDowenMenus/DropDowenMenu';
 import RadiobuttonChoice from '../../../Components/PopUps/RadiobuttonChoice';
 import { amounts } from '../../../Helper';
 import { GetMyBranches } from '../../../Apis/User';
+import MultiChekers from "../../../Components/PopUps/MultiChekers";
 
 type Props = {
     navigation: any

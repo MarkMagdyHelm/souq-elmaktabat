@@ -35,7 +35,7 @@ const Index = (props: Props) => {
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const { countries, activites, roles,tools,payments } = useSelector((state: RootState) => state.settings);
     console.log('=======countries=============================');
-    console.log(countries);
+    console.log(countries, activites, roles,tools,payments );
     console.log('====================================');
     const styles = useStyles(Fonts, theme, dark, dir);
     const { email } = useRoute().params as any;
