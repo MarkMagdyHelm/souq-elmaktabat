@@ -68,7 +68,6 @@ globalAPI.interceptors.request.use(
   },
   error => {
     console.log('error ', error);
-
     Promise.reject(error);
   },
 );
