@@ -63,7 +63,7 @@ const Stacks = () => {
           // presentation:"transparentModal",
         };
       }}
-      initialRouteName={isLogin ? "Market" : "Dimo"}
+      initialRouteName={isLogin ? "Market" : "Demo"}
 
     >
 

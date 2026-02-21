@@ -2,12 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>souqelmaktabat</string>
+	<string>Souq Elmaktabat</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -29,19 +27,62 @@
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
-		<false/>
-		<key>NSAllowsLocalNetworking</key>
 		<true/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>apis.questnow.me</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
+		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Souq Elmaktabat wants to access your camera to use them properly</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
-	<key>RCTNewArchEnabled</key>
-	<true/>
+	<string></string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Souq Elmaktabat need access to your microphone to use them properly</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Souq Elmaktabat would like to save photos from the app to use them properly</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Souq Elmaktabat would like to save photos from the app to use them properly</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>AntDesign.ttf</string>
+		<string>Entypo.ttf</string>
+		<string>EvilIcons.ttf</string>
+		<string>Feather.ttf</string>
+		<string>FontAwesome.ttf</string>
+		<string>FontAwesome5_Brands.ttf</string>
+		<string>FontAwesome5_Regular.ttf</string>
+		<string>FontAwesome5_Solid.ttf</string>
+		<string>Foundation.ttf</string>
+		<string>Ionicons.ttf</string>
+		<string>MaterialCommunityIcons.ttf</string>
+		<string>MaterialIcons.ttf</string>
+		<string>Octicons.ttf</string>
+		<string>SimpleLineIcons.ttf</string>
+		<string>Zocial.ttf</string>
+		<string>Fontisto.ttf</string>
+		<string>Tajawal-ExtraBold.ttf</string>
+		<string>Tajawal-ExtraLight.ttf</string>
+		<string>Tajawal-black.ttf</string>
+		<string>Tajawal-light.ttf</string>
+		<string>Tajawal-medium.ttf</string>
+		<string>Tajawal-Regular.ttf</string>
+		<string>Tajawal-bold.ttf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>BootSplash</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
-		<string>arm64</string>
+		<string>armv7</string>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
@@ -51,15 +92,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>UIAppFonts</key>
-	<array>
-		<string>Tajawal-ExtraBold.ttf</string>
-		<string>Tajawal-light.ttf</string>
-		<string>Tajawal-bold.ttf</string>
-		<string>Tajawal-ExtraLight.ttf</string>
-		<string>Tajawal-Regular.ttf</string>
-		<string>Tajawal-medium.ttf</string>
-		<string>Tajawal-black.ttf</string>
-	</array>
 </dict>
 </plist>

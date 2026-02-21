@@ -177,7 +177,7 @@ const Index = (props: Props) => {
         navigation.reset({
             index: 0,
             routes: [
-                { name: 'Home2' },
+                { name: 'Market' },
             ],
         });
     }
@@ -258,7 +258,7 @@ const Index = (props: Props) => {
                   navigation.reset({
             index: 0,
             routes: [
-                { name: 'Signup' },
+                { name: 'Signup',params:{isForgetPassword:false} },
             ],
         });
               }}
