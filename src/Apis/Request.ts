@@ -1,0 +1,264 @@
+import { Dispatch } from "react";
+import { IDispatch } from "../Constants/interfaces";
+import { globalAPI } from "../Constants/config";
+
+/**
+ * GetPepars
+ * @param cb callback function
+ */
+export const GetRequests = (body: any, cb?: (data: any, status: any) => void) => {
+    return async (dispatch: Dispatch<IDispatch>) => {
+        try {
+
+            const { data, status } = await globalAPI.get('api/Request/GetRequests', {
+                params: body
+            });
+            cb && cb(data, status);
+        } catch (error) {
+            console.log('GetRequests error = ', error);
+            cb && cb(error, 500);
+        }
+    };
+};
+
+/**
+ * GetSellerList
+ * @param cb callback function
+ */
+export const GetSellerList = (body: any, cb?: (data: any, status: any) => void) => {
+    return async (dispatch: Dispatch<IDispatch>) => {
+        try {
+
+            const { data, status } = await globalAPI.post('api/User/GetSellerList',
+                body
+            );
+            cb && cb(data, status);
+        } catch (error) {
+            console.log('GetSellerList error = ', error);
+            cb && cb(error, 500);
+        }
+    };
+};
+
+/**
+ * GetSellerList
+ * @param cb callback function
+ */
+export const GetSellerData = (body: any, cb?: (data: any, status: any) => void) => {
+    return async (dispatch: Dispatch<IDispatch>) => {
+        try {
+
+            const { data, status } = await globalAPI.get('api/User/GetSellerData', {
+                params: body
+            });
+            cb && cb(data, status);
+        } catch (error) {
+            console.log('GetSellerData error = ', error);
+            cb && cb(error, 500);
+        }
+    };
+};
+
+/**
+ * GetMyRequests
+ * @param cb callback function
+ */
+export const GetMyRequests = (body: any, cb?: (data: any, status: any) => void) => {
+    return async (dispatch: Dispatch<IDispatch>) => {
+        try {
+
+            const { data, status } = await globalAPI.get('api/Request/GetMyRequests', {
+                params: body
+            });
+            cb && cb(data, status);
+        } catch (error) {
+            console.log('GetRequests error = ', error);
+            cb && cb(error, 500);
+        }
+    };
+};
+
+/**
+ * GetMyBranches
+ * @param cb callback function
+ */
+export const GetMyBranches = (body: any, cb?: (data: any, status: any) => void) => {
+    return async (dispatch: Dispatch<IDispatch>) => {
+        try {
+
+            const { data, status } = await globalAPI.get('api/User/GetMyBranches', {
+                params: body
+            });
+            cb && cb(data, status);
+        } catch (error) {
+            console.log('GetMyBranches error = ', error);
+            cb && cb(error, 500);
+        }
+    };
+};
+
+
+/**
+ * UpdateRequest
+ * @param cb callback function
+ *  @param params {
+  "requestId",
+  "statusId",
+  "rejectReasonId",
+  "rejectReason""
+}
+ */
+export const UpdateRequest = (body: any, cb?: (data: any, status: any) => void) => {
+    return async (dispatch: Dispatch<IDispatch>) => {
+        try {
+
+            const { data, status } = await globalAPI.post('api/Request/UpdateRequest',
+                body
+            );
+            cb && cb(data, status);
+        } catch (error) {
+            console.log('UpdateRequest error = ', error);
+            cb && cb(error, 500);
+        }
+    };
+};
+
+/**
+ * AddPaperOfferRequest
+ * @param cb callback function
+ *  @param params {
+  "paperOfferId",
+  "paperOfferBranchId",
+  "quantity",
+  "totalPrice""
+}
+ */
+export const AddPaperOfferRequest = (body: any, cb?: (data: any, status: any) => void) => {
+    return async (dispatch: Dispatch<IDispatch>) => {
+        try {
+
+            const { data, status } = await globalAPI.post('api/Offer/AddPaperOfferRequest',
+                body
+            );
+            cb && cb(data, status);
+        } catch (error) {
+            console.log('AddPaperOfferRequest error = ', error);
+            cb && cb(error, 500);
+        }
+    };
+};
+
+/**
+ * AddPaperOffer
+ * @param cb callback function
+ *  @param params {
+  "paperId",
+  "paperSizeId",
+  "width",
+  "min",
+  "price",
+  "description",
+  "endDate",
+  "branches",
+  "includeDelivery",
+}
+ */
+export const AddPaperOffer = (body: any, cb?: (data: any, status: any) => void) => {
+    return async (dispatch: Dispatch<IDispatch>) => {
+        try {
+
+            const { data, status } = await globalAPI.post('api/Offer/AddPaperOffer',
+                body
+            );
+            cb && cb(data, status);
+        } catch (error) {
+            console.log('AddPaperOffer error = ', error);
+            cb && cb(error, 500);
+        }
+    };
+};
+
+
+/**
+ * AddPaperOffer
+ * @param cb callback function
+ *  @param params {
+  "paperId",
+  "paperSizeId",
+  "width",
+  "min",
+  "price",
+  "description",
+  "endDate",
+  "branches",
+  "includeDelivery",
+}
+ */
+export const AddPrintingPressOffer = (body: any, cb?: (data: any, status: any) => void) => {
+    return async (dispatch: Dispatch<IDispatch>) => {
+        try {
+
+            const { data, status } = await globalAPI.post('api/Offer/AddPrintingPressOffer',
+                body
+              , {
+  headers: {
+    "Content-Type": "multipart/form-data",
+  }});
+
+            console.log('AddPrintingPressOffer response = ', data);
+            cb && cb(data, status);
+        } catch (error) {
+            console.log('AddPrintingPressOffer error = ', error);
+            cb && cb(error, 500);
+        }
+    };
+};
+
+/**
+ * AddPaperOffer
+ * @param cb callback function
+ *  @param params {
+  "paperId",
+  "paperSizeId",
+  "width",
+  "min",
+  "price",
+  "description",
+  "endDate",
+  "branches",
+  "includeDelivery",
+}
+ */
+export const AddInkOffer = (body: any, cb?: (data: any, status: any) => void) => {
+    return async (dispatch: Dispatch<IDispatch>) => {
+        try {
+
+            const { data, status } = await globalAPI.post('api/Offer/AddInkOffer',
+                body
+           , {
+  headers: {
+    "Content-Type": "multipart/form-data",
+  }});
+            console.log('AddInkOffer response = ', data);
+            cb && cb(data, status);
+        } catch (error) {
+            console.log('AddInkOffer error = ', error);
+            cb && cb(error, 500);
+        }
+    };
+};
+export const AddRate = (body: any, cb?: (data: any, status: any) => void) => {
+    return async (dispatch: Dispatch<IDispatch>) => {
+        try {
+
+            const { data, status } = await globalAPI.post('api/User/AddRate',
+                body
+            );
+            cb && cb(data, status);
+        } catch (error) {
+            console.log('AddRate error = ', error);
+            cb && cb(error, 500);
+        }
+    };
+};
+

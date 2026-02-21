@@ -1,0 +1,33 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/Assets/Fonts/Tajawal-ExtraBold.ttf",
+      "sha1": "e0fc35c5b78b529a489597740eb49e134b81b690"
+    },
+    {
+      "path": "src/Assets/Fonts/Tajawal-light.ttf",
+      "sha1": "c9637ec71d9b44fc26fed2bb7f1e49c4fa327fee"
+    },
+    {
+      "path": "src/Assets/Fonts/Tajawal-bold.ttf",
+      "sha1": "e08459c45d81723a0275d1940c39b2c53f6e677c"
+    },
+    {
+      "path": "src/Assets/Fonts/Tajawal-ExtraLight.ttf",
+      "sha1": "2cda809777437947f2ddcc7644d21c14d0e44dc3"
+    },
+    {
+      "path": "src/Assets/Fonts/Tajawal-Regular.ttf",
+      "sha1": "1139e55d7b8909acda1b9f3f90e30f7774e93fef"
+    },
+    {
+      "path": "src/Assets/Fonts/Tajawal-medium.ttf",
+      "sha1": "954396d7663dd20680830524a5c83d98e349f3c2"
+    },
+    {
+      "path": "src/Assets/Fonts/Tajawal-black.ttf",
+      "sha1": "d07f6ef7c60e7b88b9550ac591cfa77ce5305c78"
+    }
+  ]
+}

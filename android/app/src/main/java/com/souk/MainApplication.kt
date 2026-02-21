@@ -1,4 +1,4 @@
-package com.souk
+package com.souqelmaktabat
 
 import android.app.Application
 import com.facebook.react.PackageList

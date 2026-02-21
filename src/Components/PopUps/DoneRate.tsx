@@ -1,0 +1,70 @@
+import React, { useContext, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+} from 'react-native';
+import Modal from 'react-native-modal';
+
+import { DoneIcon, EyeIcon, StareIcon } from '../../Assets/Svg';
+import { IFont, ITheme } from '../../Constants/interfaces';
+import { ThemeContext } from '../../Constants/theming';
+import { PixelPerfect } from '../../Constants/styleConstants';
+
+const DoneRate = ({ visible, onClose, onSubmit ,message}) => {
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
+  const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
+  const styles = useStyles(Fonts, theme, dark, dir);
+
+
+  return (
+
+    <Modal
+      backdropOpacity={0.2}
+      //    backdropColor='#00000'
+      onBackButtonPress={() => {
+        onClose()
+      }}
+      onBackdropPress={() => {
+        onClose()
+      }}
+      isVisible={visible}
+      style={{ margin: 0, justifyContent: "center" }}
+    >
+      <View style={styles.overlay}>
+        <View style={styles.container}>
+          <View style={[layout.center]}>
+            <DoneIcon style ={{color:theme.babyBlue}} />
+            <Text style={styles.title}>{message}</Text>
+          </View>
+        </View>
+      </View>
+    </Modal >
+
+  );
+};
+
+const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,) =>
+  StyleSheet.create({
+    overlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0.4)',
+      justifyContent: "center",
+      alignItems: 'center',
+      paddingHorizontal: PixelPerfect(32)
+
+    },
+    container: {
+      backgroundColor: theme.white,
+      width: '100%',
+      borderRadius: PixelPerfect(12),
+
+      padding: PixelPerfect(64)
+    },
+
+    title: { textAlign: 'center', fontSize: PixelPerfect(20),paddingTop:PixelPerfect(16), fontFamily: Fonts.bold, color: theme.babyBlue },
+
+
+  });
+export default DoneRate;
