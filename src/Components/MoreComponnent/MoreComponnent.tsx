@@ -39,12 +39,12 @@ const STORE_LINK = Platform.select({
       }
     },
 
-    {
+    (isLogin?{
       key: 'account',
       title: t('The Account'),
       icon: <AccountIcon />,
       onPress: () => navigation.navigate(isSeller ? 'SellerProfile' : 'UserProfile')
-    },
+    }:null),
     {
       key: 'orders',
       title: t('My Orders'),

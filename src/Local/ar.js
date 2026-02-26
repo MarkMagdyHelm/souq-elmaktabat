@@ -405,4 +405,11 @@ export default {
   "imageRequired": "الصورة مطلوبة",
   "market": "السوق",
   "Boursa": "بورصة",
+
+ "price_Cartage": "سعر الكارتريدج أو اللتر",
+ "color":"سعر طباعه الورق الالوان ",
+ "nonColor":"سعر طباعه الورق الابيض واسود",
+"SelectPrintertype":"حدد نوع الطباعة ",
+  "coloerPrinter":"طباعة الوان",
+  "nonColoered":"طباعةالابيض واسود"
 };

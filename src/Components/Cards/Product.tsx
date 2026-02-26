@@ -1,9 +1,8 @@
-import { Image, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Image, Platform, Pressable, StyleSheet, Text, View ,TouchableOpacity} from 'react-native'
 import React, { useContext, useState } from 'react'
 import { ThemeContext } from '../../Constants/theming';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import { ColorWithOpacity, Colors, PixelPerfect, phoneWidth } from '../../Constants/styleConstants';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { HeartIcon, RateIcone } from '../../Assets/Svg';
 import { t } from 'i18next';
 import { imageUrl } from '../../Constants/config';
@@ -24,7 +23,9 @@ const Product = (props: Props) => {
     } = props;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
-
+console.log('====================================');
+console.log(item);
+console.log('====================================');
     return (
         <Pressable >
             <View style={[styles.con]}>
@@ -36,16 +37,23 @@ const Product = (props: Props) => {
                 }
 
                 <Image source={{ uri:  item.imageUrl }} resizeMode="contain" style={[styles.image]} />
-                <Text style={[layout.textAlign, styles.text]}>{(item.categoryName ?? item.category) + " " + item.paperName + " " + (item.width ?? item.paperWidth) + t("GM") + " " + (item?.paperSize ?? item?.paperSizeName)}</Text>
-                {/* <Text style={[layout.textAlign, styles.text]}>{(item.categoryName ?? item.category) + " " + item.paperName + " " + (item.width ?? item.paperWidth) + t("GM") + " " + (item?.paperSize ?? item?.paperSizeName)}</Text>
-                <Text style={[layout.textAlign, styles.text]}>{(item.categoryName ?? item.category) + " " + item.paperName + " " + (item.width ?? item.paperWidth) + t("GM") + " " + (item?.paperSize ?? item?.paperSizeName)}</Text> */}
+                 {item.paperSize && item.paperSize.length != 0 && <Text style={[layout.textAlign, styles.text]}>{item.categoryName + " " + item.name + " " + item.width + t("GM") + " " + item.paperSize}</Text>}
+                                            {item.categoryName && item.categoryName == "احبار" && <Text style={[layout.textAlign, styles.text]}>{item.categoryName + " " + item.name}</Text>}
+                                            {item.categoryName && item.categoryName == "مطابع" && <Text style={[layout.textAlign, styles.text]}>{item.categoryName}</Text>}
+             
 
                 <View style={[layout.dirRow, styles.priceRateRow]}>
                     <View style={[layout.rowBox, { alignItems: "center" }]}>
                         <RateIcone />
                         <Text style={[layout.textAlign, styles.text1]}>{"(" + (item.userRateCount ?? item.rate ?? item.rates) + ")"}</Text>
                     </View>
-                    <Text style={[layout.textAlign, styles.price]}>{item.price + " " + t("pound")}</Text>
+                    {/* <Text style={[layout.textAlign, styles.price]}>{item.price + " " + t("pound")}</Text> */}
+
+                     {item.price && <Text style={[layout.textAlign, styles.price]}>{item.categoryName && item.categoryName == "احبار" ?
+                                                    item.price + t("pound")
+                                                    : item.price + t("pound")}</Text>}
+                                                {item.coloredPrice && <Text style={[layout.textAlign, styles.price]}>{item.coloredPrice + t("pound")}</Text>}
+                                                {item.nonColoredPrice && <Text style={[layout.textAlign, styles.price]}>{item.nonColoredPrice + t("pound")}</Text>}
                 </View>
                 {!isOfffer && <View style={[layout.rowBox, styles.con2]}>
                     <Image

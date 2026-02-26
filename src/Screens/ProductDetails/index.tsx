@@ -13,8 +13,9 @@ import {
     Platform,
     ScrollView,
     FlatList,
+    Pressable,
 } from "react-native";
-import { PixelPerfect } from '../../Constants/styleConstants';
+import { Colors, PixelPerfect } from '../../Constants/styleConstants';
 import SellerBranches from '../../Components/Cards/SellerBranches';
 import { Container, Content } from '../../Components/containers/Containers';
 import { useRoute } from '@react-navigation/native';
@@ -52,8 +53,13 @@ const Index = (props: Props) => {
     const dispatch = useDispatch();
     const [state, setState] = useState({
         loading: false,
-        showSuccess: false
+        showSuccess: false,
+        isImediatePrinting: false,
+ isdelervable: false,
     });
+   const handelDelery = () => {
+        setState(old => ({ ...old, isdelervable: !old.isdelervable }))
+    }
 
     const toast = useToast();
     const toastNotfication = (config: any) => {
@@ -144,11 +150,13 @@ const Index = (props: Props) => {
 
     const fullDate = item?.endDate;
     const [date, time] = fullDate?.split("T");
-
     return (
         <Container showHint={false}>
             <HeaderWithText title={t("productDetailsTitle")}
-                isShareVisible={true} onFavClick={() => {
+                isShareVisible={true}
+                isFavVisible={true}
+                isFaverouit={item?.isFavourite}
+                onFavClick={() => {
                     console.log(item);
                     addFavouritePaperOffer(item.id)
                 }} onShareClick={() => console.log()} />
@@ -158,8 +166,16 @@ const Index = (props: Props) => {
 
                     <View>
                         <View style={styles.info}>
-                            <Text style={[layout.textAlign, styles.title]}>{item.categoryName + " " + item.paperName + " " + item.width + t("GM") + " " + item.paperSize}</Text>
-                            <Text style={[layout.textAlign, styles.priceText]}>{t("carton_price") + item.price + t("pound")}</Text>
+                            {item.paperSize && item.paperSize.length != 0 && <Text style={[layout.textAlign, styles.title]}>{item.categoryName + " " + item.name + " " + item.width + t("GM") + " " + item.paperSize}</Text>}
+                            {item.categoryName && item.categoryName == "احبار" && <Text style={[layout.textAlign, styles.title]}>{item.categoryName + " " + item.name}</Text>}
+                            {item.categoryName && item.categoryName == "مطابع" && <Text style={[layout.textAlign, styles.title]}>{item.categoryName}</Text>}
+
+                            {item.price && <Text style={[layout.textAlign, styles.priceText]}>{item.categoryName && item.categoryName == "احبار" ?
+                                t("price_Cartage") + " " + item.price + t("pound")
+                                : t("carton_price") + item.price + t("pound")}</Text>}
+                            {item.coloredPrice && <Text style={[layout.textAlign, styles.priceText]}>{t("coloerPrinter") + item.coloredPrice + t("pound")}</Text>}
+                            {item.nonColoredPrice && <Text style={[layout.textAlign, styles.priceText]}>{t("nonColoered") + item.nonColoredPrice + t("pound")}</Text>}
+
                             <View style={[layout.rowBox, { marginVertical: PixelPerfect(2) }]}>
                                 <Stars rating={item.userRateAverage} rateCount={item.userRateCount} />
                             </View>
@@ -190,22 +206,58 @@ const Index = (props: Props) => {
                                 //   onRefresh={() =>{}}
                                 //   refreshing={isFetching}
 
-                                data={item.paperOffersBranches}
+                                data={item.branches}
                                 keyExtractor={(items, index: number) => index.toString()}
                                 // ItemSeparatorComponent={() => (state.loading ? null : <View style={styles.separator} />)}
                                 renderItem={({ item }) => {
                                     return (
                                         <>
                                             <SellerBranches viewRadio={true} item={item} onPress={() => setSelectedBranchId(item.id)}
-                                            selected={selectedBranchId === item.id} backgroundColor={theme.accordianBody} />
+                                                selected={selectedBranchId === item.id} backgroundColor={theme.accordianBody} />
 
                                         </>
                                     );
                                 }} />
                         </View>
                         <Space />
-                        {/* تحديد الكمية */}
-                        <View style={styles.info}>
+                        {
+                            (item.categoryName && item.categoryName == "مطابع")?
+                                <View
+                            style={styles.selectMenueCon}>
+                            <Text style={[layout.textAlign, styles.label]}>{t("SelectPrintertype")}</Text>
+                            <View style={[layout.rowBox, styles.selectMenue, { borderWidth: 0, marginBottom: 0 }]}>
+                                <Pressable style={[layout.rowBox, styles.yesNocon]}
+                                    onPress={handelDelery}
+                                >
+                                    <View style={[styles.radioButton, { borderColor: state.isdelervable ? theme.active : theme.gray }]}>
+                                        {state.isdelervable ? <View style={styles.radioButtonSelected} /> : null}
+                                    </View>
+                                    <Text style={[styles.textselectmenu, { paddingHorizontal: PixelPerfect(5) }]}>
+                                        {t("coloerPrinter")}
+                                    </Text>
+                                </Pressable>
+                                <Pressable style={[layout.rowBox, styles.yesNocon]}
+                                    onPress={handelDelery}
+                                >
+                                    <View style={[styles.radioButton, { borderColor: !state.isdelervable ? theme.active : theme.gray }]}>
+                                        {!state.isdelervable ? <View style={styles.radioButtonSelected} /> : null}
+                                    </View>
+                                    <Text style={[styles.textselectmenu, { paddingHorizontal: PixelPerfect(5) }]}>
+                                        {t("nonColoered")}
+                                    </Text>
+                                </Pressable>
+                            </View>
+                                   <View style={[layout.rowBox, { justifyContent: "space-between", marginVertical: PixelPerfect(4) }]}>
+                                <Text style={[layout.textAlign, styles.note]}>{t("offerEndDate")}</Text>
+                                <Text style={[layout.textAlign, styles.note1]}>{date + " " + t("orUntilOutOfStock")}</Text>
+                            </View>
+                            <View style={[layout.rowBox, { justifyContent: "space-between", marginVertical: PixelPerfect(4) }]}>
+                                <Text style={[layout.textAlign, styles.note]}>{t("deliveryMethods")}</Text>
+                                <Text style={[layout.textAlign, styles.note1]}>   {item.includeDelivery ? t("deliveryAvailable") : t("deliveryNotAvailable")}</Text>
+                            </View>
+                        </View>
+                        :
+                         <View style={styles.info}>
 
 
                             <View style={[layout.rowBox, { justifyContent: "space-between", alignItems: "center" }]}>
@@ -242,6 +294,13 @@ const Index = (props: Props) => {
                             </View>
 
 
+
+                        </View>
+                        }
+                      
+                        {/* تحديد الكمية */}
+                       
+
                             <TouchableOpacity style={styles.orderBtn} onPress={() => {
 
                                 if (qty < item.min) {
@@ -263,8 +322,7 @@ const Index = (props: Props) => {
                             }}>
                                 <Text style={[layout.textAlign, styles.orderBtnText]}>{t("sendOrder")}</Text>
                             </TouchableOpacity>
-
-                        </View>
+                      
                         <Space />
                         {/* وصف المنتج */}
                         <View style={styles.info}>
@@ -400,6 +458,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             padding: PixelPerfect(12),
             marginVertical: PixelPerfect(8),
             alignItems: "center",
+            marginHorizontal:PixelPerfect(16)
         },
         orderBtnText: { lineHeight: PixelPerfect(25), color: theme.white, fontSize: PixelPerfect(16), fontFamily: Fonts.bold },
         description: {
@@ -408,5 +467,49 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             color: theme.black, fontFamily: Fonts.regular
             , marginBottom: PixelPerfect(8)
         },
-
+        yesNocon: {
+            alignItems: "center",
+            flex: 0.5
+        },
+        selectMenueCon: {
+         marginTop:PixelPerfect(10),
+         marginHorizontal:PixelPerfect(16)
+        },
+        label: {
+            fontFamily: Fonts.medium,
+            fontSize: PixelPerfect(18),
+            color: theme.black,
+            marginBottom: PixelPerfect(10),
+            lineHeight: PixelPerfect(20)
+        },
+        selectMenue: {
+            justifyContent: "space-between",
+            backgroundColor: Colors.white,
+            height: PixelPerfect(50),
+            alignItems: "center",
+            borderRadius: PixelPerfect(8),
+            paddingHorizontal: PixelPerfect(10),
+            marginBottom: PixelPerfect(20),
+            borderWidth: PixelPerfect(1),
+            borderColor: theme.optionText
+        },
+        radioButton: {
+            height: PixelPerfect(20),
+            width: PixelPerfect(20),
+            borderRadius: PixelPerfect(20) / 2,
+            borderWidth: 2,
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+        radioButtonSelected: {
+            height: PixelPerfect(10),
+            width: PixelPerfect(10),
+            borderRadius: PixelPerfect(10) / 2,
+            backgroundColor: theme.active,
+        },
+        textselectmenu: {
+            fontFamily: Fonts.medium,
+            fontSize: PixelPerfect(16),
+            color: theme.deactive,
+        },
     });

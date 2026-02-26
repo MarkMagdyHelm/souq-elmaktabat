@@ -5501,7 +5501,8 @@ export const FavoriteIcon = (props: any) => (
     width={24}
     height={24}
     viewBox="0 0 24 24"
-    fill="none"
+    fill="#3D4A78"
+    color="#3D4A78"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
