@@ -52,6 +52,7 @@ export const GetSellerData = (body: any, cb?: (data: any, status: any) => void) 
                 params: body
             });
             cb && cb(data, status);
+             console.log('GetSellerData = ', data);
         } catch (error) {
             console.log('GetSellerData error = ', error);
             cb && cb(error, 500);
@@ -137,10 +138,11 @@ export const AddPaperOfferRequest = (body: any, cb?: (data: any, status: any) =>
     return async (dispatch: Dispatch<IDispatch>) => {
         try {
 
-            const { data, status } = await globalAPI.post('api/Offer/AddPaperOfferRequest',
+            const { data, status } = await globalAPI.post(body.type==1?'api/Offer/AddPaperOfferRequest':body.type==2?"api/Offer/AddInkOfferRequest":"api/Offer/AddPrintingPressOfferRequest",
                 body
             );
             cb && cb(data, status);
+              console.log('AddPaperOfferRequest  = ', data,status);
         } catch (error) {
             console.log('AddPaperOfferRequest error = ', error);
             cb && cb(error, 500);

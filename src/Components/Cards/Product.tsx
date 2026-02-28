@@ -1,4 +1,4 @@
-import { Image, Platform, Pressable, StyleSheet, Text, View ,TouchableOpacity} from 'react-native'
+import { Image, Platform, Pressable, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React, { useContext, useState } from 'react'
 import { ThemeContext } from '../../Constants/theming';
 import { IFont, ITheme } from '../../Constants/interfaces';
@@ -8,7 +8,7 @@ import { t } from 'i18next';
 import { imageUrl } from '../../Constants/config';
 
 type Props = {
-    item: any, 
+    item: any,
     onPress: () => void,
     onFavPress: () => void,
     isOfffer: any
@@ -23,9 +23,7 @@ const Product = (props: Props) => {
     } = props;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
-console.log('====================================');
-console.log(item);
-console.log('====================================');
+
     return (
         <Pressable >
             <View style={[styles.con]}>
@@ -36,11 +34,11 @@ console.log('====================================');
                 </Pressable>
                 }
 
-                <Image source={{ uri:  item.imageUrl }} resizeMode="contain" style={[styles.image]} />
-                 {item.paperSize && item.paperSize.length != 0 && <Text style={[layout.textAlign, styles.text]}>{item.categoryName + " " + item.name + " " + item.width + t("GM") + " " + item.paperSize}</Text>}
-                                            {item.categoryName && item.categoryName == "احبار" && <Text style={[layout.textAlign, styles.text]}>{item.categoryName + " " + item.name}</Text>}
-                                            {item.categoryName && item.categoryName == "مطابع" && <Text style={[layout.textAlign, styles.text]}>{item.categoryName}</Text>}
-             
+                <Image source={{ uri: item.imageUrl }} resizeMode="contain" style={[styles.image]} />
+                {item.type == 1 && <Text style={[layout.textAlign, styles.text]}>{item.categoryName + " " + item.name + " " + item.width + t("GM") + " " + item.paperSize}</Text>}
+                {item.type == 2 && <Text style={[layout.textAlign, styles.text]}>{item.categoryName + " " + item.name}</Text>}
+                {item.type == 3 && <Text style={[layout.textAlign, styles.text]}>{item.categoryName + " " + item.userName}</Text>}
+
 
                 <View style={[layout.dirRow, styles.priceRateRow]}>
                     <View style={[layout.rowBox, { alignItems: "center" }]}>
@@ -49,15 +47,17 @@ console.log('====================================');
                     </View>
                     {/* <Text style={[layout.textAlign, styles.price]}>{item.price + " " + t("pound")}</Text> */}
 
-                     {item.price && <Text style={[layout.textAlign, styles.price]}>{item.categoryName && item.categoryName == "احبار" ?
-                                                    item.price + t("pound")
-                                                    : item.price + t("pound")}</Text>}
-                                                {item.coloredPrice && <Text style={[layout.textAlign, styles.price]}>{item.coloredPrice + t("pound")}</Text>}
-                                                {item.nonColoredPrice && <Text style={[layout.textAlign, styles.price]}>{item.nonColoredPrice + t("pound")}</Text>}
+                    {(item.type == 2 || item.type == 1) && <Text style={[layout.textAlign, styles.price]}>{item.type == 2 ?
+                        item.price + t("pound")
+                        : item.price + t("pound")}</Text>}
+                    <View>
+                        {item.coloredPrice && <Text style={[layout.textAlign, styles.price]}>{item.coloredPrice + t("pound")}</Text>}
+                        {item.nonColoredPrice && <Text style={[layout.textAlign, styles.price]}>{item.nonColoredPrice + t("pound")}</Text>}
+                    </View>
                 </View>
                 {!isOfffer && <View style={[layout.rowBox, styles.con2]}>
                     <Image
-                        source={{ uri:  item.userImages }}
+                        source={{ uri: item.userImages }}
                         style={[styles.imageRound]}
                     />
                     <View style={{ marginHorizontal: PixelPerfect(4) }}>
@@ -110,9 +110,9 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
 
         image: {
             height: PixelPerfect(80),
-            width:"100%",
-            marginTop:PixelPerfect(10),
-            resizeMode:"contain"
+            width: "100%",
+            marginTop: PixelPerfect(10),
+            resizeMode: "contain"
         },
 
         imageRound: {

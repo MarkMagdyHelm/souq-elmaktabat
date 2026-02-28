@@ -54,7 +54,8 @@ const Index = (props: Props) => {
 
     const [rejectReason, setRejectReason] = useState(null);
     const { rejectReasons, offerRequestStatus } = useSelector((state: RootState) => state.settings);
-    const { isSeller } = useSelector((state: RootState) => state.auth);
+       const { isLogin, userdata, isSeller } = useSelector((state: RootState) => state.auth);
+   
     const { onGoBack } = useRoute().params as any;
 
     const dispatch = useDispatch();
@@ -99,9 +100,24 @@ const Index = (props: Props) => {
         }
     };
 
-    console.log("========itemDetails=======");
-    console.log(source);
-    console.log("========itemDetails=======");
+const translateStatusById = (id: number) => {
+  switch (id) {
+    case 0:
+      return t("statusPending");     // قيد الانتظار
+    case 1:
+      return t("statusNew");         // طلب جديد
+    case 2:
+      return t("statusAccepted");    // طلب مقبول
+    case 3:
+      return t("statusCancelled");   // طلب ملغي
+    case 4:
+      return t("statusCompleted");   // طلب منتهي
+    case 5:
+      return t("statusDelivered");   // تم التسليم
+    default:
+      return "";
+  }
+};
 
     const [date, time] = (item?.date ?? "").split("T");
   
@@ -135,11 +151,13 @@ const Index = (props: Props) => {
                 { requestId, statusId, rejectReasonId, rejectReason, type: 1 },
                 (res, status) => {
                     if (res.status === 200) {
-                        // setItem((old: any) => ({
-                        //     ...old,
-                        //     status: translateStatus(statusId), requestStatus: translateStatus(statusId)
-                        // }));
-                        handleBack(statusId)
+                      
+                        setItem((old: any) => ({
+                            ...old,
+                            status:res.data?translateStatusById(2):translateStatusById(3), 
+                            requestStatus: res.data?2: 3, 
+                        }));
+                        // handleBack(statusId)
                     } else {
                         toastNotfication({
                             type: "error",
@@ -191,9 +209,9 @@ const Index = (props: Props) => {
             )
         );
     };
-
-
-
+console.log('==========dddd==========================');
+console.log(item.sellerId,userdata);
+console.log('====================================');
 
     return (
         <Container showHint={false}>
@@ -201,12 +219,11 @@ const Index = (props: Props) => {
 
             {visibleCancelResones && <MultiChekers
                 onCloseFn={(val) => {
-                    setVisibleCancelResones(false)
-                    console.log('=================rejectReasons===================');
-                    console.log(val);
+                    console.log('=======val=============================');
+                    console.log("val",val);
                     console.log('====================================');
-
-                }}
+                    setVisibleCancelResones(false)
+                   updateRequest(item.requestId, 3, val?.id??null,val?.id?null:val.name); }}
                 title={t("selectCancelReasons")}
                 currentFilter={""}
                 items={rejectReason}
@@ -216,12 +233,6 @@ const Index = (props: Props) => {
                 textinputTitle={t("writeCancelReasons")}
             />}
             <SignUpSuccess show={showSuccess} title={t("ratingSuccess")} />
-
-            <CancelOrder visible={visibleCancel}
-                onClose={() => setVisibleCancel(false)} onSubmit={() => {
-                    setVisibleCancelResones(true)
-                    setVisibleCancel(false)
-                }} title={t("cancelOrder")} body={t("confirmCancelOrder")} cancleText={t("yesCancelOrder")} />
             <Content style={styles.formCon} noPadding >
                 <View >
 
@@ -233,8 +244,9 @@ const Index = (props: Props) => {
                             alignItems: "center"
                         }]}>
                             <TouchableOpacity style={styles.statusBtn}>
-                                <Text style={[layout.textAlign, styles.statusText]}>{(item.status === "طلب جديد" && source === "orders") ? "قيد الانتظار" :
-                                    (item.status === "new order" && source === "orders") ? "pinging" : item.status} </Text>
+                                <Text style={[layout.textAlign, styles.statusText]}>{
+                                (item.status === "طلب جديد" && source === "orders") ? "قيد الانتظار" :
+                         (item.status === "new order" && source === "orders") ? "pinging" : item.status} </Text>
                             </TouchableOpacity>
                             <View style={[layout.rowBox, { alignItems: "center" }]}>
                                 <Image source={{ uri: item.imageUrl }} style={styles.avatar} />
@@ -247,7 +259,6 @@ const Index = (props: Props) => {
                         </View>
                         {/* address */}
                         <View style={[layout.rowBox, styles.actions, { alignItems: "center" }]}>
-
                             <AddressIcon color={Colors.white} />
                             <Text style={[layout.textAlign, styles.date1,
                             { marginHorizontal: PixelPerfect(8) }]}>{item.branch}</Text>
@@ -256,8 +267,6 @@ const Index = (props: Props) => {
                         { marginHorizontal: PixelPerfect(8) }]}>{item.branch}</Text>
                     </View>
                     <Space />
-
-
                     {/* productDetails */}
                     <View style={styles.con1} >
                         <Text style={[layout.textAlign, styles.product]}>{item.category + " " + item.paperName + " " + item.paperSize}</Text>
@@ -277,7 +286,7 @@ const Index = (props: Props) => {
                             <Text style={[layout.textAlign, styles.total]}>{item.price} {t("pound")}</Text>
                         </View>
 
-                        {state.requestStatus === 2 && <View style={[layout.dirRow, styles.actions]}>
+                        {(state.requestStatus === 2 && userdata.id != item.userId)&& <View style={[layout.dirRow, styles.actions]}>
                             <TouchableOpacity style={[layout.rowBox, styles.acceptBtn]} onPress={() => { CallNumber(item.phoneNumber) }} >
                                 <View style={[styles.icon]}>
                                     <Call2Icon />
@@ -288,7 +297,7 @@ const Index = (props: Props) => {
 
                         </View>}
 
-                        {state.requestStatus === 2 && <View style={[styles.actions]}>
+                        {(state.requestStatus === 2&&item.sellerId !=userdata.id) && <View style={[styles.actions]}>
                             <TouchableOpacity style={[layout.rowBox, styles.receiveBtn]} onPress={() => {
                                 updateRequest(item.requestId, 5, null, null)
                             }} >
@@ -321,7 +330,7 @@ const Index = (props: Props) => {
                         {(state.requestStatus === 1 && source != "orders") && (<View style={[layout.dirRow, styles.actions]}>
 
                             <TouchableOpacity style={[layout.rowBox, styles.cancelBtn]} onPress={() => {
-                                updateRequest(item.requestId, 3, null, null)
+                             setVisibleCancelResones(true)
                             }}>
                                 <View style={[styles.icon]}>
                                     <CancelIcon />
@@ -377,24 +386,6 @@ const Index = (props: Props) => {
                             <Text style={[layout.textAlign, styles.description]}>{t("productDescription")}</Text>
                             <Text style={[layout.textAlign, styles.description1]}>{item.description}</Text>
                         </View>
-                        {/* <View >
-
-                                <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                                    <Text style={styles.note}>النوع</Text>
-                                    <Text style={styles.note1}>{item.paperName}</Text>
-                                </View>
-                                <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                                    <Text style={styles.note}>الحجم</Text>
-                                    <Text style={styles.note1}>{item.paperSize}</Text>
-                                </View>
-                                <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                                    <Text style={styles.note}>الوزن</Text>
-                                    <Text style={styles.note1}>{item.width}</Text>
-                                </View>
-
-                            </View>
-                             */}
-                        {/* cancleResons */}
                         {state.requestStatus === 3 && <View >
                             <Text style={[layout.textAlign, styles.cancel]}>{item.rejectBy}</Text>
                             <Text style={[layout.textAlign, styles.cancel]}>{t("cancelReason")}</Text>
@@ -404,15 +395,7 @@ const Index = (props: Props) => {
                         {(state.requestStatus === 4 || state.requestStatus === 3) &&
                             <Text style={[layout.textAlign, styles.date1]}>{item.rejectReason}</Text>
                         }
-                        {/*التقييم*/}
-                        {/* <Text style={styles.rate}>تقييمك للبائع : </Text>
-                            <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                                <Text style={styles.rating}>{"(5)"} ⭐⭐⭐⭐ </Text>
-                                <Text style={styles.dateRate}>18 مايو 2025</Text>
-
-                            </View>
-
-                            <Text style={styles.rateNote}>جودة ممتازة وسعر مناسب. الورق أبيض نقي والطباعة عليه واضحة جداً. أنصح بالشراء.</Text> */}
+                    
                     </View>
 
                 </View>
@@ -424,7 +407,7 @@ const Index = (props: Props) => {
                 onClose={() => setViewRate(false)}
                 item={item}
                 onSubmit={(val) => {
-                    addRate(val.rating, val.comment, item.userId, item.requestId)
+                    addRate(val.rating, val.comment, item.sellerId, item.requestId)
                 }}
             />
         </Container >

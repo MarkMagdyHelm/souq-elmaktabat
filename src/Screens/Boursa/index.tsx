@@ -73,7 +73,7 @@ const Index = (props: Props) => {
       placement: 'top',
     } as any);
   }
-  const PushNotification = PushNotificationHandler();
+
   const getPapers = () => {
     setstate(old => ({ ...old, loading: true }))
     dispatch<any>(GetPapersHandler((res, status) => {

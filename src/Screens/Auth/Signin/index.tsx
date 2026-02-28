@@ -14,7 +14,8 @@ import { validationSchema } from '../../../Validation/Signin'
 import { useDispatch, useSelector } from 'react-redux'
 import { SignInHandler } from '../../../Apis/User'
 import { useToast } from 'react-native-toast-notifications'
-import { RootState } from '../../../Store/store'
+import messaging, { firebase } from "@react-native-firebase/messaging";
+
 type Props = {
   navigation: any
 }
@@ -49,9 +50,9 @@ const Index = (props: Props) => {
       placement: 'top',
     } as any);
   }
-  const { fcm } = useSelector((state: RootState) => state.auth);
-  const signin = (body: any) => {
-    body.fcmToken = fcm;
+  const signin = async(body: any) => {
+    try {
+          body.fcmToken = await firebase.messaging().getToken();;
     setstate(old => ({ ...old, loading: true }))
     dispatch<any>(SignInHandler(body, (res, status) => {
       if (res.status == 200) {
@@ -61,6 +62,10 @@ const Index = (props: Props) => {
       }
       setstate(old => ({ ...old, loading: false }))
     }))
+    } catch (error) {
+      
+    }
+
   };
   return (
     <Container showHint={false}

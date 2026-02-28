@@ -44,7 +44,7 @@ const MultiChekers = (props: Props) => {
         items: items,
         selectFilter: currentFilter,
         isScroll: false,
-        isClickable:false
+        isClickable: false
     });
     const [filterItem, setFilterItem] = useState({})
     const dispatch = useDispatch();
@@ -128,7 +128,7 @@ const MultiChekers = (props: Props) => {
                 if (items[index].id == 1) {
                     return {
                         ...old,
-                        isClickable:true
+                        isClickable: true
                     };
 
                 }
@@ -201,9 +201,10 @@ const MultiChekers = (props: Props) => {
                 }
                 if (type == "rejectReasons") {
 
+
                     dispatch(SetRejectReasons(updatedItems));
                     const RejectReasonssSelected = updatedItems.filter((el) => el.isSelected);
-
+                    onCloseFn && onCloseFn(RejectReasonssSelected.find(el=>el.isSelected))
                     return {
                         ...old,
                         items: updatedItems,
@@ -225,7 +226,7 @@ const MultiChekers = (props: Props) => {
                     };
                 }
 
-                
+
                 if (type == "paperType") {
 
                     dispatch(SetPaperType(updatedItems));
@@ -242,7 +243,6 @@ const MultiChekers = (props: Props) => {
 
                     dispatch(SetPaperType(updatedItems));
                     const paperSizeSelected = updatedItems.filter((el) => el.isSelected);
-
                     return {
                         ...old,
                         items: updatedItems,
@@ -251,9 +251,10 @@ const MultiChekers = (props: Props) => {
                     };
                 }
 
-                
+
 
             });
+
         } else {
             handleSubmit2()
         }

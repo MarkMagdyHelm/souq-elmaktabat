@@ -10,7 +10,6 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../Store/store'
 import { imageUrl } from '../../Constants/config'
 import CancelOrder from '../PopUps/CancelOrder'
-import * as StoreReview from 'react-native-store-review';
 
 type Props = {
   navigation: any
@@ -32,22 +31,31 @@ const STORE_LINK = Platform.select({
   const allMenuItems = [
     {
       key: 'accountInfo',
+       isLogin:true,
       title: t('AccountInfo'),
       icon: null,
       onPress: () => {
 
       }
     },
-
-    (isLogin?{
+ {
+      key: 'login',
+      title: t('signin1'),
+         isLogin:false,
+      icon: <AccountIcon />,
+      onPress: () => navigation.navigate('Signin')
+    },
+ {
       key: 'account',
+       isLogin:true,
       title: t('The Account'),
       icon: <AccountIcon />,
       onPress: () => navigation.navigate(isSeller ? 'SellerProfile' : 'UserProfile')
-    }:null),
+    },
     {
       key: 'orders',
       title: t('My Orders'),
+       isLogin:true,
       icon: <OrdersIcon />,
       onPress: () => navigation.navigate('MyOrders')
     },
@@ -55,6 +63,7 @@ const STORE_LINK = Platform.select({
     {
       key: 'offers',
       title: t('My Offers'),
+       isLogin:true,
       icon: <OffersIcon />,
       onPress: () => navigation.navigate('MyOffers'),
       sellerOnly: true
@@ -62,6 +71,7 @@ const STORE_LINK = Platform.select({
     {
       key: 'purchase',
       title: t('Purchase Orders'),
+       isLogin:true,
       icon: <PurchaseOrdersIcon />,
       onPress: () => navigation.navigate('Orders'),
       sellerOnly: true
@@ -69,6 +79,7 @@ const STORE_LINK = Platform.select({
     {
       key: 'ratings',
       title: t('Ratings'),
+       isLogin:true,
       icon: <RatingsIcon />,
       onPress: () => {
       
@@ -83,10 +94,12 @@ const STORE_LINK = Platform.select({
       onPress: () => {
         navigation.navigate('Branches')
       },
-      sellerOnly: true
+      sellerOnly: true,
+       isLogin:true,
     },
     {
       key: 'favorites',
+       isLogin:true,
       title: t('Favorite List'),
       icon: <FavoriteIcon />,
       onPress: () => {
@@ -95,6 +108,7 @@ const STORE_LINK = Platform.select({
     },
     {
       key: 'changePassword',
+       isLogin:true,
       title: t("Change Password"),
       icon: <LockIcon />,
       onPress: () => {
@@ -150,6 +164,7 @@ const STORE_LINK = Platform.select({
     {
       key: 'logout',
       title: t('logout'),
+       isLogin:true,
       icon: <LogoutIcon />,
       onPress: () => {
         setVisibleCancel(true)
@@ -158,6 +173,7 @@ const STORE_LINK = Platform.select({
     },
     {
       key: 'deleteAccount',
+      isLogin:true,
       title: t('Delete Account'),
       icon: <DeleteIcon />,
       onPress: () => {
@@ -169,15 +185,15 @@ const STORE_LINK = Platform.select({
 
 
 
-  // Filter menu items based on isSeller
-  const menuItems = allMenuItems.filter(item => {
-    // If item is sellerOnly, only show if isSeller is true
-    if (item.sellerOnly) {
-      return isSeller === true;
-    }
-    // Otherwise, show all items
-    return true;
-  });
+const filteredMenuItems = allMenuItems.filter(item => {
+  // login check
+  if (item.isLogin === true && !isLogin) return false;
+ if (item.key === "login" && isLogin) return false;
+  // seller check
+  if (item.sellerOnly && !isSeller) return false;
+
+  return true;
+});
 
   console.log(userdata, 'userdata', Platform.OS, isSeller);
 
@@ -195,13 +211,9 @@ const STORE_LINK = Platform.select({
       <View style={[layout.rowBox, styles.header]}>
         <View style={[layout.rowBox, styles.profileSection]}>
           <View style={styles.profileImageContainer}>
-            {userImage ? (
+            {(userImage&&isLogin) && (
               <Image source={userImage} style={styles.profileImage} />
-            ) : (
-              <View style={styles.profileImagePlaceholder}>
-                <Text style={styles.profileImageText}>{t("library")}</Text>
-              </View>
-            )}
+            ) }
           </View>
           <View style={styles.profileInfo}>
             <Text style={[layout.textAlign, styles.userName]}>{userName}</Text>
@@ -221,13 +233,13 @@ const STORE_LINK = Platform.select({
         style={styles.menuContainer}
         showsVerticalScrollIndicator={false}
       >
-        {menuItems.map((item, index) => (
+        {filteredMenuItems.map((item, index) => (
           <Pressable
-            key={item.key}
+            key={item?.key}
             style={styles.menuItem}
-            onPress={item.onPress}
+            onPress={item?.onPress}
           >
-            {item.key != "aboutAPP" && <View style={styles.chevronContainer}>
+            {item?.key != "aboutAPP" && <View style={styles.chevronContainer}>
               <MenuChevronIcon
                 color={theme.textColor}
                 style={styles.chevron}
@@ -235,19 +247,19 @@ const STORE_LINK = Platform.select({
             </View>}
             <View style={[layout.rowBox, { flex: 1, alignItems: 'center' }]}>
 
-              {item.key !== "aboutAPP" && item.key !== "accountInfo" && (
+              {item?.key !== "aboutAPP" && item?.key !== "accountInfo" && (
                 <View style={styles.menuIconContainer}>
-                  {item.icon}
+                  {item?.icon}
                 </View>
               )}
 
-              {item.key !== "aboutAPP"  && item.key !== "accountInfo"? (
+              {item?.key !== "aboutAPP"  && item?.key !== "accountInfo"? (
                 <Text style={[styles.menuText, layout.textAlign]}>
-                  {item.title}
+                  {item?.title}
                 </Text>
               ) : (
                 <Text style={[styles.menuText1, layout.textAlign]}>
-                  {item.title}
+                  {item?.title}
                 </Text>
               )}
 

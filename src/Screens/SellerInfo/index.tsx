@@ -54,7 +54,7 @@ const Index = (props: Props) => {
             hasMoreRequests: true,
             loadingMore: false,
             sellerData: null,
-
+            allOffers: []
       });
 
       useEffect(() => {
@@ -165,9 +165,14 @@ const Index = (props: Props) => {
             setstate(old => ({ ...old, loading: true }))
             dispatch<any>(GetSellerData(seller.id, (res, status) => {
                   if (res.status === 200) {
-                        setstate(old => ({ ...old, sellerData: res.data }))
+const allOffers = [
+  ...res.data.offers.paperOffers,
+  ...res.data.offers.inkOffers,
+  ...res.data.offers.printingPressesOffers,
+];
+                        setstate(old => ({ ...old, sellerData: res.data ,allOffers:allOffers}))
                         console.log("------sellerData--------");
-                        console.log(res.data);
+                        console.log("-sellerData-", res.data);
                         console.log("--------------");
 
                         setstate(old => ({ ...old, sellerData: res.data, loading: false }))
@@ -186,12 +191,12 @@ const Index = (props: Props) => {
             } as any);
       }
       const handleSelectProduct = (item) => {
-             if (item?.isMine) {
-            navigation.navigate("OffersDetails", { item: item })
-        }else{
+            if (item?.isMine) {
+                  navigation.navigate("OffersDetails", { item: item })
+            } else {
 
-            navigation.navigate("ProductDetails", { item: item })
-        }
+                  navigation.navigate("ProductDetails", { item: item })
+            }
       }
 
       const handleLoadMore = () => {
@@ -248,12 +253,12 @@ const Index = (props: Props) => {
       return (
             <Container showHint={false}>
                   <View style={styles.con} >
-                        <HeaderWithText isShareVisible={true} 
-                        style={{backgroundColor:theme.white}}
-                        isFavVisible={true}
-                        
-                        title={t("")} />
-                        <View style={[layout.rowBox, { alignItems: "center",flex:0.1,backgroundColor:theme.white}]}>
+                        <HeaderWithText isShareVisible={true}
+                              style={{ backgroundColor: theme.white }}
+                              isFavVisible={true}
+
+                              title={t("")} />
+                        <View style={[layout.rowBox, { alignItems: "center", flex: 0.1, backgroundColor: theme.white }]}>
                               <Image
                                     source={{ uri: (seller.userImages ?? seller.imageURL) }}
                                     style={[styles.imageRound]}
@@ -306,13 +311,13 @@ const Index = (props: Props) => {
                         {state.viewOffers && <View style={{
                               paddingTop: PixelPerfect(16),
                               backgroundColor: theme.accordianBody,
-                              flex:0.7,
+                              flex: 0.7,
                               paddingHorizontal: PixelPerfect(16)
                         }}>
                               <FlatList
-                                    data={state.sellerData?.offers?.paperOffers}
+                                    data={state.allOffers}
                                     keyExtractor={(item) => item.id + ""}
-                                    showsVerticalScrollIndicator={true}
+                                    showsVerticalScrollIndicator={false}
                                     renderItem={({ item }) =>
                                           <Product isOfffer={true} item={item} onPress={() => {
                                                 handleSelectProduct(item)
@@ -335,7 +340,7 @@ const Index = (props: Props) => {
                         {state.viewRate && <View style={{
                               marginTop: PixelPerfect(16),
                               backgroundColor: theme.accordianBody,
-                                flex:0.7
+                              flex: 0.7
                         }}>
 
 
@@ -350,8 +355,8 @@ const Index = (props: Props) => {
 
 
                               </View>
-                        
- 
+
+
                               <FlatList
                                     style={{ marginBottom: PixelPerfect(10) }}
                                     data={state.sellerData?.rates}
@@ -374,69 +379,69 @@ const Index = (props: Props) => {
                         </View>
                         }
 
-                        {state.viewInformation && <View  style={{
+                        {state.viewInformation && <View style={{
                               paddingTop: PixelPerfect(16),
-                           
-                              flex:0.7
+
+                              flex: 0.7
                         }}>
                               <Content noPadding>
-                                      {/* About */}
-                              <View style={styles.block}>
-                                    <Text style={[layout.textAlign, styles.blockTitle]}>{t("aboutCompany")}</Text>
-                                    <Text style={[layout.textAlign, styles.paragraph]}>
-                                          {t("specializedIn")} {t("specializedIn")}
-                                    </Text>
-                              </View>
-                            
-                              {/* Tools - inline separated like design */}
-                              <View style={styles.block}>
-                                    <Text style={[layout.textAlign, styles.blockTitle]}>{t("companyTools")}</Text>
-                                    <View style={[layout.rowBox, styles.listRow]}>
-                                          {[t('paper'), t('inks'), t('photocopyMachines'), t('officeSupplies')].map((txt, idx, arr) => (
-                                                <View key={idx} style={[layout.rowBox, styles.listPair]}>
-                                                      <Text style={[layout.textAlign, styles.listItem]}>{txt}</Text>
-                                                      {idx !== arr.length - 1 && <Text style={styles.separatorDot}>·</Text>}
-                                                </View>
-                                          ))}
+                                    {/* About */}
+                                    <View style={styles.block}>
+                                          <Text style={[layout.textAlign, styles.blockTitle]}>{t("aboutCompany")}</Text>
+                                          <Text style={[layout.textAlign, styles.paragraph]}>
+                                                {t("specializedIn")} {t("specializedIn")}
+                                          </Text>
                                     </View>
-                              </View>
-                              {/* <Space /> */}
-                              {/* Activity (outlined box) - inline separated */}
-                              <View style={[styles.block]}>
-                                    <Text style={[layout.textAlign, styles.blockTitle]}>{t("companyActivity")}</Text>
-                                    <View style={[layout.rowBox, styles.listRow]}>
-                                          {[t('libraries'), t('supplyCompanies'), t('printing')].map((txt, idx, arr) => (
-                                                <View key={idx} style={[layout.rowBox, styles.listPair]}>
-                                                      <Text style={[layout.textAlign, styles.listItem]}>{txt}</Text>
-                                                      {idx !== arr.length - 1 && <Text style={styles.separatorDot}>·</Text>}
-                                                </View>
-                                          ))}
+
+                                    {/* Tools - inline separated like design */}
+                                    <View style={styles.block}>
+                                          <Text style={[layout.textAlign, styles.blockTitle]}>{t("companyTools")}</Text>
+                                          <View style={[layout.rowBox, styles.listRow]}>
+                                                {[t('paper'), t('inks'), t('photocopyMachines'), t('officeSupplies')].map((txt, idx, arr) => (
+                                                      <View key={idx} style={[layout.rowBox, styles.listPair]}>
+                                                            <Text style={[layout.textAlign, styles.listItem]}>{txt}</Text>
+                                                            {idx !== arr.length - 1 && <Text style={styles.separatorDot}>·</Text>}
+                                                      </View>
+                                                ))}
+                                          </View>
                                     </View>
-                              </View>
-                              {/* <Space /> */}
-                              {/* Payment methods */}
-                              <View style={[styles.block]}>
-                                    <Text style={[layout.textAlign, styles.blockTitle]}>{t("paymentMethods")}</Text>
-                                    <Text style={[layout.textAlign, styles.bullets]}>• {t("bankCard")}</Text>
-                                    <Text style={[layout.textAlign, styles.bullets]}>• {t("electronicWallets")}</Text>
-                                    <Text style={[layout.textAlign, styles.bullets]}>• {t("cashOnDelivery")}</Text>
-                              </View>
-                              {/* <Space /> */}
-                              <View style={styles.block}>
-                                    <Text style={[layout.textAlign, styles.blockTitle]}>{t("branches")}</Text>
-                                    <FlatList
-                                          data={state.branches}
-                                          keyExtractor={(item) => item.id + ""}
-                                          renderItem={({ item }) => (
-                                                <SellerBranches viewRadio={false} onPress={function (): void {
-                                                      console.log("")
-                                                      
-                                                } } backgroundColor={theme.white} />
-                                          )}
-                                    />
-                              </View>
+                                    {/* <Space /> */}
+                                    {/* Activity (outlined box) - inline separated */}
+                                    <View style={[styles.block]}>
+                                          <Text style={[layout.textAlign, styles.blockTitle]}>{t("companyActivity")}</Text>
+                                          <View style={[layout.rowBox, styles.listRow]}>
+                                                {[t('libraries'), t('supplyCompanies'), t('printing')].map((txt, idx, arr) => (
+                                                      <View key={idx} style={[layout.rowBox, styles.listPair]}>
+                                                            <Text style={[layout.textAlign, styles.listItem]}>{txt}</Text>
+                                                            {idx !== arr.length - 1 && <Text style={styles.separatorDot}>·</Text>}
+                                                      </View>
+                                                ))}
+                                          </View>
+                                    </View>
+                                    {/* <Space /> */}
+                                    {/* Payment methods */}
+                                    <View style={[styles.block]}>
+                                          <Text style={[layout.textAlign, styles.blockTitle]}>{t("paymentMethods")}</Text>
+                                          <Text style={[layout.textAlign, styles.bullets]}>• {t("bankCard")}</Text>
+                                          <Text style={[layout.textAlign, styles.bullets]}>• {t("electronicWallets")}</Text>
+                                          <Text style={[layout.textAlign, styles.bullets]}>• {t("cashOnDelivery")}</Text>
+                                    </View>
+                                    {/* <Space /> */}
+                                    <View style={styles.block}>
+                                          <Text style={[layout.textAlign, styles.blockTitle]}>{t("branches")}</Text>
+                                          <FlatList
+                                                data={state.branches}
+                                                keyExtractor={(item) => item.id + ""}
+                                                renderItem={({ item }) => (
+                                                      <SellerBranches viewRadio={false} onPress={function (): void {
+                                                            console.log("")
+
+                                                      }} backgroundColor={theme.white} />
+                                                )}
+                                          />
+                                    </View>
                               </Content>
-                            
+
                         </View>}
 
                   </View>
@@ -451,13 +456,13 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean) =>
             con: {
                   flex: 1,
                   backgroundColor: theme.accordianBody,
-                
+
             },
             header: {
                   marginTop: PixelPerfect(16),
                   marginBottom: PixelPerfect(8),
                   alignItems: "center",
-                  
+
             },
             imageRound: {
                   height: PixelPerfect(80),
@@ -480,7 +485,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean) =>
                   lineHeight: PixelPerfect(25)
             },
             tabs: {
-                flex:0.1,
+                  flex: 0.1,
                   paddingVertical: PixelPerfect(16),
                   paddingHorizontal: PixelPerfect(16),
                   backgroundColor: theme.white,

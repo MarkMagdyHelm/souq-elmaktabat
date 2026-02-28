@@ -55,9 +55,9 @@ const Index = (props: Props) => {
         loading: false,
         showSuccess: false,
         isImediatePrinting: false,
- isdelervable: false,
+        isdelervable: false,
     });
-   const handelDelery = () => {
+    const handelDelery = () => {
         setState(old => ({ ...old, isdelervable: !old.isdelervable }))
     }
 
@@ -120,9 +120,20 @@ const Index = (props: Props) => {
         setState((old) => ({ ...old, loading: true }));
 
         dispatch<any>(
-            AddPaperOfferRequest({
+            AddPaperOfferRequest(item.type == 1 ? {
                 paperOfferId: item.id, paperOfferBranchId: selectedBranchId,
-                quantity: qty, totalPrice: totalPrice
+                quantity: qty, totalPrice: totalPrice,
+                type: item.type
+            } : item.type == 2 ? {
+                inkOfferId: item.id,
+                inkOfferBranchId: selectedBranchId,
+                quantity: qty,
+                totalPrice: totalPrice,
+                type: item.type
+            } : {
+                printingPressOfferId: item.id,
+                printingPressOfferBranchId: selectedBranchId,
+                isColored: state.isdelervable
             }, (res, status) => {
                 if (res.status === 200) {
                     setState((old) => ({
@@ -139,7 +150,7 @@ const Index = (props: Props) => {
                 } else {
                     toastNotfication({
                         type: "error",
-                        message: res?.Message ?? t("Something Went wrong"),
+                        message: res?.message ?? t("Something Went wrong"),
                     });
                     setState((old) => ({ ...old, loading: false }));
                 }
@@ -148,12 +159,13 @@ const Index = (props: Props) => {
     };
 
 
+
     const fullDate = item?.endDate;
     const [date, time] = fullDate?.split("T");
     return (
         <Container showHint={false}>
             <HeaderWithText title={t("productDetailsTitle")}
-                isShareVisible={true}
+                isShareVisible={false}
                 isFavVisible={true}
                 isFaverouit={item?.isFavourite}
                 onFavClick={() => {
@@ -166,9 +178,9 @@ const Index = (props: Props) => {
 
                     <View>
                         <View style={styles.info}>
-                            {item.paperSize && item.paperSize.length != 0 && <Text style={[layout.textAlign, styles.title]}>{item.categoryName + " " + item.name + " " + item.width + t("GM") + " " + item.paperSize}</Text>}
-                            {item.categoryName && item.categoryName == "احبار" && <Text style={[layout.textAlign, styles.title]}>{item.categoryName + " " + item.name}</Text>}
-                            {item.categoryName && item.categoryName == "مطابع" && <Text style={[layout.textAlign, styles.title]}>{item.categoryName}</Text>}
+                            {item.type == 1 && <Text style={[layout.textAlign, styles.title]}>{item.categoryName + " " + item.name + " " + item.width + t("GM") + " " + item.paperSize}</Text>}
+                            {item.type == 2 && <Text style={[layout.textAlign, styles.title]}>{item.categoryName + " " + item.name}</Text>}
+                            {item.type == 3 && <Text style={[layout.textAlign, styles.title]}>{item.categoryName + " " + item.userName}</Text>}
 
                             {item.price && <Text style={[layout.textAlign, styles.priceText]}>{item.categoryName && item.categoryName == "احبار" ?
                                 t("price_Cartage") + " " + item.price + t("pound")
@@ -221,108 +233,108 @@ const Index = (props: Props) => {
                         </View>
                         <Space />
                         {
-                            (item.categoryName && item.categoryName == "مطابع")?
+                            (item.type == 3) ?
                                 <View
-                            style={styles.selectMenueCon}>
-                            <Text style={[layout.textAlign, styles.label]}>{t("SelectPrintertype")}</Text>
-                            <View style={[layout.rowBox, styles.selectMenue, { borderWidth: 0, marginBottom: 0 }]}>
-                                <Pressable style={[layout.rowBox, styles.yesNocon]}
-                                    onPress={handelDelery}
-                                >
-                                    <View style={[styles.radioButton, { borderColor: state.isdelervable ? theme.active : theme.gray }]}>
-                                        {state.isdelervable ? <View style={styles.radioButtonSelected} /> : null}
+                                    style={styles.selectMenueCon}>
+                                    <Text style={[layout.textAlign, styles.label]}>{t("SelectPrintertype")}</Text>
+                                    <View style={[layout.rowBox, styles.selectMenue, { borderWidth: 0, marginBottom: 0 }]}>
+                                        <Pressable style={[layout.rowBox, styles.yesNocon]}
+                                            onPress={handelDelery}
+                                        >
+                                            <View style={[styles.radioButton, { borderColor: state.isdelervable ? theme.active : theme.gray }]}>
+                                                {state.isdelervable ? <View style={styles.radioButtonSelected} /> : null}
+                                            </View>
+                                            <Text style={[styles.textselectmenu, { paddingHorizontal: PixelPerfect(5) }]}>
+                                                {t("coloerPrinter")}
+                                            </Text>
+                                        </Pressable>
+                                        <Pressable style={[layout.rowBox, styles.yesNocon]}
+                                            onPress={handelDelery}
+                                        >
+                                            <View style={[styles.radioButton, { borderColor: !state.isdelervable ? theme.active : theme.gray }]}>
+                                                {!state.isdelervable ? <View style={styles.radioButtonSelected} /> : null}
+                                            </View>
+                                            <Text style={[styles.textselectmenu, { paddingHorizontal: PixelPerfect(5) }]}>
+                                                {t("nonColoered")}
+                                            </Text>
+                                        </Pressable>
                                     </View>
-                                    <Text style={[styles.textselectmenu, { paddingHorizontal: PixelPerfect(5) }]}>
-                                        {t("coloerPrinter")}
-                                    </Text>
-                                </Pressable>
-                                <Pressable style={[layout.rowBox, styles.yesNocon]}
-                                    onPress={handelDelery}
-                                >
-                                    <View style={[styles.radioButton, { borderColor: !state.isdelervable ? theme.active : theme.gray }]}>
-                                        {!state.isdelervable ? <View style={styles.radioButtonSelected} /> : null}
+                                    <View style={[layout.rowBox, { justifyContent: "space-between", marginVertical: PixelPerfect(4) }]}>
+                                        <Text style={[layout.textAlign, styles.note]}>{t("offerEndDate")}</Text>
+                                        <Text style={[layout.textAlign, styles.note1]}>{date + " " + t("orUntilOutOfStock")}</Text>
                                     </View>
-                                    <Text style={[styles.textselectmenu, { paddingHorizontal: PixelPerfect(5) }]}>
-                                        {t("nonColoered")}
-                                    </Text>
-                                </Pressable>
-                            </View>
-                                   <View style={[layout.rowBox, { justifyContent: "space-between", marginVertical: PixelPerfect(4) }]}>
-                                <Text style={[layout.textAlign, styles.note]}>{t("offerEndDate")}</Text>
-                                <Text style={[layout.textAlign, styles.note1]}>{date + " " + t("orUntilOutOfStock")}</Text>
-                            </View>
-                            <View style={[layout.rowBox, { justifyContent: "space-between", marginVertical: PixelPerfect(4) }]}>
-                                <Text style={[layout.textAlign, styles.note]}>{t("deliveryMethods")}</Text>
-                                <Text style={[layout.textAlign, styles.note1]}>   {item.includeDelivery ? t("deliveryAvailable") : t("deliveryNotAvailable")}</Text>
-                            </View>
-                        </View>
-                        :
-                         <View style={styles.info}>
-
-
-                            <View style={[layout.rowBox, { justifyContent: "space-between", alignItems: "center" }]}>
-                                <Text style={styles.sellerTitle}>{t("selectQuantity")}</Text>
-                                <View style={[layout.dirRow, styles.quantityRow]}>
-                                    <TouchableOpacity style={styles.qtyBtn} onPress={decrease} >
-                                        <Text style={styles.qtyText}>-</Text>
-                                    </TouchableOpacity>
-                                    <Text style={styles.qtyValue}>{qty}</Text>
-                                    <TouchableOpacity style={styles.qtyBtn} onPress={increase}>
-                                        <Text style={styles.qtyText}>+</Text>
-                                    </TouchableOpacity>
+                                    <View style={[layout.rowBox, { justifyContent: "space-between", marginVertical: PixelPerfect(4) }]}>
+                                        <Text style={[layout.textAlign, styles.note]}>{t("deliveryMethods")}</Text>
+                                        <Text style={[layout.textAlign, styles.note1]}>   {item.includeDelivery ? t("deliveryAvailable") : t("deliveryNotAvailable")}</Text>
+                                    </View>
                                 </View>
-                            </View>
-                            <View style={[layout.rowBox, { justifyContent: "space-between", marginVertical: PixelPerfect(4) }]}>
-                                <Text style={[layout.textAlign, styles.note]}>{t("minOrderQuantity")}</Text>
-                                <Text style={[layout.textAlign, styles.note1]}>{item.min}</Text>
-                            </View>
-                            <View style={[layout.rowBox, { justifyContent: "space-between", marginVertical: PixelPerfect(4) }]}>
-                                <Text style={[layout.textAlign, styles.note]}>{t("offerEndDate")}</Text>
-                                <Text style={[layout.textAlign, styles.note1]}>{date + " " + t("orUntilOutOfStock")}</Text>
-                            </View>
-                            <View style={[layout.rowBox, { justifyContent: "space-between", marginVertical: PixelPerfect(4) }]}>
-                                <Text style={[layout.textAlign, styles.note]}>{t("deliveryMethods")}</Text>
-                                <Text style={[layout.textAlign, styles.note1]}>   {item.includeDelivery ? t("deliveryAvailable") : t("deliveryNotAvailable")}</Text>
-                            </View>
-                            <View style={[layout.rowBox, { justifyContent: "space-between", marginTop: PixelPerfect(4) }]}>
-                                <Text style={[layout.textAlign, styles.totalPrice]}>{t("totalPrice")}</Text>
-                                <Text style={[layout.textAlign, styles.totalPriceValue]}>{totalPrice + " " + t("pound")}</Text>
-                            </View>
-                            <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
-                                <Text style={[layout.textAlign, styles.note]}>{""}</Text>
-                                <Text style={[layout.textAlign, styles.note2]}>{t("excludingOtherFees")}</Text>
-                            </View>
+                                :
+                                <View style={styles.info}>
+
+
+                                    <View style={[layout.rowBox, { justifyContent: "space-between", alignItems: "center" }]}>
+                                        <Text style={styles.sellerTitle}>{t("selectQuantity")}</Text>
+                                        <View style={[layout.dirRow, styles.quantityRow]}>
+                                            <TouchableOpacity style={styles.qtyBtn} onPress={decrease} >
+                                                <Text style={styles.qtyText}>-</Text>
+                                            </TouchableOpacity>
+                                            <Text style={styles.qtyValue}>{qty}</Text>
+                                            <TouchableOpacity style={styles.qtyBtn} onPress={increase}>
+                                                <Text style={styles.qtyText}>+</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                    <View style={[layout.rowBox, { justifyContent: "space-between", marginVertical: PixelPerfect(4) }]}>
+                                        <Text style={[layout.textAlign, styles.note]}>{t("minOrderQuantity")}</Text>
+                                        <Text style={[layout.textAlign, styles.note1]}>{item.min}</Text>
+                                    </View>
+                                    <View style={[layout.rowBox, { justifyContent: "space-between", marginVertical: PixelPerfect(4) }]}>
+                                        <Text style={[layout.textAlign, styles.note]}>{t("offerEndDate")}</Text>
+                                        <Text style={[layout.textAlign, styles.note1]}>{date + " " + t("orUntilOutOfStock")}</Text>
+                                    </View>
+                                    <View style={[layout.rowBox, { justifyContent: "space-between", marginVertical: PixelPerfect(4) }]}>
+                                        <Text style={[layout.textAlign, styles.note]}>{t("deliveryMethods")}</Text>
+                                        <Text style={[layout.textAlign, styles.note1]}>   {item.includeDelivery ? t("deliveryAvailable") : t("deliveryNotAvailable")}</Text>
+                                    </View>
+                                    <View style={[layout.rowBox, { justifyContent: "space-between", marginTop: PixelPerfect(4) }]}>
+                                        <Text style={[layout.textAlign, styles.totalPrice]}>{t("totalPrice")}</Text>
+                                        <Text style={[layout.textAlign, styles.totalPriceValue]}>{totalPrice + " " + t("pound")}</Text>
+                                    </View>
+                                    <View style={[layout.rowBox, { justifyContent: "space-between" }]}>
+                                        <Text style={[layout.textAlign, styles.note]}>{""}</Text>
+                                        <Text style={[layout.textAlign, styles.note2]}>{t("excludingOtherFees")}</Text>
+                                    </View>
 
 
 
-                        </View>
+                                </View>
                         }
-                      
+
                         {/* تحديد الكمية */}
-                       
 
-                            <TouchableOpacity style={styles.orderBtn} onPress={() => {
 
-                                if (qty < item.min) {
-                                    toastNotfication({
-                                        type: "error",
-                                        message: "Quantity less than min quantity"
-                                    });
-                                }
-                                else if (selectedBranchId === null) {
-                                    toastNotfication({
-                                        type: "error",
-                                        message: "Please select Branch"
-                                    });
-                                }
-                                else {
-                                    // navigation.navigate("MyOrders")
-                                    addPaperOfferRequest()
-                                }
-                            }}>
-                                <Text style={[layout.textAlign, styles.orderBtnText]}>{t("sendOrder")}</Text>
-                            </TouchableOpacity>
-                      
+                        <TouchableOpacity style={styles.orderBtn} onPress={() => {
+
+                            if (qty < item.min) {
+                                toastNotfication({
+                                    type: "error",
+                                    message: "Quantity less than min quantity"
+                                });
+                            }
+                            else if (selectedBranchId === null) {
+                                toastNotfication({
+                                    type: "error",
+                                    message: "Please select Branch"
+                                });
+                            }
+                            else {
+                                // navigation.navigate("MyOrders")
+                                addPaperOfferRequest()
+                            }
+                        }}>
+                            <Text style={[layout.textAlign, styles.orderBtnText]}>{t("sendOrder")}</Text>
+                        </TouchableOpacity>
+
                         <Space />
                         {/* وصف المنتج */}
                         <View style={styles.info}>
@@ -458,7 +470,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             padding: PixelPerfect(12),
             marginVertical: PixelPerfect(8),
             alignItems: "center",
-            marginHorizontal:PixelPerfect(16)
+            marginHorizontal: PixelPerfect(16)
         },
         orderBtnText: { lineHeight: PixelPerfect(25), color: theme.white, fontSize: PixelPerfect(16), fontFamily: Fonts.bold },
         description: {
@@ -472,8 +484,8 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             flex: 0.5
         },
         selectMenueCon: {
-         marginTop:PixelPerfect(10),
-         marginHorizontal:PixelPerfect(16)
+            marginTop: PixelPerfect(10),
+            marginHorizontal: PixelPerfect(16)
         },
         label: {
             fontFamily: Fonts.medium,

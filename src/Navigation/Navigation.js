@@ -44,12 +44,13 @@ import AddNewBranch from '../Screens/AddNewBranch/index'
 import ChangePass from '../Screens/Auth/ChangePassword/Index'
 import EditProfile from '../Screens/Auth/EditProfile/index'
 import EditProfileUser from '../Screens/Auth/EditProfileUser/index'
+import PushNotificationHandler from '../Utilties';
 const Stack = createStackNavigator();
 
 
 const Stacks = () => {
   const { isLogin } = useSelector(state => state.auth, shallowEqual);
- 
+
   return (
     <Stack.Navigator
       screenOptions={props => {
@@ -151,7 +152,7 @@ const initNavgtion = () => {
       // linking={linking}
       ref={navigationRef}>
       <Stacks />
-
+    <PushNotificationHandler />
     </NavigationContainer>
   );
 };

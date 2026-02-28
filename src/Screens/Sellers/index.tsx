@@ -36,7 +36,6 @@ const Index = (props: Props) => {
 
       const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
       const styles = useStyles(Fonts, theme, dark, dir);
-      const ref = useRef() as any;
       const { isLogin } = useSelector((state: RootState) => state.auth);
 
       const { countries, paperSize } = useSelector((state: RootState) => state.settings);
@@ -209,7 +208,9 @@ const Index = (props: Props) => {
 
       return (
             <Container showHint={false}>
-                  <HeaderWithText title={t(" ")} />
+                  <HeaderWithText title={t(" ")}
+                  hasNotBack={true}
+                  />
                   <View style={{ flex: 1, paddingHorizontal: PixelPerfect(16) }}>
                         {state.viewCountries && <FilterMultiChecker
                               onCloseFn={(val) => {

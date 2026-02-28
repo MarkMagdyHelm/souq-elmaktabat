@@ -89,6 +89,7 @@ export const GetSellerData = (id:any,cb?: (data: any, status: any) => void) => {
     try {
       const { data, status } = await globalAPI.get('api/User/GetSellerData?id='+id);
       cb && cb(data, status);
+        console.log('GetSellerData = ', data);
     } catch (error) {
       console.log('GetSellerData error = ', error);
       cb && cb(error, 500);

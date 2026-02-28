@@ -42,9 +42,7 @@ const Index = (props: Props) => {
         const getSellerData = () => {
             setstate(old => ({ ...old, loading: true }))
             dispatch<any>(GetSellerData(userdata.id, (res, status) => {
-                  if (res.status === 200) {
-                        setstate(old => ({ ...old, sellerData: res.data }))
-             
+                  if (res.status === 200) {             
                         setstate(old => ({ ...old, sellerData: res.data, loading: false }))
                   }
             }))

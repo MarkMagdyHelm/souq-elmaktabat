@@ -39,19 +39,19 @@ const HeaderWithText = (props: Props) => {
                     transform={dir != "rtl" ? [{ rotateY: "180deg" }] : undefined} />
             </Pressable>}
             <Text style={styles.title}>{title}</Text>
-            {isShareVisible && <View style={[layout.rowBox, styles.view]}>
+           <View style={[layout.rowBox, styles.view]}>
                 {isFavVisible && <Pressable onPress={() => onFavClick()}>
                     <HeartIcon
                         color={isFaverouit ? theme.red : theme.white}
                     />
                 </Pressable>
                 }
-                <Pressable style={{ paddingHorizontal: PixelPerfect(12) }}
+                 {isShareVisible && <Pressable style={{ paddingHorizontal: PixelPerfect(12) }}
                     onPress={() => onShareClick()}>
                     <ShareIcon />
-                </Pressable>
+                </Pressable>  }
             </View>
-            }
+          
 
         </View>
     )

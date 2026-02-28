@@ -15,6 +15,7 @@ import PollLoader from '../../Components/SkeltonLoaders/PollLoader';
 import OrderCard from '../../Components/Cards/OrderCard';
 import { GetRequests } from '../../Apis/Request';
 import MyOrderItem from '../../Components/Cards/MyOrderItem';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 type Props = {
@@ -55,6 +56,17 @@ const Index = (props: Props) => {
   useEffect(() => {
     getNotifications();
   }, []);
+ useFocusEffect(
+    React.useCallback(() => {
+      console.log("📍 Market screen focused");
+
+  handleRefresh();
+      return () => {
+        
+      };
+    }, [])
+  );
+  
 
   const getNotifications = () => {
     setstate(old => ({ ...old, loading: true }))
@@ -132,6 +144,7 @@ const Index = (props: Props) => {
 
   const handleSelectRequest = (item: any) => {
     navigation.navigate("OrderDetails", { item: item })
+
   };
 
   const renderFooter = () => {

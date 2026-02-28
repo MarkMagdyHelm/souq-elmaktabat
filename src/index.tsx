@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from './Store/store';
 import DeviceInfo from 'react-native-device-info';
 import Navigation from './Navigation/Navigation';
+import PushNotificationHandler from './Utilties';
 
 type Props = {}
 
