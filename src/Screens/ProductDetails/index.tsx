@@ -182,7 +182,7 @@ const Index = (props: Props) => {
                             {item.type == 2 && <Text style={[layout.textAlign, styles.title]}>{item.categoryName + " " + item.name}</Text>}
                             {item.type == 3 && <Text style={[layout.textAlign, styles.title]}>{item.categoryName + " " + item.userName}</Text>}
 
-                            {item.price && <Text style={[layout.textAlign, styles.priceText]}>{item.categoryName && item.categoryName == "احبار" ?
+                              {(item.type == 2 || item.type == 1) &&  <Text style={[layout.textAlign, styles.priceText]}>{item.type == 2 ?
                                 t("price_Cartage") + " " + item.price + t("pound")
                                 : t("carton_price") + item.price + t("pound")}</Text>}
                             {item.coloredPrice && <Text style={[layout.textAlign, styles.priceText]}>{t("coloerPrinter") + item.coloredPrice + t("pound")}</Text>}
