@@ -74,7 +74,7 @@ const Index = (props: Props) => {
       useEffect(() => {
             setstate(old => ({ ...old, sections: [] }))
             getAllPaperOffers(1)
-      }, [state.countries, state.paperSize, state.paperType,])
+      }, [state.countries, state.paperSize, state.paperType,query])
 
       const toast = useToast();
       const toastNotfication = (config: any) => {
@@ -134,7 +134,7 @@ const Index = (props: Props) => {
 
             dispatch<any>(
                         GetSellerList({ countryId:categoryId,activityId:activityId,query:query,
-                              page: page.toString(), pageSize: "10"                   
+                              page: page.toString(), pageSize: "10"  ,                 
                         }, (res, status) => {
                         if (res.status === 200) {
                               console.log('===============itemsitemsitems=====================');
@@ -297,7 +297,11 @@ const Index = (props: Props) => {
                               getAllPaperOffers(1)
                         }} />
 
-                        <SearchBar onPress={() => {
+                        <SearchBar
+                         onPressSearch={(val)=>{
+                    setQuery(val)
+                }}
+                        onPress={() => {
 
                               setstate(old => ({ ...old, viewFilter: !state.viewFilter }))
                         }} />

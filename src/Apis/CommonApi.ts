@@ -4,6 +4,7 @@ import { globalAPI } from "../Constants/config";
 import i18n from "../Local/i18n.config";
 import { ChangeAppLanguage } from "../Store/actions/settings";
 import { AsyncKeys, saveItem } from "../Helper";
+import { logoutHandler } from "./User";
 
 
 
@@ -33,7 +34,10 @@ export const GetCategories = (cb?: (data: any, status: any) => void) => {
       const { data, status } = await globalAPI.get('api/Configuration/GetCategories');
       cb && cb(data, status);
     } catch (error) {
-      console.log('GetCategories error = ', error);
+      console.log('GetCategories error = ', error.response.data);
+      if (error?.response?.data?.status ==401) {     
+        logoutHandler()
+      }
       cb && cb(error, 500);
     }
   };

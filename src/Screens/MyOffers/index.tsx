@@ -8,10 +8,11 @@ import { PixelPerfect } from '../../Constants/styleConstants'
 import TabBar from '../../Components/TabBar/index';
 import HeaderWithText from '../../Components/Headers/HeaderWithText'
 import { t } from 'i18next'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useToast } from 'react-native-toast-notifications'
 import { GetAllPaperOffers, GetMyPaperOffers } from '../../Apis/HomeApis'
 import { AddFavouritePaperOffer } from '../../Apis/CommonApi'
+import { RootState } from '../../Store/store'
 
 type Props = {
       navigation: any
@@ -24,14 +25,37 @@ const Index = (props: Props) => {
       } = props
       const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
       const styles = useStyles(Fonts, theme, dark, dir);
-      const handleSelectProduct = (item) => {
-             if (item?.isMine) {
-            navigation.navigate("OffersDetails", { item: item })
-        }else{
+          const { isLogin, userdata, isSeller } = useSelector((state: RootState) => state.auth);
 
-            navigation.navigate("ProductDetails", { item: item })
+     const handleSelectProduct = (item) => {
+        if (item?.isMine) {
+            if (isLogin) {
+
+                navigation.navigate("OffersDetails", { item: item })
+            } else {
+                navigation.reset({
+                    index: 0,
+                    routes: [
+
+                        { name: "Signin" } as any,
+                    ],
+                });
+            }
+        } else {
+            if (isLogin) {
+                navigation.navigate("ProductDetails", { item: item })
+            } else {
+                navigation.reset({
+                    index: 0,
+                    routes: [
+
+                        { name: "Signin" } as any,
+                    ],
+                });
+            }
+
         }
-      }
+    }
       const dispatch = useDispatch();
       const toast = useToast();
       const toastNotfication = (config: any) => {

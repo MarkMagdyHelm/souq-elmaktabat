@@ -1,4 +1,4 @@
-import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, FlatList, StyleSheet, Text, View ,TouchableOpacity} from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Container } from '../../Components/containers/Containers'
 import { ThemeContext } from '../../Constants/theming'
@@ -11,7 +11,6 @@ import 'moment/locale/ar'
 import { useDispatch, useSelector } from 'react-redux';
 import { useToast } from 'react-native-toast-notifications';
 import { RootState } from '../../Store/store';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import Product from '../../Components/Cards/Product';
 import SearchBar from '../../Components/Cards/SearchBar';
 import Icon from "react-native-vector-icons/Ionicons";
@@ -287,11 +286,32 @@ const Index = (props: Props) => {
         </TouchableOpacity>
     );
     const handleSelectProduct = (item) => {
-         if (item?.isMine) {
-            navigation.navigate("OffersDetails", { item: item })
-        }else{
+        if (item?.isMine) {
+            if (isLogin) {
 
-            navigation.navigate("ProductDetails", { item: item })
+                navigation.navigate("OffersDetails", { item: item })
+            } else {
+                navigation.reset({
+                    index: 0,
+                    routes: [
+
+                        { name: "Signin" } as any,
+                    ],
+                });
+            }
+        } else {
+            if (isLogin) {
+                navigation.navigate("ProductDetails", { item: item })
+            } else {
+                navigation.reset({
+                    index: 0,
+                    routes: [
+
+                        { name: "Signin" } as any,
+                    ],
+                });
+            }
+
         }
     }
 
@@ -388,7 +408,11 @@ const Index = (props: Props) => {
                     }
                 }} />
 
-                <SearchBar onPress={() => {
+                <SearchBar 
+                onPressSearch={(val)=>{
+                    
+                }}
+                onPress={() => {
                     setstate(old => ({ ...old, viewFilter: !state.viewFilter }))
                 }} />
                 {state.viewFilter &&

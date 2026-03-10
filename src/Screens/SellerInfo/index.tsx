@@ -16,9 +16,10 @@ import { useRoute } from '@react-navigation/native'
 import { GetNamesByLang } from '../../Helper'
 import Stars from '../../Helper/Stars'
 import { GetMyPaperOffers, GetSellerData } from '../../Apis/HomeApis'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { AddFavouritePaperOffer, GetMyBranches, UserProfile } from '../../Apis/CommonApi'
 import { UserRate } from '../../Apis/Appinfo'
+import { RootState } from '../../Store/store'
 
 type Props = {
       navigation?: any
@@ -36,6 +37,7 @@ const Index = (props: Props) => {
       const dispatch = useDispatch();
       const { seller } = useRoute().params as any;
       console.log(seller.id);
+    const { isLogin } = useSelector((state: RootState) => state.auth);
 
 
 
@@ -190,14 +192,35 @@ const allOffers = [
                   placement: 'top',
             } as any);
       }
-      const handleSelectProduct = (item) => {
-            if (item?.isMine) {
-                  navigation.navigate("OffersDetails", { item: item })
-            } else {
+     const handleSelectProduct = (item) => {
+        if (item?.isMine) {
+            if (isLogin) {
 
-                  navigation.navigate("ProductDetails", { item: item })
+                navigation.navigate("OffersDetails", { item: item })
+            } else {
+                navigation.reset({
+                    index: 0,
+                    routes: [
+
+                        { name: "Signin" } as any,
+                    ],
+                });
             }
-      }
+        } else {
+            if (isLogin) {
+                navigation.navigate("ProductDetails", { item: item })
+            } else {
+                navigation.reset({
+                    index: 0,
+                    routes: [
+
+                        { name: "Signin" } as any,
+                    ],
+                });
+            }
+
+        }
+    }
 
       const handleLoadMore = () => {
             if (!state.loadingMore && state.hasMoreRequests) {

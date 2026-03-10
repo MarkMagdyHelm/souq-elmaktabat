@@ -105,7 +105,7 @@ const Index = (props: Props) => {
 
                     setstate(old => ({
                         ...old,
-                        sections: [...old.sections, inkSection], 
+                        sections: [...old.sections, inkSection],
                         loading: false,
                     }));
                     getAllPrinting();
@@ -173,16 +173,37 @@ const Index = (props: Props) => {
     };
 
     const handleSelectProduct = (item) => {
-         if (item?.isMine) {
-            navigation.navigate("OffersDetails", { item: item })
-        }else{
+        if (item?.isMine) {
+            if (isLogin) {
 
-            navigation.navigate("ProductDetails", { item: item })
+                navigation.navigate("OffersDetails", { item: item })
+            } else {
+                navigation.reset({
+                    index: 0,
+                    routes: [
+
+                        { name: "Signin" } as any,
+                    ],
+                });
+            }
+        } else {
+            if (isLogin) {
+                navigation.navigate("ProductDetails", { item: item })
+            } else {
+                navigation.reset({
+                    index: 0,
+                    routes: [
+
+                        { name: "Signin" } as any,
+                    ],
+                });
+            }
+
         }
     }
 
     const getSettings = () => {
-        dispatch<any>(GetSettingsHandler({ lookupIds: [2, 3, 4, 5, 6, 7 ,8, 9, 10, 11, 12, 13] }, "countries", (res, status) => {
+        dispatch<any>(GetSettingsHandler({ lookupIds: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] }, "countries", (res, status) => {
         }))
     }
     console.log(userdata);
@@ -192,7 +213,7 @@ const Index = (props: Props) => {
         <Container showHint={false}>
             <Content style={styles.formCon} noPadding >
                 <View style={[layout.rowBox, styles.Header]}>
-                    <Pressable onPress={()=>navigation.navigate("More")} >
+                    <Pressable onPress={() => navigation.navigate("More")} >
                         <MoreIcon />
                     </Pressable>
                 </View>

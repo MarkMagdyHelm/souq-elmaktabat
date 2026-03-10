@@ -6,16 +6,18 @@ import { PixelPerfect } from '../../Constants/styleConstants';
 import Icon from "react-native-vector-icons/Ionicons";
 import { t } from 'i18next';
 type Props = {
-    onPress: any
+    onPress: () => void,
+    onPressSearch: (val: any) => void
 }
 
 const SearchBar = (props: any) => {
     const {
-        onPress
-
+        onPress,
+        onPressSearch
     } = props
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
+    const [text, settext] = useState("")
     return (
         <View style={styles.container}>
             {/* Filter Icon */}
@@ -25,6 +27,7 @@ const SearchBar = (props: any) => {
 
             {/* Input */}
             <TextInput
+                onChangeText={(txt) => { settext(txt) }}
                 style={styles.input}
                 placeholder={t("search")}
                 placeholderTextColor="#999"
@@ -32,7 +35,9 @@ const SearchBar = (props: any) => {
             />
 
             {/* Search Icon */}
-            <Icon name="search-outline" size={22} color="#555" />
+            <Icon name="search-outline" size={22} color="#555" onPress={() => {
+                onPressSearch(text)
+            }} />
         </View>
     );
 

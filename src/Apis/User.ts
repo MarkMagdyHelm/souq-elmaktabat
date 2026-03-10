@@ -33,7 +33,7 @@ export const SignInHandler = (body:any, cb?: (data: any,status:any) => void) => 
         }
         cb && cb(data,status);
       } catch (error) {
-          console.log('SignInHandler error = ', error);
+          console.log('SignInHandler error = ', error.response.data);
         cb && cb(error,500);
       }
     };

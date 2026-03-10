@@ -31,7 +31,7 @@ const Index = (props: Props) => {
     navigation.reset({
       index: 0,
       routes: [
-        { name: 'Home2' },
+        { name: 'Market' },
       ],
     });
   }
@@ -56,7 +56,13 @@ const Index = (props: Props) => {
     setstate(old => ({ ...old, loading: true }))
     dispatch<any>(SignInHandler(body, (res, status) => {
       if (res.status == 200) {
-        navigation.navigate("Market")
+        navigation.reset({
+                    index: 0,
+                    routes: [
+
+                        { name: "Market" } as any,
+                    ],
+                });
       } else {
         toastNotfication({ type: 'error', message: res?.Message ?? t("Something Went wrong") });
       }
