@@ -21,7 +21,7 @@ export const SignInHandler = (body:any, cb?: (data: any,status:any) => void) => 
         
         console.log('SignInHandler data = ', data,status);
   
-        if (status == 200) {
+        if (data.status == 200) {
           dispatch<any>(loginHandler(data.data));
           if (data.data.role != "Customer") {
             if (data.data.admin) {     

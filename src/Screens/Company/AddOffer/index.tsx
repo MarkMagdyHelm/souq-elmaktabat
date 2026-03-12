@@ -77,6 +77,7 @@ const Index = (props: Props) => {
     const handleBody = () => {
         const bodyFormData = new FormData();
         let body = {} as any;
+
         if (type == "Inks") {
             body.InkId = formikRef?.current?.values?.InksType,
                 body.Brand = formikRef?.current?.values?.Brand,
@@ -90,7 +91,7 @@ const Index = (props: Props) => {
                 body.IncludeDelivery = state.isdelervable,
                 body.ImageUrl = formikRef?.current?.values?.ImageUrl
         } else if (type == "Printers") {
-            {
+            
                 body.EndDate = state.date,
                     body.Branches = [formikRef?.current?.values?.Branches],
                     body.ImageUrl = formikRef?.current?.values?.ImageUrl,
@@ -99,52 +100,55 @@ const Index = (props: Props) => {
                       body.NonColoredPrice= formikRef?.current?.values?.PaperPrice,
                      body.ImediatePrinting=state.isImediatePrinting,
                     body.IncludeDelivery = state.isdelervable
-            }
+            
         }
-        console.log('==========saasasasasasas==========================');
-        console.log("body", body);
-        console.log('====================================');
-       const appendFormData = (data, parentKey = "") => {
-  // ✅ Image / File (React Native)
-  if (
-    data &&
-    typeof data === "object" &&
-    data.uri &&
-    data.name &&
-    data.type
-  ) {
-    bodyFormData.append(parentKey, {
-      uri: data.uri.startsWith("file://")
-        ? data.uri
-        : `file://${data.uri}`,
-      name: data.name,
-      type: data.type,
-    });
-    return;
-  }
-
-  // Array
-  if (Array.isArray(data)) {
-    data.forEach((value, index) => {
-      appendFormData(value, `${parentKey}[${index}]`);
-    });
-    return;
-  }
-
-  // Object
-  if (typeof data === "object" && data !== null) {
-    Object.keys(data).forEach(key => {
-      appendFormData(
-        data[key],
-        parentKey ? `${parentKey}.${key}` : key
-      );
-    });
-    return;
-  }
-
-  // Primitive
-  bodyFormData.append(parentKey, data ?? "");
-};
+   console.log('====================================');
+   console.log("body",body);
+   console.log('====================================');
+        const appendFormData = (data, parentKey = "") => {
+            // File
+            if (
+                data &&
+                typeof data === "object" &&
+                data.uri &&
+                data.name &&
+                data.type
+            ) {
+                bodyFormData.append(parentKey, {
+                    uri: data.uri.startsWith("file://")
+                        ? data.uri
+                        : `file://${data.uri}`,
+                    name: data.name,
+                    type: data.type,
+                });
+                return;
+            }
+        
+            // Array
+            if (Array.isArray(data)) {
+                data.forEach(item => {
+                    if (typeof item === "object") {
+                        bodyFormData.append(parentKey, JSON.stringify(item));
+                    } else {
+                        bodyFormData.append(parentKey, item);
+                    }
+                });
+                return;
+            }
+        
+            // Object
+            if (typeof data === "object" && data !== null) {
+                Object.keys(data).forEach(key => {
+                    appendFormData(
+                        data[key],
+                        parentKey ? `${parentKey}.${key}` : key
+                    );
+                });
+                return;
+            }
+        
+            bodyFormData.append(parentKey, data ?? "");
+        };
 
         appendFormData(body);
         console.log('====================================');
@@ -154,7 +158,7 @@ const Index = (props: Props) => {
     }
     const handleSubmit = (values: any) => {
       console.log('====================================');
-      console.log(values);
+      console.log("values",values);
       console.log('====================================');
 
         setstate(old => ({ ...old, loading: true }))
@@ -164,7 +168,7 @@ const Index = (props: Props) => {
                 paperId: values.PaperType,
                 paperSizeId: values.PaperSize,
                 width: values.PaperWidth,
-                min: values.PaperQuntaity.name,
+                min: values.PaperQuntaity,
                 price: values.PaperPrice,
                 description: values.PaperDescription,
                 endDate: state.date,
@@ -176,9 +180,9 @@ const Index = (props: Props) => {
                     console.log(res);
                     console.log('====================================');
                     navigation.goBack()
-                    showToast({ type: 'ok', message: res?.Message ?? t("Successfully Added Offer") });
+                    showToast({ type: 'ok', message: res?.message ?? t("Successfully Added Offer") });
                 } else {
-                    showToast({ type: 'error', message: res?.Message ?? t("Something Went wrong") });
+                    showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
                 }
                 setstate(old => ({ ...old, loading: false }))
             }))
@@ -188,11 +192,14 @@ const Index = (props: Props) => {
             console.log("data", data);
             console.log('====================================');
             dispatch<any>(AddInkOffer(data, (res, status) => {
+                console.log('====================================');
+                console.log(res);
+                console.log('====================================');
                 if (res.status === 200) {
-                  showToast({ type: 'ok', message: res?.Message ?? t("Successfully Added Offer") });
+                  showToast({ type: 'ok', message: res?.message ?? t("Successfully Added Offer") });
                     navigation.goBack()
                 } else {
-                    showToast({ type: 'error', message: res?.Message ?? t("Something Went wrong") });
+                    showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
                 }
                 setstate(old => ({ ...old, loading: false }))
             }))
@@ -200,10 +207,10 @@ const Index = (props: Props) => {
             let data = handleBody();
             dispatch<any>(AddPrintingPressOffer(data, (res, status) => {
                 if (res.status === 200) {
-                     showToast({ type: 'ok', message: res?.Message ?? t("Successfully Added Offer") });
+                     showToast({ type: 'ok', message: res?.message ?? t("Successfully Added Offer") });
                     navigation.goBack()
                 } else {
-                    showToast({ type: 'error', message: res?.Message ?? t("Something Went wrong") });
+                    showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
                 }
                 setstate(old => ({ ...old, loading: false }))
             }))
@@ -255,7 +262,6 @@ const Index = (props: Props) => {
             setstate(old => ({ ...old, loading: false }))
         }))
     };
-    
 
     const handleCameraPhotos = async (name) => {
         try {
@@ -284,12 +290,6 @@ const Index = (props: Props) => {
             console.log(e);
         }
     };
-
-
-
-
-
-
 
     return (
         <Container showHint={false}>
@@ -431,7 +431,6 @@ const Index = (props: Props) => {
                                                 onBlur: handleBlur("Brand"),
                                                 onChangeText: handleChange("Brand"),
                                                 placeholder: t("inkBrandw"),
-                                                maxLength: 5,
                                                 keyboardType: "number-pad",
                                             }}
                                             password={false}

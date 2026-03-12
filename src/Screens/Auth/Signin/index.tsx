@@ -64,7 +64,7 @@ const Index = (props: Props) => {
                     ],
                 });
       } else {
-        toastNotfication({ type: 'error', message: res?.Message ?? t("Something Went wrong") });
+        toastNotfication({ type: 'error', message: res?.message ?? t("Something Went wrong") });
       }
       setstate(old => ({ ...old, loading: false }))
     }))

@@ -23,7 +23,9 @@ const Product = (props: Props) => {
     } = props;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
-
+console.log('====================================');
+console.log(item);
+console.log('====================================');
     return (
         <Pressable >
             <View style={[styles.con]}>

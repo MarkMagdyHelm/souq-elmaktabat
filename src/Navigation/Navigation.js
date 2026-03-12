@@ -44,6 +44,7 @@ import AddNewBranch from '../Screens/AddNewBranch/index'
 import ChangePass from '../Screens/Auth/ChangePassword/Index'
 import EditProfile from '../Screens/Auth/EditProfile/index'
 import EditProfileUser from '../Screens/Auth/EditProfileUser/index'
+import EditOffer from "../Screens/Company/EditOffer"
 import PushNotificationHandler from '../Utilties';
 const Stack = createStackNavigator();
 
@@ -106,6 +107,7 @@ const Stacks = () => {
       <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
       <Stack.Screen name="AddOffer" component={AddOffer} />
       <Stack.Screen name="More" component={MoreComponnent} />
+      <Stack.Screen name="EditOffer" component={EditOffer} />
     </Stack.Navigator>
   );
 };

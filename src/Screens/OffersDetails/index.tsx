@@ -141,8 +141,19 @@ console.log('====================================');
 
                     <View>
                         <View style={styles.info}>
-                            <Text style={[layout.textAlign, styles.title]}>{(item.categoryName??item.category) + " " + item.paperName + " " + item.width + t("GM") + " " +( item.paperSize)}</Text>
-                            <Text style={[layout.textAlign, styles.priceText]}>{t("carton_price") + item.price + t("pound")}</Text>
+                        {item.type == 1 && <Text style={[layout.textAlign, styles.title]}>{item.categoryName + " " + item.name + " " + item.width + t("GM") + " " + item.paperSize}</Text>}
+                {item.type == 2 && <Text style={[layout.textAlign, styles.title]}>{item.categoryName + " " + item.name}</Text>}
+                {item.type == 3 && <Text style={[layout.textAlign, styles.title]}>{item.categoryName + " " + item.userName}</Text>}
+                            
+                {(item.type == 2 || item.type == 1) &&  <Text style={[layout.textAlign, styles.priceText]}>{item.type == 2 ?
+                                t("price_Cartage") + " " + item.price + t("pound")
+                                : t("carton_price") + item.price + t("pound")}</Text>}
+                            {item.coloredPrice && <Text style={[layout.textAlign, styles.priceText]}>{t("coloerPrinter") + item.coloredPrice + t("pound")}</Text>}
+                            {item.nonColoredPrice && <Text style={[layout.textAlign, styles.priceText]}>{t("nonColoered") + item.nonColoredPrice + t("pound")}</Text>}
+                    <View>
+                        {item.coloredPrice && <Text style={[layout.textAlign, styles.priceText]}>{item.coloredPrice + t("pound")}</Text>}
+                        {item.nonColoredPrice && <Text style={[layout.textAlign, styles.priceText]}>{item.nonColoredPrice + t("pound")}</Text>}
+                    </View>
                             <View style={[layout.rowBox, { marginVertical: PixelPerfect(2) }]}>
                                 <Stars rating={item.userRateAverage} rateCount={item.userRateCount??item.rates} />
                             </View>
@@ -199,7 +210,9 @@ console.log('====================================');
                             </View>
                             <Space />
                             <TouchableOpacity style={[layout.rowBox, styles.orderBtn]} onPress={() => {
-
+                              navigation.navigate("EditOffer",{
+                                item:item,type:item.type == 1?"Paper":item.type == 2?"Inks":"Printers"
+                              })
 
                             }}>
 

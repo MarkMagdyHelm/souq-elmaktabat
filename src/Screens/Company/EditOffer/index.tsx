@@ -287,7 +287,9 @@ const Index = (props: Props) => {
 
 
 
-
+console.log('====================================');
+console.log(item);
+console.log('====================================');
 
 
 
@@ -415,11 +417,11 @@ const Index = (props: Props) => {
                                             <Text style={[layout.textAlign, styles.label]}>{t("inkType")}</Text>
                                             <View style={[layout.rowBox, styles.selectMenue]}>
                                                 <Text style={styles.textselectmenu}>
-                                                    {typeof state.selectedInks.id !== "string"
+                                                    {item?.name??(typeof state.selectedInks.id !== "string"
                                                         ? dir === "rtl"
                                                             ? state.selectedInks.arName
                                                             : state.selectedInks.name
-                                                        : t("inkTypew")}
+                                                        : t("inkTypew"))}
                                                 </Text>
                                                 {state.showInks ? <ArrowUpIcon /> : <ArrowDownIcon />}
                                             </View>
@@ -430,7 +432,7 @@ const Index = (props: Props) => {
                                             options={{
                                                 onBlur: handleBlur("Brand"),
                                                 onChangeText: handleChange("Brand"),
-                                                placeholder: t("inkBrandw"),
+                                                placeholder: item?.,
                                                 maxLength: 5,
                                                 keyboardType: "number-pad",
                                             }}
