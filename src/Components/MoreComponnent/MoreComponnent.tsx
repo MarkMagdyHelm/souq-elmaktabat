@@ -6,10 +6,11 @@ import { Colors, PixelPerfect, getStatusBarHeight } from '../../Constants/styleC
 import { t } from 'i18next'
 import { Container } from '../containers/Containers'
 import { ContactUsIcon, ShareMoreIcon, CloseIcon, MenuChevronIcon, AccountIcon, OrdersIcon, OffersIcon, PurchaseOrdersIcon, RatingsIcon, FavoriteIcon, BranchesIcon, LockIcon, TermsIcon, ChangeLangIcon, LogoutIcon, DeleteIcon, StareIcon, StareIconGray, RateProfileIcon } from '../../Assets/Svg'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../Store/store'
 import { imageUrl } from '../../Constants/config'
 import CancelOrder from '../PopUps/CancelOrder'
+import { logoutHandler } from '../../Apis/User'
 
 type Props = {
   navigation: any
@@ -196,7 +197,7 @@ const filteredMenuItems = allMenuItems.filter(item => {
 });
 
   console.log(userdata, 'userdata', Platform.OS, isSeller);
-
+const dispatch = useDispatch();
   const userName = userdata?.name;
   const userPhone = userdata?.phoneNumber;
   const userImage = userdata?.imageUrl || userdata?.userImages ? { uri: imageUrl + (userdata?.imageUrl || userdata?.userImages) } : null;
@@ -206,6 +207,7 @@ const filteredMenuItems = allMenuItems.filter(item => {
       {/* Header Section */}
       <CancelOrder visible={visibleCancel} onClose={() => setVisibleCancel(false)} onSubmit={() => {
         setVisibleCancel(false)
+        dispatch<any>(logoutHandler());
         navigation.navigate('Signin')
       }} title={t("LogoutCancle")} body={t("confirmLogout")} cancleText={t("yesLogout")} />
       <View style={[layout.rowBox, styles.header]}>

@@ -21,7 +21,7 @@ const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
   <View style={styles.notficationCon}>
            <LinearGradient 
           start={{x: 0, y: 0}} end={{x: 1, y: 0}} 
-          colors={[theme.mainColor,theme.secondColor]} style={[styles.linearGradient]}>
+          colors={[ "#19894B","#3FC057"]} style={[styles.linearGradient]}>
           <View style={[layout.rowBox,styles.con]}>
            <Check name='check-circle-fill' color={Colors.white} size={25} />
              <Text style={styles.errorNotificationText}>{toast.message}</Text>

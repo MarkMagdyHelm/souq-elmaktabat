@@ -432,7 +432,7 @@ console.log('====================================');
                                             options={{
                                                 onBlur: handleBlur("Brand"),
                                                 onChangeText: handleChange("Brand"),
-                                                placeholder: item?.,
+                                                // placeholder: item?.,
                                                 maxLength: 5,
                                                 keyboardType: "number-pad",
                                             }}

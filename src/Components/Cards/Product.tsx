@@ -23,11 +23,9 @@ const Product = (props: Props) => {
     } = props;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
-console.log('====================================');
-console.log(item);
-console.log('====================================');
+
     return (
-        <Pressable >
+        <Pressable onPress={onPress}>
             <View style={[styles.con]}>
                 {<Pressable style={{ padding: 8 }} onPress={onFavPress}>
                     <HeartIcon style={styles.heart}

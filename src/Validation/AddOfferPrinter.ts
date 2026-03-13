@@ -4,7 +4,6 @@ import * as yup from "yup";
 export const AddOfferPrinter = yup.object().shape({
   PaperDescription: yup
     .string()
-    .required("paperDescriptionRequired")
     .label("PaperDescription"),
   Branches: yup
     .string()

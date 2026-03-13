@@ -6,7 +6,6 @@ export const AddOfferPaper = yup.object().shape({
   PaperQuntaity: yup.string().required("paperQuantityRequired"),
   PaperDescription: yup
     .string()
-    .required("paperDescriptionRequired")
     .label("PaperDescription"),
   Branches: yup
     .string()

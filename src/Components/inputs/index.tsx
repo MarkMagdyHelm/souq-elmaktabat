@@ -54,7 +54,7 @@ export default function Index(props: Props) {
             }
             <TextInput
           selectionColor={Colors.secondColor}
-          style={[ styles.textInputContainer,input ]}
+          style={[ styles.textInputContainer,input,isPhone&&{[dir=="rtl"?"paddingRight":"paddingLeft"]:PixelPerfect(8),} ]}
           placeholderTextColor={theme.inputTextColor}
        
           secureTextEntry={password && !state.showPassword ? true : false}
@@ -110,7 +110,8 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
             justifyContent:"space-between",
             height:PixelPerfect(50),
            borderLeftWidth:1,
-           paddingRight:PixelPerfect(8),
+           
+           [dir!="rtl"?"paddingRight":"paddingLeft"]:PixelPerfect(8),
            marginRight:PixelPerfect(8),
            borderLeftColor:theme.optionText,
            width:"27%"

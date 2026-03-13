@@ -1,4 +1,4 @@
-import { FlatList, Platform, Pressable, SectionList, StyleSheet, Text, View } from 'react-native'
+import { FlatList, TouchableOpacity, Pressable, SectionList, StyleSheet, Text, View, RefreshControl } from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Container, Content } from '../../Components/containers/Containers'
 import { ThemeContext } from '../../Constants/theming'
@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useToast } from 'react-native-toast-notifications'
 import { RootState } from '../../Store/store'
 import HomeCategory from '../../Components/Cards/HomeCategory'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import Product from '../../Components/Cards/Product'
 import { AddFavouritePaperOffer, GetCategories } from '../../Apis/CommonApi'
 import { t } from 'i18next'
@@ -208,10 +207,27 @@ const Index = (props: Props) => {
     }
     console.log(userdata);
 
+const [refreshing, setRefreshing] = React.useState(false);
 
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+     getCategory();
+        getAllPaperOffers();
+
+
+        dispatch<any>(CheckActivison());
+        getSettings();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
     return (
         <Container showHint={false}>
-            <Content style={styles.formCon} noPadding >
+            <Content style={styles.formCon} noPadding 
+            refreshControl={
+                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+            >
                 <View style={[layout.rowBox, styles.Header]}>
                     <Pressable onPress={() => navigation.navigate("More")} >
                         <MoreIcon />
@@ -269,7 +285,7 @@ const Index = (props: Props) => {
                         </View>
 
                         <FlatList
-                            data={section.id === 1 ? section.products : section.id == 2 ? section.inks : section.prints}
+                            data={section.id === 1 ? section.products.slice(0, 5) : section.id == 2 ? section.inks.slice(0, 5) : section.prints.slice(0, 5)}
                             horizontal
                             inverted
                             keyExtractor={(item) => item.id}
