@@ -1,4 +1,4 @@
-import { ActivityIndicator, FlatList, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { ActivityIndicator, FlatList, StyleSheet, Text, View ,TouchableOpacity} from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Container } from '../../Components/containers/Containers'
 import { ThemeContext } from '../../Constants/theming'
@@ -38,7 +38,7 @@ const Index = (props: Props) => {
     const { sectionId } = useRoute().params as any;
     const { countries, paperSize } = useSelector((state: RootState) => state.settings);
 
-    const [search, setSearch] = useState("")
+const [search, setSearch] = useState("")
 
     const filters = ["price", "size", "paperTypeFilter", "governorate"];
 
@@ -78,7 +78,7 @@ const Index = (props: Props) => {
             getAllInkOffers(1)
         }
         else {
-            getAllPrinting()
+          getAllPrinting()
         }
 
     }, [state.countries, state.paperSize, state.paperType,])
@@ -126,7 +126,7 @@ const Index = (props: Props) => {
         }))
     };
 
-    const getAllPaperOffers = (page: number = 1, loadMore: boolean = false, query = search) => {
+    const getAllPaperOffers = (page: number = 1, loadMore: boolean = false,query=search) => {
         if (loadMore) {
             setstate(old => ({ ...old, loadingMore: true }));
         } else {
@@ -137,7 +137,7 @@ const Index = (props: Props) => {
             GetAllPaperOffers({
                 countries: state.countries, paperSizeId: state.paperSize,
                 paperId: state.paperType, minPrice: state.minPrice, maxPrice: state.maxPrice,
-                page: page.toString(), pageSize: "10", query: query
+                page: page.toString(), pageSize: "10",query:query
             }, (res, status) => {
                 if (res.status === 200) {
                     const newItems = res.data.items;
@@ -161,7 +161,7 @@ const Index = (props: Props) => {
     };
 
 
-    const getAllInkOffers = (page: number = 1, loadMore: boolean = false, query = search) => {
+    const getAllInkOffers = (page: number = 1, loadMore: boolean = false,query=search) => {
         if (loadMore) {
             setstate(old => ({ ...old, loadingMore: true }));
         } else {
@@ -172,7 +172,7 @@ const Index = (props: Props) => {
             GetAllInkOffers({
                 countries: state.countries, paperSizeId: state.paperSize,
                 paperId: state.paperType, minPrice: state.minPrice, maxPrice: state.maxPrice,
-                page: page.toString(), pageSize: "10", query: query
+                page: page.toString(), pageSize: "10",query:query
             }, (res, status) => {
                 if (res.status === 200) {
 
@@ -197,15 +197,15 @@ const Index = (props: Props) => {
     };
 
 
-    const getAllPrinting = (page: number = 1, loadMore: boolean = false, query = search) => {
+    const getAllPrinting = (page: number = 1, loadMore: boolean = false,query=search) => {
         if (loadMore) {
             setstate(old => ({ ...old, loadingMore: true }));
         } else {
             setstate(old => ({ ...old, loading: true }));
         }
         dispatch<any>(
-            GetAllPrintersOffers({ page: page, pageSize: "10", query: query }, (res) => {
-                if (res.status === 200) {
+            GetAllPrintersOffers({ page: page, pageSize: "10",query:query }, (res) => {
+                  if (res.status === 200) {
 
                     const newItems = res.data.items;
                     setstate(old => ({
@@ -403,23 +403,23 @@ const Index = (props: Props) => {
                     }
                 }} />
 
-                <SearchBar
-                    onPressSearch={(val) => {
-                        setSearch(val)
-
-                        if (sectionId == "1") {
-                            getAllPaperOffers(1, false, val)
-                        }
-                        else if (sectionId == "2") {
-                            getAllInkOffers(1, false, val)
-                        }
-                        else {
-                            getAllPrinting(1, false, val)yarn push 
-                        }
-                    }}
-                    onPress={() => {
-                        setstate(old => ({ ...old, viewFilter: !state.viewFilter }))
-                    }} />
+                <SearchBar 
+                onPressSearch={(val)=>{
+                    setSearch(val)
+                   
+                    if (sectionId == "1") {
+            getAllPaperOffers(1,false,val)
+        }
+        else if (sectionId == "2") {
+            getAllInkOffers(1,false,val)
+        }
+        else {
+          getAllPrinting(1,false,val)
+        }
+                }}
+                onPress={() => {
+                    setstate(old => ({ ...old, viewFilter: !state.viewFilter }))
+                }} />
                 {state.viewFilter &&
                     <FlatList
                         data={filters}
