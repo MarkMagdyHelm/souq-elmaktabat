@@ -37,7 +37,7 @@ const Index = (props: Props) => {
     const [item, setItem] = useState(routeItem);
     const [state, setstate] = useState({
         loading: false,
-
+status:"",
         requestStatus: 0,
 
     });
@@ -129,10 +129,7 @@ const translateStatusById = (id: number) => {
         const filteredList = (rejectReasons || []).filter(
           item => !item.isMerchant && item.isDisplayed
         );
-        console.log("dddddddddddddd");
-        
-        console.log(filteredList);
-        console.log("dddddddddddddd");
+
       
         setRejectReason(filteredList)
       }, []);
@@ -151,11 +148,14 @@ const translateStatusById = (id: number) => {
                 { requestId, statusId, rejectReasonId, rejectReason, type: 1 },
                 (res, status) => {
                     if (res.status === 200) {
-                      
+                      console.log('====================================');
+                      console.log("UpdateRequest",res,status);
+                      console.log('====================================');
                         setItem((old: any) => ({
                             ...old,
-                            status:res.data?translateStatusById(2):translateStatusById(3), 
-                            requestStatus: res.data?2: 3, 
+                            status:translateStatusById(statusId), 
+                            requestStatus: statusId, 
+                            rejectReason:rejectReason
                         }));
                         // handleBack(statusId)
                     } else {
@@ -210,7 +210,7 @@ const translateStatusById = (id: number) => {
         );
     };
 console.log('==========dddd==========================');
-console.log(item.sellerId,userdata);
+console.log(item);
 console.log('====================================');
 
     return (
@@ -220,10 +220,10 @@ console.log('====================================');
             {visibleCancelResones && <MultiChekers
                 onCloseFn={(val) => {
                     console.log('=======val=============================');
-                    console.log("val",val);
+                    console.log("val", val,val[0]?.id??null,val[0]?.id?null:val[0]?.name);
                     console.log('====================================');
                     setVisibleCancelResones(false)
-                   updateRequest(item.requestId, 3, val?.id??null,val?.id?null:val.name); }}
+                   updateRequest(item.requestId, 3, val[0]?.id??null,val[0]?.name); }}
                 title={t("selectCancelReasons")}
                 currentFilter={""}
                 items={rejectReason}
@@ -342,7 +342,11 @@ console.log('====================================');
                         )}
                         {(state.requestStatus === 1 && source === "orders") && (<View style={[layout.dirRow, styles.actions]}>
 
-                            <TouchableOpacity style={[layout.rowBox, styles.cancelBtn]} onPress={() => setVisibleCancel(true)} >
+                            <TouchableOpacity style={[layout.rowBox, styles.cancelBtn]} onPress={() => {
+                                   console.log('====================================');
+                                console.log("adsjjhsdjkjfhsjdsdkjfhsdh");
+                                console.log('====================================');
+                                setVisibleCancelResones(true)}} >
                                 <View style={[styles.icon]}>
                                     <CancelIcon />
                                 </View>
@@ -356,7 +360,9 @@ console.log('====================================');
 
                         {(state.requestStatus === 0) && (<View style={[layout.dirRow, styles.actions]}>
 
-                            <TouchableOpacity style={[layout.rowBox, styles.cancelBtn]} onPress={() => setVisibleCancel(true)} >
+                            <TouchableOpacity style={[layout.rowBox, styles.cancelBtn]} onPress={() =>{
+                             
+                                setVisibleCancelResones(true)}} >
                                 <View style={[styles.icon]}>
                                     <CancelIcon />
                                 </View>
@@ -387,13 +393,13 @@ console.log('====================================');
                             <Text style={[layout.textAlign, styles.description1]}>{item.description}</Text>
                         </View>
                         {state.requestStatus === 3 && <View >
-                            <Text style={[layout.textAlign, styles.cancel]}>{item.rejectBy}</Text>
+                            <Text style={[layout.textAlign, styles.cancel]}>{item?.rejectBy}</Text>
                             <Text style={[layout.textAlign, styles.cancel]}>{t("cancelReason")}</Text>
 
                         </View>
                         }
                         {(state.requestStatus === 4 || state.requestStatus === 3) &&
-                            <Text style={[layout.textAlign, styles.date1]}>{item.rejectReason}</Text>
+                            <Text style={[layout.textAlign, styles.date1,{color:"red"}]}>{item.rejectReason}</Text>
                         }
                     
                     </View>
@@ -412,18 +418,7 @@ console.log('====================================');
             />
         </Container >
     )
-    // return (
-
-    //     <View style={{ flex: 1, justifyContent: 'center' }}>
-
-    //         <DoneRate
-    //             visible={visible}
-    //             onClose={() => setVisible(false)}
-    //             onSubmit={handleSubmit}
-    //         />
-
-    //     </View>
-    // )
+    
 }
 
 export default Index
