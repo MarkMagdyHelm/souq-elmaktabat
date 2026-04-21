@@ -6,6 +6,8 @@ import { ColorWithOpacity, Colors, PixelPerfect, phoneWidth } from '../../Consta
 import { HeartIcon, RateIcone } from '../../Assets/Svg';
 import { t } from 'i18next';
 import { imageUrl } from '../../Constants/config';
+import ImageWithFallback from '../ImageWithFallback/ImageWithFallback';
+// import { ImageWithFallback } from '../ImageWithFallback/ImageWithFallback';
 
 type Props = {
     item: any,
@@ -23,6 +25,7 @@ const Product = (props: Props) => {
     } = props;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
+// console.log("lllllllllo",item);
 
     return (
         <Pressable onPress={onPress}>
@@ -34,7 +37,12 @@ const Product = (props: Props) => {
                 </Pressable>
                 }
 
-                <Image source={{ uri: item.imageUrl }} resizeMode="contain" style={[styles.image]} />
+                {/* <Image source={{ uri: item.imageUrl }} resizeMode="contain" style={[styles.image]} /> */}
+                  <ImageWithFallback
+  uri={item?.imageUrl}
+                type={item?.type}
+  style={styles.image}
+/>
                 {item.type == 1 && <Text style={[layout.textAlign, styles.text]}>{item.categoryName + " " + item.name + " " + item.width + t("GM") + " " + item.paperSize}</Text>}
                 {item.type == 2 && <Text style={[layout.textAlign, styles.text]}>{item.categoryName + " " + item.name}</Text>}
                 {item.type == 3 && <Text style={[layout.textAlign, styles.text]}>{item.categoryName + " " + item.userName}</Text>}
@@ -75,7 +83,8 @@ const Product = (props: Props) => {
     )
 }
 
-export default Product
+// export default Product
+export default React.memo(Product);
 
 const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,) =>
     StyleSheet.create({

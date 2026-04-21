@@ -1,6 +1,3 @@
-// ✅ PushNotificationHandler.tsx (FULL WORKING + LOGS + SAFE NAVIGATION)
-// Put this file in: src/Utilties/PushNotificationHandler.tsx (or your path)
-
 import React, { useEffect, useRef } from "react";
 import { AppState, PermissionsAndroid, Platform } from "react-native";
 import PushNotification from "react-native-push-notification";
@@ -15,13 +12,15 @@ import { navigate, navigationRef } from "../Navigation/NavigationService";
 const CHANNEL_ID = "high-importance-channel";
 
 function routeFromMessage(remoteMessage: any) {
-  const type = remoteMessage?.data?.FirstName ?? remoteMessage?.data?.type ?? "";
+  const type =
+    remoteMessage?.data?.FirstName ??
+    remoteMessage?.data?.type ??
+    "";
 
-  console.log("🧭 routeFromMessage type:", type);
+  //console.log("🧭 routeFromMessage type:", type);
 
   if (type === "AdminPoll") return { name: "Polls", params: {} };
 
-  // ✅ IMPORTANT: "Home2" does NOT exist in your Stack, so use "Market" or "Demo"
   return { name: "Market", params: {} };
 }
 
@@ -29,8 +28,10 @@ export default function PushNotificationHandler() {
   const dispatch = useDispatch();
   const { isLogin } = useSelector((state: RootState) => state.auth);
 
-  // prevent double-init in dev (Fast Refresh)
   const initializedRef = useRef(false);
+
+  // ✅ NEW: ensure channel ready before usage
+  const channelReady = useRef(false);
 
   const ensureAndroidChannel = () => {
     if (Platform.OS !== "android") return;
@@ -43,9 +44,11 @@ export default function PushNotificationHandler() {
         importance: PushNotification.Importance.HIGH,
         vibrate: true,
         playSound: true,
-        // soundName: "default",
       },
-      (created) => console.log("✅ createChannel created?", created) // false => already exists
+      (created) => {
+        //console.log("✅ Channel created?", created);
+        channelReady.current = true; // ✅ important
+      }
     );
   };
 
@@ -55,7 +58,7 @@ export default function PushNotificationHandler() {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
         );
-        console.log("🔐 Android POST_NOTIFICATIONS:", granted);
+        //console.log("🔐 Android POST_NOTIFICATIONS:", granted);
       }
     } catch (err) {
       console.warn("Permission error:", err);
@@ -67,25 +70,29 @@ export default function PushNotificationHandler() {
       await firebase.messaging().registerDeviceForRemoteMessages();
       const fcmToken = await firebase.messaging().getToken();
 
-      console.log("🪙 FCM TOKEN:", fcmToken);
+      //console.log("🪙 FCM TOKEN:", fcmToken);
 
       if (!fcmToken) return;
 
       dispatch(SetFCM(fcmToken));
 
-      // If you want only guest token assignment:
-      // if (!isLogin) { ... }
       dispatch<any>(
         AssignGuestFCMTokenHandler({}, { fcmToken }, (res: any) => {
-          console.log("📡 AssignGuestFCMTokenHandler status:", res?.status);
+          //console.log("📡 AssignGuestFCMTokenHandler status:", res?.status);
         })
       );
     } catch (error) {
-      console.log("❌ FCM token error:", error);
+      //console.log("❌ FCM token error:", error);
     }
   };
 
   const showLocalNotification = (remoteMessage: any) => {
+    // ✅ prevent crash if channel not ready
+    if (Platform.OS === "android" && !channelReady.current) {
+      //console.log("⛔ Channel not ready yet, skip notification");
+      return;
+    }
+
     const title =
       remoteMessage?.notification?.title ??
       remoteMessage?.data?.title ??
@@ -96,8 +103,7 @@ export default function PushNotificationHandler() {
       remoteMessage?.data?.body ??
       "";
 
-    console.log("🔔 showLocalNotification:", { title, message });
-    console.log("🔔 Local data:", remoteMessage?.data);
+    //console.log("🔔 showLocalNotification:", { title, message });
 
     PushNotification.localNotification({
       channelId: CHANNEL_ID,
@@ -105,22 +111,28 @@ export default function PushNotificationHandler() {
       message,
       importance: "high",
       data: remoteMessage?.data ?? {},
-      userInfo: remoteMessage?.data ?? {}, // iOS uses userInfo
-      // playSound: true,
-      // soundName: "default",
+      userInfo: remoteMessage?.data ?? {},
     });
   };
 
   const safeNavigateFromMessage = (remoteMessage: any) => {
     const r = routeFromMessage(remoteMessage);
 
-    console.log("➡️ Navigating to:", r);
+    //console.log("➡️ Navigating to:", r);
 
     if (!navigationRef.isReady()) {
-      console.log("⏳ Navigation not ready, delaying...");
-      setTimeout(() => navigate(r.name, r.params), 400);
+      //console.log("⏳ Navigation not ready, delaying...");
+
+      // ✅ safer timeout
+      setTimeout(() => {
+        if (navigationRef.isReady()) {
+          navigate(r.name, r.params);
+        }
+      }, 400);
+
       return;
     }
+
     navigate(r.name, r.params);
   };
 
@@ -128,71 +140,68 @@ export default function PushNotificationHandler() {
     if (initializedRef.current) return;
     initializedRef.current = true;
 
-    console.log("🚀 PushNotificationHandler mounted");
+    //console.log("🚀 PushNotificationHandler mounted");
 
     ensureAndroidChannel();
     requestNotificationPermission();
     getFCMToken();
 
-    // AppState logs (helpful)
     const appStateSub = AppState.addEventListener("change", (state) => {
-      console.log("📊 AppState:", state);
+      //console.log("📊 AppState:", state);
     });
 
-    // ✅ FOREGROUND
+    // ✅ FIX: prevent duplicate / crash
     const unsubOnMessage = messaging().onMessage(async (remoteMessage) => {
-      console.log("📱 FOREGROUND MESSAGE RECEIVED");
-      console.log("DATA:", remoteMessage?.data);
-      console.log("NOTIFICATION:", remoteMessage?.notification);
+      //console.log("📱 FOREGROUND MESSAGE RECEIVED");
 
-      showLocalNotification(remoteMessage);
+      //console.log("DATA:", remoteMessage?.data);
+      //console.log("NOTIFICATION:", remoteMessage?.notification);
+
+      // if (remoteMessage?.notification) {
+      //   console.log("⚠️ System handles it → skip local");
+      //   return;
+      // }
+
+      try {        
+        showLocalNotification(remoteMessage);
+      } catch (e) {
+        // console.log("❌ showLocalNotification error:", e);
+      }
     });
 
-    // ✅ OPENED FROM BACKGROUND (tap)
     const unsubOpened = messaging().onNotificationOpenedApp((remoteMessage) => {
-      console.log("👆 OPENED FROM BACKGROUND (TAP)");
-      console.log("DATA:", remoteMessage?.data);
-      console.log("NOTIFICATION:", remoteMessage?.notification);
+      // console.log("👆 OPENED FROM BACKGROUND");
 
-      if (remoteMessage) safeNavigateFromMessage(remoteMessage);
+      if (remoteMessage) {
+        safeNavigateFromMessage(remoteMessage);
+      }
     });
 
-    // ✅ OPENED FROM QUIT (cold start tap)
     messaging()
       .getInitialNotification()
       .then((remoteMessage) => {
         if (!remoteMessage) return;
 
-        console.log("🚀 OPENED FROM QUIT (COLD START)");
-        console.log("DATA:", remoteMessage?.data);
-        console.log("NOTIFICATION:", remoteMessage?.notification);
-
+        // console.log("🚀 OPENED FROM QUIT");
         safeNavigateFromMessage(remoteMessage);
       });
 
-    // ✅ Local notification tap (react-native-push-notification)
+    // ⚠️ keep but note: better to move to App.tsx
     PushNotification.configure({
       onRegister: function (token: any) {
-        console.log("✅ PushNotification onRegister token:", token);
+        //console.log("✅ onRegister token:", token);
       },
 
       onNotification: function (notification: any) {
-        console.log("🔔 LOCAL NOTIFICATION TAPPED / RECEIVED");
-        console.log("notification:", notification);
+        //console.log("🔔 LOCAL NOTIFICATION RECEIVED / TAPPED");
 
         const data = notification?.data ?? notification?.userInfo ?? {};
-        console.log("🔔 Local tap data:", data);
 
         safeNavigateFromMessage({ data });
 
         if (Platform.OS === "ios") {
           notification.finish(PushNotificationIOS.FetchResult.NoData);
         }
-      },
-
-      onAction: function (notification: any) {
-        console.log("🟦 ACTION:", notification.action);
-        console.log("🟦 NOTIFICATION:", notification);
       },
 
       onRegistrationError: function (err: any) {
@@ -214,7 +223,6 @@ export default function PushNotificationHandler() {
       unsubOpened();
       appStateSub.remove();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return null;

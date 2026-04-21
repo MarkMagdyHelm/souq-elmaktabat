@@ -170,10 +170,10 @@ const translateStatusById = (id: number) => {
             )
         );
     };
-    const handleBack = (statusId: any) => {
-        onGoBack?.(statusId);
-        navigation.goBack();
-    };
+    // const handleBack = (statusId: any) => {
+    //     onGoBack?.(statusId);
+    //     navigation.goBack();
+    // };
     const addRate = (
         number?: string,
         description?: string,
@@ -188,14 +188,18 @@ const translateStatusById = (id: number) => {
                 (res, status) => {
                     if (res.status === 200) {
                         setShowSuccess(true)
+                         setItem((old: any) => ({
+    ...old,
+    isRated: true,
+  }));
                         setTimeout(() => {
                             setShowSuccess(false)
-                            navigation.reset({
-                                index: 0,
-                                routes: [
-                                    { name: 'Home2' },
-                                ],
-                            });
+                            // navigation.reset({
+                            //     index: 0,
+                            //     routes: [
+                            //         { name: 'Home2' },
+                            //     ],
+                            // });
                         }, 2000);
                     } else {
                         toastNotfication({
@@ -378,11 +382,21 @@ console.log('====================================');
                                 <View style={[styles.icon]}>
                                     <RateIcon />
                                 </View>
-                                <Text style={[layout.textAlign, styles.acceptText]}>{t("rateSeller")}</Text>
+                                <Text style={[layout.textAlign, styles.acceptText]}>{!isSeller ? t("rateSeller") : t("rateBuyer")}</Text>
 
                             </TouchableOpacity>
 
                         </View>}
+                        {state.requestStatus === 5 && item.isRated && (
+  <View style={[layout.dirRow, styles.actions]}>
+    <View style={[layout.rowBox, styles.receiveBtn]}>
+      <View style={styles.icon}>
+        <CheckIcon />
+      </View>
+      <Text style={styles.receiveText}>{t("rated")}</Text>
+    </View>
+  </View>
+)}
                     </View>
                     <Space />
 

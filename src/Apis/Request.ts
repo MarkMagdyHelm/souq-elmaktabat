@@ -67,11 +67,13 @@ export const GetSellerData = (body: any, cb?: (data: any, status: any) => void) 
 export const GetMyRequests = (body: any, cb?: (data: any, status: any) => void) => {
     return async (dispatch: Dispatch<IDispatch>) => {
         try {
+console.log('ppp',body);
 
             const { data, status } = await globalAPI.get('api/Request/GetMyRequests', {
                 params: body
             });
             cb && cb(data, status);
+                console.log('GetMyRequests = ', data);
         } catch (error) {
             console.log('GetRequests error = ', error);
             cb && cb(error, 500);

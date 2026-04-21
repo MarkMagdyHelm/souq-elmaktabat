@@ -1,4 +1,13 @@
-import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  BackHandler,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import { ThemeContext } from '../../Constants/theming';
@@ -17,15 +26,12 @@ import { GetRequests } from '../../Apis/Request';
 import MyOrderItem from '../../Components/Cards/MyOrderItem';
 import { useFocusEffect } from '@react-navigation/native';
 
-
 type Props = {
-  navigation: any
-}
+  navigation: any;
+};
 
 const Index = (props: Props) => {
-  const {
-    navigation
-  } = props
+  const { navigation } = props;
   const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
   const styles = useStyles(Fonts, theme, dark, dir);
   const dispatch = useDispatch();
@@ -39,7 +45,7 @@ const Index = (props: Props) => {
     hasMoreRequests: true,
     loadingMore: false,
   });
-  const [tab, setTab] = useState("notifications");
+  const [tab, setTab] = useState('notifications');
   const toast = useToast();
 
   const toastNotfication = (config: any) => {
@@ -51,35 +57,64 @@ const Index = (props: Props) => {
       animationType: 'slide-in',
       placement: 'top',
     } as any);
-  }
+  };
 
   useEffect(() => {
     getNotifications();
   }, []);
- useFocusEffect(
+  useFocusEffect(
     React.useCallback(() => {
-      console.log("📍 Market screen focused");
+      console.log('📍 Market screen focused');
 
-  handleRefresh();
-      return () => {
-        
-      };
-    }, [])
+      handleRefresh();
+      // return () => {
+
+      // };
+    }, []),
   );
-  
 
+  useEffect(() => {
+   const onBackPress = () => {
+     if (navigation.canGoBack()) {
+       navigation.goBack();
+       return true;
+     }
+ 
+       navigation.reset({
+         index: 0,
+         routes: [{ name: "Market" }],
+       })
+ 
+     return true;
+   };
+ 
+   const subscription = BackHandler.addEventListener(
+     "hardwareBackPress",
+     onBackPress
+   );
+ 
+   return () => subscription.remove();
+ }, []);
   const getNotifications = () => {
-    setstate(old => ({ ...old, loading: true }))
-    dispatch<any>(GetAllNotificationsHandler({},
-      (res, status) => {
-        console.log('=============GetAllNotificationsHandler=======================');
-        console.log("GetAllNotificationsHandler", res);
+    setstate(old => ({ ...old, loading: true }));
+    dispatch<any>(
+      GetAllNotificationsHandler({}, (res, status) => {
+        console.log(
+          '=============GetAllNotificationsHandler=======================',
+        );
+        console.log('GetAllNotificationsHandler', res);
         console.log('====================================');
         if (res.status == 200) {
           setstate(old => ({ ...old, items: res.data }));
-        } else { toastNotfication({ type: 'error', message: res?.Message ?? t("Something Went wrong") }); }
+        } else {
+          toastNotfication({
+            type: 'error',
+            message: res?.Message ?? t('Something Went wrong'),
+          });
+        }
         setstate(old => ({ ...old, loading: false }));
-      }))
+      }),
+    );
   };
   const getRequests = (page: number = 1, loadMore: boolean = false) => {
     if (loadMore) {
@@ -89,7 +124,7 @@ const Index = (props: Props) => {
     }
 
     dispatch<any>(
-      GetRequests({ page: page.toString(), pageSize: "10" }, (res, status) => {
+      GetRequests({ page: page.toString(), pageSize: '10' }, (res, status) => {
         if (res.status === 200) {
           console.log('===============requests=====================');
           console.log(res.data.items);
@@ -106,12 +141,12 @@ const Index = (props: Props) => {
           }));
         } else {
           toastNotfication({
-            type: "error",
-            message: res?.Message ?? t("Something Went wrong"),
+            type: 'error',
+            message: res?.Message ?? t('Something Went wrong'),
           });
           setstate(old => ({ ...old, loading: false, loadingMore: false }));
         }
-      })
+      }),
     );
   };
 
@@ -122,29 +157,26 @@ const Index = (props: Props) => {
   };
 
   const handleRefresh = () => {
-    setstate(old => ({ ...old, requests: [] }))
+    setstate(old => ({ ...old, requests: [] }));
     getRequests(1);
   };
 
-  const handlePress = (item) => {
+  const handlePress = item => {
     switch (item.type) {
       case 0:
-        navigation.navigate("Home");
-        break;
       case 1:
-        navigation.navigate("Home")
+        navigation.navigate('Home');
         break;
       case 2:
-        navigation.navigate("Polls")
+        navigation.navigate('Polls');
         break;
       default:
         break;
     }
-  }
+  };
 
   const handleSelectRequest = (item: any) => {
-    navigation.navigate("OrderDetails", { item: item })
-
+    navigation.navigate('OrderDetails', { item: item });
   };
 
   const renderFooter = () => {
@@ -158,53 +190,64 @@ const Index = (props: Props) => {
 
   return (
     <Container showHint={false}>
-      <HeaderWithText title={t("notifications")}
-      hasNotBack={true}
-      />
+      <HeaderWithText title={t('notifications')} hasNotBack={true} />
       <View style={styles.bodyCon}>
-
         <View style={styles.container}>
           {/* Tabs */}
           <View style={styles.tabs}>
             <Pressable
-              style={[styles.tab, tab === "requests" && styles.activeTab]}
+              style={[styles.tab, tab === 'requests' && styles.activeTab]}
               onPress={() => {
-                setTab("requests");
+                setTab('requests');
                 if (state.requests.length === 0) {
                   getRequests(1);
                 }
               }}
             >
-              <Text style={[styles.tabText, tab === "requests" && styles.activeTabText]}>
-                {t("requests")}
+              <Text
+                style={[
+                  styles.tabText,
+                  tab === 'requests' && styles.activeTabText,
+                ]}
+              >
+                {t('requests')}
               </Text>
             </Pressable>
             <Pressable
-              style={[styles.tab, tab === "notifications" && styles.activeTab]}
+              style={[styles.tab, tab === 'notifications' && styles.activeTab]}
               onPress={() => {
-                setTab("notifications");
+                setTab('notifications');
                 if (state.items.length === 0) {
                   getNotifications();
                 }
               }}
             >
               <Text
-                style={[styles.tabText, tab === "notifications" && styles.activeTabText]}
+                style={[
+                  styles.tabText,
+                  tab === 'notifications' && styles.activeTabText,
+                ]}
               >
-                {t("notifications")}
+                {t('notifications')}
               </Text>
             </Pressable>
           </View>
         </View>
 
-        {tab === "requests" ? (
+        {tab === 'requests' ? (
           <FlatList
             data={state.requests}
-            keyExtractor={(item) => item.id}
+            keyExtractor={item => item.id}
             renderItem={({ item }) => (
-              <MyOrderItem item={item} onDetailsClick={() => handleSelectRequest(item)} />
+              <MyOrderItem
+                item={item}
+                onDetailsClick={() => handleSelectRequest(item)}
+              />
             )}
-            contentContainerStyle={{ paddingBottom: PixelPerfect(16), paddingHorizontal: PixelPerfect(16) }}
+            contentContainerStyle={{
+              paddingBottom: PixelPerfect(16),
+              paddingHorizontal: PixelPerfect(16),
+            }}
             onEndReached={handleLoadMore}
             onEndReachedThreshold={0.5}
             ListFooterComponent={renderFooter}
@@ -219,28 +262,40 @@ const Index = (props: Props) => {
 
             data={state.items}
             keyExtractor={(items, index: number) => index.toString()}
-            ItemSeparatorComponent={() => (state.loading ? null : <View style={styles.separator} />)}
+            ItemSeparatorComponent={() =>
+              state.loading ? null : <View style={styles.separator} />
+            }
             renderItem={({ item }) => {
               return (
                 <>
                   {/* {state.loading?
                   <PollLoader height={70}/> */}
                   {/* :  */}
-                  <Notification loading={state.loading} item={item} onPress={() => handlePress(item)} />
+                  <Notification
+                    loading={state.loading}
+                    item={item}
+                    onPress={() => handlePress(item)}
+                  />
                   {/* } */}
                 </>
               );
-            }} />
+            }}
+          />
         )}
       </View>
       <TabBar />
     </Container>
-  )
-}
+  );
+};
 
-export default Index
+export default Index;
 
-const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,) =>
+const useStyles = (
+  Fonts: IFont,
+  theme: ITheme,
+  darkmode: boolean,
+  dir: string,
+) =>
   StyleSheet.create({
     bodyCon: {
       flex: 0.8,
@@ -248,42 +303,42 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
     },
     separator: {
       height: PixelPerfect(1),
-      backgroundColor: theme.border
+      backgroundColor: theme.border,
     },
     container: {
       height: PixelPerfect(40),
       backgroundColor: theme.white,
       paddingHorizontal: PixelPerfect(8),
-      marginBottom: PixelPerfect(16)
+      marginBottom: PixelPerfect(16),
     },
     tabs: {
-      flexDirection: "row",
-      height: PixelPerfect(40)
+      flexDirection: 'row',
+      height: PixelPerfect(40),
     },
     tab: {
       height: PixelPerfect(50),
       marginHorizontal: PixelPerfect(4),
       flex: 1,
       borderRadius: PixelPerfect(8),
-      alignItems: "center",
+      alignItems: 'center',
       backgroundColor: theme.gray2,
-      justifyContent: "center"
+      justifyContent: 'center',
     },
     activeTab: {
-      backgroundColor: theme.babyBlue
+      backgroundColor: theme.babyBlue,
     },
     tabText: {
       fontSize: PixelPerfect(18),
       color: theme.black,
-      fontFamily: Fonts.medium
+      fontFamily: Fonts.medium,
     },
     activeTabText: {
       color: theme.white,
       fontFamily: Fonts.medium,
-      fontSize: PixelPerfect(18)
+      fontSize: PixelPerfect(18),
     },
     footerLoader: {
       paddingVertical: PixelPerfect(20),
       alignItems: 'center',
     },
-  })
+  });

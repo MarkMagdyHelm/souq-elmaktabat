@@ -27,10 +27,14 @@ export const GetAllPaperOffers = (body:any,cb?: (data: any, status: any) => void
     try {
       const { data, status } = await globalAPI.post('api/Offer/GetAllPaperOffers',body);
       cb && cb(data, status);
+    console.log("GetAllPaperOffers",data);
+    console.log("kkkk",body);
+
     } catch (error) {
       console.log('GetAllPaperOffers error = ', error);
       cb && cb(error, 500);
     }
+    
   };
 };
 /**
@@ -42,6 +46,9 @@ export const GetAllInkOffers = (body:any,cb?: (data: any, status: any) => void) 
     try {
       const { data, status } = await globalAPI.post('api/Offer/GetAllInkOffers',body);
       cb && cb(data, status);
+      console.log('GetAllInkOffers  = ', data);
+      console.log('GetAllInkOffers  = ', body);
+
     } catch (error) {
       console.log('GetAllInkOffers error = ', error);
       cb && cb(error, 500);
@@ -57,8 +64,11 @@ export const GetAllPrintersOffers = (body:any,cb?: (data: any, status: any) => v
     try {
       const { data, status } = await globalAPI.post('api/Offer/GetAllPrintingOffers',body);
       cb && cb(data, status);
+      console.log('GetAllPrintersOffers = ', body);
+      console.log('GetAllPrintersOffers = ', data);
+
     } catch (error) {
-      console.log('GetAllInkOffers error = ', error);
+      console.log('GetAllPrintersOffers error = ', error);
       cb && cb(error, 500);
     }
   };
@@ -92,6 +102,21 @@ export const GetSellerData = (id:any,cb?: (data: any, status: any) => void) => {
         console.log('GetSellerData = ', data);
     } catch (error) {
       console.log('GetSellerData error = ', error);
+      cb && cb(error, 500);
+    }
+  };
+};
+
+export const AddPaperRate = (body:any,cb?: (data: any, status: any) => void) => {
+  return async (dispatch: Dispatch<IDispatch>) => {
+      try {
+      const { data, status } = await globalAPI.post('api/DisplayPaper/AddPaperRate',body);
+      cb && cb(data, status);
+      // console.log('AddPaperRate = ', body);
+      // console.log('AddPaperRate = ', data);
+
+    } catch (error) {
+      // console.log('AddPaperRate error = ', error);
       cb && cb(error, 500);
     }
   };

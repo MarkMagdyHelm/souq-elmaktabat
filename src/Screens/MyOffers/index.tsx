@@ -13,6 +13,8 @@ import { useToast } from 'react-native-toast-notifications'
 import { GetAllPaperOffers, GetMyPaperOffers } from '../../Apis/HomeApis'
 import { AddFavouritePaperOffer } from '../../Apis/CommonApi'
 import { RootState } from '../../Store/store'
+import { logoutHandler } from '../../Apis/User'
+import CancelOrder from '../../Components/PopUps/CancelOrder'
 
 type Props = {
       navigation: any
@@ -26,6 +28,7 @@ const Index = (props: Props) => {
       const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
       const styles = useStyles(Fonts, theme, dark, dir);
           const { isLogin, userdata, isSeller } = useSelector((state: RootState) => state.auth);
+  const [visibleCancel, setVisibleCancel] = useState(false);
 
      const handleSelectProduct = (item) => {
         if (item?.isMine) {
@@ -33,25 +36,14 @@ const Index = (props: Props) => {
 
                 navigation.navigate("OffersDetails", { item: item })
             } else {
-                navigation.reset({
-                    index: 0,
-                    routes: [
-
-                        { name: "Signin" } as any,
-                    ],
-                });
+                  setVisibleCancel(true);
             }
         } else {
             if (isLogin) {
                 navigation.navigate("ProductDetails", { item: item })
             } else {
-                navigation.reset({
-                    index: 0,
-                    routes: [
-
-                        { name: "Signin" } as any,
-                    ],
-                });
+                  setVisibleCancel(true);
+            
             }
 
         }
@@ -147,6 +139,21 @@ const Index = (props: Props) => {
 
       return (
             <Container showHint={false}>
+                    <CancelOrder
+        visible={visibleCancel}
+        onClose={() => setVisibleCancel(false)}
+        onSubmit={() => {
+          setVisibleCancel(false);
+          dispatch<any>(logoutHandler());
+ navigation.reset({
+              index: 0,
+              routes: [{ name: 'Signin' }],
+            } as any);        }}
+        title={t('signtxt1')}
+        body={''}
+        cancleText={t('Sign in')}
+        SignIn={true}
+      />
                   <HeaderWithText title={t("My Offers")} />
 
                   <View style={styles.formCon}>

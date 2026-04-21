@@ -1,4 +1,4 @@
-import { FlatList, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
+import { BackHandler, FlatList, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Container } from '../../Components/containers/Containers'
 import { ThemeContext } from '../../Constants/theming'
@@ -9,7 +9,7 @@ import TabBar from '../../Components/TabBar/index';
 import Category from '../../Components/Cards/Category';
 import { AddOfferICon, CallIcon, PaperIcon, SharIcon } from '../../Assets/Svg'
 import moment from 'moment';
-import 'moment/locale/ar'
+// import 'moment/locale/ar'
 import ViewShot from "react-native-view-shot";
 import Share from 'react-native-share';
 import { GetPapersHandler } from '../../Apis/HomeApis'
@@ -62,6 +62,28 @@ const Index = (props: Props) => {
     }
     
   }, [])
+ useEffect(() => {
+  const onBackPress = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+      return true;
+    }
+
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Market" }],
+      })
+
+    return true;
+  };
+
+  const subscription = BackHandler.addEventListener(
+    "hardwareBackPress",
+    onBackPress
+  );
+
+  return () => subscription.remove();
+}, []);
   const toast = useToast();
   const toastNotfication = (config: any) => {
     toast.hideAll();
@@ -129,11 +151,14 @@ const Index = (props: Props) => {
               numColumns={2}
               keyExtractor={(items, index: number) => index.toString()}
               renderItem={({ item, index }) => {
+                console.log("kkkff",item);
+                
                 return (
                   <>
                     {state.loading ?
                       <HomeCategoryLoder />
-                      : <Category item={item} />}
+                      : <Category item={item} />
+                      }
                   </>
                 );
               }} />

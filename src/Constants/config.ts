@@ -3,6 +3,8 @@ import axios from 'axios';
 import { NativeModules, Platform } from 'react-native';
 import { AsyncKeys, getItem } from '../Helper';
 import DeviceInfo from 'react-native-device-info'
+import { useSelector } from 'react-redux';
+import { RootState } from '../Store/store';
 // Staging
 export const mainUrl = 'http://markmagdy-001-site3.ktempurl.com/';
 export const imageUrl = 'http://markmagdy-001-site3.ktempurl.com/images/';
@@ -30,7 +32,8 @@ globalAPI.interceptors.request.use(
   async config => {
     const language = await getItem(AsyncKeys.LANGUAGE);
     const { token } = (await getItem(AsyncKeys.USER_DATA)) || '';
-
+  const userData = await getItem(AsyncKeys.USER_DATA);
+console.log("USER_DATA RAW:", userData);
     config.headers['Accept-Language'] = language ?? 'ar';
     if (cancelToken?.hasOwnProperty("cancel")) {
       cancelToken.cancel('Canceling previous request');
@@ -56,14 +59,14 @@ globalAPI.interceptors.request.use(
       }
 
     }
-    console.log('==============data.id=========config=============');
-    console.log(config.data, `zzzzz${config.baseURL}${config.url}`);
-    console.log('================headers====================');
-    console.log(config.headers);
-    console.log('====================================');
-    console.log('=============config.params=======================');
-    console.log(config.params);
-    console.log('====================================');
+    // console.log('==============data.id=========config=============');
+    // console.log(config.data, `${config.baseURL}${config.url}`);
+    console.log('================config====================');
+    console.log(config);
+    // console.log('====================================');
+    // console.log('=============config.params=======================');
+    // console.log(config.params);
+    // console.log('====================================');
     return config;
   },
   error => {

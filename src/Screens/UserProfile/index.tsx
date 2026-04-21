@@ -53,9 +53,9 @@ const Index = (props: Props) => {
             }
         }))
     };
-    console.log('====================================');
-    console.log(imageUrl + userdata.imageUrl);
-    console.log('====================================');
+    // console.log('====================================');
+    // // console.log(imageUrl + userdata.imageUrl);
+    // console.log('====================================');
     return (
         <Container showHint={false}>
             <HeaderWithText title={t("")} isShareVisible={true} isFavVisible={false} onShareClick={() => {

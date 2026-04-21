@@ -1,12 +1,13 @@
-import React, { useContext } from "react";
-import { Pressable, Text, View } from "react-native";
-import { Formik, FormikProps } from "formik";
-import { validationSchema } from "../../../../Validation/Form1Refistration";
-import Inputs from "../../../../Components/inputs";
-import DropDowenMenu from "../../../../Components/DropDowenMenus/DropDowenMenu";
-import { ArrowDownIcon, ArrowUpIcon } from "../../../../Assets/Svg";
-import { ThemeContext } from "../../../../Constants/theming";
-import { t } from "i18next";
+import React, { useContext, useState } from 'react';
+import { Pressable, Text, TouchableOpacity, View } from 'react-native';
+import { Formik, FormikProps } from 'formik';
+import { validationSchema } from '../../../../Validation/Form1Refistration';
+import Inputs from '../../../../Components/inputs';
+import DropDowenMenu from '../../../../Components/DropDowenMenus/DropDowenMenu';
+import { ArrowDownIcon, ArrowUpIcon } from '../../../../Assets/Svg';
+import { ThemeContext } from '../../../../Constants/theming';
+import { t } from 'i18next';
+import PhoneInputWithCountry from '../../../../Components/touchables/PhoneInputWithCountry';
 
 type Props = {
   formikRef: React.RefObject<FormikProps<any>>;
@@ -16,61 +17,79 @@ type Props = {
   setActiveStep: (step: number) => void;
   roles: any[];
   styles: any;
-  onSelectRole:(val:boolean)=>void
+  onSelectRole: (val: boolean) => void;
 };
 
-const FormStep1 = ({ formikRef, email, state, setstate, setActiveStep, roles, styles ,onSelectRole}: Props) => {
+const FormStep1 = ({
+  formikRef,
+  email,
+  state,
+  setstate,
+  setActiveStep,
+  roles,
+  styles,
+  onSelectRole,
+}: Props) => {
   const { layout, dir } = useContext(ThemeContext);
+  const [countryCode, setCountryCode] = useState('+20');
+
   return (
     <Formik
       validationSchema={validationSchema}
       innerRef={formikRef}
       initialValues={{
-        Name: "",
+        Name: '',
         Email: email,
-        Password: "",
-        ConfirmPassword: "",
-        PhoneNumber: "",
-        Role: "",
+        Password: '',
+        ConfirmPassword: '',
+        PhoneNumber: '',
+        Role: '',
       }}
       onSubmit={() => {}}
     >
-      {({ handleChange, handleBlur, errors, touched, setFieldValue, setFieldTouched, setFieldError }) => (
+      {({
+        values,
+        handleChange,
+        handleBlur,
+        errors,
+        touched,
+        setFieldValue,
+        setFieldTouched,
+        setFieldError,
+      }) => (
         <>
           <Inputs
-            label={t("fullname")}
+            label={t('fullname')}
             options={{
-              onBlur: handleBlur("Name"),
-              onChangeText: handleChange("Name"),
-              placeholder: t("fullnamew"),
+              onBlur: handleBlur('Name'),
+              onChangeText: handleChange('Name'),
+              placeholder: t('fullnamew'),
               maxLength: 100,
             }}
             password={false}
             showErrorr={(errors.Name && touched.Name) as boolean}
             error={errors.Name as any}
           />
-
           <Inputs
-            label={t("Phone")}
+            label={t('Phone')}
             options={{
-              onBlur: handleBlur("PhoneNumber"),
-              onChangeText: handleChange("PhoneNumber"),
-              placeholder: t("Phonew"),
+              onBlur: handleBlur('PhoneNumber'),
+              onChangeText: handleChange('PhoneNumber'),
+              placeholder: t('Phonew'),
               maxLength: 11,
-              keyboardType: "number-pad",
+              keyboardType: 'number-pad',
             }}
             password={false}
+            input={{ width: '73%' }}
             isPhone={true}
-            input={{ width: "73%" }}
             showErrorr={(errors.PhoneNumber && touched.PhoneNumber) as boolean}
             error={errors.PhoneNumber as any}
           />
-
           <Inputs
-            label={t("Email")}
+            label={t('Email')}
             options={{
-              onBlur: handleBlur("Email"),
-              placeholder: "example@email.com",
+              onBlur: handleBlur('Email'),
+              placeholder: 'example@email.com',
               editable: false,
               value: email,
             }}
@@ -80,11 +99,11 @@ const FormStep1 = ({ formikRef, email, state, setstate, setActiveStep, roles, st
           />
 
           <Inputs
-            label={t("pasword")}
+            label={t('pasword')}
             options={{
-              onBlur: handleBlur("Password"),
-              onChangeText: handleChange("Password"),
-              placeholder: t("paswordw"),
+              onBlur: handleBlur('Password'),
+              onChangeText: handleChange('Password'),
+              placeholder: t('paswordw'),
               maxLength: 30,
             }}
             password={true}
@@ -93,46 +112,55 @@ const FormStep1 = ({ formikRef, email, state, setstate, setActiveStep, roles, st
           />
 
           <Inputs
-            label={t("confirmpasword")}
+            label={t('confirmpasword')}
             options={{
-              onBlur: handleBlur("ConfirmPassword"),
-              onChangeText: handleChange("ConfirmPassword"),
-              placeholder: t("confirmpaswordw"),
+              onBlur: handleBlur('ConfirmPassword'),
+              onChangeText: handleChange('ConfirmPassword'),
+              placeholder: t('confirmpaswordw'),
               maxLength: 30,
             }}
             password={true}
-            showErrorr={(errors.ConfirmPassword && touched.ConfirmPassword) as boolean}
+            showErrorr={
+              (errors.ConfirmPassword && touched.ConfirmPassword) as boolean
+            }
             error={errors.ConfirmPassword as any}
           />
 
           <Pressable
             style={styles.selectMenueCon}
             onPress={() => {
-           
-              setstate((old) => ({ ...old, showRols: true }));
+              setstate(old => ({ ...old, showRols: true }));
             }}
           >
-            <Text style={[layout.textAlign, styles.label]}>{t("AccountType")}</Text>
+            <Text style={[layout.textAlign, styles.label]}>
+              {t('AccountType')}
+            </Text>
             <View style={[layout.rowBox, styles.selectMenue]}>
               <Text style={styles.textselectmenu}>
-                {state.selectedRole.id ? (dir === "rtl" ? state.selectedRole.arName : state.selectedRole.name) : t("AccountTypew")}
+                {state.selectedRole.id
+                  ? dir === 'rtl'
+                    ? state.selectedRole.arName
+                    : state.selectedRole.name
+                  : t('AccountTypew')}
               </Text>
               {state.showRols ? <ArrowUpIcon /> : <ArrowDownIcon />}
             </View>
-            {errors.Role && touched.Role && <Text style={styles.errorText}>{t(errors.Role as any)}</Text>}
+            {errors.Role && touched.Role && (
+              <Text style={styles.errorText}>{t(errors.Role as any)}</Text>
+            )}
           </Pressable>
 
           {state.showRols && (
             <DropDowenMenu
-              onCloseFn={(val) => {
-   setFieldTouched("Role");
+              onCloseFn={val => {
+                setFieldTouched('Role');
                 if (!val?.id) {
-                  setstate((old) => ({
+                  setstate(old => ({
                     ...old,
                     showRols: false,
-                    forms: { ...state.forms, Role: "You must pick a role!" },
+                    forms: { ...state.forms, Role: 'You must pick a role!' },
                   }));
-                  setFieldError("Role", "You must pick a role!");
+                  setFieldError('Role', 'You must pick a role!');
                 } else {
                   console.log('==============val.id ======================');
                   console.log(val.id);
@@ -140,19 +168,19 @@ const FormStep1 = ({ formikRef, email, state, setstate, setActiveStep, roles, st
                   if (val.id == 1) {
                     onSelectRole && onSelectRole(true);
                   } else {
-                     onSelectRole && onSelectRole(false);
+                    onSelectRole && onSelectRole(false);
                   }
-                  setFieldValue("Role", val.id);
-                  setstate((old) => ({
+                  setFieldValue('Role', val.id);
+                  setstate(old => ({
                     ...old,
                     showRols: false,
                     selectedRole: val,
-                    forms: { ...state.forms, Role: "" },
+                    forms: { ...state.forms, Role: '' },
                   }));
                   setActiveStep(2);
                 }
               }}
-              title={t("Choose Account Type")}
+              title={t('Choose Account Type')}
               currentFilter={state.selectedRole}
               items={roles}
               style={{ flex: 0.2 }}

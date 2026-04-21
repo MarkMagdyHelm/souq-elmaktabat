@@ -4,10 +4,10 @@ import {
   ScrollView,
   StyleProp,
   ViewStyle,
-  SafeAreaView,
   KeyboardAvoidingView,
   StatusBar,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors, PixelPerfect } from '../../Constants/styleConstants';
 import { ThemeContext } from '../../Constants/theming';
 

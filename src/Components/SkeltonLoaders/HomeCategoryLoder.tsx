@@ -17,7 +17,7 @@ const {
 const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
  const styles = useStyles(Fonts, theme, dark, dir);
  return (
-    <SkeletonPlaceholder backgroundColor={Colors.secondColor}>
+    <SkeletonPlaceholder backgroundColor={Colors.sacandAppBackgroundColor}>
     <SkeletonPlaceholder.Item >
       <SkeletonPlaceholder.Item    height={height??PixelPerfect(60)}
         width={(phoneWidth-PixelPerfect(29))/2}

@@ -1,4 +1,4 @@
-import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, BackHandler, FlatList, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Container } from '../../Components/containers/Containers'
 import { ThemeContext } from '../../Constants/theming'
@@ -42,7 +42,8 @@ const Index = (props: Props) => {
 
 
 
-      const filters = ["price", "size", "paperTypeFilter", "governorate"];
+      // const filters = ["price", "size", "paperTypeFilter", "governorate"];
+      const filters = [];
 
       const [categoryId, setCategoryId] = useState(null)
       const [activityId, setActivityId] = useState(null)
@@ -75,7 +76,28 @@ const Index = (props: Props) => {
             setstate(old => ({ ...old, sections: [] }))
             getAllPaperOffers(1)
       }, [state.countries, state.paperSize, state.paperType,query])
+ useEffect(() => {
+  const onBackPress = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+      return true;
+    }
 
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Market" }],
+      })
+
+    return true;
+  };
+
+  const subscription = BackHandler.addEventListener(
+    "hardwareBackPress",
+    onBackPress
+  );
+
+  return () => subscription.remove();
+}, []);
       const toast = useToast();
       const toastNotfication = (config: any) => {
             toast.hideAll();

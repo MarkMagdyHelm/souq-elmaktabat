@@ -44,7 +44,14 @@ const STORE_LINK = Platform.select({
       title: t('signin1'),
          isLogin:false,
       icon: <AccountIcon />,
-      onPress: () => navigation.navigate('Signin')
+      onPress: () => {
+        dispatch<any>(logoutHandler());
+
+        navigation.reset({
+                  index: 0,
+                  routes: [{ name: 'Signin' }],
+                });
+      }
     },
  {
       key: 'account',
@@ -196,7 +203,7 @@ const filteredMenuItems = allMenuItems.filter(item => {
   return true;
 });
 
-  console.log(userdata, 'userdata', Platform.OS, isSeller);
+  // console.log(userdata, 'userdata', Platform.OS, isSeller);
 const dispatch = useDispatch();
   const userName = userdata?.name;
   const userPhone = userdata?.phoneNumber;
@@ -208,8 +215,10 @@ const dispatch = useDispatch();
       <CancelOrder visible={visibleCancel} onClose={() => setVisibleCancel(false)} onSubmit={() => {
         setVisibleCancel(false)
         dispatch<any>(logoutHandler());
-        navigation.navigate('Signin')
-      }} title={t("LogoutCancle")} body={t("confirmLogout")} cancleText={t("yesLogout")} />
+ navigation.reset({
+              index: 0,
+              routes: [{ name: 'Signin' }],
+            } as any);      }} title={t("LogoutCancle")} body={t("confirmLogout")} cancleText={t("yesLogout")} />
       <View style={[layout.rowBox, styles.header]}>
         <View style={[layout.rowBox, styles.profileSection]}>
           <View style={styles.profileImageContainer}>

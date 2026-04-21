@@ -23,27 +23,29 @@ const index = (props: Props) => {
 
     const navigation = useNavigation();
     const onPress = (name: string) => {
-        if (isLogin) {
+        // if (isLogin) {
            handleNavigation(name)
-        } else {
-            if (name!= "Market"&&name!= "Boursa" ) {
-                     navigation.reset({
-                              index: 0,
-                              routes:[
+        // }
+        //  else {
+        //     if (name!= "Market"&&name!= "Boursa" ) {
+        //              navigation.reset({
+        //                       index: 0,
+        //                       routes:[
           
-                                  { name: "Signin" } as any,
-                              ],
-                          });
-            }else{
-                navigation.reset({
-                              index: 0,
-                              routes:[
+        //                           { name: "Signin" } as any,
+        //                       ],
+        //                   });
+        //     }else
+        //         {
+        //         navigation.reset({
+        //                       index: 0,
+        //                       routes:[
           
-                                  { name: name } as any,
-                              ],
-                          });
-                  }
-            }
+        //                           { name: name } as any,
+        //                       ],
+        //                   });
+        //           }
+        //     }
     }
 const handleNavigation =(name)=>{
  if (name != route.name) {
