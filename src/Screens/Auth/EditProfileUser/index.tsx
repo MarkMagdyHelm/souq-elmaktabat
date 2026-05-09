@@ -46,6 +46,7 @@ import DoneRate from '../../../Components/PopUps/DoneRate';
 import { UpdateProfileUser } from '../../../Validation/UpdateProfileUser';
 import FilterOrder from '../../../Components/PopUps/FilterOrder';
 import { openAPPCamera, openAPPPicker } from '../../../Services/ImageCropPicker';
+import ImageWithFallback from '../../../Components/ImageWithFallback/ImageWithFallback';
 
 type Props = {
   navigation: any;
@@ -303,11 +304,16 @@ const Index = (props: Props) => {
                         {t('personalImage')}
                       </Text>
                       <Pressable style={styles.logoWrapper} onPress={() => setstate(old => ({ ...old, showFiltter: true }))}>
-                        <Image
+                        {/* <Image
                           source={{ uri: uri }}
                           style={styles.avatar}
                           resizeMode="contain"
-                        />
+                        /> */}
+                        <ImageWithFallback
+                uri={ uri}
+                type={0}//to set default
+                style={styles.avatar}
+              />
                         <EditProfileIcon style={styles.editBtn} />
                       </Pressable>
                     </View>

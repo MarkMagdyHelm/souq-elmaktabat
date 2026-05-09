@@ -7,7 +7,12 @@ type Props = {
   style?: StyleProp<ImageStyle>;
 } & Omit<ImageProps, 'source'>;
 
-const ImageWithFallback: React.FC<Props> = ({ uri, type, style, ...rest }) => {
+const ImageWithFallback: React.FC<Props> = ({
+  uri,
+  type,
+  style,
+  ...rest
+}) => {
   const [error, setError] = useState(false);
 
   const validUri = cleanUri(uri);
@@ -15,27 +20,25 @@ const ImageWithFallback: React.FC<Props> = ({ uri, type, style, ...rest }) => {
   useEffect(() => {
     setError(false);
   }, [uri]);
+
   console.log('uriuri', uri);
+
+  const getSource = () => {
+    if (!validUri || error) {
+      return getFallback(type);
+    }
+
+    return {
+      uri: validUri,
+      cache: 'reload',
+    };
+  };
 
   return (
     <Image
-      source={
-        !validUri || error
-          ? type == 1
-            ? require('../../Assets/Images/paperDef.jpg')
-            : type == 2
-            ? require('../../Assets/Images/InkDef.jpg')
-            : type == 3
-            ? require('../../Assets/Images/printDef1.png')
-            : require('../../Assets/Images/default-image.webp')
-          : { uri: uri, cache: 'reload' }
-      }
+      source={getSource()}
       style={style}
-      onError={() => {
-        // console.log('ooooo', uri);
-
-        setError(true);
-      }}
+      onError={() => setError(true)}
       {...rest}
       resizeMode="contain"
     />
@@ -43,18 +46,48 @@ const ImageWithFallback: React.FC<Props> = ({ uri, type, style, ...rest }) => {
 };
 
 export default ImageWithFallback;
+
+/* ---------------- HELPERS ---------------- */
+
 const cleanUri = (uri?: string | null) => {
   if (!uri) return null;
 
   let value = uri.trim();
 
-  if (!value || value === '/' || value === 'undefined' || value === 'null') {
+  if (
+    !value ||
+    value === '/' ||
+    value === 'undefined' ||
+    value === 'null'
+  ) {
     return null;
   }
 
-  if (!value.startsWith('http://') && !value.startsWith('https://')) {
+  const isHttp =
+    value.startsWith('http://') || value.startsWith('https://');
+
+  const isLocal =
+    value.startsWith('file://') || value.startsWith('content://');
+
+  if (!isHttp && !isLocal) {
     return null;
   }
 
   return value;
+};
+
+const getFallback = (type: string | number | null) => {
+  if (type == 1) {
+    return require('../../Assets/Images/paperDef.jpg');
+  }
+
+  if (type == 2) {
+    return require('../../Assets/Images/InkDef.jpg');
+  }
+
+  if (type == 3) {
+    return require('../../Assets/Images/printDef1.png');
+  }
+
+  return require('../../Assets/Images/default-image.webp');
 };

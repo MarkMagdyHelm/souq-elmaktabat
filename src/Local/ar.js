@@ -369,7 +369,7 @@ export default {
   confirmLogout: 'هل أنت متأكد أنك تريد تسجيل الخروج؟',
   yesLogout: 'تسجيل الخروج',
 confirmDeleteAccount: 'هل أنت متأكد أنك تريد حذف هذا الحساب؟',
-yesDeleteAccount: 'نعم، حذف الحساب',
+yesDelete: 'نعم، حذف الحساب',
   yesCancelBranch: ' نعم حذف الفرع',
   informations: 'المعلومات',
   offer_details: 'تفاصيل العرض',

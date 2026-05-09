@@ -22,6 +22,7 @@ import { UpdateProfile } from '../../../Validation/UpdateProfile';
 import DoneRate from '../../../Components/PopUps/DoneRate';
 import FilterOrder from '../../../Components/PopUps/FilterOrder';
 import { openAPPCamera, openAPPPicker } from '../../../Services/ImageCropPicker';
+import ImageWithFallback from '../../../Components/ImageWithFallback/ImageWithFallback';
 
 type Props = {
     navigation: any
@@ -83,13 +84,15 @@ const Index = (props: Props) => {
             console.log(file?.uri);
             
             if (file?.uri) {
-                setUri(file.uri)
+                setUri(file.uri);
+                console.log('Updated uri = ', file.uri);
                 formikRef.current?.setFieldValue("ImageUrl", {
                     uri: file.uri,
                     type: file.type,
                     name: file.name,
                 });
                 formikRef.current?.setFieldTouched("ImageUrl", true);
+                
             } else {
                 formikRef.current?.setFieldError(
                     "ImageUrl",
@@ -253,10 +256,15 @@ const Index = (props: Props) => {
                                             </Text>
 
                                             <Pressable style={styles.logoWrapper} onPress={() => setstate(old => ({ ...old, showFiltter: true }))}>
-                                           
-                                                <Image
+                                           <ImageWithFallback
+                                           key={uri}
+                uri={ uri}
+                type={uri}//to set default
+                style={styles.avatar}
+              />
+                                                {/* <Image
                                                     source={{ uri:uri }}
-                                                    style={styles.avatar} resizeMode="contain" />
+                                                    style={styles.avatar} resizeMode="contain" /> */}
                                                 <EditProfileIcon style={styles.editBtn} />
                                             </Pressable>
 
