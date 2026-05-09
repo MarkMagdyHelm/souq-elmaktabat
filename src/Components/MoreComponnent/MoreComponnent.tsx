@@ -11,6 +11,7 @@ import { RootState } from '../../Store/store'
 import { imageUrl } from '../../Constants/config'
 import CancelOrder from '../PopUps/CancelOrder'
 import { logoutHandler } from '../../Apis/User'
+import ImageWithFallback from '../ImageWithFallback/ImageWithFallback'
 
 type Props = {
   navigation: any
@@ -223,7 +224,12 @@ const dispatch = useDispatch();
         <View style={[layout.rowBox, styles.profileSection]}>
           <View style={styles.profileImageContainer}>
             {(userImage&&isLogin) && (
-              <Image source={userImage} style={styles.profileImage} />
+              // <Image source={userImage} style={styles.profileImage} />
+            <ImageWithFallback
+                uri={userImage?.uri}
+                type={0}//to set default
+                style={styles.profileImage}
+              />
             ) }
           </View>
           <View style={styles.profileInfo}>

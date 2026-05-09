@@ -128,7 +128,16 @@ const Index = (props: Props) => {
             bodyFormData.append('PaymentMethodIds', [state.selectePayment.id]);
             bodyFormData.append('Description', values.Description);
             bodyFormData.append('AnotherPhoneNumber', values.PhoneNumber);
-            bodyFormData.append('ImageURL', uri);
+            if (values.ImageUrl?.uri) {
+              bodyFormData.append(
+                'ImageURL',
+                {
+                  uri: values.ImageUrl.uri,
+                  type: values.ImageUrl.type || 'image/jpeg',
+                  name: values.ImageUrl.name || `image_${Date.now()}.jpg`,
+                } as any,
+              );
+            }
 
             axios.put(mainUrl + "api/User/UpdateUserProfile", bodyFormData, {
                 headers: {

@@ -14,6 +14,7 @@ import { GetSellerData } from '../../Apis/HomeApis'
 import { useToast } from 'react-native-toast-notifications'
 import { imageUrl } from '../../Constants/config'
 import HeaderWithText from '../../Components/Headers/HeaderWithText'
+import ImageWithFallback from '../../Components/ImageWithFallback/ImageWithFallback'
 
 type Props = {
     navigation?: any
@@ -77,8 +78,12 @@ console.log('====================================');
                             <Stars rating={state.sellerData?.rate} rateCount={state.sellerData?.rateCount} />
 
                         </View>
-
-                        <Image source={{ uri:  imageUrl+ userdata.imageUrl} } style={styles.avatar} />
+<ImageWithFallback
+                uri={ imageUrl + userdata.imageUrl}
+                type={0}//to set default
+                style={styles.avatar}
+              />
+                        {/* <Image source={{ uri:  imageUrl+ userdata.imageUrl} } style={styles.avatar} /> */}
                     </View>
                 </View>
                <View><Text style={{fontFamily:Fonts.regular, color:theme.babyBlue, 

@@ -7,7 +7,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { IFont, ITheme } from '../../../Constants/interfaces';
 import { ThemeContext } from '../../../Constants/theming';
 import { Colors, PixelPerfect } from '../../../Constants/styleConstants';
@@ -18,7 +18,7 @@ import Button from '../../../Components/touchables/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import useToastNotification from '../../../Components/CustomHooks/useToastNotification';
 import HeaderWithText from '../../../Components/Headers/HeaderWithText';
-import { Formik } from 'formik';
+import { Formik, FormikProps } from 'formik';
 import { validationSchema } from '../../../Validation/Signup';
 import { useRoute } from '@react-navigation/native';
 import { ForgetPasswordHandler } from '../../../Apis/User';
@@ -44,6 +44,8 @@ import axios from 'axios';
 import { UpdateProfile } from '../../../Validation/UpdateProfile';
 import DoneRate from '../../../Components/PopUps/DoneRate';
 import { UpdateProfileUser } from '../../../Validation/UpdateProfileUser';
+import FilterOrder from '../../../Components/PopUps/FilterOrder';
+import { openAPPCamera, openAPPPicker } from '../../../Services/ImageCropPicker';
 
 type Props = {
   navigation: any;
@@ -56,7 +58,12 @@ const Index = (props: Props) => {
     (state: RootState) => state.settings,
   );
   const { item } = useRoute().params as any;
+  const filterOption = [{ID: 1, Name: "Camera", Value: "Camera"}, {ID: 2, Name: "Photos", Value: "Photos"}];
   const styles = useStyles(Fonts, theme, dark, dir);
+
+  const { userdata } = useSelector((state: RootState) => state.auth);
+  const [uri, setUri] = useState(imageUrl + userdata.imageUrl);
+  const formikRef = useRef<FormikProps<any>>(null);
 
   const [state, setstate] = useState({
     loading: false,
@@ -71,7 +78,6 @@ const Index = (props: Props) => {
     servies: [],
   });
 
-  const { userdata } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
   const showToast = useToastNotification();
 
@@ -104,6 +110,16 @@ const Index = (props: Props) => {
       bodyFormData.append('CompanyName', values.Email);
       bodyFormData.append('Description', values.Address);
       bodyFormData.append('AnotherPhoneNumber', values.PhoneNumber);
+      if (values.ImageUrl?.uri) {
+        bodyFormData.append(
+          'ImageURL',
+          {
+            uri: values.ImageUrl.uri,
+            type: values.ImageUrl.type || 'image/jpeg',
+            name: values.ImageUrl.name || `image_${Date.now()}.jpg`,
+          } as any,
+        );
+      }
 
       // 🔹 Arrays (FIXED ✅)
       // If single value
@@ -190,6 +206,32 @@ const Index = (props: Props) => {
     );
   };
 
+  const handleCameraPhotos = async (name: string) => {
+    try {
+      let file = null;
+
+      if (name === "Camera") {
+        file = await openAPPCamera();
+      } else if (name === "Photos") {
+        file = await openAPPPicker();
+      }
+
+      if (file?.uri) {
+        setUri(file.uri);
+        formikRef.current?.setFieldValue("ImageUrl", {
+          uri: file.uri,
+          type: file.type,
+          name: file.name,
+        });
+        formikRef.current?.setFieldTouched("ImageUrl", true);
+      } else {
+        formikRef.current?.setFieldError("ImageUrl", "Image is required");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const GetRegions = id => {
     dispatch<any>(
       GetAllRegionsByCountryIdHandler(id, (res, status) => {
@@ -217,27 +259,8 @@ const Index = (props: Props) => {
                         onClose={() => {}}
                         onSubmit={() => { }}
                     /> */}
-          <View style={{ alignItems: 'center' }}>
-            <Text
-              style={{
-                color: theme.black,
-                fontSize: PixelPerfect(18),
-                fontFamily: Fonts.medium,
-              }}
-            >
-              {t('personalImage')}
-            </Text>
-            <View style={styles.logoWrapper}>
-              <Image
-                source={{ uri: imageUrl + userdata.imageUrl }}
-                style={styles.avatar}
-                resizeMode="contain"
-              />
-              <EditProfileIcon style={styles.editBtn} />
-            </View>
-          </View>
-
           <Formik
+            innerRef={formikRef}
             validationSchema={UpdateProfileUser}
             initialValues={{
               Username: userdata.name,
@@ -269,6 +292,25 @@ const Index = (props: Props) => {
               return (
                 <>
                   <Content noPadding style={styles.body} scrollEnabled={false}>
+                    <View style={{ alignItems: 'center' }}>
+                      <Text
+                        style={{
+                          color: theme.black,
+                          fontSize: PixelPerfect(18),
+                          fontFamily: Fonts.medium,
+                        }}
+                      >
+                        {t('personalImage')}
+                      </Text>
+                      <Pressable style={styles.logoWrapper} onPress={() => setstate(old => ({ ...old, showFiltter: true }))}>
+                        <Image
+                          source={{ uri: uri }}
+                          style={styles.avatar}
+                          resizeMode="contain"
+                        />
+                        <EditProfileIcon style={styles.editBtn} />
+                      </Pressable>
+                    </View>
                     <Inputs
                       label={t('fullname')}
                       options={{
@@ -528,6 +570,17 @@ const Index = (props: Props) => {
                         style={{ flex: 0.4 }}
                       />
                     )}
+                    {state.showFiltter && <FilterOrder
+                      title={t('Filter')}
+                      items={filterOption}
+                      currentFilter={filterOption}
+                      onCloseFn={(val) => {
+                        setstate(old => ({ ...old, showFiltter: false }))
+                        setTimeout(() => {
+                          handleCameraPhotos(val.Name);
+                        }, 300);
+                      }}
+                    />}
                   </Content>
                 </>
               );
