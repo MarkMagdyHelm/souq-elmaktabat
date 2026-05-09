@@ -12,6 +12,8 @@ import { imageUrl } from '../../Constants/config'
 import CancelOrder from '../PopUps/CancelOrder'
 import { logoutHandler } from '../../Apis/User'
 import ImageWithFallback from '../ImageWithFallback/ImageWithFallback'
+import { DeleteAccount } from '../../Apis/HomeApis'
+import { useToast } from 'react-native-toast-notifications'
 
 type Props = {
   navigation: any
@@ -186,7 +188,7 @@ const STORE_LINK = Platform.select({
       title: t('Delete Account'),
       icon: <DeleteIcon />,
       onPress: () => {
-
+        setVisibleDelete(true)
       }
     },
   ];
@@ -210,6 +212,40 @@ const dispatch = useDispatch();
   const userPhone = userdata?.phoneNumber;
   const userImage = userdata?.imageUrl || userdata?.userImages ? { uri: imageUrl + (userdata?.imageUrl || userdata?.userImages) } : null;
   const [visibleCancel, setVisibleCancel] = useState(false);
+  const [visibleDelete, setVisibleDelete] = useState(false);
+  const toast = useToast();
+
+  const toastNotfication = (config: any) => {
+    toast.hideAll();
+    toast.show(config.message, {
+      type: config.type,
+      duration: 3000,
+      offset: 50,
+      animationType: 'slide-in',
+      placement: 'top',
+    } as any);
+  };
+
+  const handleDeleteAccount = () => {
+    dispatch<any>(
+      DeleteAccount((res, status) => {
+        if (res.status === 200) {
+          toastNotfication({ type: 'ok', message: res?.message ?? t('AccountDeleted') });
+          setVisibleDelete(false);
+          dispatch<any>(logoutHandler());
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Signin' }],
+          } as any);
+        } else {
+          toastNotfication({
+            type: 'error',
+            message: res?.message ?? t('Something Went wrong'),
+          });
+        }
+      }),
+    );
+  };
   return (
     <Container>
       {/* Header Section */}
@@ -220,6 +256,9 @@ const dispatch = useDispatch();
               index: 0,
               routes: [{ name: 'Signin' }],
             } as any);      }} title={t("LogoutCancle")} body={t("confirmLogout")} cancleText={t("yesLogout")} />
+      <CancelOrder visible={visibleDelete} onClose={() => setVisibleDelete(false)} onSubmit={() => {
+        handleDeleteAccount();
+      }} title={t("Delete Account")} body={t("confirmDeleteAccount")} cancleText={t("yesDelete")} />
       <View style={[layout.rowBox, styles.header]}>
         <View style={[layout.rowBox, styles.profileSection]}>
           <View style={styles.profileImageContainer}>

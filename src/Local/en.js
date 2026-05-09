@@ -366,6 +366,8 @@ export default {
   LogoutCancle: 'Logout confirmation',
   confirmLogout: 'Are you sure you want to log out?',
   yesLogout: 'Log out',
+  confirmDeleteAccount: 'Are you sure you want to delete this account?',
+  yesDeleteAccount: 'Yes, delete account',
   informations: 'informations',
   offer_details: 'offer details',
   delete_offer: 'delete offer',

@@ -107,6 +107,26 @@ export const GetSellerData = (id:any,cb?: (data: any, status: any) => void) => {
   };
 };
 
+export const DeleteAccount = (
+  cb?: (data: any, status: any) => void,
+) => {
+  return async (dispatch: Dispatch<IDispatch>) => {
+    try {
+      const { data, status } = await globalAPI.delete(
+        'api/User/DeleteAccount',
+      );
+
+      cb && cb(data, status);
+
+      console.log('DeleteAccount = ', data);
+    } catch (error) {
+      console.log('DeleteAccount error = ', error);
+
+      cb && cb(error, 500);
+    }
+  };
+};
+
 export const AddPaperRate = (body:any,cb?: (data: any, status: any) => void) => {
   return async (dispatch: Dispatch<IDispatch>) => {
       try {
