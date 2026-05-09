@@ -172,6 +172,9 @@ export default {
   addoffer1: 'Add paper offer',
   inkOfferTitle: 'Add inks offer',
   printerOfferTitle: 'Add printing press offer',
+  editPaperOfferTitle: 'Edit paper offer',
+  editInkOfferTitle: 'Edit inks offer',
+  editPrinterOfferTitle: 'Edit printing press offer',
   categoriespopup: 'Choose the product type you want to sell',
   paperType: 'Paper Type*',
   paperTypew: 'Choose paper type',
@@ -303,6 +306,7 @@ export default {
   //SellerProfile
   sellerProfile: 'Seller Profile',
   edit: 'Edit',
+  editOffer: 'Edit Offer',
   accountPublished: 'Account published as seller',
   ratingsCount: 'Ratings count',
   ordersCount: 'Orders count',

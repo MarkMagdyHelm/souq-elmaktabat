@@ -261,7 +261,7 @@ export const DeleteOffer = (body: any, cb?: (data: any, status: any) => void) =>
   return async (dispatch: Dispatch<IDispatch>) => {
     try {
       const { data, status } = await globalAPI.delete('api/Offer/DeleteOffer', body);
-      console.log('DeleteOffer data = ', data, status);
+      console.log('DeleteOffer data = ',body, data, status);
       cb && cb(data,status);
     
     } catch (error) {

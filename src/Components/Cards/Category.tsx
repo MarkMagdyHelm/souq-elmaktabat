@@ -42,7 +42,7 @@ const Category = (props: Props) => {
   const navigation = useNavigation();
 
   const { isLogin } = useSelector((state: RootState) => state.auth);
-  console.log('lll', isLogin);
+  // console.log('yyyyyyyyyy', item);
 
   const dispatch = useDispatch();
   const toast = useToast();

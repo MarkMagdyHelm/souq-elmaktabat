@@ -124,14 +124,14 @@ const STORE_LINK = Platform.select({
        },
       sellerOnly: false
     },
-    {
-      key: 'aboutAPP',
-      title: t('AboutAPP'),
-      icon: null,
-      onPress: () => {
+    // {
+    //   key: 'aboutAPP',
+    //   title: t('AboutAPP'),
+    //   icon: null,
+    //   onPress: () => {
 
-      }
-    },
+    //   }
+    // },
 
 
     {
@@ -148,21 +148,21 @@ const STORE_LINK = Platform.select({
       onPress: () => navigation.navigate('Terms')
     },
 
-    {
-      key: 'invite',
-      title: t('Invite Friends'),
-      icon: <ShareMoreIcon />,
-      onPress: () => { }
-    },
-    {
-      key: 'rateApp',
-      title: t('Rate App'),
-      icon: <RateProfileIcon />,
-      onPress: () => {
-          // Linking.openURL(STORE_LINK)
-        //  StoreReview.requestReview(); 
-        }
-    },
+    // {
+    //   key: 'invite',
+    //   title: t('Invite Friends'),
+    //   icon: <ShareMoreIcon />,
+    //   onPress: () => { }
+    // },
+    // {
+    //   key: 'rateApp',
+    //   title: t('Rate App'),
+    //   icon: <RateProfileIcon />,
+    //   onPress: () => {
+    //       // Linking.openURL(STORE_LINK)
+    //     //  StoreReview.requestReview(); 
+    //     }
+    // },
     {
       key: 'changeLang',
       title: t('Change Language'),

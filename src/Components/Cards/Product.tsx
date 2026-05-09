@@ -25,52 +25,56 @@ const Product = (props: Props) => {
     } = props;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
-// console.log("lllllllllo",item);
-
+console.log("lllllllllo",item);
+const isFav =
+  item?.isFavourite ??
+  item?.inkOffer?.isFavourite ??
+  item?.printingOffer?.isFavourite ??
+  item?.isFavourite ?? false;
     return (
         <Pressable onPress={onPress}>
             <View style={[styles.con]}>
                 {<Pressable style={{ padding: 8 }} onPress={onFavPress}>
                     <HeartIcon style={styles.heart}
-                        color={item.isFavourite ? theme.red : theme.white}
+                        color={isFav ? theme.red : theme.white}
                     />
                 </Pressable>
                 }
 
-                {/* <Image source={{ uri: item.imageUrl }} resizeMode="contain" style={[styles.image]} /> */}
+                {/* <Image source={{ uri: item?.imageUrl }} resizeMode="contain" style={[styles.image]} /> */}
                   <ImageWithFallback
   uri={item?.imageUrl}
                 type={item?.type}
   style={styles.image}
 />
-                {item.type == 1 && <Text style={[layout.textAlign, styles.text]}>{item.categoryName + " " + item.name + " " + item.width + t("GM") + " " + item.paperSize}</Text>}
-                {item.type == 2 && <Text style={[layout.textAlign, styles.text]}>{item.categoryName + " " + item.name}</Text>}
-                {item.type == 3 && <Text style={[layout.textAlign, styles.text]}>{item.categoryName + " " + item.userName}</Text>}
+                {item?.type == 1 && <Text style={[layout.textAlign, styles.text]}>{item?.categoryName + " " + item?.name + " " + item?.width + t("GM") + " " + item?.paperSize}</Text>}
+                {item?.type == 2 && <Text style={[layout.textAlign, styles.text]}>{item?.categoryName + " " + item?.name}</Text>}
+                {item?.type == 3 && <Text style={[layout.textAlign, styles.text]}>{item?.categoryName + " " + item?.userName}</Text>}
 
 
                 <View style={[layout.dirRow, styles.priceRateRow]}>
                     <View style={[layout.rowBox, { alignItems: "center" }]}>
                         <RateIcone />
-                        <Text style={[layout.textAlign, styles.text1]}>{"(" + (item.userRateCount ?? item.rate ?? item.rates) + ")"}</Text>
+                        {/* <Text style={[layout.textAlign, styles.text1]}>{"(" + (item?.userRateCount ?? item?.rate ?? item?.rates) + ")"}</Text> */}
                     </View>
-                    {/* <Text style={[layout.textAlign, styles.price]}>{item.price + " " + t("pound")}</Text> */}
+                    {/* <Text style={[layout.textAlign, styles.price]}>{item?.price + " " + t("pound")}</Text> */}
 
-                    {(item.type == 2 || item.type == 1) && <Text style={[layout.textAlign, styles.price]}>{item.type == 2 ?
-                        item.price + t("pound")
-                        : item.price + t("pound")}</Text>}
+                    {(item?.type == 2 || item?.type == 1) && <Text style={[layout.textAlign, styles.price]}>{item?.type == 2 ?
+                        item?.price + t("pound")
+                        : item?.price + t("pound")}</Text>}
                     <View>
-                        {item.coloredPrice && <Text style={[layout.textAlign, styles.price]}>{item.coloredPrice + t("pound")}</Text>}
-                        {item.nonColoredPrice && <Text style={[layout.textAlign, styles.price]}>{item.nonColoredPrice + t("pound")}</Text>}
+                        {item?.coloredPrice && <Text style={[layout.textAlign, styles.price]}>{item?.coloredPrice + t("pound")}</Text>}
+                        {item?.nonColoredPrice && <Text style={[layout.textAlign, styles.price]}>{item?.nonColoredPrice + t("pound")}</Text>}
                     </View>
                 </View>
                 {!isOfffer && <View style={[layout.rowBox, styles.con2]}>
                     <Image
-                        source={{ uri: item.userImages }}
+                        source={{ uri: item?.userImages }}
                         style={[styles.imageRound]}
                     />
                     <View style={{ marginHorizontal: PixelPerfect(4) }}>
-                        <Text style={[layout.textAlign, styles.seller]}>{item.userName}</Text>
-                        <Text style={[styles.text2]}>{item.countryName}</Text>
+                        <Text style={[layout.textAlign, styles.seller]}>{item?.userName}</Text>
+                        <Text style={[styles.text2]}>{item?.countryName}</Text>
                     </View>
                 </View>
                 }

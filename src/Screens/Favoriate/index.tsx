@@ -26,6 +26,7 @@ import {
   AddFavouritePaperOffer,
   GetFavouriteUsers,
 } from '../../Apis/CommonApi';
+import { GetAllInkOffers, GetAllPaperOffers, GetAllPrintersOffers } from '../../Apis/HomeApis';
 
 type Props = { navigation?: any };
 
@@ -46,7 +47,7 @@ const Index = ({ navigation }: Props) => {
     users: [],
   });
   useEffect(() => {
-    getFavouriteOffers();
+    getAllPaperOffers();
     getFavouriteUsers();
   }, []);
 
@@ -69,7 +70,7 @@ const Index = ({ navigation }: Props) => {
       AddFavouritePaperOffer(id, (res, status) => {
         if (res.status === 200) {
           setTimeout(() => {
-            getFavouriteOffers();
+    getAllPaperOffers();
           }, 1000);
         } else {
           toastNotfication({
@@ -82,37 +83,142 @@ const Index = ({ navigation }: Props) => {
     );
   };
 
-  const getFavouriteOffers = () => {
-    setState(old => ({ ...old, loading: true }));
-    dispatch<any>(
-      GetFavouriteOffers((res, status) => {
-        if (res.status === 200) {
-          console.log('===============itemsitemsitems=====================');
-          console.log(res.data);
-          console.log('====================================');
-          const offersWithFavourite = res.data.map((item: any) => ({
-            ...item,
-            paperOffer: {
-              ...item.paperOffer,
-              isFavourite: true, // 👈 هنا بالظبط
-            },
-          }));
+  // const getFavouriteOffers = () => {
+  //   setState(old => ({ ...old, loading: true }));
+  //   dispatch<any>(
+  //     GetFavouriteOffers((res, status) => {
+  //       if (res.status === 200) {
+  //         console.log('===============itemsitemsitems=====================');
+  //         console.log(res.data);
+  //         console.log('====================================');
+  //         const offersWithFavourite = res.data.map((item: any) => ({
+  //           ...item,
+  //           paperOffer: {
+  //             ...item.paperOffer,
+  //             isFavourite: true, // 👈 هنا بالظبط
+  //           },
+  //         }));
 
+  //         setState(old => ({
+  //           ...old,
+  //           offers: offersWithFavourite,
+  //         }));
+  //       } else {
+  //         toastNotfication({
+  //           type: 'error',
+  //           message: res?.Message ?? t('Something Went wrong'),
+  //         });
+  //         setState(old => ({ ...old, loading: false }));
+  //       }
+  //     }),
+  //   );
+  // };
+
+const getAllPaperOffers = () => {
+  setState(old => ({ ...old, loading: true }));
+
+  dispatch<any>(
+    GetAllPaperOffers({ page: '1', pageSize: '4' }, (res, status) => {
+      if (res.status === 200) {
+
+        const itemsWithType = (res.data.items ?? []).map((item: any) => ({
+          ...item,
+          type: 1, // ✅ على الـ item نفسه
+          paperOffer: {
+            ...item.paperOffer,
+            isFavourite: item.isFavourite,
+          },
+        }));
+
+        const favItems = itemsWithType.filter(
+          (item: any) => item.isFavourite === true
+        );
+
+        if (favItems.length) {
           setState(old => ({
             ...old,
-            offers: offersWithFavourite,
+            offers: favItems, // أول مرة نعمل set
+          }));
+        }
+
+        console.log("favItems1", favItems);
+
+        getAllInkOffers();
+      } else {
+        toastNotfication({
+          type: 'error',
+          message: res?.Message ?? t('Something Went wrong'),
+        });
+        setState(old => ({ ...old, loading: false }));
+      }
+    }),
+  );
+};
+const getAllInkOffers = () => {
+  dispatch<any>(
+    GetAllInkOffers({ page: '1', pageSize: '4' }, res => {
+      if (res.status === 200) {
+
+        const itemsWithType = (res.data.items ?? []).map((item: any) => ({
+          ...item,
+          type: 2,
+          inkOffer: {
+            ...item.inkOffer,
+            isFavourite: item.isFavourite,
+          },
+        }));
+
+        const favItems = itemsWithType.filter(
+          (item: any) => item.isFavourite === true
+        );
+
+        if (favItems.length) {
+          setState(old => ({
+            ...old,
+            offers: [...old.offers, ...favItems], // ✅ append
+          }));
+        }
+
+        console.log("favItems", favItems);
+
+        getAllPrinting();
+      } else {
+        setState(old => ({ ...old, loading: false }));
+      }
+    }),
+  );
+};
+const getAllPrinting = () => {
+  dispatch<any>(
+    GetAllPrintersOffers({ page: '1', pageSize: '10' }, res => {
+      if (res.status === 200) {
+
+        const itemsWithType = (res.data.items ?? []).map((item: any) => ({
+          ...item,
+          type: 3,
+          printingOffer: {
+            ...item.printingOffer,
+            isFavourite: item.isFavourite,
+          },
+        }));
+
+        const favItems = itemsWithType.filter(
+          (item: any) => item.isFavourite === true
+        );
+
+        if (favItems.length) {
+          setState(old => ({
+            ...old,
+            offers: [...old.offers, ...favItems], // ✅ append
+            loading: false,
           }));
         } else {
-          toastNotfication({
-            type: 'error',
-            message: res?.Message ?? t('Something Went wrong'),
-          });
           setState(old => ({ ...old, loading: false }));
         }
-      }),
-    );
-  };
-
+      }
+    }),
+  );
+};
   const removeFavUsers = (id: any) => {
     setState(old => ({ ...old, loading: true }));
 

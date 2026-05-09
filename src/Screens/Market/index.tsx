@@ -161,8 +161,7 @@ const Index = (props: Props) => {
         if (res.status === 200) {
           const updatedCategories = res.data.map(item => ({
             ...item,
-            image:
-              'https://images.squarespace-cdn.com/content/v1/60f1a490a90ed8713c41c36c/1629223610791-LCBJG5451DRKX4WOB4SP/37-design-powers-url-structure.jpeg', // هنا الصورة اللي انت عايزها
+            image: item.imageUrl,//??
           }));
 
           setstate(old => ({ ...old, categories: updatedCategories }));
@@ -402,7 +401,7 @@ const Index = (props: Props) => {
       ),
     );
   };
-  console.log("userdatauserdata",userdata);
+  console.log('userdatauserdata', userdata);
 
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -428,10 +427,11 @@ const Index = (props: Props) => {
         onSubmit={() => {
           setVisibleCancel(false);
           dispatch<any>(logoutHandler());
- navigation.reset({
-              index: 0,
-              routes: [{ name: 'Signin' }],
-            } as any);        }}
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Signin' }],
+          } as any);
+        }}
         title={t('signtxt1')}
         body={''}
         cancleText={t('Sign in')}
@@ -536,7 +536,7 @@ const Index = (props: Props) => {
                   <Product
                     isOfffer={false}
                     item={item}
-                    onPress={() => handleSelectProduct(item,section.id )}
+                    onPress={() => handleSelectProduct(item, section.id)}
                     onFavPress={() => {
                       if (section.id === 1) {
                         addFavouritePaperOffer(item);

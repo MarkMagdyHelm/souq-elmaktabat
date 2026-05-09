@@ -52,7 +52,7 @@ const Index = (props: Props) => {
   const ref = useRef() as any;
   const { isLogin } = useSelector((state: RootState) => state.auth);
   const { sectionId } = useRoute().params as any;
-  const { countries, paperSize } = useSelector(
+  const { countries, paperSize,inks } = useSelector(
     (state: RootState) => state.settings,
   );
   const [visibleCancel, setVisibleCancel] = useState(false);
@@ -428,7 +428,7 @@ const Index = (props: Props) => {
       } else {
         getAllPrinting(1, false, val);
       }
-    }, 500); // ⏱ delay
+    }, 500); 
   };
   return (
     <Container showHint={false}>
@@ -526,6 +526,30 @@ const Index = (props: Props) => {
             items={paperSize}
             style={{ flex: 0.8 }}
             type="paperSize"
+            hasTextInput={false}
+          />
+        )}
+                {state.viewInkType && (
+          <FilterMultiChecker
+            onCloseFn={val => {
+              if (Array.isArray(val)) {
+                setstate(old => ({
+                  ...old,
+                  viewInkType: false,
+                  inkType: val.map(item => item.id),
+                }));
+              } else {
+                setstate(old => ({
+                  ...old,
+                  viewInkType: false,
+                }));
+              }
+            }}
+            title={t('inkTypew')}
+           currentFilter={''}
+            items={inks}
+            style={{ flex: 0.6 }}
+            type="paperType"
             hasTextInput={false}
           />
         )}

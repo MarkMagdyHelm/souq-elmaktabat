@@ -110,7 +110,11 @@ const useStyles = (
       padding: PixelPerfect(16),
     },
 
-    actions: { marginTop: PixelPerfect(8), paddingVertical: PixelPerfect(16) },
+    actions: {
+      marginTop: PixelPerfect(8),
+      paddingVertical: PixelPerfect(16),
+      gap: PixelPerfect(8),
+    },
     cancelBtn: {
       flex: 1,
       borderWidth: 1,

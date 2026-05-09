@@ -174,6 +174,9 @@ export const AddPaperOffer = (body: any, cb?: (data: any, status: any) => void) 
             const { data, status } = await globalAPI.post('api/Offer/AddPaperOffer',
                 body
             );
+            console.log("botttty",body);
+            console.log('AddPaperOffer data = ', data);
+            
             cb && cb(data, status);
         } catch (error) {
             console.log('AddPaperOffer error = ', error);
@@ -181,10 +184,44 @@ export const AddPaperOffer = (body: any, cb?: (data: any, status: any) => void) 
         }
     };
 };
-
+/**
+ * UpdatePaperOffer
+ * @param cb callback function
+ *  @param params {
+  "paperId",
+  "paperSizeId",
+  "width",
+  "min",
+  "price",
+  "description",
+  "endDate",
+  "branches",
+  "includeDelivery",
+}
+ */
+export const UpdatePaperOffer = (body: any, cb?: (data: any, status: any) => void) => {
+    return async (dispatch: Dispatch<IDispatch>) => {
+        try {
+  console.log("FORMDATA INSTANCE:", body instanceof FormData);
+  console.log("FORMDATA:", body);
+            const { data, status } = await globalAPI.put('api/Offer/UpdatePaperOffer',
+                body, {
+  headers: {
+    "Content-Type": "multipart/form-data",
+  }}
+            );
+            console.log('UpdatePaperOffer data = ', data);
+            
+            cb && cb(data, status);
+        } catch (error) {
+            console.log('UpdatePaperOffer error = ', error);
+            cb && cb(error, 500);
+        }
+    };
+};
 
 /**
- * AddPaperOffer
+ * AddPrintingPressOffer
  * @param cb callback function
  *  @param params {
   "paperId",
@@ -208,7 +245,7 @@ export const AddPrintingPressOffer = (body: any, cb?: (data: any, status: any) =
   headers: {
     "Content-Type": "multipart/form-data",
   }});
-
+AddPrintingPressOffer
             console.log('AddPrintingPressOffer response = ', data);
             cb && cb(data, status);
         } catch (error) {
@@ -218,6 +255,40 @@ export const AddPrintingPressOffer = (body: any, cb?: (data: any, status: any) =
     };
 };
 
+/**
+ * UpdatePrintingOffer
+ * @param cb callback function
+ *  @param params {
+  "paperId",
+  "paperSizeId",
+  "width",
+  "min",
+  "price",
+  "description",
+  "endDate",
+  "branches",
+  "includeDelivery",
+}
+ */
+export const UpdatePrintingOffer = (body: any, cb?: (data: any, status: any) => void) => {
+    return async (dispatch: Dispatch<IDispatch>) => {
+        try {
+              console.log("botttty",body);
+
+            const { data, status } = await globalAPI.put('api/Offer/UpdatePrintingOffer',
+                body
+           , {
+  headers: {
+    "Content-Type": "multipart/form-data",
+  }});
+            console.log('UpdatePrintingOffer response = ', data);
+            cb && cb(data, status);
+        } catch (error) {
+            console.log('UpdatePrintingOffer error = ', error);
+            cb && cb(error, 500);
+        }
+    };
+};
 /**
  * AddPaperOffer
  * @param cb callback function
@@ -243,10 +314,46 @@ export const AddInkOffer = (body: any, cb?: (data: any, status: any) => void) =>
   headers: {
     "Content-Type": "multipart/form-data",
   }});
+              console.log("botttty",body);
             console.log('AddInkOffer response = ', data);
             cb && cb(data, status);
         } catch (error) {
             console.log('AddInkOffer error = ', error);
+            cb && cb(error, 500);
+        }
+    };
+};
+/**
+ * UpdateInkOffer
+ * @param cb callback function
+ *  @param params {
+  "paperId",
+  "paperSizeId",
+  "width",
+  "min",
+  "price",
+  "description",
+  "endDate",
+  "branches",
+  "includeDelivery",
+}
+ */
+export const UpdateInkOffer = (body: any, cb?: (data: any, status: any) => void) => {
+    return async (dispatch: Dispatch<IDispatch>) => {
+        try {
+              console.log("botttty",body);
+
+            const { data, status } = await globalAPI.put('api/Offer/UpdateInkOffer',
+                body
+           , {
+  headers: {
+    "Content-Type": "multipart/form-data",
+  }});
+
+            console.log('UpdateInkOffer response = ', data);
+            cb && cb(data, status);
+        } catch (error) {
+            console.log('UpdateInkOffer error = ', error);
             cb && cb(error, 500);
         }
     };

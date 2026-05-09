@@ -34,6 +34,7 @@ import {
   AddFavouritePaperOffer,
   AddFavouritePrintingPressesOffer,
 } from '../../Apis/CommonApi';
+import ImageWithFallback from '../../Components/ImageWithFallback/ImageWithFallback';
 
 type Props = {
   navigation: any;
@@ -147,7 +148,7 @@ const Index = (props: Props) => {
     );
   };
 
-    const addFavouritePrintingPressesOffer = (id: any) => {
+  const addFavouritePrintingPressesOffer = (id: any) => {
     setState(old => ({ ...old, loading: true }));
 
     dispatch<any>(
@@ -220,6 +221,9 @@ const Index = (props: Props) => {
 
   const fullDate = item?.endDate;
   const [date, time] = fullDate?.split('T');
+  console.log('item', item);
+  console.log('fullDate', item);
+
   return (
     <Container showHint={false}>
       <HeaderWithText
@@ -231,21 +235,25 @@ const Index = (props: Props) => {
           if (sectionID === 1) {
             addFavouritePaperOffer(item.id);
           } else if (sectionID === 2) {
-            addFavouriteInkOffer(item.id)
+            addFavouriteInkOffer(item.id);
           } else if (sectionID === 3) {
-            addFavouritePrintingPressesOffer(item.id)
+            addFavouritePrintingPressesOffer(item.id);
           }
         }}
         onShareClick={() => console.log()}
       />
       <Content style={styles.formCon} noPadding>
         <View>
-          <Image
+          {/* <Image
             source={item.paperPhoto}
             style={styles.productImage}
             resizeMode="contain"
+          /> */}
+          <ImageWithFallback
+            uri={item?.imageUrl}
+            type={item?.type}
+            style={styles.productImage}
           />
-
           <View>
             <View style={styles.info}>
               {item.type == 1 && (
@@ -767,6 +775,7 @@ const useStyles = (
       color: theme.black,
       fontFamily: Fonts.regular,
       marginBottom: PixelPerfect(8),
+      paddingBottom: PixelPerfect(20),
     },
     yesNocon: {
       alignItems: 'center',

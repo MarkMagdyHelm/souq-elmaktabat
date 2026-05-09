@@ -25,16 +25,19 @@ const ImageWithFallback: React.FC<Props> = ({ uri, type, style, ...rest }) => {
             ? require('../../Assets/Images/paperDef.jpg')
             : type == 2
             ? require('../../Assets/Images/InkDef.jpg')
-            : require('../../Assets/Images/printDef1.png')
-          : { uri: uri ,cache: 'reload' }
+            : type == 3
+            ? require('../../Assets/Images/printDef1.png')
+            : require('../../Assets/Images/default-image.webp')
+          : { uri: uri, cache: 'reload' }
       }
       style={style}
       onError={() => {
-        console.log('ooooo', uri);
+        // console.log('ooooo', uri);
 
         setError(true);
       }}
       {...rest}
+      resizeMode="contain"
     />
   );
 };

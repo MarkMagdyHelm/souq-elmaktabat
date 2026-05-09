@@ -659,9 +659,8 @@ const Index = (props: Props) => {
                                                 <Text style={styles.textselectmenu}>
 
                                                     {typeof state.selectedBranches.branchId !== "string"
-                                                        ? dir === "rtl"
-                                                            ? state.selectedBranches.branchName
-                                                            : state.selectedBranches.branchName
+                                                        ?  state.selectedBranches.countryName
+                                                          +" - "+ state.selectedBranches.regionName
                                                         : t("paperBranchw")}
                                                 </Text>
                                                 {state.showBranches ? <ArrowUpIcon /> : <ArrowDownIcon />}
@@ -775,7 +774,6 @@ const Index = (props: Props) => {
                                             style={{ flex: 0.3 }}
                                         />
                                     )}
-
                                     {state.showInks && (
                                         <DropDowenMenu
                                             onCloseFn={(val) => {
@@ -796,7 +794,7 @@ const Index = (props: Props) => {
                                                     }));
                                                 }
                                             }}
-                                            title={t("paperTypew")}
+                                            title={t("inkTypew")}
                                             currentFilter={state.selectedInks}
                                             items={inks}
                                             style={{ flex: 0.3 }}
