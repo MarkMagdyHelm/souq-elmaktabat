@@ -23,7 +23,9 @@ import { useDispatch } from 'react-redux';
 import { AddFavouriteUser, GetFavouriteOffers } from '../../Apis/Appinfo';
 import { useToast } from 'react-native-toast-notifications';
 import {
+  AddFavouriteInkOffer,
   AddFavouritePaperOffer,
+  AddFavouritePrintingPressesOffer,
   GetFavouriteUsers,
 } from '../../Apis/CommonApi';
 import { GetAllInkOffers, GetAllPaperOffers, GetAllPrintersOffers } from '../../Apis/HomeApis';
@@ -64,13 +66,47 @@ const Index = ({ navigation }: Props) => {
   };
 
   const addFavouritePaperOffer = (id: any) => {
-    // setState(old => ({ ...old, loading: true }))
-
     dispatch<any>(
       AddFavouritePaperOffer(id, (res, status) => {
         if (res.status === 200) {
           setTimeout(() => {
-    getAllPaperOffers();
+            getAllPaperOffers();
+          }, 1000);
+        } else {
+          toastNotfication({
+            type: 'error',
+            message: res?.Message ?? t('Something Went wrong'),
+          });
+        }
+        setState(old => ({ ...old, loading: false }));
+      }),
+    );
+  };
+
+  const addFavouriteInkOffer = (id: any) => {
+    dispatch<any>(
+      AddFavouriteInkOffer(id, (res, status) => {
+        if (res.status === 200) {
+          setTimeout(() => {
+            getAllPaperOffers();
+          }, 1000);
+        } else {
+          toastNotfication({
+            type: 'error',
+            message: res?.Message ?? t('Something Went wrong'),
+          });
+        }
+        setState(old => ({ ...old, loading: false }));
+      }),
+    );
+  };
+
+  const addFavouritePrintingPressesOffer = (id: any) => {
+    dispatch<any>(
+      AddFavouritePrintingPressesOffer(id, (res, status) => {
+        if (res.status === 200) {
+          setTimeout(() => {
+            getAllPaperOffers();
           }, 1000);
         } else {
           toastNotfication({
@@ -268,15 +304,12 @@ const getAllPrinting = () => {
     );
   };
 
-  const handleSelectOffer = item => {
-    console.log('lllllllll', item);
-
-    // if (item?.isMine) {
-    // navigation.navigate('OffersDetails', { item: item });
-    // }else{
-
-    // navigation.navigate('ProductDetails', { item: item });
-    // }
+  const handleSelectOffer = (item: any) => {
+    if (item?.isMine) {
+      navigation.navigate('OffersDetails', { item: item });
+    } else {
+      navigation.navigate('ProductDetails', { item: item, sectionID: item.type });
+    }
   };
 
   const handleSelectSeller = item => {
@@ -333,7 +366,7 @@ const getAllPrinting = () => {
             data={state.offers}
             numColumns={2}
             keyExtractor={(item, index) =>
-              item?.paperOffer?.paperOfferId?.toString() ?? index.toString()
+              `${item.type}-${item.id ?? index}`
             }
             showsVerticalScrollIndicator={false}
             renderItem={({ item, index }) => (
@@ -350,15 +383,16 @@ const getAllPrinting = () => {
                       ...old,
                       offers: [],
                     }));
-                    addFavouritePaperOffer(item?.paperOffer.paperOfferId);
+                    if (item.type === 1) {
+                      addFavouritePaperOffer(item.id);
+                    } else if (item.type === 2) {
+                      addFavouriteInkOffer(item.id);
+                    } else if (item.type === 3) {
+                      addFavouritePrintingPressesOffer(item.id);
+                    }
                   }}
-                  item={item?.paperOffer as any}
-                //   item={item?.paperOffer as any}
-                  onPress={() => {
-                    console.log("hhhhhh",item);
-                    
-                    handleSelectOffer(item);
-                  }}
+                  item={item}
+                  onPress={() => handleSelectOffer(item)}
                 />
               </View>
             )}
