@@ -38,6 +38,7 @@ import { AddFavouriteUser, UserRate } from '../../Apis/Appinfo';
 import { RootState } from '../../Store/store';
 import CancelOrder from '../../Components/PopUps/CancelOrder';
 import { logoutHandler } from '../../Apis/User';
+import ImageWithFallback from '../../Components/ImageWithFallback/ImageWithFallback';
 
 type Props = {
   navigation?: any;
@@ -361,10 +362,15 @@ const Index = (props: Props) => {
             { alignItems: 'center', flex: 0.1, backgroundColor: theme.white },
           ]}
         >
-          <Image
+          {/* <Image
             source={{ uri: seller.userImages ?? seller.imageURL }}
             style={[styles.imageRound]}
-          />
+          /> */}
+            <ImageWithFallback
+                uri={seller.userImages ?? seller.imageURL}
+                type={0}
+                style={styles.imageRound}
+              />
           <View style={{ marginHorizontal: PixelPerfect(8) }}>
             <Text style={[layout.textAlign, styles.seller]}>
               {seller.userName ?? seller.name}

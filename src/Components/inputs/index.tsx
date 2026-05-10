@@ -29,6 +29,7 @@ type Props = {
   isPhone?: boolean;
   showErrorr?: boolean;
   error?: any;
+  editable?: boolean;
 };
 
 export default function Index(props: Props) {
@@ -41,6 +42,7 @@ export default function Index(props: Props) {
     isPhone,
     showErrorr,
     error,
+    editable = true,
   } = props;
   const [state, setstate] = useState({
     showPassword: false,
@@ -88,6 +90,8 @@ export default function Index(props: Props) {
         )}
         <TextInput
           selectionColor={Colors.secondColor}
+            editable={editable}
+
           style={[
             styles.textInputContainer,
             input,
@@ -95,7 +99,7 @@ export default function Index(props: Props) {
               [dir == 'rtl' ? 'paddingRight' : 'paddingLeft']: PixelPerfect(8),
             },
           ]}
-          placeholderTextColor={theme.inputTextColor}
+                  placeholderTextColor={theme.inputTextColor}
           secureTextEntry={password && !state.showPassword ? true : false}
           textContentType={'none'}
           {...options}

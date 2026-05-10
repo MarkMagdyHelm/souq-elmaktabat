@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { ThemeContext } from '../../Constants/theming';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import {
@@ -38,9 +38,19 @@ type Props = {
 const Index = (props: Props) => {
   const { navigation } = props;
 
-  const { item } = useRoute().params as any;
+  const route = useRoute();
+  const { item: routeItem } = route.params as any;
+  const [item, setItem] = useState(routeItem);
   const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
   const styles = useStyles(Fonts, theme, dark, dir);
+
+  // Sync local state when route params change (e.g. after edit)
+  useEffect(() => {
+    if (routeItem) {
+      console.log("OffersDetails: item updated from route params");
+      setItem(routeItem);
+    }
+  }, [routeItem]);
 
   const pricePerUnit = item.price;
   const minQty = 1;
@@ -77,7 +87,7 @@ const Index = (props: Props) => {
         } else {
           toastNotfication({
             type: 'error',
-            message: res?.Message ?? t('Something Went wrong'),
+            message: res?.message ?? t('Something Went wrong'),
           });
         }
         setState(old => ({ ...old, loading: false }));
@@ -95,9 +105,9 @@ const Index = (props: Props) => {
           type: item.type,
         },
         (res, status) => {
-          console.log('rrrrrr', status);
+          console.log('rrrrrr', res.status);
 
-          if (status == 200) {
+          if (res.status == 200) {
             setState(old => ({
               ...old,
               loading: false,
@@ -114,7 +124,7 @@ const Index = (props: Props) => {
           } else {
             toastNotfication({
               type: 'error',
-              message: res?.Message ?? t('Something Went wrong'),
+              message: res?.message ?? t('Something Went wrong'),
             });
             setState(old => ({ ...old, loading: false }));
           }

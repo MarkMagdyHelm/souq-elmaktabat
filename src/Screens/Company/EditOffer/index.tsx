@@ -58,12 +58,14 @@ const Index = (props: Props) => {
         // Size & Width fields
         paperSizeId: item?.paperSizeId ?? "",
         paperSize: item?.paperSize ?? "",
-        width: item?.width ?? "",
-        size: item?.size ?? "",
+        width: item?.width != null ? String(item.width) : "",
+        size: item?.size != null ? String(item.size) : "",
         // Pricing
-        price: item?.price ?? "",
-        coloredPrice: item?.coloredPrice ?? "",
-        min: item?.min ?? "",
+        price: type === "Printers"
+            ? (item?.nonColoredPrice != null ? String(item.nonColoredPrice) : (item?.price != null ? String(item.price) : ""))
+            : (item?.price != null ? String(item.price) : ""),
+        coloredPrice: item?.coloredPrice != null ? String(item.coloredPrice) : "",
+        min: item?.min != null ? String(item.min) : "",
         // Branch info
         branchId: item?.branchId ?? "",
         branchName: item?.branchName ?? "",
@@ -201,6 +203,70 @@ const formattedPaperTypes = uiState.paperTypeList.map(function (item) {
     const handelImediatePrinting = (value: boolean) => {
         setstate(old => ({ ...old, isImediatePrinting:!value }))
     }
+
+    // Build updated item to pass back to OffersDetails
+    const buildUpdatedItem = () => {
+        const values = formikRef.current?.values;
+        const updated = { ...item };
+
+        // Common fields
+        updated.description = values?.PaperDescription ?? item.description;
+        updated.endDate = uiState.date ? new Date(uiState.date).toISOString() : item.endDate;
+        updated.includeDelivery = uiState.isdelervable;
+        updated.branchId = values?.Branches ?? item.branchId;
+
+        // Branch display info
+        if (state.selectedBranches?.branchId && typeof state.selectedBranches.branchId !== "string") {
+            updated.branchName = state.selectedBranches.branchName;
+            updated.countryName = state.selectedBranches.countryName;
+            updated.regionName = state.selectedBranches.regionName;
+        }
+
+        if (type === "Paper") {
+            updated.paperId = values?.PaperType ?? item.paperId;
+            updated.paperSizeId = values?.PaperSize ?? item.paperSizeId;
+            updated.width = values?.PaperWidth ?? item.width;
+            updated.min = values?.PaperQuntaity ?? item.min;
+            updated.price = values?.PaperPrice ?? item.price;
+            // Update paper type name from dropdown selection
+            if (state.selectedPaperType?.name) {
+                updated.name = state.selectedPaperType.name;
+            }
+            // Update paper size name from dropdown selection
+            if (state.selectedPaperSize?.name) {
+                updated.paperSize = state.selectedPaperSize.name;
+            }
+        } else if (type === "Inks") {
+            updated.inkId = values?.InksType ?? item.inkId;
+            updated.brand = values?.Brand ?? item.brand;
+            updated.size = values?.InksWidth ?? item.size;
+            updated.colorId = values?.Color ?? item.colorId;
+            updated.price = values?.PaperPrice ?? item.price;
+            updated.min = values?.PaperQuntaity ?? item.min;
+            if (state.selectedInks?.name) {
+                updated.name = state.selectedInks.name;
+            }
+        } else if (type === "Printers") {
+            updated.nonColoredPrice = values?.PaperPrice ? Number(values.PaperPrice) : item.nonColoredPrice;
+            updated.coloredPrice = values?.PaperPrice1 ? Number(values.PaperPrice1) : item.coloredPrice;
+            updated.imediatePrinting = uiState.isImediatePrinting;
+        }
+
+        // Update image if user picked a new one
+        if (values?.ImageUrl && typeof values.ImageUrl === "object" && values.ImageUrl.uri) {
+            updated.imageUrl = values.ImageUrl.uri;
+        }
+
+        console.log("EditOffer: built updated item", updated);
+        return updated;
+    };
+
+    // Navigate back to OffersDetails with updated item
+    const navigateBackWithUpdatedItem = () => {
+        const updatedItem = buildUpdatedItem();
+        navigation.navigate('OffersDetails', { item: updatedItem });
+    };
+
     // Extract all form values from Formik reference
     const getFormValues = () => ({
         inksType: formikRef?.current?.values?.InksType,
@@ -323,7 +389,7 @@ const submitPaperOffer = (values: any) => {
   formData.append("PaperId", String(values.PaperType));
   formData.append("PaperSizeId", String(values.PaperSize));
   formData.append("Width", String(values.PaperWidth));
-  formData.append("Min", String(offerData.min || 1));
+  formData.append("Min", String(values.PaperQuntaity || offerData.min || 1));
   formData.append("Price", String(values.PaperPrice));
 
   // ✅ required fields
@@ -364,15 +430,15 @@ const submitPaperOffer = (values: any) => {
   dispatch<any>(
     UpdatePaperOffer(formData, (res, status) => {
       if (res.status === 200) {
-        navigation.goBack();
+        navigateBackWithUpdatedItem();
         showToast({
           type: "ok",
-          message: res?.Message ?? t("Successfully Added Offer"),
+          message: res?.message ?? t("Successfully Added Offer"),
         });
       } else {
         showToast({
           type: "error",
-          message: res?.Message ?? t("Something Went wrong"),
+          message: res?.message ?? t("Something Went wrong"),
         });
       }
 
@@ -422,15 +488,15 @@ const submitPaperOffer = (values: any) => {
   dispatch<any>(
     UpdateInkOffer(formData, (res, status) => {
       if (res.status === 200) {
-        navigation.goBack();
+        navigateBackWithUpdatedItem();
         showToast({
           type: "ok",
-          message: res?.Message ?? t("Successfully Added Offer"),
+          message: res?.message ?? t("Successfully Added Offer"),
         });
       } else {
         showToast({
           type: "error",
-          message: res?.Message ?? t("Something Went wrong"),
+          message: res?.message ?? t("Something Went wrong"),
         });
       }
 
@@ -441,13 +507,44 @@ const submitPaperOffer = (values: any) => {
 
     // Handle Printer offer submission
     const submitPrinterOffer = () => {
-        const data = handleBody();
-        dispatch<any>(UpdatePrintingOffer(data, (res, status) => {
+        let formData = handleBody();
+
+        const imageValue = formikRef.current?.values?.ImageUrl;
+
+        // Remove string ImageUrl (existing image from API)
+        if (typeof imageValue === "string") {
+            (formData as any)._parts = (formData as any)._parts.filter(
+                (p: any) => p[0] !== "ImageUrl"
+            );
+        }
+
+        // Append file object if user picked a new image
+        if (
+            imageValue &&
+            typeof imageValue === "object" &&
+            "uri" in imageValue
+        ) {
+            // Remove any existing ImageUrl entry first
+            (formData as any)._parts = (formData as any)._parts.filter(
+                (p: any) => p[0] !== "ImageUrl"
+            );
+            formData.append("ImageUrl", {
+                uri: imageValue.uri.startsWith("file://")
+                    ? imageValue.uri
+                    : `file://${imageValue.uri}`,
+                name: imageValue.name || "image.jpg",
+                type: imageValue.type || "image/jpeg",
+            } as any);
+        }
+
+        dispatch<any>(UpdatePrintingOffer(formData, (res, status) => {
             if (res.status === 200) {
-                navigation.goBack();
-                showToast({ type: 'ok', message: res?.Message ?? t("Successfully Added Offer") });
+                navigateBackWithUpdatedItem();
+                showToast({ type: 'ok', message: res?.message ?? t("Successfully Added Offer") });
             } else {
-                showToast({ type: 'error', message: res?.Message ?? t("Something Went wrong") });
+                console.log("res",res.message);
+                
+                showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
             }
             setstate(old => ({ ...old, loading: false }));
         }));
@@ -495,7 +592,7 @@ const submitPaperOffer = (values: any) => {
                 setstate(old => ({ ...old, branches: res.data }))
             
             } else {
-                showToast({ type: 'error', message: res?.Message ?? t("Something Went wrong") });
+                showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
             }
             setstate(old => ({ ...old, loading: false }))
         }))
@@ -510,7 +607,7 @@ const submitPaperOffer = (values: any) => {
            
 
             } else {
-                showToast({ type: 'error', message: res?.Message ?? t("Something Went wrong") });
+                showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
             }
             setstate(old => ({ ...old, loading: false }))
         }))
@@ -557,7 +654,7 @@ console.log('====================================');
     // ========================================
 
     // ===== TYPE 1: PAPER OFFER FORM =====
-    const renderPaperForm = function (handleChange, handleBlur, errors, touched) {
+    const renderPaperForm = function (handleChange, handleBlur, errors, touched, values) {
      console.log("touched",touched);
      console.log("errors",errors);
      
@@ -607,6 +704,7 @@ console.log('====================================');
                 <Inputs
                     label={t("paperWight")}
                     options={{
+                        value: String(values.PaperWidth ?? ''),
                         onBlur: handleBlur("PaperWidth"),
                         onChangeText: handleChange("PaperWidth"),
                         placeholder: t("paperWightw"),
@@ -623,7 +721,7 @@ console.log('====================================');
     };
 
     // ===== TYPE 2: INKS OFFER FORM =====
-    const renderInksForm = (handleChange, handleBlur, errors, touched) => (
+    const renderInksForm = (handleChange, handleBlur, errors, touched, values) => (
         <View>
             <Pressable
                 style={styles.selectMenueCon}
@@ -634,11 +732,11 @@ console.log('====================================');
                 <Text style={[layout.textAlign, styles.label]}>{t("inkType")}</Text>
                 <View style={[layout.rowBox, styles.selectMenue]}>
                     <Text style={styles.textselectmenu}>
-                        {offerData.name??(typeof uiState.inks.id !== "string"
+                        {typeof uiState.inks.id !== "string"
                             ? dir === "rtl"
-                                ? uiState.inks.arName
+                                ? (uiState.inks.arName ?? uiState.inks.name)
                                 : uiState.inks.name
-                            : t("inkTypew"))}
+                            : t("inkTypew")}
                     </Text>
                     {uiState.showInks ? <ArrowUpIcon /> : <ArrowDownIcon />}
                 </View>
@@ -648,6 +746,7 @@ console.log('====================================');
             <Inputs
                 label={t("inkBrand")}
                 options={{
+                    value: String(values.Brand ?? ''),
                     onBlur: handleBlur("Brand"),
                     onChangeText: handleChange("Brand"),
                     maxLength: 5,
@@ -663,6 +762,7 @@ console.log('====================================');
             <Inputs
                 label={t("inkCapacity")}
                 options={{
+                    value: String(values.InksWidth ?? ''),
                     onBlur: handleBlur("InksWidth"),
                     onChangeText: handleChange("InksWidth"),
                     placeholder: t("inkCapacityw"),
@@ -724,6 +824,7 @@ console.log('====================================');
             <Inputs
                 label={t("printerColorPrice")}
                 options={{
+                    value: String(values.PaperPrice1 ?? ''),
                     onBlur: handleBlur("PaperPrice1"),
                     onChangeText: handleChange("PaperPrice1"),
                     placeholder: t("printerColorPricew"),
@@ -751,6 +852,7 @@ console.log('====================================');
                             : t("printerBWPrice")
                 }
                 options={{
+                    value: String(values.PaperPrice ?? ''),
                     onBlur: handleBlur("PaperPrice"),
                     onChangeText: handleChange("PaperPrice"),
                     placeholder:
@@ -826,6 +928,7 @@ console.log('====================================');
             <Inputs
                 label={t("paperdis")}
                 options={{
+                    value: String(values.PaperDescription ?? ''),
                     onBlur: handleBlur("PaperDescription"),
                     onChangeText: handleChange("PaperDescription"),
                     numberOfLines: 2,
@@ -1037,7 +1140,7 @@ console.log('====================================');
                                 ...old,
                                 showInks: false,
                             }));
-                            setFieldError("InksType", "You must pick a city!");
+                            setFieldError("InksType", "You must pick an ink type!");
                         } else {
                             setFieldValue("InksType", val.id);
                             setstate((old) => ({
@@ -1188,8 +1291,8 @@ console.log('====================================');
                                     scrollEnabled={true}>
 
                                     {/* ===== TYPE SPECIFIC FORMS ===== */}
-                                    {type === "Paper" && renderPaperForm(handleChange, handleBlur, errors, touched)}
-                                    {type === "Inks" && renderInksForm(handleChange, handleBlur, errors, touched)}
+                                    {type === "Paper" && renderPaperForm(handleChange, handleBlur, errors, touched, values)}
+                                    {type === "Inks" && renderInksForm(handleChange, handleBlur, errors, touched, values)}
                                     {type === "Printers" && renderPrintersForm(handleChange, handleBlur, errors, touched, values)}
 
                                     {/* ===== COMMON FIELDS (ALL TYPES) ===== */}

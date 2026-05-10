@@ -59,15 +59,40 @@ const Index = (props: Props) => {
     const dispatch = useDispatch();
     const showToast = useToastNotification();
 
+    const navigateBackWithUpdatedData = () => {
+        navigation.navigate('SellerProfile');
+    };
 
     useEffect(() => {
         getAllActivities()
         getAllAvailableTools()
 
+        // Match item.info entries against Redux lists by name to get the correct IDs
+        // (item.info IDs are junction/record IDs, not the actual entity IDs the API expects)
+        const infoPayment = item.info?.payments?.[0];
+        const matchedPayment = infoPayment
+            ? payments.find((p: any) => p.name === infoPayment.name || p.arName === infoPayment.arName)
+            : null;
+
+        const infoActivity = item.info?.activities?.[0];
+        const matchedActivity = infoActivity
+            ? activites.find((a: any) => a.name === infoActivity.name || a.arName === infoActivity.arName)
+            : null;
+
+        const infoTool = item.info?.tools?.[0];
+        const matchedTool = infoTool
+            ? tools.find((t: any) => t.name === infoTool.name || t.arName === infoTool.arName)
+            : null;
+
+        console.log('Pre-fill matching — infoPayment:', infoPayment, '→ matchedPayment:', matchedPayment);
+        console.log('Pre-fill matching — infoActivity:', infoActivity, '→ matchedActivity:', matchedActivity);
+        console.log('Pre-fill matching — infoTool:', infoTool, '→ matchedTool:', matchedTool);
 
         setstate(old => ({
-            ...old, payments: payments, selectedActivities: item.info.activities[0],
-            selecteServies: item.info.tools[0], selectePayment: item.info.payments[0]
+            ...old, payments: payments,
+            selectedActivities: matchedActivity ?? infoActivity ?? old.selectedActivities,
+            selecteServies: matchedTool ?? infoTool ?? old.selecteServies,
+            selectePayment: matchedPayment ?? infoPayment ?? old.selectePayment,
         }))
 
     }, [])
@@ -127,9 +152,21 @@ const Index = (props: Props) => {
             bodyFormData.append('UserName', values.Username);
             bodyFormData.append('PhoneNumber', values.Phone);
             bodyFormData.append('CompanyName', values.CompanyName);
-            bodyFormData.append('ActivityIds', [state.selectedActivities.id]);
-            bodyFormData.append('AvailableToolsIds', [state.selecteServies.id]);
-            bodyFormData.append('PaymentMethodIds', [state.selectePayment.id]);
+            // Send IDs as individual values (not wrapped in array)
+            if (state.selectedActivities?.id) {
+                bodyFormData.append('ActivityIds', state.selectedActivities.id);
+            }
+            if (state.selecteServies?.id) {
+                bodyFormData.append('AvailableToolsIds', state.selecteServies.id);
+            }
+            if (state.selectePayment?.id) {
+                bodyFormData.append('PaymentMethodIds', state.selectePayment.id);
+            }
+
+            // Debug logs
+            console.log('PaymentMethodIds:', state.selectePayment?.id);
+            console.log('ActivityIds:', state.selectedActivities?.id);
+            console.log('AvailableToolsIds:', state.selecteServies?.id);
             bodyFormData.append('Description', values.Description);
             bodyFormData.append('AnotherPhoneNumber', values.PhoneNumber);
             if (values.ImageUrl?.uri) {
@@ -167,12 +204,18 @@ const Index = (props: Props) => {
                         ...userdata,
                         name: values.Username,
                         phoneNumber: values.Phone,
+                        companyName: values.CompanyName,
+                        // email: values.Email,
                         imageUrl: res.data?.data?.imageUrl || userdata.imageUrl,
                     };
                     dispatch(SetUserData(updatedUserData));
                     /// showToast({ type: 'ok', message: res.data.message });
-                    setSccusse(true)
-
+        showToast({
+          type: "ok",
+          message: res?.message ?? t("Successfully Updated"),
+        });
+        navigateBackWithUpdatedData();
+        
                 } else {
                     showToast({ type: 'error', message: res.data.message ?? t("Something Went wrong") });
                 }
@@ -316,6 +359,7 @@ const Index = (props: Props) => {
                                                 maxLength: 30,
                                                 value: values.Email
                                             }}
+                                            editable={false}
                                             password={false}
                                             showErrorr={(errors.Email && touched.Email) as boolean}
                                             error={errors.Email as any}
@@ -416,6 +460,7 @@ const Index = (props: Props) => {
                                                 placeholder: t("Phonew"),
                                                 maxLength: 11,
                                                 keyboardType: Platform.OS === 'android' ? "numeric" : "number-pad",
+                                                value: values.PhoneNumber
                                             }}
                                             password={false}
                                             isPhone={true}

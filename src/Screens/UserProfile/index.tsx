@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { Container, Content } from '../../Components/containers/Containers'
 import { ThemeContext } from '../../Constants/theming'
@@ -15,6 +15,7 @@ import { useToast } from 'react-native-toast-notifications'
 import { imageUrl } from '../../Constants/config'
 import HeaderWithText from '../../Components/Headers/HeaderWithText'
 import ImageWithFallback from '../../Components/ImageWithFallback/ImageWithFallback'
+import { useFocusEffect } from '@react-navigation/native'
 
 type Props = {
     navigation?: any
@@ -39,6 +40,14 @@ const Index = (props: Props) => {
     useEffect(() => {
         getSellerData()
     }, [])
+
+    // Refetch user data when screen is focused (e.g. after editing profile)
+    useFocusEffect(
+        useCallback(() => {
+            console.log("UserProfile focused - refetching data");
+            getSellerData();
+        }, [userdata.id])
+    );
 
 
     const getSellerData = () => {

@@ -91,12 +91,14 @@ const Index = (props: Props) => {
     setstate(old => ({
       ...old,
       payments: payments,
-      selectedActivities: item.info.activities[0],
-
-      selecteServies: item.info.tools[0],
-      selectePayment: item.info.payments[0],
+      selectedActivities: item.info?.activities?.[0] ?? old.selectedActivities,
+      selecteServies: item.info?.tools?.[0] ?? old.selecteServies,
+      selecteMarket: item.info?.payments?.[0] ?? old.selecteMarket,
     }));
   }, []);
+  const navigateBackWithUpdatedData = () => {
+    navigation.navigate('UserProfile');
+  };
   const updateUserProfile = async (values: any) => {
     setstate(old => ({
       ...old,
@@ -109,8 +111,7 @@ const Index = (props: Props) => {
       // 🔹 Normal fields
       bodyFormData.append('UserName', values.Username);
       bodyFormData.append('PhoneNumber', values.Phone);
-      bodyFormData.append('CompanyName', values.Email);
-      bodyFormData.append('Description', values.Address);
+      bodyFormData.append('Address', values.Address);
       bodyFormData.append('AnotherPhoneNumber', values.PhoneNumber);
       if (values.ImageUrl?.uri) {
         bodyFormData.append(
@@ -123,31 +124,15 @@ const Index = (props: Props) => {
         );
       }
 
-      // 🔹 Arrays (FIXED ✅)
-      // If single value
-      bodyFormData.append('ActivityIds', state.selectedActivities?.id);
-      // bodyFormData.append('AvailableToolsIds', state.selecteServies?.id);
-      // bodyFormData.append('PaymentMethodIds', state.selecteMarket?.id);
+      // Send IDs as individual values (with null guard)
+      if (state.selectedActivities?.id) {
+        bodyFormData.append('ActivityIds', state.selectedActivities.id);
+      }
 
-      // 👉 If these are arrays instead, use this instead:
-      /*
-    state.selectedActivities?.forEach((item: any) => {
-      bodyFormData.append('ActivityIds', item.id);
-    });
-
-    state.selecteServies?.forEach((item: any) => {
-      bodyFormData.append('AvailableToolsIds', item.id);
-    });
-
-    state.selecteMarket?.forEach((item: any) => {
-      bodyFormData.append('PaymentMethodIds', item.id);
-    });
-    */
-
-      // 🔥 Debug (optional)
-      // for (let pair of bodyFormData.entries()) {
-      //   console.log(pair[0], pair[1]);
-      // }
+      // Debug logs
+      console.log('ActivityIds:', state.selectedActivities?.id);
+      console.log('selecteServies:', state.selecteServies?.id);
+      console.log('selecteMarket:', state.selecteMarket?.id);
 
       const res = await axios.put(
         mainUrl + 'api/User/UpdateUserProfile',
@@ -175,10 +160,13 @@ const Index = (props: Props) => {
           name: values.Username,
           phoneNumber: values.Phone,
           email: values.Email,
+          address: values.Address,
           imageUrl: res.data?.data?.imageUrl || userdata.imageUrl,
         };
         dispatch(SetUserData(updatedUserData));
         showToast({ type: 'ok', message: res.data.message });
+        navigateBackWithUpdatedData();
+
       } else {
         showToast({
           type: 'error',
@@ -280,9 +268,9 @@ const Index = (props: Props) => {
                 dir == 'rtl'
                   ? item.info?.activities[0]?.arName
                   : item.info?.activities[0]?.name,
-              Address: item.info.address,
-              Governmen: item.info?.activities[0]?.arName,
-              Area: item.info?.tools[0]?.arName,
+              Address: item.info?.address ?? userdata.address ?? '',
+              Governmen: dir == 'rtl' ? item.info?.activities[0]?.arName : item.info?.activities[0]?.name,
+              Area: dir == 'rtl' ? item.info?.tools[0]?.arName : item.info?.tools[0]?.name,
 
               PhoneNumber: item.info?.anotherPhoneNumber ?? '',
             }}
@@ -481,6 +469,7 @@ const Index = (props: Props) => {
                         maxLength: 11,
                         keyboardType:
                           Platform.OS === 'android' ? 'numeric' : 'number-pad',
+                        value: values.PhoneNumber,
                       }}
                       password={false}
                       isPhone={true}
