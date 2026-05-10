@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Pressable, Text, View, Platform, Image, StyleSheet } from "react-native";
 import { Formik, FormikProps } from "formik";
 import { validationSchema2 } from "../../../../Validation/Form2Refistration";
@@ -26,50 +26,43 @@ type Props = {
 
 const FormStep2 = ({ formikRef, state, setstate, GetAreas, countries, activites, styles }: Props) => {
   const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
-    const styless = useStyles(Fonts, theme, dark, dir);
-    
+  const styless = useStyles(Fonts, theme, dark, dir);
+  const [uri, setUri] = useState("");
 
-  const handleCameraPhotos = async (name) => {
+  const handleCameraPhotos = async (name: string) => {
     try {
-      if (name == "Camera") {
-        let file = await openAPPCamera();
-        if (file) {
-          if (state.whichimage == "logo") {
-            // formikRef?.current.setFieldValue("ImageUrl", file);
-          }
+      let file = null;
 
-        } else {
-          if (state.whichimage == "logo") {
-            if (!formikRef?.current?.values?.ImageUrl.hasOwnProperty("uri")) {
-              // formikRef?.current?.setFieldError("ImageUrl", 'Image is required')
-            }
-          } 
-        }
-      } else if (name == "Photos") {
-        let file = await openAPPPicker();
-        console.log('====================================');
-        console.log(file);
-        console.log('====================================');
-        if (file) {
-          if (state.whichimage == "logo") {
-            formikRef?.current.setFieldValue("ImageUrl", file);
-          } 
+      if (name === "Camera") {
+        file = await openAPPCamera();
+      } else if (name === "Photos") {
+        file = await openAPPPicker();
+      }
 
-        } else {
-          if (state.whichimage == "logo") {
-            if (!formikRef?.current?.values?.ImageUrl.hasOwnProperty("uri")) {
-              // formikRef?.current?.setFieldError("ImageUrl", 'Image is required')
-            }
-          } 
-        }
+      console.log('Selected image file:', file);
+      console.log('Image URI:', file?.uri);
+
+      if (file?.uri) {
+        setUri(file.uri);
+        console.log('Updated uri preview =', file.uri);
+        
+        formikRef.current?.setFieldValue("ImageUrl", {
+          uri: file.uri,
+          type: file.type,
+          name: file.name,
+        });
+        formikRef.current?.setFieldTouched("ImageUrl", true);
+        
+        console.log('ImageUrl set in Formik:', { uri: file.uri, type: file.type, name: file.name });
+      } else {
+        formikRef.current?.setFieldError(
+          "ImageUrl",
+          "Image is required"
+        );
       }
     } catch (error) {
-      console.log('===================ssss=================');
-      console.log(error);
-      console.log('====================================');
-      setstate(old => ({ ...old, commercialImage: [...state.commercialImage], ImageData: [...state.ImageData] }))
+      console.log('Image selection error:', error);
     }
-
   }
   return (
     <Formik
@@ -89,7 +82,7 @@ const FormStep2 = ({ formikRef, state, setstate, GetAreas, countries, activites,
         <>
                     <View style={styless.logoCon}>
                       <Text style={styless.txtin}>{t('inputimg1')}</Text>
-                      {values?.ImageUrl?.hasOwnProperty("uri") ?
+                      {values?.ImageUrl?.uri || uri ?
                         <Pressable
                           style={styles.imgcon}
                           onPress={() => {
@@ -102,7 +95,7 @@ const FormStep2 = ({ formikRef, state, setstate, GetAreas, countries, activites,
                         >
                           <Image
                             style={styless.img}
-                            source={{ uri: `file:///${values?.ImageUrl?.uri}` }}
+                            source={{ uri: uri || values?.ImageUrl?.uri }}
                           />
                         </Pressable>
                         : <Pressable style={styless.conIcon}

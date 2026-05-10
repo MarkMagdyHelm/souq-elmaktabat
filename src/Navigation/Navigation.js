@@ -54,7 +54,23 @@ import PushNotificationHandler from '../Utilties';
 const Stack = createStackNavigator();
 
 const Stacks = () => {
-  const { isLogin } = useSelector(state => state.auth, shallowEqual);
+  const { isLogin, userdata } = useSelector(state => state.auth, shallowEqual);
+
+  // Validate user authentication: check both isLogin flag AND userdata validity
+  const isValidAuth = isLogin && userdata && Object.keys(userdata).length > 0 && userdata.id && userdata.token;
+
+  // Debug logging for auth issues
+  if (isLogin && !isValidAuth) {
+    console.warn('⚠️ Auth state inconsistent:', {
+      isLogin,
+      hasUserdata: !!userdata,
+      userdataKeys: userdata ? Object.keys(userdata) : [],
+      hasId: userdata?.id,
+      hasToken: userdata?.token,
+    });
+  }
+
+  console.log('Navigation auth check:', { isLogin, isValidAuth, userId: userdata?.id });
 
   return (
     <Stack.Navigator
@@ -69,7 +85,7 @@ const Stacks = () => {
           // presentation:"transparentModal",
         };
       }}
-      initialRouteName={isLogin ? 'Market' : 'Demo'}
+      initialRouteName={isValidAuth ? 'Market' : 'Demo'}
     >
       <Stack.Screen name="Boursa" component={Boursa} />
 

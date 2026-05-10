@@ -35,7 +35,7 @@ const Index = (props: Props) => {
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const { countries, activites, roles, tools, payments } = useSelector((state: RootState) => state.settings);
     console.log('=======countries=============================');
-    console.log(roles);
+    console.log(countries);
     console.log('====================================');
     const styles = useStyles(Fonts, theme, dark, dir);
     const { email } = useRoute().params as any;
@@ -301,6 +301,7 @@ const appendFormData = (data, parentKey = "") => {
                             setActiveStep={setActiveStep}
                             onSubmmit={() => { }}
                         >
+                           {countries?.length > 0 && 
                             <FormStep2
                                 formikRef={formikRef2}
                                 state={state}
@@ -309,7 +310,7 @@ const appendFormData = (data, parentKey = "") => {
                                 countries={countries}
                                 activites={activites}
                                 styles={styles}
-                            />
+                            />}
                         </Section>
                         <View style={{ paddingVertical: PixelPerfect(8) }} />
                     </>

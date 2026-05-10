@@ -38,6 +38,7 @@ export const SignInHandler = (body:any, cb?: (data: any,status:any) => void) => 
       }
     };
   };
+
 /**
  *  loginHandler 
  * @param body usertoken user mail and phone ...etc
@@ -46,15 +47,28 @@ export const loginHandler = (body:any) => {
     return async (dispatch: Dispatch<IDispatch>) => {
       try {
         console.log('==========loginHandler==========================');
-        console.log(body);
+        console.log('Login data:', body);
+        
+        // Validate user data has required fields
+        if (!body || !body.id || !body.token) {
+          console.error('❌ Invalid login data - missing id or token:', body);
+          throw new Error('Invalid user data - missing required fields');
+        }
+        
+        console.log('✅ Valid login data - saving to state and storage');
         console.log('====================================');
+        
         dispatch(SetUserData(body));
         dispatch(UserLogin());
-         await saveItem(AsyncKeys.USER_DATA,body);
-         await saveItem(AsyncKeys.IS_LOGIN,true);
-        console.log('loginHandler data = ',); 
+        await saveItem(AsyncKeys.USER_DATA, body);
+        await saveItem(AsyncKeys.IS_LOGIN, true);
+        
+        console.log('✅ Login complete - user authenticated'); 
       } catch (error) {
-          console.log('loginHandler error = ', error);
+          console.error('❌ loginHandler error = ', error);
+          // Ensure clean state on login failure
+          dispatch(SetUserData({}));
+          dispatch(UserLogout());
       }
     };
   };
@@ -66,16 +80,22 @@ export const loginHandler = (body:any) => {
 export const logoutHandler = (body:any={}) => {
     return async (dispatch: Dispatch<IDispatch>) => {
       try {
-        console.log('==========loginHandler==========================');
-        console.log(body);
+        console.log('==========logoutHandler==========================');
+        console.log('Logging out user, clearing auth data');
         console.log('====================================');
-        dispatch(SetUserData(body));
+        
+        // Clear Redux state FIRST
+        dispatch(SetUserData({}));
         dispatch(UserLogout());
-         await saveItem(AsyncKeys.USER_DATA,body);
-         await saveItem(AsyncKeys.IS_LOGIN,false);
-        console.log('loginHandler data = ',); 
+        dispatch(UserIsSeller(false));
+        
+        // Then clear AsyncStorage
+        await saveItem(AsyncKeys.USER_DATA, {});
+        await saveItem(AsyncKeys.IS_LOGIN, false);
+        
+        console.log('✅ Logout complete - auth state cleared'); 
       } catch (error) {
-          console.log('loginHandler error = ', error);
+          console.error('❌ logoutHandler error = ', error);
       }
     };
   };
@@ -168,14 +188,21 @@ export const CheckActivison = (cb?: (data: any, status: any) => void) => {
     try {
       const { data, status } = await globalAPI.get('api/User/CheckConfirmation');
       console.log('CheckActivisonHandler data = ',Platform.OS, data, status);
-      // cb && cb(data,status);
       
       if (data.status == 200) {
-         console.log('CheckActivisonHandler data = ',Platform.OS, data, status);
-              dispatch<any>(UserIsSeller(data.data));
-          }
+         console.log('CheckActivisonHandler success - user is valid');
+         dispatch<any>(UserIsSeller(data.data));
+         cb && cb(data, status);
+      } else {
+        // Session invalid - logout user
+        console.warn('⚠️ CheckActivison failed - invalid session, logging out:', data);
+        dispatch<any>(logoutHandler({}));
+        cb && cb(data, status);
+      }
     } catch (error) {
-      console.log('CheckActivisonHandler error = ', error);
+      // API error (401, 403, network, etc.) - likely invalid session
+      console.error('❌ CheckActivison error - session invalid, logging out:', error);
+      dispatch<any>(logoutHandler({}));
       cb && cb(error, 500);
     }
   };
