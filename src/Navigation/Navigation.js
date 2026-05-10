@@ -61,16 +61,16 @@ const Stacks = () => {
 
   // Debug logging for auth issues
   if (isLogin && !isValidAuth) {
-    console.warn('⚠️ Auth state inconsistent:', {
-      isLogin,
-      hasUserdata: !!userdata,
-      userdataKeys: userdata ? Object.keys(userdata) : [],
-      hasId: userdata?.id,
-      hasToken: userdata?.token,
-    });
+    // console.warn('⚠️ Auth state inconsistent:', {
+    //   isLogin,
+    //   hasUserdata: !!userdata,
+    //   userdataKeys: userdata ? Object.keys(userdata) : [],
+    //   hasId: userdata?.id,
+    //   hasToken: userdata?.token,
+    // });
   }
 
-  console.log('Navigation auth check:', { isLogin, isValidAuth, userId: userdata?.id });
+  // console.log('Navigation auth check:', { isLogin, isValidAuth, userId: userdata?.id });
 
   return (
     <Stack.Navigator

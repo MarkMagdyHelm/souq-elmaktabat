@@ -15,7 +15,7 @@ export const GetRequests = (body: any, cb?: (data: any, status: any) => void) =>
             });
             cb && cb(data, status);
         } catch (error) {
-            console.log('GetRequests error = ', error);
+            // console.log('GetRequests error = ', error);
             cb && cb(error, 500);
         }
     };
@@ -34,7 +34,7 @@ export const GetSellerList = (body: any, cb?: (data: any, status: any) => void) 
             );
             cb && cb(data, status);
         } catch (error) {
-            console.log('GetSellerList error = ', error);
+            // console.log('GetSellerList error = ', error);
             cb && cb(error, 500);
         }
     };
@@ -52,9 +52,9 @@ export const GetSellerData = (body: any, cb?: (data: any, status: any) => void) 
                 params: body
             });
             cb && cb(data, status);
-             console.log('GetSellerData = ', data);
+             // console.log('GetSellerData = ', data);
         } catch (error) {
-            console.log('GetSellerData error = ', error);
+            // console.log('GetSellerData error = ', error);
             cb && cb(error, 500);
         }
     };
@@ -67,15 +67,15 @@ export const GetSellerData = (body: any, cb?: (data: any, status: any) => void) 
 export const GetMyRequests = (body: any, cb?: (data: any, status: any) => void) => {
     return async (dispatch: Dispatch<IDispatch>) => {
         try {
-console.log('ppp',body);
+// console.log('ppp',body);
 
             const { data, status } = await globalAPI.get('api/Request/GetMyRequests', {
                 params: body
             });
             cb && cb(data, status);
-                console.log('GetMyRequests = ', data);
+                // console.log('GetMyRequests = ', data);
         } catch (error) {
-            console.log('GetRequests error = ', error);
+            // console.log('GetRequests error = ', error);
             cb && cb(error, 500);
         }
     };
@@ -94,7 +94,7 @@ export const GetMyBranches = (body: any, cb?: (data: any, status: any) => void) 
             });
             cb && cb(data, status);
         } catch (error) {
-            console.log('GetMyBranches error = ', error);
+            // console.log('GetMyBranches error = ', error);
             cb && cb(error, 500);
         }
     };
@@ -120,7 +120,7 @@ export const UpdateRequest = (body: any, cb?: (data: any, status: any) => void) 
             );
             cb && cb(data, status);
         } catch (error) {
-            console.log('UpdateRequest error = ', error);
+            // console.log('UpdateRequest error = ', error);
             cb && cb(error, 500);
         }
     };
@@ -144,9 +144,9 @@ export const AddPaperOfferRequest = (body: any, cb?: (data: any, status: any) =>
                 body
             );
             cb && cb(data, status);
-              console.log('AddPaperOfferRequest  = ', data,status);
+              // console.log('AddPaperOfferRequest  = ', data,status);
         } catch (error) {
-            console.log('AddPaperOfferRequest error = ', error);
+            // console.log('AddPaperOfferRequest error = ', error);
             cb && cb(error, 500);
         }
     };
@@ -174,12 +174,12 @@ export const AddPaperOffer = (body: any, cb?: (data: any, status: any) => void) 
             const { data, status } = await globalAPI.post('api/Offer/AddPaperOffer',
                 body
             );
-            console.log("botttty",body);
-            console.log('AddPaperOffer data = ', data);
+            // console.log("botttty",body);
+            // console.log('AddPaperOffer data = ', data);
             
             cb && cb(data, status);
         } catch (error) {
-            console.log('AddPaperOffer error = ', error);
+            // console.log('AddPaperOffer error = ', error);
             cb && cb(error, 500);
         }
     };
@@ -202,19 +202,19 @@ export const AddPaperOffer = (body: any, cb?: (data: any, status: any) => void) 
 export const UpdatePaperOffer = (body: any, cb?: (data: any, status: any) => void) => {
     return async (dispatch: Dispatch<IDispatch>) => {
         try {
-  console.log("FORMDATA INSTANCE:", body instanceof FormData);
-  console.log("FORMDATA:", body);
+  // console.log("FORMDATA INSTANCE:", body instanceof FormData);
+  // console.log("FORMDATA:", body);
             const { data, status } = await globalAPI.put('api/Offer/UpdatePaperOffer',
                 body, {
   headers: {
     "Content-Type": "multipart/form-data",
   }}
             );
-            console.log('UpdatePaperOffer data = ', data);
+            // console.log('UpdatePaperOffer data = ', data);
             
             cb && cb(data, status);
         } catch (error) {
-            console.log('UpdatePaperOffer error = ', error);
+            // console.log('UpdatePaperOffer error = ', error);
             cb && cb(error, 500);
         }
     };
@@ -246,10 +246,10 @@ export const AddPrintingPressOffer = (body: any, cb?: (data: any, status: any) =
     "Content-Type": "multipart/form-data",
   }});
 AddPrintingPressOffer
-            console.log('AddPrintingPressOffer response = ', data);
+            // console.log('AddPrintingPressOffer response = ', data);
             cb && cb(data, status);
         } catch (error) {
-            console.log('AddPrintingPressOffer error = ', error);
+            // console.log('AddPrintingPressOffer error = ', error);
             cb && cb(error, 500);
         }
     };
@@ -273,7 +273,7 @@ AddPrintingPressOffer
 export const UpdatePrintingOffer = (body: any, cb?: (data: any, status: any) => void) => {
     return async (dispatch: Dispatch<IDispatch>) => {
         try {
-              console.log("botttty",body);
+              // console.log("botttty",body);
 
             const { data, status } = await globalAPI.put('api/Offer/UpdatePrintingOffer',
                 body
@@ -281,10 +281,10 @@ export const UpdatePrintingOffer = (body: any, cb?: (data: any, status: any) => 
   headers: {
     "Content-Type": "multipart/form-data",
   }});
-            console.log('UpdatePrintingOffer response = ', data);
+            // console.log('UpdatePrintingOffer response = ', data);
             cb && cb(data, status);
         } catch (error) {
-            console.log('UpdatePrintingOffer error = ', error);
+            // console.log('UpdatePrintingOffer error = ', error);
             cb && cb(error, 500);
         }
     };
@@ -314,11 +314,11 @@ export const AddInkOffer = (body: any, cb?: (data: any, status: any) => void) =>
   headers: {
     "Content-Type": "multipart/form-data",
   }});
-              console.log("botttty",body);
-            console.log('AddInkOffer response = ', data);
+              // console.log("botttty",body);
+            // console.log('AddInkOffer response = ', data);
             cb && cb(data, status);
         } catch (error) {
-            console.log('AddInkOffer error = ', error);
+            // console.log('AddInkOffer error = ', error);
             cb && cb(error, 500);
         }
     };
@@ -341,7 +341,7 @@ export const AddInkOffer = (body: any, cb?: (data: any, status: any) => void) =>
 export const UpdateInkOffer = (body: any, cb?: (data: any, status: any) => void) => {
     return async (dispatch: Dispatch<IDispatch>) => {
         try {
-              console.log("botttty",body);
+              // console.log("botttty",body);
 
             const { data, status } = await globalAPI.put('api/Offer/UpdateInkOffer',
                 body
@@ -350,10 +350,10 @@ export const UpdateInkOffer = (body: any, cb?: (data: any, status: any) => void)
     "Content-Type": "multipart/form-data",
   }});
 
-            console.log('UpdateInkOffer response = ', data);
+            // console.log('UpdateInkOffer response = ', data);
             cb && cb(data, status);
         } catch (error) {
-            console.log('UpdateInkOffer error = ', error);
+            // console.log('UpdateInkOffer error = ', error);
             cb && cb(error, 500);
         }
     };
@@ -367,7 +367,7 @@ export const AddRate = (body: any, cb?: (data: any, status: any) => void) => {
             );
             cb && cb(data, status);
         } catch (error) {
-            console.log('AddRate error = ', error);
+            // console.log('AddRate error = ', error);
             cb && cb(error, 500);
         }
     };

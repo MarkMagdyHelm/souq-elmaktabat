@@ -96,9 +96,9 @@ const Index = (props: Props) => {
         page: page.toString(), pageSize: "10"
       }, (res, status) => {
         if (res.status === 200) {
-          console.log('===============requests=====================');
-          console.log(res.data.items);
-          console.log('====================================');
+          // console.log('===============requests=====================');
+          // console.log(res.data.items);
+          // console.log('====================================');
 
           const newItems = res.data.items;
           setState(old => ({

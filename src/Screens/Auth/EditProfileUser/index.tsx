@@ -86,7 +86,7 @@ const Index = (props: Props) => {
   useEffect(() => {
     getAllActivities();
     //getAllAvailableTools()
-    console.log('iiiiiiii', item);
+    // console.log('iiiiiiii', item);
 
     setstate(old => ({
       ...old,
@@ -130,9 +130,9 @@ const Index = (props: Props) => {
       }
 
       // Debug logs
-      console.log('ActivityIds:', state.selectedActivities?.id);
-      console.log('selecteServies:', state.selecteServies?.id);
-      console.log('selecteMarket:', state.selecteMarket?.id);
+      // console.log('ActivityIds:', state.selectedActivities?.id);
+      // console.log('selecteServies:', state.selecteServies?.id);
+      // console.log('selecteMarket:', state.selecteMarket?.id);
 
       const res = await axios.put(
         mainUrl + 'api/User/UpdateUserProfile',
@@ -146,8 +146,8 @@ const Index = (props: Props) => {
         },
       );
 
-      console.log('res.data', res.data);
-      console.log('bodyFormData', bodyFormData);
+      // console.log('res.data', res.data);
+      // console.log('bodyFormData', bodyFormData);
 
       setstate(old => ({
         ...old,
@@ -174,7 +174,7 @@ const Index = (props: Props) => {
         });
       }
     } catch (err: any) {
-      console.log('errrrrr', err);
+      // console.log('errrrrr', err);
 
       setstate(old => ({
         ...old,
@@ -226,7 +226,7 @@ const Index = (props: Props) => {
         formikRef.current?.setFieldError("ImageUrl", "Image is required");
       }
     } catch (e) {
-      console.log(e);
+      // console.log(e);
     }
   };
 
@@ -244,9 +244,9 @@ const Index = (props: Props) => {
       }),
     );
   };
-  console.log('==============userdata======================');
-  console.log(userdata);
-  console.log('=============userdata=======================');
+  // console.log('==============userdata======================');
+  // console.log(userdata);
+  // console.log('=============userdata=======================');
   return (
     <Container showHint={false}>
       <HeaderWithText title={t('UpdateProfile')} />
@@ -548,9 +548,9 @@ const Index = (props: Props) => {
                     {state.showMarket && (
                       <DropDowenMenu
                         onCloseFn={val => {
-                          console.log('xxxxxx');
-                          console.log(typeof val?.id === 'string');
-                          console.log('xxxxxx');
+                          // console.log('xxxxxx');
+                          // console.log(typeof val?.id === 'string');
+                          // console.log('xxxxxx');
                           if (typeof val?.id === 'string') {
                             setstate(old => ({
                               ...old,

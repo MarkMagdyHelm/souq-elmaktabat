@@ -117,9 +117,9 @@ useFocusEffect(
         },
         (res, status) => {
           if (res.status === 200) {
-            console.log('===============requests=====================');
-            console.log('requests', res.data.items);
-            console.log('====================================');
+            // console.log('===============requests=====================');
+            // console.log('requests', res.data.items);
+            // console.log('====================================');
 
             const newItems = res.data.items;
             setState(old => ({

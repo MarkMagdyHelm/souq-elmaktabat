@@ -44,7 +44,7 @@ const Index = (props: Props) => {
   const { navigation } = props;
 
   const { item, sectionID } = useRoute().params as any;
-  console.log('yyyyyyyyy', item);
+  // console.log('yyyyyyyyy', item);
 
   const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
   const styles = useStyles(Fonts, theme, dark, dir);
@@ -221,8 +221,8 @@ const Index = (props: Props) => {
 
   const fullDate = item?.endDate;
   const [date, time] = fullDate?.split('T');
-  console.log('item', item);
-  console.log('fullDate', item);
+  // console.log('item', item);
+  // console.log('fullDate', item);
 
   return (
     <Container showHint={false}>
@@ -240,7 +240,7 @@ const Index = (props: Props) => {
             addFavouritePrintingPressesOffer(item.id);
           }
         }}
-        onShareClick={() => console.log()}
+        onShareClick={() => {/* console.log() */}}
       />
       <Content style={styles.formCon} noPadding>
         <View>

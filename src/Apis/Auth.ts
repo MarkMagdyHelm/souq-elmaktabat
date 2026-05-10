@@ -24,7 +24,7 @@ export const AssignDeviceIdToGuestHandler = (body: any, cb?: (data: any, status:
       }
       cb && cb(data, status);
     } catch (error) {
-      console.log('AssignDeviceIdToGuest error = ', error);
+      // console.log('AssignDeviceIdToGuest error = ', error);
       cb && cb(error, 500);
     }
   };
@@ -45,7 +45,7 @@ export const AssignGuestFCMTokenHandler = (body: any, params: any, cb?: (data: a
       }
       cb && cb(data, status);
     } catch (error) {
-      console.log('AssignGuestFCMToken error = ', error);
+      // console.log('AssignGuestFCMToken error = ', error);
       cb && cb(error, 500);
     }
   };

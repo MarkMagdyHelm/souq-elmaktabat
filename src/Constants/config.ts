@@ -33,7 +33,7 @@ globalAPI.interceptors.request.use(
     const language = await getItem(AsyncKeys.LANGUAGE);
     const { token } = (await getItem(AsyncKeys.USER_DATA)) || '';
   const userData = await getItem(AsyncKeys.USER_DATA);
-console.log("USER_DATA RAW:", userData);
+// console.log("USER_DATA RAW:", userData);
     config.headers['Accept-Language'] = language ?? 'ar';
     if (cancelToken?.hasOwnProperty("cancel")) {
       cancelToken.cancel('Canceling previous request');
@@ -61,8 +61,8 @@ console.log("USER_DATA RAW:", userData);
     }
     // console.log('==============data.id=========config=============');
     // console.log(config.data, `${config.baseURL}${config.url}`);
-    console.log('================config====================');
-    console.log(config);
+    // console.log('================config====================');
+    // console.log(config);
     // console.log('====================================');
     // console.log('=============config.params=======================');
     // console.log(config.params);
@@ -70,7 +70,7 @@ console.log("USER_DATA RAW:", userData);
     return config;
   },
   error => {
-    console.log('error ', error);
+    // console.log('error ', error);
 
     Promise.reject(error);
   },

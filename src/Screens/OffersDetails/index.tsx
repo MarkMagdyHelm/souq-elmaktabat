@@ -47,7 +47,7 @@ const Index = (props: Props) => {
   // Sync local state when route params change (e.g. after edit)
   useEffect(() => {
     if (routeItem) {
-      console.log("OffersDetails: item updated from route params");
+      // console.log("OffersDetails: item updated from route params");
       setItem(routeItem);
     }
   }, [routeItem]);
@@ -105,7 +105,7 @@ const Index = (props: Props) => {
           type: item.type,
         },
         (res, status) => {
-          console.log('rrrrrr', res.status);
+          // console.log('rrrrrr', res.status);
 
           if (res.status == 200) {
             setState(old => ({
@@ -135,16 +135,16 @@ const Index = (props: Props) => {
 
   const fullDate = item.endDate?.split("T")[0].split("-").reverse().join("/");
   // const [date, time] = fullDate?.split("T");
-  console.log('====================================');
-  console.log('fffffffff', item);
-  console.log('====================================');
+  // console.log('====================================');
+  // console.log('fffffffff', item);
+  // console.log('====================================');
   return (
     <Container showHint={false}>
       <HeaderWithText
         title={t('offer_details')}
         isShareVisible={true}
         onFavClick={() => {
-          console.log(item);
+          // console.log(item);
           addFavouritePaperOffer(item.id);
         }}
         onShareClick={() => console.log()}

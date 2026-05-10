@@ -88,9 +88,9 @@ const Index = (props: Props) => {
           signin(values);
         }} >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue, setFieldTouched }) => {
-          console.log('====================================');
-          console.log(errors);
-          console.log('====================================');
+          // console.log('====================================');
+          // console.log(errors);
+          // console.log('====================================');
           return (
             <>
               <Content style={styles.formCon} noPadding >

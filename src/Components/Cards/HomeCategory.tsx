@@ -18,7 +18,7 @@ const HomeCategory = (props: Props) => {
   const { item, onPress } = props;
   const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
   const styles = useStyles(Fonts, theme, dark, dir);
-console.log("jjjjjjjjjj",item);
+// console.log("jjjjjjjjjj",item);
 
   return (
     <Pressable

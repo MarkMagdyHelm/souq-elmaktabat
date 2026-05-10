@@ -44,7 +44,7 @@ export const saveItem = async (key: string, data: any) => {
     await AsyncStorage.setItem(key, JSON.stringify(data));
     return true;
   } catch (error: any) {
-    console.log('saveItem', error.message);
+    // console.log('saveItem', error.message);
   }
   return false;
 };
@@ -55,7 +55,7 @@ export const getItem = async (key: string) => {
     const item = JSON.parse(retrievedItem);
     return item;
   } catch (error: any) {
-    console.log('getItem', error.message);
+    // console.log('getItem', error.message);
   }
   return null;
 };
@@ -65,7 +65,7 @@ export const removeItem = async (key: string) => {
     await AsyncStorage.removeItem(key);
     return true;
   } catch (error: any) {
-    console.log('removeItem', error.message);
+    // console.log('removeItem', error.message);
   }
   return false;
 };

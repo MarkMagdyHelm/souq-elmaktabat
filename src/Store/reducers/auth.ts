@@ -16,6 +16,11 @@ export default (state = initialState, { type, payload }: IReduser) => {
     case ActionType.SET_GUSTER_ID:
       return { ...state, gusterID: payload };
     case ActionType.SAVE_USER_DATA:
+      // console.log('🔄 Auth Reducer: SAVE_USER_DATA action', {
+      //   previousUserdata: state.userdata,
+      //   newPayload: payload,
+      //   payloadKeys: payload ? Object.keys(payload) : [],
+      // });
       return { ...state, userdata: payload };
     case ActionType.USER_LOGIN:
       return { ...state, isLogin: payload };

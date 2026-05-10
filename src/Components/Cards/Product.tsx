@@ -25,7 +25,7 @@ const Product = (props: Props) => {
     } = props;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
-console.log("lllllllllo",item);
+// console.log("lllllllllo",item);
 const isFav =
   item?.isFavourite ??
   item?.inkOffer?.isFavourite ??

@@ -75,9 +75,9 @@ const Index = () => {
       GuestId:gusterID
      },(res,status)=>{
        if (res.status == 200) {
-        console.log('=========اااااااااااا===========================');
-        console.log(res.data[0]);
-        console.log('====================================');
+        // console.log('=========ااااااااااا===========================');
+        // console.log(res.data[0]);
+        // console.log('====================================');
         setPolls(res.data)
        }else{
         toastNotfication({ type: 'error', message: res?.Message ?? t("Something Went wrong") });
@@ -87,9 +87,9 @@ const Index = () => {
     };
     
     const voting = (OptionId:number,isVotedPoll:boolean,previousChoice?:number)=>{
-      console.log('====================================');
-      console.log(gusterID,OptionId);
-      console.log('====================================');
+      // console.log('====================================');
+      // console.log(gusterID,OptionId);
+      // console.log('====================================');
       if (isLogin) {
         if (!isVotedPoll) {
           dispatch<any>(VotePollByUserHandler({
@@ -109,9 +109,9 @@ const Index = () => {
             NewOptionId:OptionId,
             OldOptionId:previousChoice
            },(res,status)=>{
-            console.log('==============vvvvv======================');
-            console.log(res);
-            console.log('====================================');
+            // console.log('==============vvvvv======================');
+            // console.log(res);
+            // console.log('====================================');
             if (res.status == 200) {
             //  setPolls(res.data)
              }else{
@@ -143,9 +143,9 @@ const Index = () => {
             OldOptionId:previousChoice
            },(res,status)=>{
             if (res.status == 200) {
-              console.log('==============vvvvv======================');
-              console.log(res);
-              console.log('====================================');
+              // console.log('==============vvvvv======================');
+              // console.log(res);
+              // console.log('====================================');
             //  setPolls(res.data)
              }else{
               toastNotfication({ type: 'error', message: res?.message ?? t("Something Went wrong") });

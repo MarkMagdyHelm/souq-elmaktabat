@@ -65,7 +65,7 @@ const Index = (props: Props) => {
       : sectionId == 2
       ? ['price', 'inkTypeFilter', 'governorate']
       : sectionId == 3?['nonColor', 'color', 'governorate']:[];
-      console.log("ggggggg",filters);
+      // console.log("ggggggg",filters);
       
   const dispatch = useDispatch();
   const [state, setstate] = useState({
@@ -604,7 +604,7 @@ const Index = (props: Props) => {
         <SearchBar
           onPressSearch={handleSearch}
           onPress={() => {
-            console.log('jjjj');
+            // console.log('jjjj');
 
             setstate(old => ({ ...old, viewFilter: !state.viewFilter }));
           }}

@@ -14,7 +14,7 @@ export const GetSettingsHandler = (body: any, action, cb?: (data: any, status: a
     try {
       const { data, status } = await globalAPI.post('/api/Configuration/GetAllLookups', body);
 
-      console.log('GetSettingsHandler data = ', data.data, data.status);
+      // console.log('GetSettingsHandler data = ', data.data, data.status);
       if (action == "settings") {
         dispatch(SetAppSettings(data.data.Setting));
       }
@@ -63,7 +63,7 @@ export const GetSettingsHandler = (body: any, action, cb?: (data: any, status: a
 
       cb && cb(data.data.Settings, data.status);
     } catch (error) {
-      console.log('GetSettingsHandler error = ', error);
+      // console.log('GetSettingsHandler error = ', error);
       cb && cb(error, 500);
     }
   };
@@ -81,7 +81,7 @@ export const LookUpHandler = (body: any, params: any, cb?: (data: any, status: a
       }
       cb && cb(data, status);
     } catch (error) {
-      console.log('ContactUs error = ', error);
+      // console.log('ContactUs error = ', error);
       cb && cb(error, 500);
     }
   };
@@ -97,7 +97,7 @@ export const DeleteBranch = (branchId: any, cb?: (data: any, status: any) => voi
      
       cb && cb(data, status);
     } catch (error) {
-      console.log('ContactUs error = ', error);
+      // console.log('ContactUs error = ', error);
       cb && cb(error, 500);
     }
   };
@@ -120,7 +120,7 @@ export const ContactUsHandler = (body: any, params: any, cb?: (data: any, status
       }
       cb && cb(data, status);
     } catch (error) {
-      console.log('ContactUs error = ', error);
+      // console.log('ContactUs error = ', error);
       cb && cb(error, 500);
     }
   };
@@ -134,12 +134,12 @@ export const GetCitiesHandler = (cb?: (data: any, status: any) => void) => {
   return async (dispatch: Dispatch<IDispatch>) => {
     try {
       const { data, status } = await globalAPI.get('api/User/GetAllCountries');
-      console.log('GetCitiesHandler data = ', data, status);
+      // console.log('GetCitiesHandler data = ', data, status);
       // cb && cb(data,status);
 
       dispatch(SetCountries(data.data));
     } catch (error) {
-      console.log('GetCitiesHandler error = ', error);
+      // console.log('GetCitiesHandler error = ', error);
       cb && cb(error, 500);
     }
   };
@@ -158,12 +158,12 @@ export const GetAllRegionsByCountryIdHandler = (CountryId, cb?: (data: any, stat
 
         }
       });
-      console.log('GetAllRegionsByCountryIdHandler data = ', data, status);
+      // console.log('GetAllRegionsByCountryIdHandler data = ', data, status);
       cb && cb(data, status);
 
       // dispatch(SetCountries(data.data));
     } catch (error) {
-      console.log('GetAllRegionsByCountryIdHandler error = ', error);
+      // console.log('GetAllRegionsByCountryIdHandler error = ', error);
       cb && cb(error, 500);
     }
   };
@@ -180,12 +180,12 @@ export const AddBranch = (body:any, cb?: (data: any, status: any) => void) => {
   return async (dispatch: Dispatch<IDispatch>) => {
     try {
       const { data, status } = await globalAPI.post('api/Configuration/AddBranch',body);
-      console.log('AddBranch data = ', data, status);
+      // console.log('AddBranch data = ', data, status);
       cb && cb(data, status);
 
       // dispatch(SetCountries(data.data));
     } catch (error) {
-      console.log('AddBranch error = ', error);
+      // console.log('AddBranch error = ', error);
       cb && cb(error, 500);
     }
   };
@@ -195,12 +195,12 @@ export const GetAllPapersV2 = ( cb?: (data: any, status: any) => void) => {
   return async (dispatch: Dispatch<IDispatch>) => {
     try {
       const { data, status } = await globalAPI.get('api/DisplayPaper/GetAllPapers');
-      console.log('GetAllPapersV2 data = ', data, status);
+      // console.log('GetAllPapersV2 data = ', data, status);
       cb && cb(data, status);
 
       // dispatch(SetCountries(data.data));
     } catch (error) {
-      console.log('GetAllPapersV2 error = ', error);
+      // console.log('GetAllPapersV2 error = ', error);
       cb && cb(error, 500);
     }
   };
@@ -217,7 +217,7 @@ export const GetAllActivitiesHandler = (cb?: (data: any, status: any) => void) =
   return async (dispatch: Dispatch<IDispatch>) => {
     try {
       const { data, status } = await globalAPI.get('api/User/GetAllActivities');
-      console.log('GetAllActivitiesHandler data = ', data, status);
+      // console.log('GetAllActivitiesHandler data = ', data, status);
       // cb && cb(data,status);
       const activitesWithFlag = data.data.map(activity => ({
         ...activity,
@@ -225,7 +225,7 @@ export const GetAllActivitiesHandler = (cb?: (data: any, status: any) => void) =
       }));
       dispatch(SetActivites(activitesWithFlag));
     } catch (error) {
-      console.log('GetAllActivitiesHandler error = ', error);
+      // console.log('GetAllActivitiesHandler error = ', error);
       cb && cb(error, 500);
     }
   };
@@ -239,7 +239,7 @@ export const GetAllAvailableToolsHandler = (cb?: (data: any, status: any) => voi
   return async (dispatch: Dispatch<IDispatch>) => {
     try {
       const { data, status } = await globalAPI.get('api/User/GetAllAvailableTools');
-      console.log('GetAllAvailableToolsHandler data = ', data, status);
+      // console.log('GetAllAvailableToolsHandler data = ', data, status);
       // cb && cb(data,status);
       const toolsWithFlag = data.data.map(tool => ({
         ...tool,
@@ -247,7 +247,7 @@ export const GetAllAvailableToolsHandler = (cb?: (data: any, status: any) => voi
       }));
       dispatch(SetTools(toolsWithFlag));
     } catch (error) {
-      console.log('GetAllAvailableToolsHandler error = ', error);
+      // console.log('GetAllAvailableToolsHandler error = ', error);
       cb && cb(error, 500);
     }
   };
@@ -261,11 +261,11 @@ export const DeleteOffer = (body: any, cb?: (data: any, status: any) => void) =>
   return async (dispatch: Dispatch<IDispatch>) => {
     try {
       const { data, status } = await globalAPI.delete('api/Offer/DeleteOffer', body);
-      console.log('DeleteOffer data = ',body, data, status);
+      // console.log('DeleteOffer data = ',body, data, status);
       cb && cb(data,status);
     
     } catch (error) {
-      console.log('DeleteOffer error = ', error);
+      // console.log('DeleteOffer error = ', error);
       cb && cb(error, 500);
     }
   };
@@ -280,11 +280,11 @@ export const UserRate = (cb?: (data: any, status: any) => void) => {
   return async (dispatch: Dispatch<IDispatch>) => {
     try {
       const { data, status } = await globalAPI.get('api/Rating/UserRate');
-      console.log('UserRate data = ', data, status);
+      // console.log('UserRate data = ', data, status);
       cb && cb(data,status);
   
     } catch (error) {
-      console.log('UserRate error = ', error);
+      // console.log('UserRate error = ', error);
       cb && cb(error, 500);
     }
   };
@@ -297,11 +297,11 @@ export const GetFavouriteOffers = (cb?: (data: any, status: any) => void) => {
   return async (dispatch: Dispatch<IDispatch>) => {
     try {
       const { data, status } = await globalAPI.get('api/User/GetFavouriteOffers');
-      console.log('GetFavouriteOffers data = ', data, status);
+      // console.log('GetFavouriteOffers data = ', data, status);
       cb && cb(data,status);
   
     } catch (error) {
-      console.log('GetFavouriteOffers error = ', error);
+      // console.log('GetFavouriteOffers error = ', error);
       cb && cb(error, 500);
     }
   };
@@ -319,11 +319,11 @@ export const AddFavouriteUser = (toUserId: any, cb?: (data: any, status: any) =>
   return async (dispatch: Dispatch<IDispatch>) => {
     try {
       const { data, status } = await globalAPI.post('api/User/AddFavouriteUser?toUserId='+toUserId)
-      console.log('AddFavouriteUser data = ', data, status);
+      // console.log('AddFavouriteUser data = ', data, status);
        cb && cb(data,status);
     
     } catch (error) {
-      console.log('AddFavouriteUser error = ', error);
+      // console.log('AddFavouriteUser error = ', error);
       cb && cb(error, 500);
     }
   };
@@ -340,12 +340,12 @@ export const GetAllRolesHandler = (cb?: (data: any, status: any) => void) => {
   return async (dispatch: Dispatch<IDispatch>) => {
     try {
       const { data, status } = await globalAPI.get('api/User/GetAllRoles');
-      console.log('GetAllRolesHandler data = ', data, status);
+      // console.log('GetAllRolesHandler data = ', data, status);
       // cb && cb(data,status);
 
       dispatch(SetRoles(data.data));
     } catch (error) {
-      console.log('GetAllRolesHandler error = ', error);
+      // console.log('GetAllRolesHandler error = ', error);
       cb && cb(error, 500);
     }
   };

@@ -64,7 +64,7 @@ const Index = (props: Props) => {
   }, []);
   useFocusEffect(
     React.useCallback(() => {
-      console.log('📍 Market screen focused');
+      // console.log('📍 Market screen focused');
 
       handleRefresh();
       // return () => {
@@ -126,9 +126,9 @@ const Index = (props: Props) => {
     dispatch<any>(
       GetRequests({ page: page.toString(), pageSize: '10' }, (res, status) => {
         if (res.status === 200) {
-          console.log('===============requests=====================');
-          console.log(res.data.items);
-          console.log('====================================');
+          // console.log('===============requests=====================');
+          // console.log(res.data.items);
+          // console.log('====================================');
 
           const newItems = res.data.items;
           setstate(old => ({

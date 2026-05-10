@@ -61,7 +61,7 @@ export default function PushNotificationHandler() {
         //console.log("🔐 Android POST_NOTIFICATIONS:", granted);
       }
     } catch (err) {
-      console.warn("Permission error:", err);
+      // console.warn("Permission error:", err);
     }
   };
 
@@ -205,7 +205,7 @@ export default function PushNotificationHandler() {
       },
 
       onRegistrationError: function (err: any) {
-        console.error("❌ Registration error:", err?.message, err);
+        // console.error("❌ Registration error:", err?.message, err);
       },
 
       permissions: {

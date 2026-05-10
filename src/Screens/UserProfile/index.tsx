@@ -31,6 +31,17 @@ const Index = (props: Props) => {
     const dispatch = useDispatch();
     const { isLogin, userdata, isSeller } = useSelector((state: RootState) => state.auth);
 
+    // Debug: Warn if navigated here without valid userdata
+    useEffect(() => {
+        if (!userdata || !userdata.id) {
+            // console.error('⚠️ UserProfile: Navigated without valid userdata!', {
+            //     hasUserdata: !!userdata,
+            //     isLogin,
+            //     isSeller,
+            // });
+        }
+    }, []);
+
     const [state, setstate] = useState({
         loading: false,
         sellerData: null,
@@ -44,22 +55,38 @@ const Index = (props: Props) => {
     // Refetch user data when screen is focused (e.g. after editing profile)
     useFocusEffect(
         useCallback(() => {
-            console.log("UserProfile focused - refetching data");
+            // console.log("UserProfile focused - refetching data");
             getSellerData();
         }, [userdata.id])
     );
 
 
     const getSellerData = () => {
+        // console.log('📊 UserProfile: Fetching user data for userId:', userdata?.id);
+        // console.log('🔍 Current userdata state:', {
+        //     hasUserdata: !!userdata,
+        //     userId: userdata?.id,
+        //     userName: userdata?.name,
+        //     userEmail: userdata?.email,
+        //     hasToken: !!userdata?.token,
+        //     hasImageUrl: !!userdata?.imageUrl,
+        //     allKeys: userdata ? Object.keys(userdata) : [],
+        // });
+        
         setstate(old => ({ ...old, loading: true }))
         dispatch<any>(GetSellerData(userdata.id, (res, status) => {
             if (res.status === 200) {
-                setstate(old => ({ ...old, sellerData: res.data }))
-                console.log("------sellerData--------");
-                console.log(res.data);
-                console.log("--------------");
-
+                // console.log('✅ UserProfile: Data loaded successfully');
+                // console.log('📦 User data fields:', {
+                //     name: res.data?.name,
+                //     rate: res.data?.rate,
+                //     rateCount: res.data?.rateCount,
+                //     hasInfo: !!res.data?.info,
+                // });
                 setstate(old => ({ ...old, sellerData: res.data, loading: false }))
+            } else {
+                // console.error('❌ UserProfile: Failed to load data', res);
+                setstate(old => ({ ...old, loading: false }));
             }
         }))
     };

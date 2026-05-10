@@ -280,9 +280,9 @@ const getAllPrinting = () => {
     dispatch<any>(
       GetFavouriteUsers((res, status) => {
         if (res.status === 200) {
-          console.log('===============itemsitemsitems=====================');
-          console.log(res.data);
-          console.log('====================================');
+          // console.log('===============itemsitemsitems=====================');
+          // console.log(res.data);
+          // console.log('====================================');
 
           const usersWithFavourite = res.data.map((user: any) => ({
             ...user,

@@ -14,7 +14,7 @@ import { FormikProps } from 'formik';
 import HeaderWithText from '../../../Components/Headers/HeaderWithText';
 import Section from './Componnent/Section';
 import { CheckBoxEmptyIconBig, CheckBoxIconBig } from '../../../Assets/Svg';
-import { GetAllRegionsByCountryIdHandler } from '../../../Apis/Appinfo';
+import { GetAllRegionsByCountryIdHandler, GetSettingsHandler } from '../../../Apis/Appinfo';
 import { useRoute } from '@react-navigation/native';
 import FormStep1 from './Componnent/FormStep1';
 import FormStep2 from './Componnent/FormStep2';
@@ -34,9 +34,8 @@ const Index = (props: Props) => {
     const { navigation } = props;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const { countries, activites, roles, tools, payments } = useSelector((state: RootState) => state.settings);
-    console.log('=======countries=============================');
-    console.log(countries);
-    console.log('====================================');
+    
+    
     const styles = useStyles(Fonts, theme, dark, dir);
     const { email } = useRoute().params as any;
     const [state, setstate] = useState({
@@ -49,6 +48,7 @@ const Index = (props: Props) => {
         selectedMarket: [],
         goverements: [],
         loading: false,
+        loadingSettings: true, // Track settings loading state
         selectedRole: { name: "", arName: "", id: null } as any,
         roles: roles,
         showRols: false,
@@ -82,8 +82,34 @@ const Index = (props: Props) => {
     }
     useEffect(() => {
         setActiveStep(1);
-
+        loadSettings();
     }, []);
+
+    const loadSettings = () => {
+        // console.log('🔄 RegisterInformation: Loading settings data...');
+        setstate(old => ({ ...old, loadingSettings: true }));
+        
+        // Load all required lookups including Countries (lookupId 2 in "countries" action)
+        dispatch<any>(GetSettingsHandler(
+            { lookupIds: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] },
+            "countries",
+            (res, status) => {
+                // console.log('✅ RegisterInformation: Settings loaded', {
+                //     hasCountries: Array.isArray(res?.Countries),
+                //     countriesCount: res?.Countries?.length || 0,
+                // });
+                setstate(old => ({ ...old, loadingSettings: false }));
+                
+                if (!res?.Countries || res.Countries.length === 0) {
+                    // console.error('❌ RegisterInformation: Countries data is empty!');
+                    showToast({ 
+                        type: 'error', 
+                        message: t("Failed to load required data. Please try again.") 
+                    });
+                }
+            }
+        ));
+    };
 
     const handleagreeonterms = () => {
         setstate(old => {
@@ -156,9 +182,9 @@ const Index = (props: Props) => {
             body.CompanyName = formikRef3?.current?.values?.CompanyName
         }
         delete body.ConfirmPassword;
-        console.log('================ssss====================');
-        console.log(body);
-        console.log('==============ssssss======================');
+        // console.log('================ssss====================');
+        // console.log(body);
+        // console.log('==============ssssss======================');
      
 const appendFormData = (data, parentKey = "") => {
     // File
@@ -207,9 +233,9 @@ const appendFormData = (data, parentKey = "") => {
 
 
         appendFormData(body);
-        console.log('====================================');
-        console.log(bodyFormData);
-        console.log('====================================');
+        // console.log('====================================');
+        // console.log(bodyFormData);
+        // console.log('====================================');
         return bodyFormData;
     }
     const handleSubmmit = () => {
@@ -229,9 +255,9 @@ const appendFormData = (data, parentKey = "") => {
             body = handleBody()
         }
 
-        console.log('===============final========body=============');
-        console.log(body);
-        console.log('====================================');
+        // console.log('===============final========body=============');
+        // console.log(body);
+        // console.log('====================================');
         setstate(old => ({ ...old, loading: true }));
         dispatch<any>(SignUpHandler(body, (res, status) => {
             if (res.status == 200) {
@@ -247,9 +273,9 @@ const appendFormData = (data, parentKey = "") => {
                     });
                 }, 2000);
 
-                console.log('===========xxxx====hgjhgjggj=====================');
-                console.log(res);
-                console.log('====================================');
+                // console.log('===========xxxx====hgjhgjggj=====================');
+                // console.log(res);
+                // console.log('====================================');
             } else {
                 showToast({ type: 'error', message: res?.message ?? t("Some Fields has incorrect Values!") });
                 // handleBackendErrors(res?.message)
@@ -301,7 +327,13 @@ const appendFormData = (data, parentKey = "") => {
                             setActiveStep={setActiveStep}
                             onSubmmit={() => { }}
                         >
-                           {countries?.length > 0 && 
+                           {state.loadingSettings ? (
+                               <View style={{ padding: PixelPerfect(20), alignItems: 'center' }}>
+                                   <Text style={{ fontFamily: Fonts.medium, color: theme.deactive }}>
+                                       {t("Loading...")}
+                                   </Text>
+                               </View>
+                           ) : countries?.length > 0 ? (
                             <FormStep2
                                 formikRef={formikRef2}
                                 state={state}
@@ -310,7 +342,19 @@ const appendFormData = (data, parentKey = "") => {
                                 countries={countries}
                                 activites={activites}
                                 styles={styles}
-                            />}
+                            />
+                           ) : (
+                               <View style={{ padding: PixelPerfect(20), alignItems: 'center' }}>
+                                   <Text style={{ fontFamily: Fonts.medium, color: theme.red_yellow }}>
+                                       {t("Failed to load data")}
+                                   </Text>
+                                   <Pressable onPress={loadSettings} style={{ marginTop: PixelPerfect(10) }}>
+                                       <Text style={{ fontFamily: Fonts.bold, color: Colors.secondColor }}>
+                                           {t("Retry")}
+                                       </Text>
+                                   </Pressable>
+                               </View>
+                           )}
                         </Section>
                         <View style={{ paddingVertical: PixelPerfect(8) }} />
                     </>
@@ -324,6 +368,13 @@ const appendFormData = (data, parentKey = "") => {
                             setActiveStep={setActiveStep}
                             onSubmmit={() => { }}
                         >
+                            {state.loadingSettings ? (
+                                <View style={{ padding: PixelPerfect(20), alignItems: 'center' }}>
+                                    <Text style={{ fontFamily: Fonts.medium, color: theme.deactive }}>
+                                        {t("Loading...")}
+                                    </Text>
+                                </View>
+                            ) : (
                             <FormStep3
                                 formikRef={formikRef3}
                                 state={state}
@@ -336,6 +387,7 @@ const appendFormData = (data, parentKey = "") => {
                                 payments={payments}
                                 setActiveStep={setActiveStep}
                             />
+                            )}
                         </Section>
                     </>
                 }
@@ -351,6 +403,13 @@ const appendFormData = (data, parentKey = "") => {
                             setActiveStep={setActiveStep}
                             onSubmmit={() => { }}
                         >
+                            {state.loadingSettings ? (
+                                <View style={{ padding: PixelPerfect(20), alignItems: 'center' }}>
+                                    <Text style={{ fontFamily: Fonts.medium, color: theme.deactive }}>
+                                        {t("Loading...")}
+                                    </Text>
+                                </View>
+                            ) : (
                             <FormStep4
                                 formikRef={formikRef4}
                                 state={state}
@@ -361,6 +420,7 @@ const appendFormData = (data, parentKey = "") => {
                                 addresses={state.addresses}
                                 setActiveStep={setActiveStep}
                             />
+                            )}
                         </Section>
                     </>
                 }

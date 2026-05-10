@@ -31,6 +31,17 @@ const Index = (props: Props) => {
     const dispatch = useDispatch();
      const { isLogin, userdata, isSeller } = useSelector((state: RootState) => state.auth);
 
+    // Debug: Warn if navigated here without valid userdata
+    useEffect(() => {
+        if (!userdata || !userdata.id) {
+            // console.error('⚠️ SellerProfile: Navigated without valid userdata!', {
+            //     hasUserdata: !!userdata,
+            //     isLogin,
+            //     isSeller,
+            // });
+        }
+    }, []);
+
     const [state, setstate] = useState({
         loading: false,
         sellerData: null,
@@ -44,22 +55,43 @@ const Index = (props: Props) => {
     // Refetch seller data when screen is focused (e.g. after editing profile)
     useFocusEffect(
         useCallback(() => {
-            console.log("SellerProfile focused - refetching data");
+            // console.log("SellerProfile focused - refetching data");
             getSellerData();
         }, [userdata.id])
     );
 
         const getSellerData = () => {
+            // console.log('📊 SellerProfile: Fetching seller data for userId:', userdata?.id);
+            // console.log('🔍 Current userdata state:', {
+            //     hasUserdata: !!userdata,
+            //     userId: userdata?.id,
+            //     userName: userdata?.name,
+            //     userEmail: userdata?.email,
+            //     hasToken: !!userdata?.token,
+            //     hasImageUrl: !!userdata?.imageUrl,
+            //     allKeys: userdata ? Object.keys(userdata) : [],
+            // });
+            
             setstate(old => ({ ...old, loading: true }))
             dispatch<any>(GetSellerData(userdata.id, (res, status) => {
-                  if (res.status === 200) {             
+                  if (res.status === 200) {
+                        // console.log('✅ SellerProfile: Data loaded successfully');
+                        // console.log('📦 Seller data fields:', {
+                        //     name: res.data?.name,
+                        //     rate: res.data?.rate,
+                        //     rateCount: res.data?.rateCount,
+                        //     hasInfo: !!res.data?.info,
+                        // });
                         setstate(old => ({ ...old, sellerData: res.data, loading: false }))
+                  } else {
+                        // console.error('❌ SellerProfile: Failed to load data', res);
+                        setstate(old => ({ ...old, loading: false }));
                   }
             }))
       };
-console.log('====================================');
-console.log(userdata);
-console.log('====================================');
+// console.log('====================================');
+// console.log(userdata);
+// console.log('====================================');
     return (
         <Container showHint={false}>
             <HeaderWithText title={t("")} isShareVisible={true} isFavVisible={false}  onShareClick={()=>{

@@ -87,17 +87,17 @@ const Poll: React.FC<PollProps> = ({ pollData, onVote }) => {
   };
 
   const animateProgressBars = useCallback((options: Option[], totalVotes: number) => { 
-    console.log('Animating progress bars'); // Debugging 
+    // console.log('Animating progress bars'); // Debugging 
     options.forEach((option, index) => { 
       const votePercentage = totalVotes > 0 ? option.totalVotes / totalVotes : 0; 
-      console.log(`Animating option ${option.id} with votePercentage: ${votePercentage}`); // Debugging
+      // console.log(`Animating option ${option.id} with votePercentage: ${votePercentage}`); // Debugging
 
       Animated.timing(progressAnimations.current[index], { 
         toValue: votePercentage, 
         duration: 1000, 
         useNativeDriver: false, 
       }).start(() => { 
-        console.log(`Animation completed for option ${option.id}`); 
+        // console.log(`Animation completed for option ${option.id}`); 
       }); 
     }); 
   }, []);

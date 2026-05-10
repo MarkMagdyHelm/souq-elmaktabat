@@ -99,7 +99,7 @@ const Filter = (props: Props) => {
                             <TouchableOpacity
                                 style={[styles.button, styles.searchButton]}
                                 onPress={() => {
-                                    console.log("المحافظات المختارة:", selected);
+                                    // console.log("المحافظات المختارة:", selected);
                                     setModalVisible(false);
                                 }}
                             >

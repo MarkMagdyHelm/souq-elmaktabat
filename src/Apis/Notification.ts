@@ -13,7 +13,7 @@ export const GetAllNotificationsHandler = (params: any, cb?: (data: any, status:
       const { data, status } = await globalAPI.get('api/DisplayPaper/GetAllNotifications', { params: params });
       cb && cb(data, status);
     } catch (error) {
-      console.log('GetAllNotifications error = ', error);
+      // console.log('GetAllNotifications error = ', error);
       cb && cb(error, 500);
     }
   };

@@ -190,7 +190,7 @@ const Index = (props: Props) => {
         paperTypeList: state.paperTypeList,
     };
 const formattedPaperTypes = uiState.paperTypeList.map(function (item) {
-    console.log("lll",item.name);
+    // console.log("lll",item.name);
     
     return ({
         ...item,
@@ -257,7 +257,7 @@ const formattedPaperTypes = uiState.paperTypeList.map(function (item) {
             updated.imageUrl = values.ImageUrl.uri;
         }
 
-        console.log("EditOffer: built updated item", updated);
+        // console.log("EditOffer: built updated item", updated);
         return updated;
     };
 
@@ -365,15 +365,15 @@ const formattedPaperTypes = uiState.paperTypeList.map(function (item) {
             body = buildPrinterOfferBody(formValues);
         }
 
-        console.log('==========Update Offer Body==========================');
-        console.log("body", body);
-        console.log('====================================');
+        // console.log('==========Update Offer Body==========================');
+        // console.log("body", body);
+        // console.log('====================================');
 
         const bodyFormData = prepareFormData(body);
         
-        console.log('====================================');
-        console.log(bodyFormData);
-        console.log('====================================');
+        // console.log('====================================');
+        // console.log(bodyFormData);
+        // console.log('====================================');
         
         return bodyFormData;
     };
@@ -542,7 +542,7 @@ const submitPaperOffer = (values: any) => {
                 navigateBackWithUpdatedItem();
                 showToast({ type: 'ok', message: res?.message ?? t("Successfully Added Offer") });
             } else {
-                console.log("res",res.message);
+                // console.log("res",res.message);
                 
                 showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
             }
@@ -552,9 +552,9 @@ const submitPaperOffer = (values: any) => {
 
     // Main submit handler - routes to appropriate offer type handler
     const handleSubmit = (values: any) => {
-        console.log('====================================');
-        console.log("Submitting values:", values);
-        console.log('====================================');
+        // console.log('====================================');
+        // console.log("Submitting values:", values);
+        // console.log('====================================');
 
         setstate(old => ({ ...old, loading: true }));
 
@@ -638,16 +638,16 @@ const submitPaperOffer = (values: any) => {
                 );
             }
         } catch (e) {
-            console.log(e);
+            // console.log(e);
         }
     };
 
 
 
-console.log('====================================');
-console.log("offerData:", offerData);
-console.log("state:", state);
-console.log('====================================');
+// console.log('====================================');
+// console.log("offerData:", offerData);
+// console.log("state:", state);
+// console.log('====================================');
 
     // ========================================
     // RENDER FUNCTIONS - ORGANIZED BY TYPE
@@ -655,8 +655,8 @@ console.log('====================================');
 
     // ===== TYPE 1: PAPER OFFER FORM =====
     const renderPaperForm = function (handleChange, handleBlur, errors, touched, values) {
-     console.log("touched",touched);
-     console.log("errors",errors);
+     // console.log("touched",touched);
+     // console.log("errors",errors);
      
      
         return (

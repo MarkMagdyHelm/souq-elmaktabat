@@ -84,9 +84,9 @@ const Index = (props: Props) => {
             ? tools.find((t: any) => t.name === infoTool.name || t.arName === infoTool.arName)
             : null;
 
-        console.log('Pre-fill matching — infoPayment:', infoPayment, '→ matchedPayment:', matchedPayment);
-        console.log('Pre-fill matching — infoActivity:', infoActivity, '→ matchedActivity:', matchedActivity);
-        console.log('Pre-fill matching — infoTool:', infoTool, '→ matchedTool:', matchedTool);
+        // console.log('Pre-fill matching — infoPayment:', infoPayment, '→ matchedPayment:', matchedPayment);
+        // console.log('Pre-fill matching — infoActivity:', infoActivity, '→ matchedActivity:', matchedActivity);
+        // console.log('Pre-fill matching — infoTool:', infoTool, '→ matchedTool:', matchedTool);
 
         setstate(old => ({
             ...old, payments: payments,
@@ -107,11 +107,11 @@ const Index = (props: Props) => {
                 file = await openAPPPicker();
             }
 
-            console.log(file?.uri);
+            // console.log(file?.uri);
             
             if (file?.uri) {
                 setUri(file.uri);
-                console.log('Updated uri = ', file.uri);
+                // console.log('Updated uri = ', file.uri);
                 formikRef.current?.setFieldValue("ImageUrl", {
                     uri: file.uri,
                     type: file.type,
@@ -126,24 +126,24 @@ const Index = (props: Props) => {
                 );
             }
         } catch (e) {
-            console.log(e);
+            // console.log(e);
         }
     };
 
 
     const updateUserProfile = async (values: any) => {
 
-        console.log("---------------------values-------------------");
-        console.log(state.selectePayment.id);
-        console.log([state.selecteServies.id]);
-        console.log([state.selectePayment.id]);
-        console.log(values.Description);
-        console.log(values.PhoneNumber);
-        console.log(values.CompanyName);
-        console.log(values.Phone);
-        console.log(values.Username);
+        // console.log("---------------------values-------------------");
+        // console.log(state.selectePayment.id);
+        // console.log([state.selecteServies.id]);
+        // console.log([state.selectePayment.id]);
+        // console.log(values.Description);
+        // console.log(values.PhoneNumber);
+        // console.log(values.CompanyName);
+        // console.log(values.Phone);
+        // console.log(values.Username);
 
-        console.log("---------------------values-------------------");
+        // console.log("---------------------values-------------------");
         setstate(old => ({
             ...old, loading: true
         }));
@@ -164,9 +164,9 @@ const Index = (props: Props) => {
             }
 
             // Debug logs
-            console.log('PaymentMethodIds:', state.selectePayment?.id);
-            console.log('ActivityIds:', state.selectedActivities?.id);
-            console.log('AvailableToolsIds:', state.selecteServies?.id);
+            // console.log('PaymentMethodIds:', state.selectePayment?.id);
+            // console.log('ActivityIds:', state.selectedActivities?.id);
+            // console.log('AvailableToolsIds:', state.selecteServies?.id);
             bodyFormData.append('Description', values.Description);
             bodyFormData.append('AnotherPhoneNumber', values.PhoneNumber);
             if (values.ImageUrl?.uri) {
@@ -194,8 +194,8 @@ const Index = (props: Props) => {
 
             }
             ).then((res: any) => {
-                console.log(res.data);
-                console.log(res.status);
+                // console.log(res.data);
+                // console.log(res.status);
                 setstate(old => ({
                     ...old, loading: false
                 }));
@@ -221,7 +221,7 @@ const Index = (props: Props) => {
                 }
             })
                 .catch((err: any) => {
-                    console.log(err);
+                    // console.log(err);
                     setstate(old => ({
                         ...old, loading: false
                     }));
@@ -248,9 +248,9 @@ const Index = (props: Props) => {
         dispatch<any>(GetAllAvailableTools((res, status) => {
             if (res.status == 200) {
                 setstate(old => ({ ...old, loading: false, servies: res.data }))
-                console.log("---------------------GetAllAvailableToolsHandler-------------------");
-                console.log(res.data);
-                console.log("---------------------GetAllAvailableToolsHandler-------------------");
+                // console.log("---------------------GetAllAvailableToolsHandler-------------------");
+                // console.log(res.data);
+                // console.log("---------------------GetAllAvailableToolsHandler-------------------");
             } else {
                 showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
             }

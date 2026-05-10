@@ -40,12 +40,12 @@ const Index = (props: Props) => {
     ref.current.capture().then((uri: any) => {
       Share.open({ url: uri })
         .then((res) => {
-          console.log(res);
+          // console.log(res);
         })
         .catch((err) => {
-          err && console.log(err);
+          err && // console.log(err);
         });
-      console.log("do something with ", uri);
+      // console.log("do something with ", uri);
     });
   }
   const dispatch = useDispatch();
@@ -151,7 +151,7 @@ const Index = (props: Props) => {
               numColumns={2}
               keyExtractor={(items, index: number) => index.toString()}
               renderItem={({ item, index }) => {
-                console.log("kkkff",item);
+                // console.log("kkkff",item);
                 
                 return (
                   <>

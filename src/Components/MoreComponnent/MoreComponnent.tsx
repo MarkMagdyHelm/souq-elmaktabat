@@ -215,7 +215,7 @@ const dispatch = useDispatch();
 const userImage = imagePath
   ? { uri: imageUrl + imagePath }
   : null;
-  console.log(userImage?.uri, 'userdatauserdata', isSeller);
+  // console.log(userImage?.uri, 'userdatauserdata', isSeller);
   
   const [visibleCancel, setVisibleCancel] = useState(false);
   const [visibleDelete, setVisibleDelete] = useState(false);

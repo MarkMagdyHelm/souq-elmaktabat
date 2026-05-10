@@ -16,7 +16,7 @@ export const GetPollsHandler = (params: any, cb?: (data: any, status: any) => vo
       });
       cb && cb(data, status);
     } catch (error) {
-      console.log('GetPollsHandler error = ', error);
+      // console.log('GetPollsHandler error = ', error);
       cb && cb(error, 500);
     }
   };
@@ -34,7 +34,7 @@ export const VotePollByGueseHandler = (params: any, cb?: (data: any, status: any
       });
       cb && cb(data, status);
     } catch (error) {
-      console.log('VotePollByGueseHandler error = ', error);
+      // console.log('VotePollByGueseHandler error = ', error);
       cb && cb(error, 500);
     }
   };
@@ -51,7 +51,7 @@ export const UpdateVotePollByGueseHandler = (params: any, cb?: (data: any, statu
       });
       cb && cb(data, status);
     } catch (error) {
-      console.log('UpdateVotePollByGueseHandler error = ', error);
+      // console.log('UpdateVotePollByGueseHandler error = ', error);
       cb && cb(error, 500);
     }
   };
@@ -69,7 +69,7 @@ export const VotePollByUserHandler = (params: any, cb?: (data: any, status: any)
       });
       cb && cb(data, status);
     } catch (error) {
-      console.log('VotePollByUserHandler error = ', error);
+      // console.log('VotePollByUserHandler error = ', error);
       cb && cb(error, 500);
     }
   };
@@ -87,7 +87,7 @@ export const UpdateVotePollByUserHandler = (params: any, cb?: (data: any, status
       });
       cb && cb(data, status);
     } catch (error) {
-      console.log('UpdateVotePollByUserHandler error = ', error);
+      // console.log('UpdateVotePollByUserHandler error = ', error);
       cb && cb(error, 500);
     }
   };

@@ -148,9 +148,9 @@ const translateStatusById = (id: number) => {
                 { requestId, statusId, rejectReasonId, rejectReason, type: 1 },
                 (res, status) => {
                     if (res.status === 200) {
-                      console.log('====================================');
-                      console.log("UpdateRequest",res,status);
-                      console.log('====================================');
+                      // console.log('====================================');
+                      // console.log("UpdateRequest",res,status);
+                      // console.log('====================================');
                         setItem((old: any) => ({
                             ...old,
                             status:translateStatusById(statusId), 
@@ -223,9 +223,9 @@ console.log('====================================');
 
             {visibleCancelResones && <MultiChekers
                 onCloseFn={(val) => {
-                    console.log('=======val=============================');
-                    console.log("val", val,val[0]?.id??null,val[0]?.id?null:val[0]?.name);
-                    console.log('====================================');
+                    // console.log('=======val=============================');
+                    // console.log("val", val,val[0]?.id??null,val[0]?.id?null:val[0]?.name);
+                    // console.log('====================================');
                     setVisibleCancelResones(false)
                    updateRequest(item.requestId, 3, val[0]?.id??null,val[0]?.name); }}
                 title={t("selectCancelReasons")}
@@ -347,9 +347,9 @@ console.log('====================================');
                         {(state.requestStatus === 1 && source === "orders") && (<View style={[layout.dirRow, styles.actions]}>
 
                             <TouchableOpacity style={[layout.rowBox, styles.cancelBtn]} onPress={() => {
-                                   console.log('====================================');
-                                console.log("adsjjhsdjkjfhsjdsdkjfhsdh");
-                                console.log('====================================');
+                                   // console.log('====================================');
+                                // console.log("adsjjhsdjkjfhsjdsdkjfhsdh");
+                                // console.log('====================================');
                                 setVisibleCancelResones(true)}} >
                                 <View style={[styles.icon]}>
                                     <CancelIcon />

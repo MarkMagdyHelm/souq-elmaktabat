@@ -98,9 +98,9 @@ const Index = (props: Props) => {
         },
         (res, status) => {
           if (res.status === 200) {
-            console.log('===============itemsitemsitems=====================');
-            console.log(res.data.items);
-            console.log('====================================');
+            // console.log('===============itemsitemsitems=====================');
+            // console.log(res.data.items);
+            // console.log('====================================');
 
             const newItems = res.data.items;
             setstate(old => ({
@@ -128,8 +128,8 @@ const Index = (props: Props) => {
 
     dispatch<any>(
       AddFavouritePaperOffer(item.id, (res, status) => {
-             console.log("rrrrrrr",item);
-            console.log("rrrrrrr",res);
+             // console.log("rrrrrrr",item);
+            // console.log("rrrrrrr",res);
         if (res.status === 200) {
           setTimeout(() => {
             item.isFavourite = !item.isFavourite;
@@ -168,10 +168,10 @@ const Index = (props: Props) => {
     dispatch<any>(
       UserProfile((res, status) => {
         if (res.status === 200) {
-          console.log('------userProfile--------');
+          // console.log('------userProfile--------');
 
-          console.log(res.data[0]);
-          console.log('--------------');
+          // console.log(res.data[0]);
+          // console.log('--------------');
 
           setstate(old => ({ ...old, userProfile: res.data[0] }));
         } else {
@@ -216,9 +216,9 @@ const Index = (props: Props) => {
             sellerData: res.data,
             allOffers: allOffers,
           }));
-          console.log('------sellerData--------');
-          console.log('-sellerData-', res.data);
-          console.log('--------------');
+          // console.log('------sellerData--------');
+          // console.log('-sellerData-', res.data);
+          // console.log('--------------');
 
           setstate(old => ({ ...old, sellerData: res.data, loading: false }));
         }
@@ -306,12 +306,12 @@ const Index = (props: Props) => {
   };
   const addFav = (id: any) => {
     setstate(old => ({ ...old, loading: true }));
-        console.log('rrrrrrr', id);
+        // console.log('rrrrrrr', id);
 
     dispatch<any>(
       AddFavouriteUser(id, (res, status) => {
-      //   console.log('rrrrrrr', id);
-        console.log('rrrrrrr', res);
+      //   // console.log('rrrrrrr', id);
+        // console.log('rrrrrrr', res);
         if (res.status === 200) {
           seller.isFavourite = !seller.isFavourite;
           setstate(old => ({ ...old, loading: false }));
@@ -349,7 +349,7 @@ const Index = (props: Props) => {
           isFavVisible={true}
           isFaverouit={seller.isFavourite}
           onFavClick={() => {
-            console.log('ssssss', seller);
+            // console.log('ssssss', seller);
 
             addFav(seller.userId);
           }}

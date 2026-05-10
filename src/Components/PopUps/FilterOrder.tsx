@@ -27,9 +27,9 @@ const FilterOrder = (props: Props) => {
         items:items,
         selectFilter:currentFilter
     })
-    console.log('=============currentFilter=======================');
-    console.log(currentFilter);
-    console.log('====================================');
+    // console.log('=============currentFilter=======================');
+    // console.log(currentFilter);
+    // console.log('====================================');
     useEffect(() => {
     // handelCurrentFiltter()
     }, [])
