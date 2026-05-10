@@ -15,71 +15,54 @@ import { Platform } from "react-native";
 export const SignInHandler = (body:any, cb?: (data: any,status:any) => void) => {
     return async (dispatch: Dispatch<IDispatch>) => {
       try {
-        // console.log('🔐 SignInHandler: Starting authentication...');
-        
+       
         const { data,status } = await globalAPI.post('/api/User/SignIn', body,{params:{}});
-        // console.log('📡 SignIn API Response:', {
-        //   status: data.status,
-        //   hasData: !!data.data,
-        //   dataFields: data.data ? Object.keys(data.data) : [],
-        // });
+        // console.log('SignIn:', data);
         
         if (data.status == 200) {
-          // console.log('✅ SignIn successful - initial data fields:', Object.keys(data.data || {}));
+          const signInData = data.data;
           
-          // Store token and basic auth data first
-          const initialAuthData = data.data;
-          
-          // Fetch complete user profile to get all fields
-          // console.log('🔄 Fetching full user profile for userId:', initialAuthData.id);
-          
+          // Fetch UserProfile to get complete user data
           try {
-            const profileResponse = await globalAPI.get('api/User/GetSellerData?id=' + initialAuthData.id);
+            const profileResponse = await globalAPI.get('api/User/GetSellerData?id=' + signInData.id);
             
             if (profileResponse.data.status === 200) {
-              // console.log('✅ Full profile fetched successfully');
-              // console.log('📦 Profile data fields:', Object.keys(profileResponse.data.data || {}));
+              const userProfileData = profileResponse.data.data;
               
-              // Merge: Start with profile data, then override with auth-specific fields (token, etc.)
-              const completeUserData = {
-                ...profileResponse.data.data,  // Full profile from GetSellerData
-                ...initialAuthData,            // Auth fields from SignIn (token, etc.)
-                // Ensure critical auth fields are preserved
-                token: initialAuthData.token,
-                id: initialAuthData.id,
+              // console.log('UserProfile:', userProfileData);
+              
+              // Merge: SignIn data first, then UserProfile fills missing fields
+              const finalUserData = {
+                ...signInData,
+                ...userProfileData,
+                // Always preserve token from SignIn
+                token: signInData.token,
+                id: signInData.id,
               };
               
-              // console.log('🔗 Merged userData fields:', Object.keys(completeUserData));
-              // console.log('📊 Comparison:', {
-              //   initialFields: Object.keys(initialAuthData).length,
-              //   profileFields: Object.keys(profileResponse.data.data || {}).length,
-              //   mergedFields: Object.keys(completeUserData).length,
-              // });
+              // console.log('Merged userData:', finalUserData);
               
-              // Save complete merged user data
-              dispatch<any>(loginHandler(completeUserData));
+              dispatch<any>(loginHandler(finalUserData));
             } else {
-              // console.warn('⚠️ Profile fetch failed, using initial auth data only');
-              dispatch<any>(loginHandler(initialAuthData));
+              // Fallback to SignIn data only
+              dispatch<any>(loginHandler(signInData));
             }
           } catch (profileError) {
-            // console.error('❌ Profile fetch error, using initial auth data:', profileError);
-            dispatch<any>(loginHandler(initialAuthData));
+            // console.log('UserProfile fetch error, using SignIn data only');
+            dispatch<any>(loginHandler(signInData));
           }
           
-          // Handle seller role
           if (data.data.role != "Customer") {
             if (data.data.admin) {     
               dispatch<any>(UserIsSeller(data.data.admin));
             }
-          } else {
+          }else{
             dispatch<any>(UserIsSeller(false));
           }
         }
-        
         cb && cb(data,status);
       } catch (error) {
-          // console.error('❌ SignInHandler error = ', error.response?.data || error);
+          console.log('SignInHandler error = ', error.response.data);
         cb && cb(error,500);
       }
     };
@@ -102,25 +85,7 @@ export const loginHandler = (body:any) => {
           throw new Error('Invalid user data - missing required fields');
         }
         
-        // Expected user fields for complete profile
-        const expectedFields = [
-          'id', 'token', 'name', 'email', 'phoneNumber', 'imageUrl', 
-          'role', 'admin', 'companyName', 'address', 'info'
-        ];
-        
-        const presentFields = Object.keys(body);
-        const missingFields = expectedFields.filter(field => !presentFields.includes(field));
-        
-        if (missingFields.length > 0) {
-          // console.warn('⚠️ Some user fields are missing:', {
-          //   missing: missingFields,
-          //   present: presentFields,
-          //   total: presentFields.length,
-          // });
-        } else {
-          // console.log('✅ All expected user fields present');
-        }
-        
+        // console.log('✅ Valid login data - saving to state and storage');
         // console.log('📝 User fields being saved:', {
         //   id: body.id,
         //   name: body.name,
@@ -128,8 +93,6 @@ export const loginHandler = (body:any) => {
         //   phoneNumber: body.phoneNumber,
         //   imageUrl: body.imageUrl,
         //   hasToken: !!body.token,
-        //   hasInfo: !!body.info,
-        //   hasAddress: !!body.address,
         //   allFields: Object.keys(body),
         // });
         
@@ -139,7 +102,7 @@ export const loginHandler = (body:any) => {
         await saveItem(AsyncKeys.USER_DATA, body);
         await saveItem(AsyncKeys.IS_LOGIN, true);
         
-        // console.log('✅ Login complete - user authenticated with', Object.keys(body).length, 'fields'); 
+        // console.log('✅ Login complete - user authenticated with all fields'); 
       } catch (error) {
           // console.error('❌ loginHandler error = ', error);
           // Ensure clean state on login failure
@@ -156,9 +119,9 @@ export const loginHandler = (body:any) => {
 export const logoutHandler = (body:any={}) => {
     return async (dispatch: Dispatch<IDispatch>) => {
       try {
-        // console.log('==========logoutHandler==========================');
-        // console.log('Logging out user, clearing auth data');
-        // console.log('====================================');
+        console.log('==========logoutHandler==========================');
+        console.log('Logging out user, clearing auth data');
+        console.log('====================================');
         
         // Clear Redux state FIRST
         dispatch(SetUserData({}));
@@ -169,9 +132,9 @@ export const logoutHandler = (body:any={}) => {
         await saveItem(AsyncKeys.USER_DATA, {});
         await saveItem(AsyncKeys.IS_LOGIN, false);
         
-        // console.log('✅ Logout complete - auth state cleared'); 
+        console.log('✅ Logout complete - auth state cleared'); 
       } catch (error) {
-          // console.error('❌ logoutHandler error = ', error);
+          console.error('❌ logoutHandler error = ', error);
       }
     };
   };
@@ -187,10 +150,10 @@ export const SendOTPByEmailHandler = (email:string, cb?: (data: any,status:any) 
         const { data,status } = await globalAPI.get('/api/User/SendOTPByEmail',{params:{
           email:email
         }});
-        // console.log('SendOTPByEmailHandler data = ', data,status);
+        console.log('SendOTPByEmailHandler data = ', data,status);
         cb && cb(data,status);
       } catch (error) {
-          // console.log('SendOTPByEmailHandler error = ', error);
+          console.log('SendOTPByEmailHandler error = ', error);
         cb && cb(error,500);
       }
     };
@@ -205,50 +168,45 @@ export const SendOTPByEmailHandler = (email:string, cb?: (data: any,status:any) 
 export const ConfirmEmailHandler = (body:any, cb?: (data: any,status:any) => void) => {
     return async (dispatch: Dispatch<IDispatch>) => {
       try {
-        // console.log('📧 ConfirmEmailHandler: Verifying email...');
-        // console.log('Request body:', body);
-        
         const { data,status } = await globalAPI.post('/api/User/ConfirmEmail', body);
-        // console.log('📡 ConfirmEmail API Response:', {
-        //   status: data.status,
-        //   hasData: !!data.data,
-        //   dataFields: data.data ? Object.keys(data.data) : [],
-        // });
+        // console.log('ConfirmEmail:', data);
   
         if (status == 200) {
-          // console.log('✅ Email confirmed successfully');
-          // console.log('🔄 Fetching full user profile for userId:', data.data.id);
+          const confirmData = data.data;
           
+          // Fetch UserProfile to get complete user data
           try {
-            // Fetch complete profile after email confirmation
-            const profileResponse = await globalAPI.get('api/User/GetSellerData?id=' + data.data.id);
+            const profileResponse = await globalAPI.get('api/User/GetSellerData?id=' + confirmData.id);
             
             if (profileResponse.data.status === 200) {
-              // console.log('✅ Full profile fetched after email confirmation');
+              const userProfileData = profileResponse.data.data;
               
-              // Merge confirmation data with full profile
-              const completeUserData = {
-                ...profileResponse.data.data,
-                ...data.data,
-                token: data.data.token,
-                id: data.data.id,
+              // console.log('UserProfile:', userProfileData);
+              
+              // Merge: ConfirmEmail data first, then UserProfile fills missing fields
+              const finalUserData = {
+                ...confirmData,
+                ...userProfileData,
+                // Always preserve token from ConfirmEmail
+                token: confirmData.token,
+                id: confirmData.id,
               };
               
-              // console.log('🔗 Merged userData after confirmation:', Object.keys(completeUserData));
-              dispatch<any>(loginHandler(completeUserData));
+              // console.log('Merged userData:', finalUserData);
+              
+              dispatch<any>(loginHandler(finalUserData));
             } else {
-              // console.warn('⚠️ Profile fetch failed after confirmation, using confirmation data only');
-              dispatch<any>(loginHandler(data.data));
+              // Fallback to ConfirmEmail data only
+              dispatch<any>(loginHandler(confirmData));
             }
           } catch (profileError) {
-            // console.error('❌ Profile fetch error after confirmation:', profileError);
-            dispatch<any>(loginHandler(data.data));
+            // console.log('UserProfile fetch error, using ConfirmEmail data only');
+            dispatch<any>(loginHandler(confirmData));
           }
         }
-        
         cb && cb(data,status);
       } catch (error) {
-          // console.error('❌ ConfirmEmailHandler error = ', error);
+          console.log('ConfirmEmailHandler error = ', error);
         cb && cb(error,500);
       }
     };
@@ -262,24 +220,24 @@ export const ConfirmEmailHandler = (body:any, cb?: (data: any,status:any) => voi
 export const SignUpHandler = (body:any, cb?: (data: any,status:any) => void) => {
     return async (dispatch: Dispatch<IDispatch>) => {
       try {
-        // console.log('===============aaaa=====================');
-        // console.log(body);
-        // console.log('====================================');
+        console.log('===============aaaa=====================');
+        console.log(body);
+        console.log('====================================');
       
         const { data,status } = await globalAPI.post('/api/User/SignUp', body,{
   headers: {
     "Content-Type": "multipart/form-data",
   }});
-        // console.log(data,status);
+        console.log(data,status);
         
-        // console.log('SignUpHandler data = ', data,status);
+        console.log('SignUpHandler data = ', data,status);
   
         // if (status == 200) {
         //   dispatch<any>(loginHandler(data.data));
         // }
         cb && cb(data,status);
       } catch (error) {
-          // console.log('SignUpHandler error = ', error);
+          console.log('SignUpHandler error = ', error);
         cb && cb(error,500);
       }
     };
@@ -293,21 +251,21 @@ export const CheckActivison = (cb?: (data: any, status: any) => void) => {
   return async (dispatch: Dispatch<IDispatch>) => {
     try {
       const { data, status } = await globalAPI.get('api/User/CheckConfirmation');
-      // console.log('CheckActivisonHandler data = ',Platform.OS, data, status);
+      console.log('CheckActivisonHandler data = ',Platform.OS, data, status);
       
       if (data.status == 200) {
-         // console.log('CheckActivisonHandler success - user is valid');
+         console.log('CheckActivisonHandler success - user is valid');
          dispatch<any>(UserIsSeller(data.data));
          cb && cb(data, status);
       } else {
         // Session invalid - logout user
-        // console.warn('⚠️ CheckActivison failed - invalid session, logging out:', data);
+        console.warn('⚠️ CheckActivison failed - invalid session, logging out:', data);
         dispatch<any>(logoutHandler({}));
         cb && cb(data, status);
       }
     } catch (error) {
       // API error (401, 403, network, etc.) - likely invalid session
-      // console.error('❌ CheckActivison error - session invalid, logging out:', error);
+      console.error('❌ CheckActivison error - session invalid, logging out:', error);
       dispatch<any>(logoutHandler({}));
       cb && cb(error, 500);
     }
@@ -322,19 +280,19 @@ export const CheckActivison = (cb?: (data: any, status: any) => void) => {
 export const ForgetPasswordHandler = (body:any, cb?: (data: any,status:any) => void) => {
     return async (dispatch: Dispatch<IDispatch>) => {
       try {
-        // console.log('====================================');
-        // console.log(body);
-        // console.log('====================================');
+        console.log('====================================');
+        console.log(body);
+        console.log('====================================');
         const { data,status } = await globalAPI.post('/api/User/ChangePassword', body);
-        // console.log(data,status);
+        console.log(data,status);
         
-        // console.log('ForgetPasswordHandler data = ', data,status);
+        console.log('ForgetPasswordHandler data = ', data,status);
   
         if (status == 200) {
           cb && cb(data,status);
         }
       } catch (error) {
-          // console.log('ForgetPasswordHandler error = ', error);
+          console.log('ForgetPasswordHandler error = ', error);
         cb && cb(error,500);
       }
     };

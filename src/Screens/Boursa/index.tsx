@@ -43,7 +43,8 @@ const Index = (props: Props) => {
           // console.log(res);
         })
         .catch((err) => {
-          err && // console.log(err);
+          err 
+          // &&  console.log(err);
         });
       // console.log("do something with ", uri);
     });

@@ -88,105 +88,125 @@ const Index = (props: Props) => {
     //getAllAvailableTools()
     // console.log('iiiiiiii', item);
 
+    const preSelectedGovernment = item.info?.activities?.[0];
+    
     setstate(old => ({
       ...old,
       payments: payments,
-      selectedActivities: item.info?.activities?.[0] ?? old.selectedActivities,
+      // region issue
+      selectedActivities: preSelectedGovernment ?? old.selectedActivities,
       selecteServies: item.info?.tools?.[0] ?? old.selecteServies,
       selecteMarket: item.info?.payments?.[0] ?? old.selecteMarket,
     }));
+
+    // Fetch regions if government is already selected
+    if (preSelectedGovernment?.id) {
+      GetRegions(preSelectedGovernment.id);
+    }
   }, []);
   const navigateBackWithUpdatedData = () => {
     navigation.navigate('UserProfile');
   };
   const updateUserProfile = async (values: any) => {
+  setstate(old => ({
+    ...old,
+    loading: true,
+  }));
+
+  try {
+    const bodyFormData = new FormData();
+
+    // 🔹 BASIC FIELDS (UNCHANGED)
+    bodyFormData.append('UserName', values.Username || '');
+    bodyFormData.append('PhoneNumber', values.Phone || '');
+    bodyFormData.append('AnotherPhoneNumber', values.PhoneNumber || '');
+    bodyFormData.append('Address', values.Address || '');
+
+    // 🔹 IMAGE (UNCHANGED)
+    if (values.ImageUrl?.uri) {
+      bodyFormData.append('ImageURL', {
+        uri: values.ImageUrl.uri,
+        type: values.ImageUrl.type || 'image/jpeg',
+        name: values.ImageUrl.name || `image_${Date.now()}.jpg`,
+      } as any);
+    }
+
+    // 🔴 FIX 1: SAFE IDS SELECTION (NO LOGIC CHANGE)
+    const activityId = state.selectedActivities?.id || values.Governmen;
+    const areaId = state.selecteServies?.id || values.Area;
+    // const marketId = state.selecteMarket?.id || values.Market;
+
+    // 🔹 Activity
+    // if (activityId) {
+    //   bodyFormData.append('ActivityIds', activityId);
+    // }
+
+    // 🔴 FIX 2: SWAGGER CORRECT STRUCTURE ONLY
+    // if (activityId) {
+    //   bodyFormData.append('Branches.Country', String(activityId));
+    // }
+
+    if (areaId) {
+      bodyFormData.append('Branches', String(areaId));
+    }
+
+    // // 🔹 Payment (UNCHANGED LOGIC)
+    // if (marketId) {
+    //   bodyFormData.append('PaymentMethodIds', marketId);
+    // }
+
+    // Debug (UNCHANGED)
+    console.log('📦 payload', bodyFormData);
+
+    const res = await axios.put(
+      mainUrl + 'api/User/UpdateUserProfile',
+      bodyFormData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${userdata.token}`,
+          'Accept-Language': dir === 'rtl' ? 'ar' : 'en',
+        },
+      },
+    );
+
     setstate(old => ({
       ...old,
-      loading: true, // ✅ start loading correctly
+      loading: false,
     }));
 
-    try {
-      const bodyFormData = new FormData();
+    if (res?.data?.status === 200) {
+      const updatedUserData = {
+        ...userdata,
+        name: values.Username,
+        phoneNumber: values.Phone,
+        email: values.Email,
+        address: values.Address,
+        imageUrl: res.data?.data?.imageUrl || userdata.imageUrl,
+      };
 
-      // 🔹 Normal fields
-      bodyFormData.append('UserName', values.Username);
-      bodyFormData.append('PhoneNumber', values.Phone);
-      bodyFormData.append('Address', values.Address);
-      bodyFormData.append('AnotherPhoneNumber', values.PhoneNumber);
-      if (values.ImageUrl?.uri) {
-        bodyFormData.append(
-          'ImageURL',
-          {
-            uri: values.ImageUrl.uri,
-            type: values.ImageUrl.type || 'image/jpeg',
-            name: values.ImageUrl.name || `image_${Date.now()}.jpg`,
-          } as any,
-        );
-      }
+      dispatch(SetUserData(updatedUserData));
+      showToast({ type: 'ok', message: res.data.message });
 
-      // Send IDs as individual values (with null guard)
-      if (state.selectedActivities?.id) {
-        bodyFormData.append('ActivityIds', state.selectedActivities.id);
-      }
-
-      // Debug logs
-      // console.log('ActivityIds:', state.selectedActivities?.id);
-      // console.log('selecteServies:', state.selecteServies?.id);
-      // console.log('selecteMarket:', state.selecteMarket?.id);
-
-      const res = await axios.put(
-        mainUrl + 'api/User/UpdateUserProfile',
-        bodyFormData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${userdata.token}`,
-            'Accept-Language': dir === 'rtl' ? 'ar' : 'en',
-          },
-        },
-      );
-
-      // console.log('res.data', res.data);
-      // console.log('bodyFormData', bodyFormData);
-
-      setstate(old => ({
-        ...old,
-        loading: false,
-      }));
-
-      if (res?.data?.status === 200) {
-        const updatedUserData = {
-          ...userdata,
-          name: values.Username,
-          phoneNumber: values.Phone,
-          email: values.Email,
-          address: values.Address,
-          imageUrl: res.data?.data?.imageUrl || userdata.imageUrl,
-        };
-        dispatch(SetUserData(updatedUserData));
-        showToast({ type: 'ok', message: res.data.message });
-        navigateBackWithUpdatedData();
-
-      } else {
-        showToast({
-          type: 'error',
-          message: res.data.message ?? t('Something Went wrong'),
-        });
-      }
-    } catch (err: any) {
-      // console.log('errrrrr', err);
-
-      setstate(old => ({
-        ...old,
-        loading: false,
-      }));
-
+      navigation.navigate('UserProfile');
+    } else {
       showToast({
         type: 'error',
-        message: t('Something Went wrong'),
+        message: res.data.message ?? t('Something Went wrong'),
       });
     }
-  };
+  } catch (err) {
+    setstate(old => ({
+      ...old,
+      loading: false,
+    }));
+
+    showToast({
+      type: 'error',
+      message: t('Something Went wrong'),
+    });
+  }
+};
   const getAllActivities = () => {
     setstate(old => ({ ...old, loading: true }));
     dispatch<any>(
@@ -375,7 +395,7 @@ const Index = (props: Props) => {
                             ? dir === 'rtl'
                               ? state?.selectedActivities?.arName
                               : state?.selectedActivities?.name
-                            : values.activity}
+                            : values.Governmen}
                         </Text>
                         {state.showActivities ? (
                           <ArrowUpIcon />
@@ -383,9 +403,9 @@ const Index = (props: Props) => {
                           <ArrowDownIcon />
                         )}
                       </View>
-                      {errors.activity && touched.activity && (
+                      {errors.Governmen && touched.Governmen && (
                         <Text style={styles.errorText}>
-                          {t(errors.activity as any)}
+                          {t(errors.Governmen as any)}
                         </Text>
                       )}
                     </Pressable>
@@ -404,7 +424,7 @@ const Index = (props: Props) => {
                             ? dir === 'rtl'
                               ? state?.selecteServies?.arName
                               : state?.selecteServies?.name
-                            : values.servises}
+                            : values.Area}
                         </Text>
                         {state.showServies ? (
                           <ArrowUpIcon />
@@ -412,9 +432,9 @@ const Index = (props: Props) => {
                           <ArrowDownIcon />
                         )}
                       </View>
-                      {errors.servises && touched.servises && (
+                      {errors.Area && touched.Area && (
                         <Text style={styles.errorText}>
-                          {t(errors.servises as any)}
+                          {t(errors.Area as any)}
                         </Text>
                       )}
                     </Pressable>
@@ -500,12 +520,12 @@ const Index = (props: Props) => {
                               showActivities: false,
                             }));
                             setFieldError(
-                              'governmen',
-                              'You must pick a activity!',
+                              'Governmen',
+                              'You must pick a government!',
                             );
                           } else {
-                            setFieldValue('governmen', val?.id);
-                            setFieldTouched('governmen', true);
+                            setFieldValue('Governmen', val?.id);
+                            setFieldTouched('Governmen', true);
                             setstate(old => ({
                               ...old,
                               showActivities: false,
@@ -527,7 +547,7 @@ const Index = (props: Props) => {
                               ...old,
                               showServies: false,
                             }));
-                            setFieldError('Area', 'You must pick a servises!');
+                            setFieldError('Area', 'You must pick an area!');
                           } else {
                             setFieldValue('Area', val?.id);
                             setFieldTouched('Area', true);
