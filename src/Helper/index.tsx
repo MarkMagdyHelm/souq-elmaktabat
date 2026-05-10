@@ -6,7 +6,11 @@ export enum AsyncKeys {
   IS_LOGIN = 'IS_LOGIN',
   USER_DATA = 'USER_DATA',
   LANGUAGE = 'LANGUAGE',
+  PAPER_RATE = 'PAPER_RATE',
 }
+
+export const getPaperRateKey = (email: string, paperId: number | string) =>
+  `${AsyncKeys.PAPER_RATE}_${email}_${paperId}`;
 export const CallNumber = async (phoneNumber) => {
   const url = `tel:${phoneNumber}`;
   const supported = await Linking.canOpenURL(url);

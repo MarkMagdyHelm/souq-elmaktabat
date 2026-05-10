@@ -20,6 +20,7 @@ import { t } from 'i18next';
 import { imageUrl } from '../../Constants/config';
 import { AddPaperRate } from '../../Apis/HomeApis';
 import { useDispatch, useSelector } from 'react-redux';
+import { getItem, saveItem, getPaperRateKey } from '../../Helper';
 import { useToast } from 'react-native-toast-notifications';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { RootState } from '../../Store/store';
@@ -39,9 +40,10 @@ const Category = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [visibleCancel, setVisibleCancel] = useState(false);
   const [tempRating, setTempRating] = useState(0);
+  const [alreadyRated, setAlreadyRated] = useState(false);
   const navigation = useNavigation();
 
-  const { isLogin } = useSelector((state: RootState) => state.auth);
+  const { isLogin, userdata } = useSelector((state: RootState) => state.auth);
   // console.log('yyyyyyyyyy', item);
 
   const dispatch = useDispatch();
@@ -58,6 +60,29 @@ const Category = (props: Props) => {
     } as any);
   };
 
+  const loadSavedRate = async () => {
+    if (userdata?.email && item?.id) {
+      const key = getPaperRateKey(userdata.email, item.id);
+      const saved = await getItem(key);
+      if (saved) {
+        setTempRating(saved);
+        setAlreadyRated(true);
+      } else {
+        setTempRating(0);
+        setAlreadyRated(false);
+      }
+    }
+  };
+
+  const handleOpenModal = () => {
+    if (isLogin) {
+      loadSavedRate();
+      setShowModal(true);
+    } else {
+      setVisibleCancel(true);
+    }
+  };
+
   const handleSubmit = () => {
     if (tempRating === 0) {
       return;
@@ -69,9 +94,13 @@ const Category = (props: Props) => {
           paperId: item?.id,
           rate: tempRating,
         },
-        (res, status) => {
+        async (res, status) => {
           if (res.status === 200) {
-            // optionally update UI or show success
+            if (userdata?.email && item?.id) {
+              const key = getPaperRateKey(userdata.email, item.id);
+              await saveItem(key, tempRating);
+              setAlreadyRated(true);
+            }
           } else {
             toastNotfication({
               type: 'error',
@@ -89,7 +118,7 @@ const Category = (props: Props) => {
     <>
       <Pressable
         style={[layout.rowBox, styles.con]}
-        onPress={() => (isLogin ? setShowModal(true) : setVisibleCancel(true))}
+        onPress={handleOpenModal}
       >
         <View style={[layout.rowBox, { alignItems: 'center' }]}>
           <View style={styles.imageCon}>
@@ -143,7 +172,8 @@ const Category = (props: Props) => {
               {[1, 2, 3, 4, 5].map(star => (
                 <TouchableOpacity
                   key={star}
-                  onPress={() => setTempRating(star)}
+                  onPress={() => !alreadyRated && setTempRating(star)}
+                  disabled={alreadyRated}
                 >
                   <Icon
                     name={star <= tempRating ? 'star' : 'star-o'}
@@ -155,18 +185,20 @@ const Category = (props: Props) => {
               ))}
             </View>
             {/* Save */}
-            <TouchableOpacity
-              style={[
-                styles.button,
-                {
-                  backgroundColor: tempRating === 0 ? '#ccc' : '#007bff',
-                },
-              ]}
-              disabled={tempRating === 0}
-              onPress={handleSubmit}
-            >
-              <Text style={{ color: '#fff' }}>Save</Text>
-            </TouchableOpacity>
+            {!alreadyRated && (
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  {
+                    backgroundColor: tempRating === 0 ? '#ccc' : '#007bff',
+                  },
+                ]}
+                disabled={tempRating === 0}
+                onPress={handleSubmit}
+              >
+                <Text style={{ color: '#fff' }}>{t('save')}</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </Modal>

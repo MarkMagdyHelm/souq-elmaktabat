@@ -23,6 +23,7 @@ import DoneRate from '../../../Components/PopUps/DoneRate';
 import FilterOrder from '../../../Components/PopUps/FilterOrder';
 import { openAPPCamera, openAPPPicker } from '../../../Services/ImageCropPicker';
 import ImageWithFallback from '../../../Components/ImageWithFallback/ImageWithFallback';
+import { SetUserData } from '../../../Store/actions/auth';
 
 type Props = {
     navigation: any
@@ -108,7 +109,7 @@ const Index = (props: Props) => {
     const updateUserProfile = async (values: any) => {
 
         console.log("---------------------values-------------------");
-        console.log([state.selectedActivities.id]);
+        console.log(state.selectePayment.id);
         console.log([state.selecteServies.id]);
         console.log([state.selectePayment.id]);
         console.log(values.Description);
@@ -119,7 +120,7 @@ const Index = (props: Props) => {
 
         console.log("---------------------values-------------------");
         setstate(old => ({
-            ...old, loading: false
+            ...old, loading: true
         }));
         try {
             const bodyFormData = new FormData();
@@ -162,6 +163,13 @@ const Index = (props: Props) => {
                     ...old, loading: false
                 }));
                 if (res.data.status == 200) {
+                    const updatedUserData = {
+                        ...userdata,
+                        name: values.Username,
+                        phoneNumber: values.Phone,
+                        imageUrl: res.data?.data?.imageUrl || userdata.imageUrl,
+                    };
+                    dispatch(SetUserData(updatedUserData));
                     /// showToast({ type: 'ok', message: res.data.message });
                     setSccusse(true)
 
@@ -240,7 +248,7 @@ const Index = (props: Props) => {
                             activity: dir == "rtl" ? item.info.activities[0].arName : item.info?.activities[0]?.name,
                             servises: dir == "rtl" ? item.info?.tools[0]?.arName : item.info?.tools[0]?.name,
                             payment: dir == "rtl" ? item.info?.payments[0]?.arName : item.info?.payments[0]?.name,
-                            PhoneNumber: ""
+                            PhoneNumber: item.info?.anotherPhoneNumber ?? ""
                         }}
                         onSubmit={updateUserProfile} >
                         {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue, setFieldTouched, setFieldError }) => {
@@ -493,7 +501,7 @@ const Index = (props: Props) => {
                                                     } else {
                                                         setFieldValue("payment", val.id);
                                                         setFieldTouched("payment", true);
-                                                        setstate((old) => ({
+                                                                        setstate((old) => ({
                                                             ...old,
                                                             showPayment: false,
                                                             selectePayment: val,

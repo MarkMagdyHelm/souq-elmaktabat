@@ -15,18 +15,17 @@ export const AddOfferInks = yup.object().shape({
   Color: yup.string().required("colorRequired"),
   InksWidth: yup.string().required("inkCapacityRequired"),
   PaperPrice: yup.string().required("paperPriceRequired"),
-ImageUrl: yup
-  .mixed()
-  .required("imageRequired")
-  .test("valid-image", "imageRequired", (value) => {
-    if (!value) return false;
+// ImageUrl: yup
+//   .mixed()
+//   .test("valid-image", "imageRequired", (value) => {
+//     if (!value) return true;
 
-    // string case
-    if (typeof value === "string") return true;
+//     // string case
+//     if (typeof value === "string") return true;
 
-    // object case
-    if (typeof value === "object" && "uri" in value) return true;
+//     // object case
+//     if (typeof value === "object" && "uri" in value) return true;
 
-    return false;
-  })
+//     return false;
+//   })
 });

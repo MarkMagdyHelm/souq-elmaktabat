@@ -92,6 +92,7 @@ const Index = (props: Props) => {
       DeleteOffer(
         {
           id: id,
+          type: item.type,
         },
         (res, status) => {
           console.log('rrrrrr', status);
@@ -536,5 +537,6 @@ const useStyles = (
       paddingVertical: PixelPerfect(10),
       alignItems: 'center',
       justifyContent: 'center',
+      marginBottom: PixelPerfect(20),
     },
   });

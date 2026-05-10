@@ -31,7 +31,7 @@ const SellerItem = (props: Props) => {
                 
             >
                   <View style={[styles.con]}>
-                        {!isOfffer && <Pressable style={{ padding: 8 }} onPress={onFavPress}>
+                        {!isOfffer && <Pressable style={{ padding: 8 ,}} onPress={onFavPress}>
                               <HeartIcon style={styles.heart}
                                     color={item.isFavourite ?   theme.red:theme.white}
                               />
@@ -43,8 +43,8 @@ const SellerItem = (props: Props) => {
                                     source={{ uri: imageUrl+(item.userImages??item.imageURL) }}
                                     style={[styles.imageRound]}
                               />
-                              <View style={{ marginHorizontal: PixelPerfect(4) }}>
-                                    <Text style={[layout.textAlign, styles.seller]}>{(item.userName??item.name)}</Text>
+                              <View style={{ marginHorizontal: PixelPerfect(4) ,}}>
+                                    <Text style={[layout.textAlign, styles.seller]} numberOfLines={1} ellipsizeMode="tail">{(item.userName??item.name)}</Text>
                                     <Text style={[styles.text2]}>{(item.countryName??item.companyName)}</Text>
                               </View>
                         </View>
@@ -117,7 +117,9 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
                   color: theme.black,
                   fontSize: PixelPerfect(16),
                   fontFamily: Fonts.medium,
-                  lineHeight: PixelPerfect(20)
+                  lineHeight: PixelPerfect(20),
+                  maxWidth: PixelPerfect(90),
+                  
             },
 
             orderNum: {

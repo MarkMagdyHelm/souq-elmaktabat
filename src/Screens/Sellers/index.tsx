@@ -422,6 +422,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
                   borderRadius: PixelPerfect(10),
                   paddingHorizontal: PixelPerfect(8),
                   marginHorizontal: PixelPerfect(6),
+                  
             },
             filterText: {
                   fontSize: PixelPerfect(14),

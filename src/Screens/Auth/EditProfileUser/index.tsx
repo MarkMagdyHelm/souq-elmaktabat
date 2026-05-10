@@ -47,6 +47,7 @@ import { UpdateProfileUser } from '../../../Validation/UpdateProfileUser';
 import FilterOrder from '../../../Components/PopUps/FilterOrder';
 import { openAPPCamera, openAPPPicker } from '../../../Services/ImageCropPicker';
 import ImageWithFallback from '../../../Components/ImageWithFallback/ImageWithFallback';
+import { SetUserData } from '../../../Store/actions/auth';
 
 type Props = {
   navigation: any;
@@ -169,6 +170,14 @@ const Index = (props: Props) => {
       }));
 
       if (res?.data?.status === 200) {
+        const updatedUserData = {
+          ...userdata,
+          name: values.Username,
+          phoneNumber: values.Phone,
+          email: values.Email,
+          imageUrl: res.data?.data?.imageUrl || userdata.imageUrl,
+        };
+        dispatch(SetUserData(updatedUserData));
         showToast({ type: 'ok', message: res.data.message });
       } else {
         showToast({
@@ -275,7 +284,7 @@ const Index = (props: Props) => {
               Governmen: item.info?.activities[0]?.arName,
               Area: item.info?.tools[0]?.arName,
 
-              PhoneNumber: '',
+              PhoneNumber: item.info?.anotherPhoneNumber ?? '',
             }}
             onSubmit={updateUserProfile}
           >

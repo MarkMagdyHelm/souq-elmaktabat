@@ -45,6 +45,7 @@ const Index = (props: Props) => {
     const offerData = {
         id: item?.id ?? "",
         PrintingPressesOfferId:item?.id??"",
+        EndDate: item?.endDate ?? "",
         type: type,
         // Type-specific IDs
         paperId: item?.paperId ?? "",
@@ -217,6 +218,7 @@ const formattedPaperTypes = uiState.paperTypeList.map(function (item) {
     // Build request body for Ink offers
     const buildInkOfferBody = (formValues: any) => ({
         InkId: formValues.inksType,
+        InkOfferId: offerData.id,
         Brand: formValues.brand,
         Size: formValues.inksWidth,
         ColorId: formValues.color,
@@ -231,15 +233,16 @@ const formattedPaperTypes = uiState.paperTypeList.map(function (item) {
 
     // Build request body for Printer offers
     const buildPrinterOfferBody = (formValues: any) => ({
-        EndDate: uiState.date,
-        Branches: [formValues.branches],
+        EndDate: uiState.date,//not sending don't know why!
+        Branches: formValues.branches,
         ImageUrl: formValues.imageUrl,
         Description: formValues.description,
         ColoredPrice: formValues.coloredPrice,
-        NonColoredPrice: formValues.price,
+        NonColoredPrice: Number(formValues.price),
         ImediatePrinting: uiState.isImediatePrinting,
         IncludeDelivery: uiState.isdelervable,
         PrintingPressesOfferId: offerData.id,
+        IsActive: true,
     });
 
     // Convert plain object to FormData with nested structure support

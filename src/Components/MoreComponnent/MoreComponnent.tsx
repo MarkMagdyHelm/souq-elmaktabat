@@ -206,11 +206,17 @@ const filteredMenuItems = allMenuItems.filter(item => {
   return true;
 });
 
-  // console.log(userdata, 'userdata', Platform.OS, isSeller);
 const dispatch = useDispatch();
   const userName = userdata?.name;
   const userPhone = userdata?.phoneNumber;
-  const userImage = userdata?.imageUrl || userdata?.userImages ? { uri: imageUrl + (userdata?.imageUrl || userdata?.userImages) } : null;
+  // const userImage = userdata?.imageUrl || userdata?.userImages ? { uri: imageUrl + (userdata?.imageUrl || userdata?.userImages) } : null;
+ const imagePath = userdata?.imageUrl || userdata?.userImages;
+
+const userImage = imagePath
+  ? { uri: imageUrl + imagePath }
+  : null;
+  console.log(userImage?.uri, 'userdatauserdata', isSeller);
+  
   const [visibleCancel, setVisibleCancel] = useState(false);
   const [visibleDelete, setVisibleDelete] = useState(false);
   const toast = useToast();
