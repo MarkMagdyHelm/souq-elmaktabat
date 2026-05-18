@@ -70,7 +70,7 @@ export default {
     'من فضلك أدخل بريدك الإلكتروني، وسنرسل لك رمز التحقق عبر البريد الالكتروني.',
   Next: 'التالي',
   'Do you have account': ' لديك حساب ؟',
-  'Agree on': 'اوفق علي',
+  'Agree on': 'موافق علي',
   'Privcy and terms': 'الشروط والاحكام',
   'You must agree on terms': 'يجب أن توافق على الشروط',
   'Some Fields has incorrect Values!': 'بعض الحقول تحتوي على قيم غير صحيحة!',
@@ -432,7 +432,7 @@ yesDelete: 'نعم، حذف الحساب',
   coloerPrinter: 'طباعة الوان',
   nonColoered: 'طباعةالابيض واسود',
   NoData: 'لا تتوفر بيانات',
-
+  NoDataAvailable: 'نأسف, لا توجد نتائج مطابقة لبحثك',
   NoDataDetails:
     'يجب عليك تسجيل الدخول للوصول إلى هذا المحتوى واستكشاف جميع الميزات.',
 };

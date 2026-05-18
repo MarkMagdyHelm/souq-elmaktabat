@@ -116,17 +116,13 @@ const Category = (props: Props) => {
   };
   return (
     <>
-      <Pressable
-        style={[layout.rowBox, styles.con]}
-        onPress={handleOpenModal}
-      >
+      <Pressable style={[layout.rowBox, styles.con]} onPress={handleOpenModal}>
         <View style={[layout.rowBox, { alignItems: 'center' }]}>
-          <View style={styles.imageCon}>
-            <Image
-              style={styles.image}
-              source={{ uri: imageUrl + item?.imageUrl, cache: 'reload' }}
-            />
-          </View>
+          <ImageWithFallback
+            uri={item?.imageUrl}
+            type={item?.type}
+            style={styles.imageCon}
+          />
           <View
             style={{
               justifyContent: 'center',
@@ -160,12 +156,12 @@ const Category = (props: Props) => {
             >
               <Text>✕</Text>
             </TouchableOpacity>
-  
+
             <ImageWithFallback
-                uri={imageUrl + item?.imageUrl}
-                type={item?.type}
-                style={styles.modalImage}
-              />
+              uri={item?.imageUrl}
+              type={item?.type}
+              style={styles.modalImage}
+            />
             <Text style={styles.title}>{t('RatePaper')}</Text>
             {/* Select Rating */}
             <View style={styles.stars}>
@@ -274,9 +270,10 @@ const useStyles = (
       color: theme.currenctText,
       fontSize: PixelPerfect(18),
       fontFamily: Fonts.bold,
-      //  paddingHorizontal:PixelPerfect(4),
-      position: 'absolute',
-      right: 2,
+       paddingHorizontal:PixelPerfect(4),
+       paddingBottom:PixelPerfect(30),
+      // position: 'absolute',
+      // right: 2,
       top: PixelPerfect(26),
     },
 

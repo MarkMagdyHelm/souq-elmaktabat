@@ -43,6 +43,7 @@ import { CheckActivison, logoutHandler } from '../../Apis/User';
 import { GetSettingsHandler } from '../../Apis/Appinfo';
 import CancelOrder from '../../Components/PopUps/CancelOrder';
 import useDoubleBackExit from '../../Apis/SharedFunctions';
+import HomeCategoryLoder from '../../Components/SkeltonLoaders/HomeCategoryLoder';
 
 type Props = {
   navigation: any;
@@ -52,7 +53,7 @@ const Index = (props: Props) => {
   const { navigation } = props;
   const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
   const styles = useStyles(Fonts, theme, dark, dir);
-  const ref = useRef() as any;
+  // const ref = useRef() as any;
   const { isLogin, userdata, isSeller } = useSelector(
     (state: RootState) => state.auth,
   );
@@ -74,9 +75,14 @@ const Index = (props: Props) => {
     dispatch<any>(CheckActivison());
     getSettings();
   }, []);
+  const toastVisible = useRef(false);
+
   const toast = useToast();
 
   const toastNotfication = (config: any) => {
+    if (!toastVisible.current) return;
+
+    toastVisible.current = true;
     toast.hideAll();
     toast.show(config.message, {
       type: config.type,
@@ -84,6 +90,9 @@ const Index = (props: Props) => {
       offset: 50,
       animationType: 'slide-in',
       placement: 'top',
+      onHide: () => {
+        toastVisible.current = false;
+      },
     } as any);
   };
   const getAllPaperOffers = () => {
@@ -161,7 +170,7 @@ const Index = (props: Props) => {
         if (res.status === 200) {
           const updatedCategories = res.data.map(item => ({
             ...item,
-            image: item.imageUrl,//??
+            image: item.imageUrl, //??
           }));
 
           setstate(old => ({ ...old, categories: updatedCategories }));
@@ -453,19 +462,7 @@ const Index = (props: Props) => {
         <Text style={[layout.textAlign, styles.textsection1]}>
           {t('mainCategories')}
         </Text>
-        {/* <FlatList
-                    data={state.categories}
-                    horizontal
-                    inverted
-                    showsHorizontalScrollIndicator={false}
-                    keyExtractor={(item) => item.id}
-                    contentContainerStyle={styles.listContainer}
-                    renderItem={({ item, index }) => (
-                     <HomeCategory/>
-                           
-                       
-                    )}
-                /> */}
+
         <View
           style={[
             layout.rowBox,
@@ -502,7 +499,7 @@ const Index = (props: Props) => {
           </View>
         </View>
         {state.sections.map(section => {
-          console.log('iiiiiiiii', state);
+          // console.log('iiiiiiiii', state);
 
           const listData = (() => {
             if (section.id === 1) return section.products?.slice(0, 5);
@@ -532,22 +529,38 @@ const Index = (props: Props) => {
                 keyExtractor={(item, index) => `${section.id}-${item.id}`}
                 showsHorizontalScrollIndicator={false}
                 style={{ paddingBottom: PixelPerfect(36) }}
-                renderItem={({ item }) => (
-                  <Product
-                    isOfffer={false}
-                    item={item}
-                    onPress={() => handleSelectProduct(item, section.id)}
-                    onFavPress={() => {
-                      if (section.id === 1) {
-                        addFavouritePaperOffer(item);
-                      } else if (section.id === 2) {
-                        addFavouriteInkOffer(item);
-                      } else if (section.id === 3) {
-                        addFavouritePrintingPressesOffer(item);
-                      }
-                    }}
-                  />
+               contentContainerStyle={{
+    paddingHorizontal: PixelPerfect(8),
+  }}
+                ItemSeparatorComponent={() => (
+                  <View style={{ width: PixelPerfect(8) }} />
                 )}
+                renderItem={({ item }) => {
+                  if (state.loading) {
+                    return <HomeCategoryLoder height={PixelPerfect(228)} />;
+                  } else {
+                    return (
+                      <Product
+                        isOfffer={false}
+                        item={item}
+                        onPress={() => handleSelectProduct(item, section.id)}
+                        onFavPress={() => {
+                          if (isLogin) {
+                            if (section.id === 1) {
+                              addFavouritePaperOffer(item);
+                            } else if (section.id === 2) {
+                              addFavouriteInkOffer(item);
+                            } else if (section.id === 3) {
+                              addFavouritePrintingPressesOffer(item);
+                            }
+                          } else {
+                            setVisibleCancel(true);
+                          }
+                        }}
+                      />
+                    );
+                  }
+                }}
               />
             </View>
           );

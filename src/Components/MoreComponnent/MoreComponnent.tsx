@@ -166,12 +166,12 @@ const STORE_LINK = Platform.select({
     //     //  StoreReview.requestReview(); 
     //     }
     // },
-    {
-      key: 'changeLang',
-      title: t('Change Language'),
-      icon: <ChangeLangIcon />,
-      onPress: () => navigation.navigate('ChangeLang')
-    },
+    // {
+    //   key: 'changeLang',
+    //   title: t('Change Language'),
+    //   icon: <ChangeLangIcon />,
+    //   onPress: () => navigation.navigate('ChangeLang')
+    // },
     {
       key: 'logout',
       title: t('logout'),

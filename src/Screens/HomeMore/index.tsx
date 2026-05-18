@@ -39,6 +39,9 @@ import {
 } from '../../Apis/CommonApi';
 import CancelOrder from '../../Components/PopUps/CancelOrder';
 import { logoutHandler } from '../../Apis/User';
+import Loader from '../../Components/PopUps/Loader';
+import LottieView from 'lottie-react-native';
+import HomeCategoryLoder from '../../Components/SkeltonLoaders/HomeCategoryLoder';
 
 type Props = {
   navigation: any;
@@ -49,10 +52,12 @@ const Index = (props: Props) => {
 
   const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
   const styles = useStyles(Fonts, theme, dark, dir);
-  const ref = useRef() as any;
+  // const ref = useRef() as any;
+  const toastVisible = useRef(false);
+
   const { isLogin } = useSelector((state: RootState) => state.auth);
   const { sectionId } = useRoute().params as any;
-  const { countries, paperSize,inks } = useSelector(
+  const { countries, paperSize, inks } = useSelector(
     (state: RootState) => state.settings,
   );
   const [visibleCancel, setVisibleCancel] = useState(false);
@@ -64,9 +69,11 @@ const Index = (props: Props) => {
       ? ['price', 'size', 'paperTypeFilter', 'governorate']
       : sectionId == 2
       ? ['price', 'inkTypeFilter', 'governorate']
-      : sectionId == 3?['nonColor', 'color', 'governorate']:[];
-      // console.log("ggggggg",filters);
-      
+      : sectionId == 3
+      ? ['nonColor', 'color', 'governorate']
+      : [];
+  // console.log("ggggggg",filters);
+
   const dispatch = useDispatch();
   const [state, setstate] = useState({
     loading: false,
@@ -121,17 +128,33 @@ const Index = (props: Props) => {
   }, [state.countries, state.paperSize, state.paperType, state.inkIds]);
 
   const toast = useToast();
+  // const toastNotfication = (config: any) => {
+  //   toast.hideAll();
+  //   toast.show(config.message, {
+  //     type: config.type,
+  //     duration: 3000,
+  //     offset: 50,
+  //     animationType: 'slide-in',
+  //     placement: 'top',
+  //   } as any);
+  // };
+
   const toastNotfication = (config: any) => {
-    toast.hideAll();
+    if (!toastVisible.current) return;
+
+    toastVisible.current = true;
+
     toast.show(config.message, {
       type: config.type,
       duration: 3000,
       offset: 50,
       animationType: 'slide-in',
       placement: 'top',
+      onHide: () => {
+        toastVisible.current = false;
+      },
     } as any);
   };
-
   const addFavouritePaperOffer = (id: any) => {
     setstate(old => ({ ...old, loading: true }));
     if (sectionId == '1') {
@@ -344,8 +367,10 @@ const Index = (props: Props) => {
     if (!state.loadingMore && state.hasMoreRequests) {
       if (sectionId == 1) {
         getAllPaperOffers(state.requestsPage + 1, true);
-      } else {
+      } else if (sectionId == 2) {
         getAllInkOffers(state.requestsPage + 1, true);
+      } else {
+        getAllPrinting(state.requestsPage + 1, true);
       }
     }
   };
@@ -428,8 +453,9 @@ const Index = (props: Props) => {
       } else {
         getAllPrinting(1, false, val);
       }
-    }, 500); 
+    }, 500);
   };
+
   return (
     <Container showHint={false}>
       <CancelOrder
@@ -438,10 +464,11 @@ const Index = (props: Props) => {
         onSubmit={() => {
           setVisibleCancel(false);
           dispatch<any>(logoutHandler());
- navigation.reset({
-              index: 0,
-              routes: [{ name: 'Signin' }],
-            } as any);        }}
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Signin' }],
+          } as any);
+        }}
         title={t('signtxt1')}
         body={''}
         cancleText={t('Sign in')}
@@ -529,7 +556,7 @@ const Index = (props: Props) => {
             hasTextInput={false}
           />
         )}
-                {state.viewInkType && (
+        {state.viewInkType && (
           <FilterMultiChecker
             onCloseFn={val => {
               if (Array.isArray(val)) {
@@ -546,7 +573,7 @@ const Index = (props: Props) => {
               }
             }}
             title={t('inkTypew')}
-           currentFilter={''}
+            currentFilter={''}
             items={inks}
             style={{ flex: 0.6 }}
             type="paperType"
@@ -600,7 +627,6 @@ const Index = (props: Props) => {
           //   }
           // }}
         />
-
         <SearchBar
           onPressSearch={handleSearch}
           onPress={() => {
@@ -619,35 +645,62 @@ const Index = (props: Props) => {
             contentContainerStyle={styles.container}
           />
         )}
-
-        <FlatList
-          data={state.sections}
-          keyExtractor={item => item.id}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <Product
-              isOfffer={false}
-              item={item}
-              onPress={() => {
-                handleSelectProduct(item);
+        {state.loading ? (
+            <FlatList
+              data={Array.from({ length: 6 })}
+              keyExtractor={(_, index) => index.toString()}
+              numColumns={2}
+              columnWrapperStyle={{
+                marginVertical: PixelPerfect(4),
+                gap: PixelPerfect(8),
+                justifyContent:
+                  filters.length === 1 ? 'flex-end' : 'space-between',
+                flexDirection: 'row-reverse',
               }}
-              onFavPress={() => {
-                addFavouritePaperOffer(item.id);
-              }}
+              renderItem={() => <HomeCategoryLoder height={PixelPerfect(228)} />}
+              showsVerticalScrollIndicator={false}
             />
-          )}
-          numColumns={2}
-          columnWrapperStyle={{
-            marginVertical: PixelPerfect(4),
-            justifyContent: filters.length === 1 ? 'flex-end' : 'space-between',
-            flexDirection: 'row-reverse',
-          }}
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={renderFooter}
-          refreshing={state.loading}
-          onRefresh={handleRefresh}
-        />
+        ) : (
+          <FlatList
+            data={state.sections}
+            keyExtractor={item => item.id}
+            showsVerticalScrollIndicator={false}
+            ListEmptyComponent={
+              <View style={styles.emptyContainer}>
+                <Text style={styles.title}>{t('NoData')}</Text>
+                <Text style={styles.subtitle}>{t('NoDataAvailable')}</Text>
+              </View>
+            }
+            renderItem={({ item }) => (
+              <Product
+                isOfffer={false}
+                item={item}
+                onPress={() => {
+                  handleSelectProduct(item);
+                }}
+                onFavPress={() => {
+                  if (isLogin) {
+                    addFavouritePaperOffer(item.id);
+                  } else {
+                    setVisibleCancel(true);
+                  }
+                }}
+              />
+            )}
+            numColumns={2}
+            columnWrapperStyle={{
+              marginVertical: PixelPerfect(4),
+              justifyContent:
+                filters.length === 1 ? 'flex-end' : 'space-between',
+              flexDirection: 'row-reverse',
+            }}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={renderFooter}
+            refreshing={state.loading}
+            onRefresh={handleRefresh}
+          />
+        )}
       </View>
       {/* <Filter/> */}
       <TabBar />
@@ -694,10 +747,35 @@ const useStyles = (
     },
 
     container: {
-      justifyContent: 'flex-end',
-      flex: 1,
-      height: PixelPerfect(35),
+      // justifyContent: 'flex-end',
+      // flex: 1,
+      // height: PixelPerfect(35),
+      height: '100%',
       marginBottom: PixelPerfect(8),
+      flexGrow: 1,
+      // flexGrow: 1,
+    },
+    emptyContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: PixelPerfect(24),
+      paddingVertical: PixelPerfect(200),
+    },
+    title: {
+      fontSize: 22,
+      fontWeight: '700',
+      color: '#222',
+      marginBottom: 10,
+      textAlignVertical: 'center',
+    },
+    subtitle: {
+      fontSize: 15,
+      color: '#666',
+      textAlign: 'center',
+      lineHeight: 22,
+      marginBottom: 30,
+      textAlignVertical: 'center',
     },
     filterBtn: {
       height: PixelPerfect(33),
@@ -710,6 +788,7 @@ const useStyles = (
       marginHorizontal: PixelPerfect(6),
     },
     filterText: {
+      paddingTop: PixelPerfect(40),
       fontSize: PixelPerfect(14),
       fontFamily: Fonts.regular,
       color: '#000',

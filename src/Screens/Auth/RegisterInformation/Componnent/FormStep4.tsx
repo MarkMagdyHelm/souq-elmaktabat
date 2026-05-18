@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Pressable, Text, View, Platform, StyleSheet, Image } from "react-native";
 import { Formik, FormikProps } from "formik";
 import { validationSchema2 } from "../../../../Validation/Form4Refistration";
@@ -42,9 +42,6 @@ const FormStep4 = ({ formikRef, state, setstate, GetAreas, countries, addresses,
         forms: { City: "", Role: "", Area: "", Markets: "", agreesonTerms: "", Tools: "", payments: "" },
     })
 
-    console.log('================xxxx====================');
-    console.log(addresses);
-    console.log('====================================');
     return (
         <Formik
             validationSchema={validationSchema2}
@@ -55,32 +52,45 @@ const FormStep4 = ({ formikRef, state, setstate, GetAreas, countries, addresses,
                 Area: "",
             }}
             onSubmit={(values) => {
-                setstate((old) => ({
-                    ...old,
-                    addresses: [
-                        ...(old.addresses || []), // Fixed typo and added fallback
-                        {
-                            Country: countries?.find(el => el.id == values?.City) || null,
-                            Region: state.areas?.find(el => el.id == values?.Area) || null,
-                            Street: values?.Addresses || ''
-                        }
-                    ]
-                }));
+                const street = (values?.Addresses ?? "").trim();
+                const country = countries?.find((el) => el.id == values?.City);
+                const region = state.areas?.find((el) => el.id == values?.Area);
+                if (!country || !region || !street) {
+                    return;
+                }
+                const newEntry = { Country: country, Region: region, Street: street };
+                let appended = false;
+                setstate((old) => {
+                    const prev = old.addresses || [];
+                    const dup = prev.some(
+                        (a) =>
+                            a?.Country?.id == country.id &&
+                            a?.Region?.id == region.id &&
+                            (a?.Street ?? "").trim() === street
+                    );
+                    if (dup) {
+                        return old;
+                    }
+                    appended = true;
+                    return { ...old, addresses: [...prev, newEntry] };
+                });
+                if (!appended) {
+                    return;
+                }
                 setState((old) => ({
                     ...old,
-                    selectedGoverenmet: { name: "", arName: "", id: "" },
                     selectedArea: { name: "", arName: "", id: "" },
                 }));
-                formikRef.current.setFieldValue("City", "")
-                formikRef.current.setFieldValue("Area", "")
-                formikRef.current.setFieldValue("Addresses", "")
-                formikRef.current.setFieldError("City", "")
-                formikRef.current.setFieldError("Area", "")
-                formikRef.current.setFieldError("Addresses", "")
-                formikRef.current.setFieldTouched("City", false)
-                formikRef.current.setFieldTouched("Area", false)
-                formikRef.current.setFieldTouched("Addresses", false)
-                setshowForm(false)
+                const f = formikRef.current;
+                if (f) {
+                    f.setFieldValue("Area", "");
+                    f.setFieldValue("Addresses", "");
+                    f.setFieldError("Area", undefined as any);
+                    f.setFieldError("Addresses", undefined as any);
+                    f.setFieldTouched("Area", false);
+                    f.setFieldTouched("Addresses", false);
+                }
+                setshowForm(false);
             }}
         >
             {({ handleChange, handleBlur, errors, touched, setFieldValue, setFieldTouched, setFieldError, values, handleSubmit }) => {
@@ -89,9 +99,36 @@ const FormStep4 = ({ formikRef, state, setstate, GetAreas, countries, addresses,
                     <>
                         {
                             addresses.map((el, index) => (
-                                <View key={`index-${index}`} style={styless.adressCon}>
-                                    <Text style={[layout.textAlign, styless.countryText]}>{dir === "rtl" ? el?.Country?.arName : el?.Country?.name} / {dir === "rtl" ? el?.Region?.arName : el?.Region?.name}</Text>
-                                    <Text style={[layout.textAlign, styless.streetText]}>{el?.Street}</Text>
+                                <View
+                                    key={`addr-${el?.Country?.id}-${el?.Region?.id}-${index}`}
+                                    style={styless.adressCon}
+                                >
+                                    <View style={styless.adressRow}>
+                                        <View style={styless.adressTexts}>
+                                            <Text style={[layout.textAlign, styless.countryText]}>
+                                                {dir === "rtl" ? el?.Country?.arName : el?.Country?.name} /{" "}
+                                                {dir === "rtl" ? el?.Region?.arName : el?.Region?.name}
+                                            </Text>
+                                            <Text style={[layout.textAlign, styless.streetText]}>{el?.Street}</Text>
+                                        </View>
+                                        {index > 0 ? (
+                                            <Pressable
+                                                accessibilityRole="button"
+                                                hitSlop={10}
+                                                onPress={() => {
+                                                    setstate((old) => ({
+                                                        ...old,
+                                                        addresses: (old.addresses || []).filter((_, i) => i !== index),
+                                                    }));
+                                                }}
+                                                style={styless.deleteBtn}
+                                            >
+                                                <Text style={styless.deleteBtnText}>{t("Delete")}</Text>
+                                            </Pressable>
+                                        ) : (
+                                            <View style={styless.deleteBtnSpacer} />
+                                        )}
+                                    </View>
                                 </View>
                             ))
                         }
@@ -111,7 +148,8 @@ const FormStep4 = ({ formikRef, state, setstate, GetAreas, countries, addresses,
                                     style={styles.selectMenueCon}
                                     onPress={() => {
 
-                                        setState((old) => ({ ...old, showGovernemnts: true }));
+                                        setState((old) => ({ ...old,
+                                             showGovernemnts: true }));
                                     }}
                                 >
 
@@ -139,7 +177,7 @@ const FormStep4 = ({ formikRef, state, setstate, GetAreas, countries, addresses,
                                             setState((old) => ({
                                                 ...old,
                                                 showGovernemnts: false,
-                                                forms: { ...State.forms, City: "You must pick a city!" },
+                                                forms: { ...old.forms, City: "You must pick a city!" },
                                             }));
                                         } else {
                                             setState((old) => ({ ...old, showArea: true }));
@@ -187,17 +225,26 @@ const FormStep4 = ({ formikRef, state, setstate, GetAreas, countries, addresses,
                                                 setState((old) => ({
                                                     ...old,
                                                     showGovernemnts: false,
-                                                    forms: { ...State.forms, City: "You must pick a city!" },
+                                                    forms: { ...old.forms, City: "You must pick a city!" },
                                                 }));
                                                 setFieldError("City", "You must pick a city!");
                                             } else {
+                                                const prevCityId = values.City;
+                                                const cityChanged = prevCityId != val.id;
                                                 setFieldValue("City", val.id);
                                                 GetAreas(val.id);
+                                                if (cityChanged) {
+                                                    setFieldValue("Area", "");
+                                                    setFieldValue("Addresses", "");
+                                                }
                                                 setState((old) => ({
                                                     ...old,
                                                     showGovernemnts: false,
                                                     selectedGoverenmet: val,
-                                                    forms: { ...State.forms, City: "" },
+                                                    selectedArea: cityChanged
+                                                        ? { name: "", arName: "", id: "" }
+                                                        : old.selectedArea,
+                                                    forms: { ...old.forms, City: "" },
                                                 }));
                                             }
                                         }}
@@ -209,7 +256,7 @@ const FormStep4 = ({ formikRef, state, setstate, GetAreas, countries, addresses,
                                 )}
 
                                 {/* Area dropdown */}
-                                {State.showArea && state.areas.length !== 0 && (
+                                {State.showArea  && (
                                     <DropDowenMenu
                                         onCloseFn={(val) => {
 
@@ -218,16 +265,21 @@ const FormStep4 = ({ formikRef, state, setstate, GetAreas, countries, addresses,
                                                 setState((old) => ({
                                                     ...old,
                                                     showArea: false,
-                                                    forms: { ...State.forms, Area: "You must pick a area!" },
+                                                    forms: { ...old.forms, Area: "You must pick a area!" },
                                                 }));
                                                 setFieldError("Area", "You must pick a area!");
                                             } else {
+                                                const prevAreaId = values.Area;
+                                                const areaChanged = prevAreaId != val.id;
                                                 setFieldValue("Area", val.id);
+                                                if (areaChanged) {
+                                                    setFieldValue("Addresses", "");
+                                                }
                                                 setState((old) => ({
                                                     ...old,
                                                     showArea: false,
                                                     selectedArea: val,
-                                                    forms: { ...State.forms, Area: "" },
+                                                    forms: { ...old.forms, Area: "" },
                                                 }));
                                             }
                                         }}
@@ -262,7 +314,28 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string) 
         adressCon: {
             paddingVertical: PixelPerfect(8),
             borderBottomColor: theme.black,
-            borderBottomWidth: PixelPerfect(0.7)
+            borderBottomWidth: PixelPerfect(0.7),
+        },
+        adressRow: {
+            flexDirection: dir === "rtl" ? "row-reverse" : "row",
+            alignItems: "flex-start",
+            justifyContent: "space-between",
+            gap: PixelPerfect(12),
+        },
+        adressTexts: {
+            flex: 1,
+        },
+        deleteBtn: {
+            paddingVertical: PixelPerfect(6),
+            paddingHorizontal: PixelPerfect(8),
+        },
+        deleteBtnSpacer: {
+            minWidth: PixelPerfect(56),
+        },
+        deleteBtnText: {
+            fontFamily: Fonts.medium,
+            fontSize: PixelPerfect(16),
+            color: Colors.warning,
         },
         countryText: {
             fontFamily: Fonts.medium,

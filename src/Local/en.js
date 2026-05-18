@@ -423,6 +423,7 @@ export default {
   market: 'Market',
   Boursa: 'Boursa',
   NoData: 'No Data Available',
+  NoDataAvailable: 'Sorry, No matching results found',
   NoDataDetails:
     'You need to log in to access this content and explore all features.',
 };

@@ -100,13 +100,13 @@ const Index = (props: Props) => {
                 // });
                 setstate(old => ({ ...old, loadingSettings: false }));
                 
-                if (!res?.Countries || res.Countries.length === 0) {
-                    // console.error('❌ RegisterInformation: Countries data is empty!');
-                    showToast({ 
-                        type: 'error', 
-                        message: t("Failed to load required data. Please try again.") 
-                    });
-                }
+                // if (!res?.Countries || res.Countries.length === 0) {
+                //     // console.error('❌ RegisterInformation: Countries data is empty!');
+                //     showToast({ 
+                //         type: 'error', 
+                //         message: t("Failed to load required data. Please try again.") 
+                //     });
+                // }
             }
         ));
     };
@@ -247,8 +247,11 @@ const appendFormData = (data, parentKey = "") => {
                     ...state.forms, agreesonTerms: "You must agree on terms"
                 }
             }));
+                // showToast({ type: 'error', message: t("You must agree on terms") });
+            
             return;
         }
+        
         if (!isFormsValid) {
             return
         } else {
@@ -451,7 +454,7 @@ const appendFormData = (data, parentKey = "") => {
                     {state.isAgreeOnTerms ? <CheckBoxIconBig /> : <CheckBoxEmptyIconBig />}
                     <Text style={styles.agreeText}
                     >{t("Agree on")}
-                        <Text style={[styles.agreeText1]} onPress={() => console.log("gagfagafgafga")}> {t("Privcy and terms")}</Text>
+                        <Text style={[styles.agreeText1]} onPress={() => navigation.navigate('Terms')}> {t("Privcy and terms")}</Text>
                     </Text>
                 </Pressable>
                 {state.forms.agreesonTerms.length != 0 && <Text style={[styles.errorText, { marginTop: 5 }]}>{t(state.forms.agreesonTerms)}</Text>}

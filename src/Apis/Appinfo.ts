@@ -14,7 +14,7 @@ export const GetSettingsHandler = (body: any, action, cb?: (data: any, status: a
     try {
       const { data, status } = await globalAPI.post('/api/Configuration/GetAllLookups', body);
 
-      // console.log('GetSettingsHandler data = ', data.data, data.status);
+      console.log('GetSettingsHandler data = ', data, data.status);
       if (action == "settings") {
         dispatch(SetAppSettings(data.data.Setting));
       }

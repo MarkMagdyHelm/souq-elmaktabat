@@ -78,18 +78,21 @@ function App(): React.ReactElement {
 
       if (Platform.OS === "android") {
         let androidSetting = res?.find((el:any)=>el.type == "Android");
-        if (androidSetting.status == 1 && parseFloat(DeviceInfo.getVersion()) < parseFloat(androidSetting.targetVersion)) {
-          setstate(old=>({...old,isForceUpdateOptional:false,forceUpdate:true}))
-        }else if(androidSetting.status == 0 && parseFloat(DeviceInfo.getVersion()) < parseFloat(androidSetting.targetVersion)){
+        console.log("androidSetting = ", androidSetting);
+        console.log("DeviceInfo.getVersion()",DeviceInfo.getVersion());
+        
+        if (androidSetting.status == 2 && parseFloat(DeviceInfo.getVersion()) < parseFloat(androidSetting.targetVersion)) {
+          setstate(old=>({...old,isForceUpdateOptional:true,forceUpdate:false}))
+        }else if(androidSetting.status == 3 && parseFloat(DeviceInfo.getVersion()) < parseFloat(androidSetting.targetVersion)){
           setstate(old=>({...old,isForceUpdateOptional:true,forceUpdate:true}))
         }else{
           setstate(old=>({...old,isForceUpdateOptional:false,forceUpdate:false}))
         }
       } else {
         let iosSetting = res?.find((el:any)=>el.type == "IOS");
-        if (iosSetting.status == 1 && parseFloat(DeviceInfo.getVersion()) < parseFloat(iosSetting.targetVersion)) {
-          setstate(old=>({...old,isForceUpdateOptional:false,forceUpdate:true}))
-        }else if(iosSetting.status == 0 && parseFloat(DeviceInfo.getVersion()) < parseFloat(iosSetting.targetVersion)){
+        if (iosSetting.status == 2 && parseFloat(DeviceInfo.getVersion()) < parseFloat(iosSetting.targetVersion)) {
+          setstate(old=>({...old,isForceUpdateOptional:true,forceUpdate:false}))
+        }else if(iosSetting.status == 3 && parseFloat(DeviceInfo.getVersion()) < parseFloat(iosSetting.targetVersion)){
           setstate(old=>({...old,isForceUpdateOptional:true,forceUpdate:true}))
         }else{
           setstate(old=>({...old,isForceUpdateOptional:false,forceUpdate:false}))

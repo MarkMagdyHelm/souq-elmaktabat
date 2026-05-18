@@ -36,17 +36,17 @@ export const AssignDeviceIdToGuestHandler = (body: any, cb?: (data: any, status:
 * @param fcmToken
 * @param cb callback function
 */
-export const AssignGuestFCMTokenHandler = (body: any, params: any, cb?: (data: any, status: any) => void) => {
-  return async (dispatch: Dispatch<IDispatch>) => {
-    try {
-      const { data, status } = await globalAPI.post('api/User/AssignGuestFCMToken', body, { params: params });
-      if (data.status == 200) {
-        // dispatch(SetGuesterId(data.data))     
-      }
-      cb && cb(data, status);
-    } catch (error) {
-      // console.log('AssignGuestFCMToken error = ', error);
-      cb && cb(error, 500);
-    }
-  };
-};
+// export const AssignGuestFCMTokenHandler = (body: any, params: any, cb?: (data: any, status: any) => void) => {
+//   return async (dispatch: Dispatch<IDispatch>) => {
+//     try {
+//       const { data, status } = await globalAPI.post('api/User/AssignGuestFCMToken', body, { params: params });
+//       if (data.status == 200) {
+//         // dispatch(SetGuesterId(data.data))     
+//       }
+//       cb && cb(data, status);
+//     } catch (error) {
+//       // console.log('AssignGuestFCMToken error = ', error);
+//       cb && cb(error, 500);
+//     }
+//   };
+// };

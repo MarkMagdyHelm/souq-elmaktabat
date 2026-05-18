@@ -6,7 +6,7 @@ import messaging, { firebase } from "@react-native-firebase/messaging";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../Store/store";
 import { SetFCM } from "../Store/actions/auth";
-import { AssignGuestFCMTokenHandler } from "../Apis/Auth";
+// import { AssignGuestFCMTokenHandler } from "../Apis/Auth";
 import { navigate, navigationRef } from "../Navigation/NavigationService";
 
 const CHANNEL_ID = "high-importance-channel";
@@ -76,11 +76,11 @@ export default function PushNotificationHandler() {
 
       dispatch(SetFCM(fcmToken));
 
-      dispatch<any>(
-        AssignGuestFCMTokenHandler({}, { fcmToken }, (res: any) => {
-          //console.log("📡 AssignGuestFCMTokenHandler status:", res?.status);
-        })
-      );
+      // dispatch<any>(
+      //   AssignGuestFCMTokenHandler({}, { fcmToken }, (res: any) => {
+      //     //console.log("📡 AssignGuestFCMTokenHandler status:", res?.status);
+      //   })
+      // );
     } catch (error) {
       //console.log("❌ FCM token error:", error);
     }

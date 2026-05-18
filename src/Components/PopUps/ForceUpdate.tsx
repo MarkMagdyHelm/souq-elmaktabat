@@ -45,7 +45,7 @@ const ForceUpdate = (props: Props) => {
           onPress={() => { }}
           style={styles.button}
         />
-        {isForceUpdateOptional && <Button
+        {!isForceUpdateOptional && <Button
           title={t('forcetxt2')}
           styleTitle={styles.buttonText2}
           onPress={() => { onCloseFn && onCloseFn() }}

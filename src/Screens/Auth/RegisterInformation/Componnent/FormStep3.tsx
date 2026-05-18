@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { Pressable, Text, View, Platform, StyleSheet, Image } from "react-native";
 import { Formik, FormikProps } from "formik";
 import { validationSchema2 } from "../../../../Validation/Form3Refistration";
@@ -15,6 +15,77 @@ import FilterOrder from "../../../../Components/PopUps/FilterOrder";
 
 const filterOption = [{ ID: 1, Name: "Camera", Value: "Camera" }, { ID: 2, Name: "Photos", Value: "Photos" },]
 
+type SyncStep3AddressesProps = {
+  city: any;
+  area: any;
+  street: string;
+  countries: any[];
+  areas: any[];
+  setstate: React.Dispatch<React.SetStateAction<any>>;
+};
+
+/** Updates only `addresses[0]` from Step 3; leaves additional rows (Step 4) unchanged. */
+const SyncStep3Addresses = React.memo(function SyncStep3Addresses({
+  city,
+  area,
+  street,
+  countries,
+  areas,
+  setstate,
+}: SyncStep3AddressesProps) {
+  const prevFieldsRef = useRef<{ city: any; area: any; street: string } | null>(null);
+
+  useEffect(() => {
+    const prevFields = prevFieldsRef.current;
+    const fieldsChanged =
+      prevFields == null ||
+      prevFields.city != city ||
+      prevFields.area != area ||
+      prevFields.street !== street;
+    prevFieldsRef.current = { city, area, street };
+
+    setstate((old) => {
+      const list = old.addresses || [];
+      const rest = list.slice(1);
+      const first = list[0];
+
+      if (!fieldsChanged) {
+        if (rest.length > 0) {
+          return old;
+        }
+        if (
+          first &&
+          first.Country != null &&
+          first.Region != null &&
+          String(first.Street ?? "").trim().length > 0
+        ) {
+          return old;
+        }
+      }
+
+      const country = countries.find((el) => el.id == city);
+      const region = areas.find((el) => el.id == area);
+      const streetTrim = String(street ?? "").trim();
+      if (!country || !region || !streetTrim) {
+        return old;
+      }
+
+      const nextFirst = { Country: country, Region: region, Street: streetTrim };
+      if (
+        first &&
+        first.Street === nextFirst.Street &&
+        first.Country?.id == nextFirst.Country?.id &&
+        first.Region?.id == nextFirst.Region?.id
+      ) {
+        return old;
+      }
+
+      return { ...old, addresses: [nextFirst, ...rest] };
+    });
+  }, [city, area, street, countries, areas, setstate]);
+
+  return null;
+});
 
 type Props = {
   formikRef: React.RefObject<FormikProps<any>>;
@@ -109,7 +180,14 @@ const FormStep3 = ({ formikRef, state, setstate, GetAreas, countries, tools, sty
 
         return (
           <>
-
+            <SyncStep3Addresses
+              city={values.City}
+              area={values.Area}
+              street={values.Addresses}
+              countries={countries}
+              areas={state.areas}
+              setstate={setstate}
+            />
             <View style={styless.logoCon}>
               <Text style={styless.txtin}>{t('input1')}</Text>
               {values?.ImageUrl?.hasOwnProperty("uri") ?
@@ -158,8 +236,12 @@ const FormStep3 = ({ formikRef, state, setstate, GetAreas, countries, tools, sty
             <Pressable
               style={styles.selectMenueCon}
               onPress={() => {
-
-                setstate((old) => ({ ...old, showGovernemnts: true }));
+setstate((old) => ({
+  ...old,
+  showArea: false,
+  showGovernemnts: true,
+  selectedArea:{ name: "", arName: "", id: "" },
+}));
               }}
             >
 
@@ -513,17 +595,7 @@ const FormStep3 = ({ formikRef, state, setstate, GetAreas, countries, tools, sty
                     console.log((formikRef?.current?.errors));
                     console.log('====================================');
                     if (!(formikRef?.current?.errors?.Addresses || formikRef?.current?.errors?.City || formikRef?.current?.errors?.Area)) {
-                      setActiveStep(3)
-                      setstate((old) => ({
-                        ...old,
-                        addresses: [{
-                          Country: countries.find(el => el.id == formikRef?.current?.values?.City),
-                          Region: state.areas.find(el => el.id == formikRef?.current?.values?.Area),
-                          Street: formikRef?.current?.values?.Addresses
-                        }]
-                      }));
-
-
+                      setActiveStep(3);
                     }
                   }
                 }}

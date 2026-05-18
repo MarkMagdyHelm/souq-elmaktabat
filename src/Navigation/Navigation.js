@@ -1,4 +1,4 @@
-import { Button, Linking, Platform } from 'react-native';
+import { Button, Linking, Platform, ActivityIndicator, View } from 'react-native';
 import {
   DarkTheme,
   DefaultTheme,
@@ -50,14 +50,42 @@ import EditProfile from '../Screens/Auth/EditProfile/index';
 import EditProfileUser from '../Screens/Auth/EditProfileUser/index';
 import EditOffer from '../Screens/Company/EditOffer';
 import PushNotificationHandler from '../Utilties';
+import { AsyncKeys, getItem } from '../Helper';
 // import useNotificationHandler from './RootNavigator';
 const Stack = createStackNavigator();
 
 const Stacks = () => {
   const { isLogin, userdata } = useSelector(state => state.auth, shallowEqual);
+  const [demoPrefsLoaded, setDemoPrefsLoaded] = useState(false);
+  const [hasSeenDemo, setHasSeenDemo] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const seen = await getItem(AsyncKeys.HAS_SEEN_DEMO);
+        if (mounted) {
+          setHasSeenDemo(!!seen);
+        }
+      } finally {
+        if (mounted) {
+          setDemoPrefsLoaded(true);
+        }
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   // Validate user authentication: check both isLogin flag AND userdata validity
   const isValidAuth = isLogin && userdata && Object.keys(userdata).length > 0 && userdata.id && userdata.token;
+
+  const initialRouteName = isValidAuth
+    ? 'Market'
+    : hasSeenDemo
+      ? 'Signin'
+      : 'Demo';
 
   // Debug logging for auth issues
   if (isLogin && !isValidAuth) {
@@ -68,6 +96,14 @@ const Stacks = () => {
     //   hasId: userdata?.id,
     //   hasToken: userdata?.token,
     // });
+  }
+
+  if (!demoPrefsLoaded) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
   }
 
   // console.log('Navigation auth check:', { isLogin, isValidAuth, userId: userdata?.id });
@@ -85,7 +121,7 @@ const Stacks = () => {
           // presentation:"transparentModal",
         };
       }}
-      initialRouteName={isValidAuth ? 'Market' : 'Demo'}
+      initialRouteName={initialRouteName}
     >
       <Stack.Screen name="Boursa" component={Boursa} />
 

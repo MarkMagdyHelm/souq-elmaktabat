@@ -10,10 +10,13 @@ import { globalAPI } from "../Constants/config";
 export const GetPapersHandler = (cb?: (data: any, status: any) => void) => {
   return async (dispatch: Dispatch<IDispatch>) => {
     try {
+      console.log("GetPapersHandler");
+      
       const { data, status } = await globalAPI.get('api/DisplayPaper/GetAllPapers');
+      
       cb && cb(data, status);
     } catch (error) {
-      // console.log('GetPapersHandler error = ', error);
+      console.log('GetPapersHandler error = ', error);
       cb && cb(error, 500);
     }
   };
@@ -27,11 +30,11 @@ export const GetAllPaperOffers = (body:any,cb?: (data: any, status: any) => void
     try {
       const { data, status } = await globalAPI.post('api/Offer/GetAllPaperOffers',body);
       cb && cb(data, status);
-    // console.log("GetAllPaperOffers",data);
+    console.log("GetAllPaperOffers",data);
     // console.log("kkkk",body);
 
     } catch (error) {
-      // console.log('GetAllPaperOffers error = ', error);
+      console.log('GetAllPaperOffers error = ', error);
       cb && cb(error, 500);
     }
     
@@ -50,7 +53,7 @@ export const GetAllInkOffers = (body:any,cb?: (data: any, status: any) => void) 
       // console.log('GetAllInkOffers  = ', body);
 
     } catch (error) {
-      // console.log('GetAllInkOffers error = ', error);
+      console.log('GetAllInkOffers error = ', error);
       cb && cb(error, 500);
     }
   };
@@ -68,7 +71,7 @@ export const GetAllPrintersOffers = (body:any,cb?: (data: any, status: any) => v
       // console.log('GetAllPrintersOffers = ', data);
 
     } catch (error) {
-      // console.log('GetAllPrintersOffers error = ', error);
+      console.log('GetAllPrintersOffers error = ', error);
       cb && cb(error, 500);
     }
   };

@@ -128,7 +128,7 @@ const useStyles = (
     greenBtn: {
       flex: 1,
       borderWidth: 1,
-      borderColor: theme.green,
+      borderColor: theme.babyBlue,
       borderRadius: PixelPerfect(6),
       height: PixelPerfect(40),
       alignItems: 'center',
@@ -152,7 +152,7 @@ const useStyles = (
     greenText: {
       fontSize: PixelPerfect(16),
       fontFamily: Fonts.medium,
-      color: theme.green,
+      color: theme.babyBlue,
     },
 
     backText: {
@@ -177,7 +177,7 @@ const useStyles = (
       flex: 1,
       fontSize: PixelPerfect(16),
       fontFamily: Fonts.bold,
-      color: theme.green,
+      color: theme.babyBlue,
     },
     close: { fontSize: PixelPerfect(24), color: theme.deactive },
     closeTitle: {

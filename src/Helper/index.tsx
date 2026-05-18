@@ -7,6 +7,7 @@ export enum AsyncKeys {
   USER_DATA = 'USER_DATA',
   LANGUAGE = 'LANGUAGE',
   PAPER_RATE = 'PAPER_RATE',
+  HAS_SEEN_DEMO = 'HAS_SEEN_DEMO',
 }
 
 export const getPaperRateKey = (email: string, paperId: number | string) =>

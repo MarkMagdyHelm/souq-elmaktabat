@@ -9,6 +9,7 @@ import { Slider1, Slider2, Slider3, Slider4, Slider5 } from '../../Assets/Svg'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../Store/store'
 import Button from '../../Components/touchables/Button'
+import { AsyncKeys, saveItem } from '../../Helper'
 
 
 type Props = {
@@ -173,13 +174,16 @@ const Index = (props: Props) => {
             </Text>
         </View>
     );
-    const handlePass = () => {
+    const markDemoSeenThenReset = async (routeName: string, params?: object) => {
+        await saveItem(AsyncKeys.HAS_SEEN_DEMO, true);
         navigation.reset({
             index: 0,
-            routes: [
-                { name: 'Market' },
-            ],
+            routes: [{ name: routeName, ...(params ? { params } : {}) }],
         });
+    };
+
+    const handlePass = () => {
+        markDemoSeenThenReset('Signin');
     }
     return (
         <Container showHint={false}>
@@ -241,13 +245,8 @@ const Index = (props: Props) => {
                     <Button
               title={t('Sign in')}
               styleTitle={styles.buttonText}
-              onPress={()=>{
-                  navigation.reset({
-            index: 0,
-            routes: [
-                { name: 'Signin' },
-            ],
-        });
+              onPress={() => {
+                  markDemoSeenThenReset('Signin');
               }}
               style={styles.button}
               />
@@ -255,12 +254,7 @@ const Index = (props: Props) => {
               title={t('signtxt1')}
               styleTitle={styles.buttonText2}
               onPress={()=>{
-                  navigation.reset({
-            index: 0,
-            routes: [
-                { name: 'Signup',params:{isForgetPassword:false} },
-            ],
-        });
+                  markDemoSeenThenReset('Signup', { isForgetPassword: false });
               }}
               style={styles.button2}
               />

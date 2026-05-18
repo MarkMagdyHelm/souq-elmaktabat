@@ -132,8 +132,10 @@ const Index = (props: Props) => {
     }
 
     // 🔴 FIX 1: SAFE IDS SELECTION (NO LOGIC CHANGE)
-    const activityId = state.selectedActivities?.id || values.Governmen;
-    const areaId = state.selecteServies?.id || values.Area;
+    // const activityId = state.selectedActivities?.id || values.Governmen;
+    // const areaId = state.selecteServies?.id || values.Area;
+    const areaId =  values.Area;
+    const GovernmentID = values.Governmen;
     // const marketId = state.selecteMarket?.id || values.Market;
 
     // 🔹 Activity
@@ -142,12 +144,12 @@ const Index = (props: Props) => {
     // }
 
     // 🔴 FIX 2: SWAGGER CORRECT STRUCTURE ONLY
-    // if (activityId) {
-    //   bodyFormData.append('Branches.Country', String(activityId));
-    // }
-
     if (areaId) {
-      bodyFormData.append('Branches', String(areaId));
+      bodyFormData.append('Branches.Region', String(areaId));
+    }
+
+    if (GovernmentID) {
+      bodyFormData.append('Branches.Country', String(GovernmentID));
     }
 
     // // 🔹 Payment (UNCHANGED LOGIC)
