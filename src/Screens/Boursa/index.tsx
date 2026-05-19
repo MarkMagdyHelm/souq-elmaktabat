@@ -46,9 +46,7 @@ const Index = (props: Props) => {
   const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
   const styles = useStyles(Fonts, theme, dark, dir);
   const ref = useRef() as any;
-  const { isLogin, userdata, isSeller } = useSelector(
-    (state: RootState) => state.auth,
-  );
+  const { isLogin } = useSelector((state: RootState) => state.auth);
 
   const handleScreenShot = () => {
     ref.current.capture().then((uri: any) => {

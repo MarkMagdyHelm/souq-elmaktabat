@@ -426,4 +426,6 @@ export default {
   NoDataAvailable: 'Sorry, No matching results found',
   NoDataDetails:
     'You need to log in to access this content and explore all features.',
+  'No internet connection': 'No internet connection',
+  Retry: 'Retry',
 };

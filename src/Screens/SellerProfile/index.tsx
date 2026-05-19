@@ -32,15 +32,15 @@ const Index = (props: Props) => {
      const { isLogin, userdata, isSeller } = useSelector((state: RootState) => state.auth);
 
     // Debug: Warn if navigated here without valid userdata
-    useEffect(() => {
-        if (!userdata || !userdata.id) {
+    // useEffect(() => {
+        // if (!userdata || !userdata.id) {
             // console.error('⚠️ SellerProfile: Navigated without valid userdata!', {
             //     hasUserdata: !!userdata,
             //     isLogin,
             //     isSeller,
             // });
-        }
-    }, []);
+        // }
+    // }, []);
 
     const [state, setstate] = useState({
         loading: false,

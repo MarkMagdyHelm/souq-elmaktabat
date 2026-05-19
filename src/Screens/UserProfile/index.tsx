@@ -29,7 +29,7 @@ const Index = (props: Props) => {
     const styles = useStyles(Fonts, theme);
     const toast = useToast();
     const dispatch = useDispatch();
-    const { isLogin, userdata, isSeller } = useSelector((state: RootState) => state.auth);
+    const { isLogin, userdata } = useSelector((state: RootState) => state.auth);
 
     // Debug: Warn if navigated here without valid userdata
     useEffect(() => {

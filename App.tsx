@@ -37,6 +37,7 @@ import Error from './src/Components/Notifications/Error';
 import Success from './src/Components/Notifications/Success';
 import PushNotificationHandler from './src/Utilties';
 import Orientation from 'react-native-orientation-locker';
+import OfflineNotice from './src/Components/Notifications/OfflineNotice';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -118,7 +119,7 @@ function App(): React.ReactElement {
 
   return (
     <>
-      {/* <OfflineNotice /> */}
+      <OfflineNotice />
       <ToastProvider
     offsetTop={50}
     renderType={{

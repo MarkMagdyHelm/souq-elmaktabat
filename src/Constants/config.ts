@@ -2,6 +2,8 @@ import axios from 'axios';
 
 import { NativeModules, Platform } from 'react-native';
 import { AsyncKeys, getItem } from '../Helper';
+import { isNetworkConnectionError } from '../Helper/networkUtils';
+import { networkStatus } from '../Helper/networkStatus';
 import DeviceInfo from 'react-native-device-info'
 import { useSelector } from 'react-redux';
 import { RootState } from '../Store/store';
@@ -73,5 +75,18 @@ globalAPI.interceptors.request.use(
     // console.log('error ', error);
 
     Promise.reject(error);
+  },
+);
+
+globalAPI.interceptors.response.use(
+  response => {
+    networkStatus.clearConnectionError();
+    return response;
+  },
+  error => {
+    if (isNetworkConnectionError(error)) {
+      networkStatus.reportConnectionError();
+    }
+    return Promise.reject(error);
   },
 );
