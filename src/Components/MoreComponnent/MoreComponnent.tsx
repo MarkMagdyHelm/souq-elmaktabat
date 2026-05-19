@@ -1,131 +1,166 @@
-import { Pressable, StyleSheet, Text, View, Image, ScrollView, StatusBar, Platform, Linking } from 'react-native'
-import React, { useContext, useState } from 'react'
-import { IFont, ITheme } from '../../Constants/interfaces'
-import { ThemeContext } from '../../Constants/theming'
-import { Colors, PixelPerfect, getStatusBarHeight } from '../../Constants/styleConstants'
-import { t } from 'i18next'
-import { Container } from '../containers/Containers'
-import { ContactUsIcon, ShareMoreIcon, CloseIcon, MenuChevronIcon, AccountIcon, OrdersIcon, OffersIcon, PurchaseOrdersIcon, RatingsIcon, FavoriteIcon, BranchesIcon, LockIcon, TermsIcon, ChangeLangIcon, LogoutIcon, DeleteIcon, StareIcon, StareIconGray, RateProfileIcon } from '../../Assets/Svg'
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '../../Store/store'
-import { imageUrl } from '../../Constants/config'
-import CancelOrder from '../PopUps/CancelOrder'
-import { logoutHandler } from '../../Apis/User'
-import ImageWithFallback from '../ImageWithFallback/ImageWithFallback'
-import { DeleteAccount } from '../../Apis/HomeApis'
-import { useToast } from 'react-native-toast-notifications'
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ScrollView,
+  StatusBar,
+  Platform,
+  Linking,
+} from 'react-native';
+import React, { useContext, useState } from 'react';
+import { IFont, ITheme } from '../../Constants/interfaces';
+import { ThemeContext } from '../../Constants/theming';
+import {
+  Colors,
+  PixelPerfect,
+  getStatusBarHeight,
+} from '../../Constants/styleConstants';
+import { t } from 'i18next';
+import { Container } from '../containers/Containers';
+import {
+  ContactUsIcon,
+  ShareMoreIcon,
+  CloseIcon,
+  MenuChevronIcon,
+  AccountIcon,
+  OrdersIcon,
+  OffersIcon,
+  PurchaseOrdersIcon,
+  RatingsIcon,
+  FavoriteIcon,
+  BranchesIcon,
+  LockIcon,
+  TermsIcon,
+  ChangeLangIcon,
+  LogoutIcon,
+  DeleteIcon,
+  StareIcon,
+  StareIconGray,
+  RateProfileIcon,
+} from '../../Assets/Svg';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../Store/store';
+import { imageUrl } from '../../Constants/config';
+import CancelOrder from '../PopUps/CancelOrder';
+import { logoutHandler } from '../../Apis/User';
+import ImageWithFallback from '../ImageWithFallback/ImageWithFallback';
+import { DeleteAccount } from '../../Apis/HomeApis';
+import { useToast } from 'react-native-toast-notifications';
 
 type Props = {
-  navigation: any
-}
+  navigation: any;
+};
 
 const MoreComponnent = (props: Props) => {
-  const { isLogin, userdata, isSeller } = useSelector((state: RootState) => state.auth);
+  const { isLogin, userdata, isSeller, isAdmin } = useSelector(
+    (state: RootState) => state.auth,
+  );
   const { navigation } = props;
   const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
   const styles = useStyles(Fonts, theme, dark, dir);
-// const APP_STORE_LINK = `itms-apps://apps.apple.com/app/id${IOS_APP_ID}?action=write-review`;
-const PLAY_STORE_LINK = `market://details?id=com.souqelmaktabat`;
+  // const APP_STORE_LINK = `itms-apps://apps.apple.com/app/id${IOS_APP_ID}?action=write-review`;
+  const PLAY_STORE_LINK = `market://details?id=com.souqelmaktabat`;
 
-const STORE_LINK = Platform.select({
-  // ios: APP_STORE_LINK,
-  android: PLAY_STORE_LINK,
-});
+  const STORE_LINK = Platform.select({
+    // ios: APP_STORE_LINK,
+    android: PLAY_STORE_LINK,
+  });
 
   const allMenuItems = [
+    // Seller and not Admin specific item
     {
-      key: 'accountInfo',
-       isLogin:true,
-      title: t('AccountInfo'),
+      key: 'sellerRequest',
+      isLogin: true,
+      title: isAdmin ? t('sellerRequestAccept') : t('sellerRequest'),
       icon: null,
-      onPress: () => {
-
-      }
+      sellerOnly: true,
+      onPress: () => {},
     },
- {
+    {
       key: 'login',
       title: t('signin1'),
-         isLogin:false,
+      isLogin: false,
       icon: <AccountIcon />,
       onPress: () => {
         dispatch<any>(logoutHandler());
 
         navigation.reset({
-                  index: 0,
-                  routes: [{ name: 'Signin' }],
-                });
-      }
+          index: 0,
+          routes: [{ name: 'Signin' }],
+        });
+      },
     },
- {
+    {
       key: 'account',
-       isLogin:true,
+      isLogin: true,
       title: t('The Account'),
       icon: <AccountIcon />,
-      onPress: () => navigation.navigate(isSeller ? 'SellerProfile' : 'UserProfile')
+      onPress: () =>
+        navigation.navigate(isSeller ? 'SellerProfile' : 'UserProfile'),
     },
     {
       key: 'orders',
       title: t('My Orders'),
-       isLogin:true,
+      isLogin: true,
       icon: <OrdersIcon />,
-      onPress: () => navigation.navigate('MyOrders')
+      onPress: () => navigation.navigate('MyOrders'),
     },
 
     {
       key: 'offers',
       title: t('My Offers'),
-       isLogin:true,
+      isLogin: true,
       icon: <OffersIcon />,
       onPress: () => navigation.navigate('MyOffers'),
-      sellerOnly: true
+      sellerOnly: true,
     },
     {
       key: 'purchase',
       title: t('Purchase Orders'),
-       isLogin:true,
+      isLogin: true,
       icon: <PurchaseOrdersIcon />,
       onPress: () => navigation.navigate('Orders'),
-      sellerOnly: true
+      sellerOnly: true,
     },
     {
       key: 'ratings',
       title: t('Ratings'),
-       isLogin:true,
+      isLogin: true,
       icon: <RatingsIcon />,
       onPress: () => {
-      
-        navigation.navigate('Rating')
+        navigation.navigate('Rating');
       },
-   
     },
     {
       key: 'branches',
       title: t('Branches'),
       icon: <BranchesIcon />,
       onPress: () => {
-        navigation.navigate('Branches')
+        navigation.navigate('Branches');
       },
       sellerOnly: true,
-       isLogin:true,
+      isLogin: true,
     },
     {
       key: 'favorites',
-       isLogin:true,
+      isLogin: true,
       title: t('Favorite List'),
       icon: <FavoriteIcon />,
       onPress: () => {
-        navigation.navigate('Favoriate')
-      }
+        navigation.navigate('Favoriate');
+      },
     },
     {
       key: 'changePassword',
-       isLogin:true,
-      title: t("Change Password"),
+      isLogin: true,
+      title: t('Change Password'),
       icon: <LockIcon />,
       onPress: () => {
-        navigation.navigate('ChangePass')
-       },
-      sellerOnly: false
+        navigation.navigate('ChangePass');
+      },
+      sellerOnly: false,
     },
     // {
     //   key: 'aboutAPP',
@@ -136,19 +171,18 @@ const STORE_LINK = Platform.select({
     //   }
     // },
 
-
     {
       key: 'contact',
       title: t('Contact us'),
       icon: <ContactUsIcon />,
-      onPress: () => navigation.navigate('ContactUs')
+      onPress: () => navigation.navigate('ContactUs'),
     },
 
     {
       key: 'Terms',
       title: t('terms'),
       icon: <TermsIcon />,
-      onPress: () => navigation.navigate('Terms')
+      onPress: () => navigation.navigate('Terms'),
     },
 
     // {
@@ -163,7 +197,7 @@ const STORE_LINK = Platform.select({
     //   icon: <RateProfileIcon />,
     //   onPress: () => {
     //       // Linking.openURL(STORE_LINK)
-    //     //  StoreReview.requestReview(); 
+    //     //  StoreReview.requestReview();
     //     }
     // },
     // {
@@ -175,48 +209,42 @@ const STORE_LINK = Platform.select({
     {
       key: 'logout',
       title: t('logout'),
-       isLogin:true,
+      isLogin: true,
       icon: <LogoutIcon />,
       onPress: () => {
-        setVisibleCancel(true)
-
-      }
+        setVisibleCancel(true);
+      },
     },
     {
       key: 'deleteAccount',
-      isLogin:true,
+      isLogin: true,
       title: t('Delete Account'),
       icon: <DeleteIcon />,
       onPress: () => {
-        setVisibleDelete(true)
-      }
+        setVisibleDelete(true);
+      },
     },
   ];
 
+  const filteredMenuItems = allMenuItems.filter(item => {
+    // login check
+    if (item.isLogin === true && !isLogin) return false;
+    if (item.key === 'login' && isLogin) return false;
+    // seller check
+    if (item.sellerOnly && !isSeller) return false;
 
+    return true;
+  });
 
-
-const filteredMenuItems = allMenuItems.filter(item => {
-  // login check
-  if (item.isLogin === true && !isLogin) return false;
- if (item.key === "login" && isLogin) return false;
-  // seller check
-  if (item.sellerOnly && !isSeller) return false;
-
-  return true;
-});
-
-const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const userName = userdata?.name;
   const userPhone = userdata?.phoneNumber;
   // const userImage = userdata?.imageUrl || userdata?.userImages ? { uri: imageUrl + (userdata?.imageUrl || userdata?.userImages) } : null;
- const imagePath = userdata?.imageUrl || userdata?.userImages;
+  const imagePath = userdata?.imageUrl || userdata?.userImages;
 
-const userImage = imagePath
-  ? { uri: imageUrl + imagePath }
-  : null;
+  const userImage = imagePath ? { uri: imageUrl + imagePath } : null;
   // console.log(userImage?.uri, 'userdatauserdata', isSeller);
-  
+
   const [visibleCancel, setVisibleCancel] = useState(false);
   const [visibleDelete, setVisibleDelete] = useState(false);
   const toast = useToast();
@@ -236,7 +264,10 @@ const userImage = imagePath
     dispatch<any>(
       DeleteAccount((res, status) => {
         if (res.status === 200) {
-          toastNotfication({ type: 'ok', message: res?.message ?? t('AccountDeleted') });
+          toastNotfication({
+            type: 'ok',
+            message: res?.message ?? t('AccountDeleted'),
+          });
           setVisibleDelete(false);
           dispatch<any>(logoutHandler());
           navigation.reset({
@@ -255,31 +286,48 @@ const userImage = imagePath
   return (
     <Container>
       {/* Header Section */}
-      <CancelOrder visible={visibleCancel} onClose={() => setVisibleCancel(false)} onSubmit={() => {
-        setVisibleCancel(false)
-        dispatch<any>(logoutHandler());
- navigation.reset({
-              index: 0,
-              routes: [{ name: 'Signin' }],
-            } as any);      }} title={t("LogoutCancle")} body={t("confirmLogout")} cancleText={t("yesLogout")} />
-      <CancelOrder visible={visibleDelete} onClose={() => setVisibleDelete(false)} onSubmit={() => {
-        handleDeleteAccount();
-      }} title={t("Delete Account")} body={t("confirmDeleteAccount")} cancleText={t("yesDelete")} />
+      <CancelOrder
+        visible={visibleCancel}
+        onClose={() => setVisibleCancel(false)}
+        onSubmit={() => {
+          setVisibleCancel(false);
+          dispatch<any>(logoutHandler());
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Signin' }],
+          } as any);
+        }}
+        title={t('LogoutCancle')}
+        body={t('confirmLogout')}
+        cancleText={t('yesLogout')}
+      />
+      <CancelOrder
+        visible={visibleDelete}
+        onClose={() => setVisibleDelete(false)}
+        onSubmit={() => {
+          handleDeleteAccount();
+        }}
+        title={t('Delete Account')}
+        body={t('confirmDeleteAccount')}
+        cancleText={t('yesDelete')}
+      />
       <View style={[layout.rowBox, styles.header]}>
         <View style={[layout.rowBox, styles.profileSection]}>
           <View style={styles.profileImageContainer}>
-            {(userImage&&isLogin) && (
+            {userImage && isLogin && (
               // <Image source={userImage} style={styles.profileImage} />
-            <ImageWithFallback
+              <ImageWithFallback
                 uri={userImage?.uri}
-                type={0}//to set default
+                type={0} //to set default
                 style={styles.profileImage}
               />
-            ) }
+            )}
           </View>
           <View style={styles.profileInfo}>
             <Text style={[layout.textAlign, styles.userName]}>{userName}</Text>
-            <Text style={[layout.textAlign, styles.userPhone]}>{userPhone}</Text>
+            <Text style={[layout.textAlign, styles.userPhone]}>
+              {userPhone}
+            </Text>
           </View>
         </View>
         <Pressable
@@ -301,21 +349,20 @@ const userImage = imagePath
             style={styles.menuItem}
             onPress={item?.onPress}
           >
-            {item?.key != "aboutAPP" && <View style={styles.chevronContainer}>
-              <MenuChevronIcon
-                color={theme.textColor}
-                style={styles.chevron}
-              />
-            </View>}
+            {item?.key != 'aboutAPP' && item.key != 'sellerRequest' && (
+              <View style={styles.chevronContainer}>
+                <MenuChevronIcon
+                  color={theme.textColor}
+                  style={styles.chevron}
+                />
+              </View>
+            )}
             <View style={[layout.rowBox, { flex: 1, alignItems: 'center' }]}>
-
-              {item?.key !== "aboutAPP" && item?.key !== "accountInfo" && (
-                <View style={styles.menuIconContainer}>
-                  {item?.icon}
-                </View>
+              {item?.key !== 'aboutAPP' && item?.key !== 'sellerRequest' && (
+                <View style={styles.menuIconContainer}>{item?.icon}</View>
               )}
 
-              {item?.key !== "aboutAPP"  && item?.key !== "accountInfo"? (
+              {item?.key !== 'aboutAPP' && item?.key !== 'sellerRequest' ? (
                 <Text style={[styles.menuText, layout.textAlign]}>
                   {item?.title}
                 </Text>
@@ -324,19 +371,22 @@ const userImage = imagePath
                   {item?.title}
                 </Text>
               )}
-
             </View>
           </Pressable>
         ))}
       </ScrollView>
     </Container>
+  );
+};
 
-  )
-}
+export default MoreComponnent;
 
-export default MoreComponnent
-
-const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,) =>
+const useStyles = (
+  Fonts: IFont,
+  theme: ITheme,
+  darkmode: boolean,
+  dir: string,
+) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -380,15 +430,12 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
       fontSize: PixelPerfect(14),
       color: theme.textColor,
     },
-    profileInfo: {
-
-    },
+    profileInfo: {},
     userName: {
       fontFamily: Fonts.bold,
       fontSize: PixelPerfect(18),
       color: theme.textColor,
       marginBottom: PixelPerfect(4),
-
     },
     userPhone: {
       fontFamily: Fonts.regular,
@@ -398,7 +445,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
     menuContainer: {
       flex: 1,
       paddingTop: PixelPerfect(8),
-      marginBottom: PixelPerfect(15)
+      marginBottom: PixelPerfect(15),
     },
     menuItem: {
       paddingHorizontal: PixelPerfect(16),
@@ -429,7 +476,7 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
       flex: 1,
       fontFamily: Fonts.medium,
       fontSize: PixelPerfect(18),
-      color: "#0394FF",
+      color: '#0394FF',
       marginEnd: PixelPerfect(4),
       textAlign: dir === 'rtl' ? 'right' : 'left',
     },
@@ -442,4 +489,4 @@ const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,)
     chevron: {
       transform: [{ rotate: dir !== 'rtl' ? '180deg' : '0deg' }],
     },
-  })
+  });

@@ -34,15 +34,13 @@ export const UserLogin = () => ({
 });
 
 /**
-* UserIsSeller
-*/
-export const UserIsSeller = (payload:boolean) => {
-  // console.log('UserIsSeller payload = ',payload);
-  return {
-    type: ActionType.USER_ISRESELLER,
-    payload: payload,
-  }
-}
+ * @deprecated Role flags are derived in the auth reducer on SAVE_USER_DATA.
+ * Use SetUserData with `{ role, admin }` instead.
+ */
+export const UserIsSeller = (payload: boolean) => ({
+  type: ActionType.USER_ISRESELLER,
+  payload,
+});
 /**
 * UserLogout
 */

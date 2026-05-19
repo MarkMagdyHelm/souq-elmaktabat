@@ -1,35 +1,65 @@
+import { REHYDRATE } from 'redux-persist';
 import { IReduser } from '../../Constants/interfaces';
+import { deriveUserRoleFlags } from '../../Helper/userRole';
 import { ActionType } from '../actions/actions';
 
 const initialState = {
   userdata: {},
   isLogin: false,
-  gusterID: "",
-  fcm: "",
-  isSeller: false
-
+  gusterID: '',
+  fcm: '',
+  isSeller: false,
+  isAdmin: false,
 };
 
-export default (state = initialState, { type, payload }: IReduser) => {
-  switch (type) {
+const withRoleFlags = (state: typeof initialState, userdata: Record<string, unknown>) => {
+  const flags = deriveUserRoleFlags(userdata);
+  return {
+    ...state,
+    userdata,
+    isSeller: flags.isSeller,
+    isAdmin: flags.isAdmin,
+  };
+};
 
+export default (state = initialState, action: IReduser) => {
+  const { type, payload } = action;
+
+  switch (type) {
     case ActionType.SET_GUSTER_ID:
       return { ...state, gusterID: payload };
+
     case ActionType.SAVE_USER_DATA:
-      // console.log('🔄 Auth Reducer: SAVE_USER_DATA action', {
-      //   previousUserdata: state.userdata,
-      //   newPayload: payload,
-      //   payloadKeys: payload ? Object.keys(payload) : [],
-      // });
-      return { ...state, userdata: payload };
+      return withRoleFlags(state, payload ?? {});
+
     case ActionType.USER_LOGIN:
       return { ...state, isLogin: payload };
+
     case ActionType.USER_LOGOUT:
-      return { ...state, isLogin: payload };
+      return {
+        ...state,
+        isLogin: payload,
+        isSeller: false,
+        isAdmin: false,
+      };
+
     case ActionType.SET_FCM_TOKEN:
       return { ...state, fcm: payload };
+
     case ActionType.USER_ISRESELLER:
-      return { ...state, isSeller: payload };
+      // Legacy action: treat boolean as isSeller only; prefer SAVE_USER_DATA.
+      if (typeof payload === 'boolean') {
+        return { ...state, isSeller: payload };
+      }
+      return state;
+
+    case REHYDRATE: {
+      const inbound = (payload as { auth?: typeof initialState })?.auth;
+      if (!inbound) {
+        return state;
+      }
+      return withRoleFlags({ ...state, ...inbound }, inbound.userdata ?? {});
+    }
 
     default:
       return state;

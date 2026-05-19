@@ -312,6 +312,8 @@ export default {
   ordersCount: 'الطلبات عدد',
   offersCount: 'العروض عدد',
   accountInfo: 'معلومات الحساب',
+  sellerRequest:'طلب تسجيلك كتاجر قيد المراجعة',
+  sellerRequestAccept:'تم قبول طلب تسجيلك كتاجر',
   aboutCompany: 'عن المؤسسة',
   companyTools: 'ادوات المؤسسة',
   companyActivity: 'نشاط المؤسسة',

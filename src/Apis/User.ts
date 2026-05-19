@@ -1,6 +1,7 @@
 import { Dispatch } from "redux";
 import { IDispatch } from "../Constants/interfaces";
-import { SetUserData, UserIsSeller, UserLogin, UserLogout } from "../Store/actions/auth";
+import { SetUserData, UserLogin, UserLogout } from "../Store/actions/auth";
+import { store } from "../Store/store";
 import { AsyncKeys, saveItem } from "../Helper";
 import { globalAPI } from "../Constants/config";
 import { Platform } from "react-native";
@@ -52,13 +53,6 @@ export const SignInHandler = (body:any, cb?: (data: any,status:any) => void) => 
             dispatch<any>(loginHandler(signInData));
           }
           
-          if (data.data.role != "Customer") {
-            if (data.data.admin) {     
-              dispatch<any>(UserIsSeller(data.data.admin));
-            }
-          }else{
-            dispatch<any>(UserIsSeller(false));
-          }
         }
         cb && cb(data,status);
       } catch (error) {
@@ -126,7 +120,6 @@ export const logoutHandler = (body:any={}) => {
         // Clear Redux state FIRST
         dispatch(SetUserData({}));
         dispatch(UserLogout());
-        dispatch(UserIsSeller(false));
         
         // Then clear AsyncStorage
         await saveItem(AsyncKeys.USER_DATA, {});
@@ -255,7 +248,12 @@ export const CheckActivison = (cb?: (data: any, status: any) => void) => {
       
       if (data.status == 200) {
          console.log('CheckActivisonHandler success - user is valid');
-         dispatch<any>(UserIsSeller(data.data));
+         const sessionUser = data.data;
+         if (sessionUser && typeof sessionUser === 'object') {
+           const { userdata } = store.getState().auth;
+           const mergedUser = { ...userdata, ...sessionUser };
+           dispatch(SetUserData(mergedUser));
+         }
          cb && cb(data, status);
       } else {
         // Session invalid - logout user

@@ -11,7 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const authConfig = {
   key: 'auth',
   storage: AsyncStorage,
-  whitelist: ['gusterID','userdata','isLogin','fcm',"isSeller"],
+  whitelist: ['gusterID', 'userdata', 'isLogin', 'fcm', 'isSeller', 'isAdmin'],
 };
 
 const settingsConfig = {

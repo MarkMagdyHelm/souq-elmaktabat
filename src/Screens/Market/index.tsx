@@ -54,9 +54,12 @@ const Index = (props: Props) => {
   const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
   const styles = useStyles(Fonts, theme, dark, dir);
   // const ref = useRef() as any;
-  const { isLogin, userdata, isSeller } = useSelector(
+  const { isLogin, userdata, isSeller, isAdmin } = useSelector(
     (state: RootState) => state.auth,
   );
+  console.log("isSeller", isSeller);
+  console.log("isAdmin", isAdmin);
+  
   const [visibleCancel, setVisibleCancel] = useState(false);
 
   const dispatch = useDispatch();
@@ -567,7 +570,7 @@ const Index = (props: Props) => {
         })}
       </Content>
       <TabBar />
-      {isSeller && (
+      {isSeller && isAdmin && (
         <View style={styles.addOffer}>
           <Pressable
             onPress={() => setstate(old => ({ ...old, showCategories: true }))}
