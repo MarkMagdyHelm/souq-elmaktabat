@@ -16,7 +16,8 @@ import { useDispatch } from 'react-redux'
 import { validationSchemaReasons } from '../../Validation/reasons'
 
 type Props = {
-    onCloseFn: (val: any) => void,
+    onCloseFn: (val?: any) => void,
+    onSaveFn?: (val: any) => void,
     currentFilter: any,
     items: any,
     title: string,
@@ -26,9 +27,38 @@ type Props = {
     textinputTitle?: string
 }
 
+const getSavedSelection = (saved: any): any[] =>
+    Array.isArray(saved) ? saved : [];
+
+const isItemInSavedSelection = (item: any, saved: any[]): boolean => {
+    if (!saved.length) return false;
+    return saved.some((s) => {
+        if (s?.id != null && item?.id != null) return s.id === item.id;
+        const savedName = s?.name ?? s?.arName;
+        const itemName = item?.name ?? item?.arName;
+        return savedName != null && savedName === itemName;
+    });
+};
+
+/** Draft modal state: checked items follow parent saved selection only. */
+const buildModalStateFromSaved = (sourceItems: any[], savedFilter: any) => {
+    const saved = getSavedSelection(savedFilter);
+    const draftItems = (sourceItems ?? []).map((item) => ({
+        ...item,
+        isSelected: isItemInSavedSelection(item, saved),
+    }));
+    return {
+        items: draftItems,
+        selectFilter: draftItems.filter((el) => el.isSelected),
+        isScroll: false,
+        isClickable: false,
+    };
+};
+
 const MultiChekers = (props: Props) => {
     const {
         onCloseFn,
+        onSaveFn,
         currentFilter,
         items,
         title,
@@ -39,18 +69,39 @@ const MultiChekers = (props: Props) => {
     } = props
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir);
+    const useDraftSelection = Boolean(onSaveFn);
 
-    const [state, setstate] = useState({
-        items: items,
-        selectFilter: currentFilter,
-        isScroll: false,
-        isClickable: false
-    });
+    const [state, setstate] = useState(() =>
+        useDraftSelection
+            ? buildModalStateFromSaved(items, currentFilter)
+            : {
+                items,
+                selectFilter: currentFilter,
+                isScroll: false,
+                isClickable: false,
+            }
+    );
     const [filterItem, setFilterItem] = useState({})
     const dispatch = useDispatch();
     const flatListRef = useRef(null);
-    console.log("---------------------------");
-    console.log(items)
+
+    const syncItemsToStore = (updatedItems: any[]) => {
+        if (type == "activities") {
+            dispatch(SetActivites(updatedItems));
+        } else if (type == "tools") {
+            dispatch(SetTools(updatedItems));
+        } else if (type == "payments") {
+            dispatch(SetPayments(updatedItems));
+        } else if (type == "rejectReasons") {
+            dispatch(SetRejectReasons(updatedItems));
+        } else if (type == "countries") {
+            dispatch(SetCountries(updatedItems));
+        } else if (type == "paperType") {
+            dispatch(SetPaperType(updatedItems));
+        } else if (type == "paperSize") {
+            dispatch(SetPaperType(updatedItems));
+        }
+    };
 
 
 
@@ -64,7 +115,9 @@ const MultiChekers = (props: Props) => {
                 );
 
                 const ActivitesSelected = updatedItems.filter((el) => el.isSelected);
-                dispatch(SetActivites(updatedItems));
+                if (!useDraftSelection) {
+                    dispatch(SetActivites(updatedItems));
+                }
                 return {
                     ...old,
                     items: updatedItems,
@@ -81,7 +134,9 @@ const MultiChekers = (props: Props) => {
                 );
 
                 const ToolsSelected = updatedItems.filter((el) => el.isSelected);
-                dispatch(SetTools(updatedItems));
+                if (!useDraftSelection) {
+                    dispatch(SetTools(updatedItems));
+                }
                 return {
                     ...old,
                     items: updatedItems,
@@ -97,7 +152,9 @@ const MultiChekers = (props: Props) => {
                 );
 
                 const PaymentsSelected = updatedItems.filter((el) => el.isSelected);
-                dispatch(SetPayments(updatedItems));
+                if (!useDraftSelection) {
+                    dispatch(SetPayments(updatedItems));
+                }
                 return {
                     ...old,
                     items: updatedItems,
@@ -113,7 +170,9 @@ const MultiChekers = (props: Props) => {
                 );
 
                 const PaymentsSelected = updatedItems.filter((el) => el.isSelected);
-                dispatch(SetPayments(updatedItems));
+                if (!useDraftSelection) {
+                    dispatch(SetPayments(updatedItems));
+                }
                 return {
                     ...old,
                     items: updatedItems,
@@ -137,8 +196,9 @@ const MultiChekers = (props: Props) => {
                 );
 
                 const countriesSelected = updatedItems.filter((el) => el.isSelected);
-                dispatch(SetCountries(updatedItems));
-
+                if (!useDraftSelection) {
+                    dispatch(SetCountries(updatedItems));
+                }
 
                 return {
                     ...old,
@@ -176,7 +236,9 @@ const MultiChekers = (props: Props) => {
                 const updatedItems = [...old.items, newItem] as any;
                 if (type == "activities") {
 
-                    dispatch(SetActivites(updatedItems));
+                    if (!useDraftSelection) {
+                        dispatch(SetActivites(updatedItems));
+                    }
                     const ActivitesSelected = updatedItems.filter((el) => el.isSelected);
 
                     return {
@@ -189,7 +251,9 @@ const MultiChekers = (props: Props) => {
 
                 if (type == "tools") {
 
-                    dispatch(SetTools(updatedItems));
+                    if (!useDraftSelection) {
+                        dispatch(SetTools(updatedItems));
+                    }
                     const ToolsSelected = updatedItems.filter((el) => el.isSelected);
 
                     return {
@@ -202,7 +266,9 @@ const MultiChekers = (props: Props) => {
                 if (type == "rejectReasons") {
 
 
-                    dispatch(SetRejectReasons(updatedItems));
+                    if (!useDraftSelection) {
+                        dispatch(SetRejectReasons(updatedItems));
+                    }
                     const RejectReasonssSelected = updatedItems.filter((el) => el.isSelected);
                     onCloseFn && onCloseFn(RejectReasonssSelected.find(el=>el.isSelected))
                     return {
@@ -215,7 +281,9 @@ const MultiChekers = (props: Props) => {
 
                 if (type == "countries") {
 
-                    dispatch(SetCountries(updatedItems));
+                    if (!useDraftSelection) {
+                        dispatch(SetCountries(updatedItems));
+                    }
                     const countriesSelected = updatedItems.filter((el) => el.isSelected);
 
                     return {
@@ -229,7 +297,9 @@ const MultiChekers = (props: Props) => {
 
                 if (type == "paperType") {
 
-                    dispatch(SetPaperType(updatedItems));
+                    if (!useDraftSelection) {
+                        dispatch(SetPaperType(updatedItems));
+                    }
                     const paperTypeSelected = updatedItems.filter((el) => el.isSelected);
 
                     return {
@@ -241,7 +311,9 @@ const MultiChekers = (props: Props) => {
                 }
                 if (type == "paperSize") {
 
-                    dispatch(SetPaperType(updatedItems));
+                    if (!useDraftSelection) {
+                        dispatch(SetPaperSize(updatedItems));
+                    }
                     const paperSizeSelected = updatedItems.filter((el) => el.isSelected);
                     return {
                         ...old,
@@ -269,19 +341,33 @@ const MultiChekers = (props: Props) => {
             }, 100);
         }
     }, [state.items])
+    const dismissModal = () => {
+        if (onSaveFn) {
+            onCloseFn?.();
+        } else {
+            onCloseFn?.(state.selectFilter);
+        }
+    };
+
+    const saveAndCloseModal = () => {
+        if (onSaveFn) {
+            syncItemsToStore(state.items);
+            onSaveFn(state.selectFilter);
+            onCloseFn?.();
+        } else {
+            onCloseFn?.(state.selectFilter);
+        }
+    };
+
     const handleSubmit2 = () => {
-        onCloseFn && onCloseFn(state.selectFilter)
+        saveAndCloseModal();
     }
     return (
         <Modal
             backdropOpacity={0.2}
             //    backdropColor='#00000'
-            onBackButtonPress={() => {
-                onCloseFn && onCloseFn(state.selectFilter)
-            }}
-            onBackdropPress={() => {
-                onCloseFn && onCloseFn(state.selectFilter)
-            }}
+            onBackButtonPress={dismissModal}
+            onBackdropPress={dismissModal}
             isVisible={true}
             style={{ margin: 0, justifyContent: keyboard ? "flex-start" : "flex-end", marginTop: keyboard ? PixelPerfect(40) : 0 }}
         >
@@ -290,7 +376,7 @@ const MultiChekers = (props: Props) => {
                     <Text style={styles.title}>{title}</Text>
                     <Pressable style={styles.CloseCon}
                         unstable_pressDelay={100}
-                        onPress={() => { onCloseFn && onCloseFn(state.selectFilter) }}>
+                        onPress={dismissModal}>
                         <CloseIcon />
                     </Pressable>
                 </View>

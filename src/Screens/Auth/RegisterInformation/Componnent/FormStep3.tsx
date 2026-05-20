@@ -177,6 +177,74 @@ const FormStep3 = ({ formikRef, state, setstate, GetAreas, countries, tools, sty
       onSubmit={() => { }}
     >
       {({ handleChange, handleBlur, errors, touched, setFieldValue, setFieldTouched, setFieldError, values }) => {
+        const handleSaveMarkets = (val: any) => {
+          setFieldTouched("Activities");
+          if (val?.length === 0) {
+            setFieldError("Activities", "You must choose a market!");
+          } else {
+            setFieldValue("Activities", val);
+            setstate((old) => ({
+              ...old,
+              selectedMarket: val,
+              forms: { ...state.forms, Markets: "" },
+            }));
+          }
+        };
+
+        const handleCloseMarkets = () => {
+          setstate((old) => ({
+            ...old,
+            shoMarkets: false,
+          }));
+        };
+
+        const handleSaveTools = (val: any) => {
+          setFieldTouched("AvailableTools");
+          if (val?.length === 0) {
+            setFieldError("AvailableTools", "You must choose a market!");
+          } else {
+            setFieldValue("AvailableTools", val);
+            setstate((old) => ({
+              ...old,
+              selectedTools: val,
+              forms: { ...state.forms, Tools: "" },
+            }));
+          }
+        };
+
+        const handleCloseTools = () => {
+          setstate((old) => ({
+            ...old,
+            showTools: false,
+          }));
+        };
+
+        const handleSavePayment = (val: any) => {
+          setFieldTouched("PaymentTypes");
+          if (val?.length === 0) {
+            setFieldError("PaymentTypes", "You must choose a payment!");
+          } else {
+            setFieldValue("PaymentTypes", val);
+            setstate((old) => ({
+              ...old,
+              selectedPayment: val,
+              forms: { ...state.forms, payments: "" },
+            }));
+            console.log('=================hhhhh===================');
+            console.log((formikRef?.current?.errors));
+            console.log('====================================');
+            if (!(formikRef?.current?.errors?.Addresses || formikRef?.current?.errors?.City || formikRef?.current?.errors?.Area)) {
+              setActiveStep(3);
+            }
+          }
+        };
+
+        const handleClosePayment = () => {
+          setstate((old) => ({
+            ...old,
+            showPayment: false,
+          }));
+        };
 
         return (
           <>
@@ -512,24 +580,8 @@ setstate((old) => ({
             {/* Market MultiSelect */}
             {state.shoMarkets && (
               <MultiChekers
-                onCloseFn={(val) => {
-                  setFieldTouched("Activities");
-                  if (val?.length === 0) {
-                    setFieldError("Activities", "You must choose a market!");
-                    setstate((old) => ({
-                      ...old,
-                      shoMarkets: false,
-                    }));
-                  } else {
-                    setFieldValue("Activities", val);
-                    setstate((old) => ({
-                      ...old,
-                      shoMarkets: false,
-                      selectedMarket: val,
-                      forms: { ...state.forms, Markets: "" },
-                    }));
-                  }
-                }}
+                onSaveFn={handleSaveMarkets}
+                onCloseFn={handleCloseMarkets}
                 title={t("Actvityw")}
                 currentFilter={state.selectedMarket}
                 items={activites}
@@ -543,24 +595,8 @@ setstate((old) => ({
             {/* Tools MultiSelect */}
             {state.showTools && (
               <MultiChekers
-                onCloseFn={(val) => {
-                  setFieldTouched("AvailableTools");
-                  if (val?.length === 0) {
-                    setFieldError("AvailableTools", "You must choose a market!");
-                    setstate((old) => ({
-                      ...old,
-                      showTools: false,
-                    }));
-                  } else {
-                    setFieldValue("AvailableTools", val);
-                    setstate((old) => ({
-                      ...old,
-                      showTools: false,
-                      selectedTools: val,
-                      forms: { ...state.forms, Tools: "" },
-                    }));
-                  }
-                }}
+                onSaveFn={handleSaveTools}
+                onCloseFn={handleCloseTools}
                 title={t("Toolsw")}
                 currentFilter={state.selectedTools}
                 items={tools}
@@ -574,31 +610,8 @@ setstate((old) => ({
             {/* PaymentMethode MultiSelect */}
             {state.showPayment && (
               <MultiChekers
-
-                onCloseFn={(val) => {
-                  setFieldTouched("PaymentTypes");
-                  if (val?.length === 0) {
-                    setFieldError("PaymentTypes", "You must choose a payment!");
-                    setstate((old) => ({
-                      ...old,
-                      showPayment: false,
-                    }));
-                  } else {
-                    setFieldValue("PaymentTypes", val);
-                    setstate((old) => ({
-                      ...old,
-                      showPayment: false,
-                      selectedPayment: val,
-                      forms: { ...state.forms, payments: "" },
-                    }));
-                    console.log('=================hhhhh===================');
-                    console.log((formikRef?.current?.errors));
-                    console.log('====================================');
-                    if (!(formikRef?.current?.errors?.Addresses || formikRef?.current?.errors?.City || formikRef?.current?.errors?.Area)) {
-                      setActiveStep(3);
-                    }
-                  }
-                }}
+                onSaveFn={handleSavePayment}
+                onCloseFn={handleClosePayment}
                 title={t("payments")}
                 currentFilter={state.selectedPayment}
                 items={payments}
