@@ -57,7 +57,7 @@ export const SetForceUpdate = (payload: boolean) => ({
  * SetCountries
  * @param payload array
  */
-export const SetCountries = (payload: boolean) => ({
+export const SetCountries = (payload: any[]) => ({
   type: ActionType.SAVE_COUNTRIES,
   payload: payload,
 });
@@ -68,7 +68,7 @@ export const SetCountries = (payload: boolean) => ({
  * SetRejectReasons
  * @param payload array
  */
-export const SetRejectReasons = (payload: boolean) => ({
+export const SetRejectReasons = (payload: any[]) => ({
   type: ActionType.SAVE_REJECT_REASONS,
   payload: payload,
 });
@@ -77,7 +77,7 @@ export const SetRejectReasons = (payload: boolean) => ({
  * SetOfferRequestStatus
  * @param payload array
  */
-export const SetOfferRequestStatus = (payload: boolean) => ({
+export const SetOfferRequestStatus = (payload: any[]) => ({
   type: ActionType.SAVE_OFFER_REQUEST_STATUS,
   payload: payload,
 });
@@ -88,7 +88,7 @@ export const SetOfferRequestStatus = (payload: boolean) => ({
  * SetActivites
  * @param payload array
  */
-export const SetActivites = (payload: boolean) => ({
+export const SetActivites = (payload: any[]) => ({
   type: ActionType.SAVE_ACTIVITES,
   payload: payload,
 });
@@ -96,7 +96,7 @@ export const SetActivites = (payload: boolean) => ({
  * SetTools
  * @param payload array
  */
-export const SetTools = (payload: boolean) => ({
+export const SetTools = (payload: any[]) => ({
   type: ActionType.SAVE_TOOLS,
   payload: payload,
 });
@@ -105,7 +105,7 @@ export const SetTools = (payload: boolean) => ({
  * SetRoles
  * @param payload array
  */
-export const SetRoles = (payload: boolean) => ({
+export const SetRoles = (payload: any[]) => ({
   type: ActionType.SAVE_Roles,
   payload: payload,
 });
@@ -114,7 +114,7 @@ export const SetRoles = (payload: boolean) => ({
  * SetPayments
  * @param payload array
  */
-export const SetPayments = (payload: boolean) => ({
+export const SetPayments = (payload: any[]) => ({
   type: ActionType.SAVE_PAYMENTS,
   payload: payload,
 });
@@ -123,7 +123,7 @@ export const SetPayments = (payload: boolean) => ({
  * SetPaperSizes
  * @param payload array
  */
-export const SetPaperSize = (payload: boolean) => ({
+export const SetPaperSize = (payload: any[]) => ({
   type: ActionType.SAVE_PAPERSIZE,
   payload: payload,
 });
@@ -132,7 +132,7 @@ export const SetPaperSize = (payload: boolean) => ({
  * SetPaperWodth
  * @param payload array
  */
-export const SetPaperWidth = (payload: boolean) => ({
+export const SetPaperWidth = (payload: any[]) => ({
   type: ActionType.SAVE_PAPERWIDTH,
   payload: payload,
 });
@@ -141,7 +141,7 @@ export const SetPaperWidth = (payload: boolean) => ({
  * SetPaperType
  * @param payload array
  */
-export const SetPaperType = (payload: boolean) => ({
+export const SetPaperType = (payload: any[]) => ({
   type: ActionType.PAPER_TYPE,
   payload: payload,
 });
@@ -150,7 +150,7 @@ export const SetPaperType = (payload: boolean) => ({
  * SetInkType
  * @param payload array
  */
-export const SetInkType = (payload: boolean) => ({
+export const SetInkType = (payload: any[]) => ({
   type: ActionType.INK_Type,
   payload: payload,
 });
@@ -158,7 +158,7 @@ export const SetInkType = (payload: boolean) => ({
  * SetColorType
  * @param payload array
  */
-export const SetColorType = (payload: boolean) => ({
+export const SetColorType = (payload: any[]) => ({
   type: ActionType.COLOR_TYPE,
   payload: payload,
 });

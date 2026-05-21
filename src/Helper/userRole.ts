@@ -22,8 +22,6 @@ export function deriveUserRoleFlags(
   user: UserRoleSource | null | undefined,
 ): UserRoleFlags {
   const role = user?.role;
-  console.log('deriveUserRoleFlags user = ', user);
-
   const isSeller = Boolean(role && role !== CUSTOMER_ROLE);
   const isAdmin = user?.admin === true;
 
