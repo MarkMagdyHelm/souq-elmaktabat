@@ -106,60 +106,33 @@ const FormStep3 = ({ formikRef, state, setstate, GetAreas, countries, tools, sty
 
   const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
   const styless = useStyles(Fonts, theme, dark, dir);
-  const handleCameraPhotos = async (name) => {
+  const handleCameraPhotos = async (name: string, imageTarget: "logo" | "comercial") => {
+    const fieldName = imageTarget === "logo" ? "ImageUrl" : "ImageUrl2";
+
     try {
-      if (name == "Camera") {
-        let file = await openAPPCamera();
-        if (file) {
-          if (state.whichimage == "logo") {
-            formikRef?.current.setFieldValue("ImageUrl", file);
-          } else {
-            formikRef?.current.setFieldValue("ImageUrl2", file);
-          }
+      let file = null;
 
-        } else {
-          if (state.whichimage == "logo") {
-            if (!formikRef?.current?.values?.ImageUrl.hasOwnProperty("uri")) {
-              formikRef?.current?.setFieldError("ImageUrl", 'Image is required')
-            }
-          } else {
-            if (!formikRef?.current?.values?.ImageUrl2.hasOwnProperty("uri")) {
-              formikRef?.current?.setFieldError("ImageUrl2", 'Image is required')
-            }
-          }
-        }
-      } else if (name == "Photos") {
-        let file = await openAPPPicker();
-        console.log('====================================');
-        console.log(file);
-        console.log('====================================');
-        if (file) {
-          if (state.whichimage == "logo") {
-            formikRef?.current.setFieldValue("ImageUrl", file);
-          } else {
-            formikRef?.current.setFieldValue("ImageUrl2", file);
-          }
+      if (name === "Camera") {
+        file = await openAPPCamera();
+      } else if (name === "Photos") {
+        file = await openAPPPicker();
+      }
 
-        } else {
-          if (state.whichimage == "logo") {
-            if (!formikRef?.current?.values?.ImageUrl.hasOwnProperty("uri")) {
-              formikRef?.current?.setFieldError("ImageUrl", 'Image is required')
-            }
-          } else {
-            if (!formikRef?.current?.values?.ImageUrl2.hasOwnProperty("uri")) {
-              formikRef?.current?.setFieldError("ImageUrl2", 'Image is required')
-            }
-          }
-        }
+      if (file?.uri) {
+        formikRef.current?.setFieldValue(fieldName, {
+          uri: file.uri,
+          type: file.type,
+          name: file.name,
+        });
+        formikRef.current?.setFieldTouched(fieldName, true);
+        formikRef.current?.setFieldError(fieldName, undefined);
+      } else if (!formikRef.current?.values?.[fieldName]?.uri) {
+        formikRef.current?.setFieldError(fieldName, "Image is required");
       }
     } catch (error) {
-      console.log('===================ssss=================');
-      console.log(error);
-      console.log('====================================');
-      setstate(old => ({ ...old, commercialImage: [...state.commercialImage], ImageData: [...state.ImageData] }))
+      console.log("Image selection error:", error);
     }
-
-  }
+  };
   return (
     <Formik
       validationSchema={validationSchema2}
@@ -273,7 +246,7 @@ const FormStep3 = ({ formikRef, state, setstate, GetAreas, countries, tools, sty
             />
             <View style={styless.logoCon}>
               <Text style={styless.txtin}>{t('input1')}</Text>
-              {values?.ImageUrl?.hasOwnProperty("uri") ?
+              {values?.ImageUrl?.uri ? (
                 <Pressable
                   style={styles.imgcon}
                   onPress={() => {
@@ -285,11 +258,14 @@ const FormStep3 = ({ formikRef, state, setstate, GetAreas, countries, tools, sty
                   }}
                 >
                   <Image
+                    key={values.ImageUrl.uri}
                     style={styless.img}
-                    source={{ uri: `file:///${values?.ImageUrl?.uri}` }}
+                    source={{ uri: values.ImageUrl.uri }}
                   />
                 </Pressable>
-                : <Pressable style={styless.conIcon}
+              ) : (
+                <Pressable
+                  style={styless.conIcon}
                   onPress={() => {
                     setstate((old) => ({
                       ...old,
@@ -298,9 +274,9 @@ const FormStep3 = ({ formikRef, state, setstate, GetAreas, countries, tools, sty
                     }));
                   }}
                 >
-
                   <ImageIcon />
-                </Pressable>}
+                </Pressable>
+              )}
               {errors.ImageUrl && touched.ImageUrl && <Text style={[styles.errorText, { marginTop: 7 }]}>{t(errors.ImageUrl as any)}</Text>}
             </View>
             <Inputs
@@ -470,19 +446,18 @@ const FormStep3 = ({ formikRef, state, setstate, GetAreas, countries, tools, sty
             }}>
               <Text style={[layout.textAlign, styless.txtin, { marginBottom: PixelPerfect(8) }]}>{t('redestratincom')}</Text>
               <View style={styless.imageCon}>
-                {values?.ImageUrl2?.hasOwnProperty("uri") ?
-
+                {values?.ImageUrl2?.uri ? (
                   <Image
+                    key={values.ImageUrl2.uri}
                     style={styless.img2}
-                    source={{ uri: `file:///${values?.ImageUrl2?.uri}` }}
+                    source={{ uri: values.ImageUrl2.uri }}
                   />
-                  :
+                ) : (
                   <>
                     <ImageIcon />
                     <Text style={styless.textimage}>{t('addImage')}</Text>
                   </>
-
-                }
+                )}
               </View>
               {errors.ImageUrl2 && touched.ImageUrl2 && <Text style={[styles.errorText, { marginTop: 7 }]}>{t(errors.ImageUrl2 as any)}</Text>}
             </Pressable>
@@ -654,15 +629,12 @@ const FormStep3 = ({ formikRef, state, setstate, GetAreas, countries, tools, sty
               items={filterOption}
               currentFilter={filterOption}
               onCloseFn={(val) => {
-                if (state.whichimage == "logo") {
-                  setFieldTouched("ImageUrl")
-                } else {
-                  setFieldTouched("ImageUrl2")
-                }
-                setstate(old => ({ ...old, showFiltter: false }))
+                const imageTarget = state.whichimage as "logo" | "comercial";
+                const fieldName = imageTarget === "logo" ? "ImageUrl" : "ImageUrl2";
+                setFieldTouched(fieldName);
+                setstate(old => ({ ...old, showFiltter: false }));
                 setTimeout(() => {
-                  handleCameraPhotos(val.Name);
-
+                  handleCameraPhotos(val.Name, imageTarget);
                 }, 300);
               }}
             />}

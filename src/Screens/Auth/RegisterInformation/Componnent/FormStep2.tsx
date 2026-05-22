@@ -80,6 +80,8 @@ const FormStep2 = ({ formikRef, state, setstate, GetAreas, countries, activites,
       onSubmit={() => { }}
     >
       {({ handleChange, handleBlur, errors, touched, setFieldValue, values,setFieldTouched, setFieldError }) => {
+        console.log("values?.ImageUrl?.uri",values?.ImageUrl?.uri);
+
         const governmentId = state.selectedGoverenmet.id;
         const { areas: areaOptions, isLoading: areasLoading, canOpen: canOpenAreas } = canShowAreaDropdown(
           state.areasByCountryId,
@@ -107,6 +109,8 @@ const FormStep2 = ({ formikRef, state, setstate, GetAreas, countries, activites,
             shoMarkets: false,
           }));
         };
+        console.log("values?.ImageUrl?.uri",values?.ImageUrl?.uri);
+        
        return (
           <>
             <SyncAreaSelection
