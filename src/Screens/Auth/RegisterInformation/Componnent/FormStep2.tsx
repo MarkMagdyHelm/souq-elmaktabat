@@ -78,262 +78,262 @@ const FormStep2 = ({ formikRef, state, setstate, GetAreas, countries, activites,
       }}
       onSubmit={() => { }}
     >
-      {({ handleChange, handleBlur, errors, touched, setFieldValue, values,setFieldTouched, setFieldError }) => (
-        <>
-                    <View style={styless.logoCon}>
-                      <Text style={styless.txtin}>{t('inputimg1')}</Text>
-                      {values?.ImageUrl?.uri || uri ?
-                        <Pressable
-                          style={styles.imgcon}
-                          onPress={() => {
-                            setstate((old) => ({
-                              ...old,
-                              showFiltter: true,
-                              whichimage: "logo"
-                            }));
-                          }}
-                        >
-                          <Image
-                            style={styless.img}
-                            source={{ uri: uri || values?.ImageUrl?.uri }}
-                          />
-                        </Pressable>
-                        : <Pressable style={styless.conIcon}
-                          onPress={() => {
-                            setstate((old) => ({
-                              ...old,
-                              showFiltter: true,
-                              whichimage: "logo"
-                            }));
-                          }}
-                        >
-        
-                          <ImageIcon />
-                        </Pressable>}
-                    </View>
-          {/* Government */}
-          <Pressable
-            style={styles.selectMenueCon}
-            onPress={() => {
-              setFieldTouched("City");
-              setstate((old) => ({ ...old, showGovernemnts: true }));
-            }}
-          >
-            <Text style={[layout.textAlign, styles.label]}>{t("Government")}</Text>
-            <View style={[layout.rowBox, styles.selectMenue]}>
-              <Text style={styles.textselectmenu}>
-                {typeof state.selectedGoverenmet.id !== "string"
-                  ? dir === "rtl"
-                    ? state.selectedGoverenmet.arName
-                    : state.selectedGoverenmet.name
-                  : t("Governmentw")}
-              </Text>
-              <ArrowDownIcon />
+      {({ handleChange, handleBlur, errors, touched, setFieldValue, values,setFieldTouched, setFieldError }) => {
+        const handleSaveMarkets = (val: any) => {
+          setFieldTouched("Activities");
+          if (val?.length === 0) {
+            setFieldError("Activities", "You must choose a market!");
+          } else {
+            setFieldValue("Activities", val);
+            setstate((old) => ({
+              ...old,
+              selectedMarket: val,
+              forms: { ...state.forms, Markets: "" },
+            }));
+          }
+        };
+
+        const handleCloseMarkets = () => {
+          setstate((old) => ({
+            ...old,
+            shoMarkets: false,
+          }));
+        };
+       return (
+          <>
+            <View style={styless.logoCon}>
+              <Text style={styless.txtin}>{t('inputimg1')}</Text>
+              {values?.ImageUrl?.uri || uri ?
+                <Pressable
+                  style={styles.imgcon}
+                  onPress={() => {
+                    setstate((old) => ({
+                      ...old,
+                      showFiltter: true,
+                      whichimage: "logo"
+                    }));
+                  } }
+                >
+                  <Image
+                    style={styless.img}
+                    source={{ uri: uri || values?.ImageUrl?.uri }} />
+                </Pressable>
+                : <Pressable style={styless.conIcon}
+                  onPress={() => {
+                    setstate((old) => ({
+                      ...old,
+                      showFiltter: true,
+                      whichimage: "logo"
+                    }));
+                  } }
+                >
+
+                  <ImageIcon />
+                </Pressable>}
             </View>
-            {errors.City && touched.City && <Text style={styles.errorText}>{t(errors.City as any)}</Text>}
-          </Pressable>
+            {/* Government */}
+            <Pressable
+              style={styles.selectMenueCon}
+              onPress={() => {
+                setFieldTouched("City");
+                setstate((old) => ({ ...old, showGovernemnts: true }));
+              } }
+            >
+              <Text style={[layout.textAlign, styles.label]}>{t("Government")}</Text>
+              <View style={[layout.rowBox, styles.selectMenue]}>
+                <Text style={styles.textselectmenu}>
+                  {typeof state.selectedGoverenmet.id !== "string"
+                    ? dir === "rtl"
+                      ? state.selectedGoverenmet.arName
+                      : state.selectedGoverenmet.name
+                    : t("Governmentw")}
+                </Text>
+                <ArrowDownIcon />
+              </View>
+              {errors.City && touched.City && <Text style={styles.errorText}>{t(errors.City as any)}</Text>}
+            </Pressable>
 
-          {/* Area */}
-          <Pressable
-            style={styles.selectMenueCon}
-            onPress={() => {
-              setFieldTouched("Area");
-              if (!state.selectedGoverenmet.id) {
-                setstate((old) => ({
-                  ...old,
-                  showGovernemnts: false,
-                  forms: { ...state.forms, City: "You must pick a city!" },
-                }));
-              } else {
-                setstate((old) => ({ ...old, showArea: true }));
-              }
-            }}
-          >
-            <Text style={[layout.textAlign, styles.label]}>{t("Area")}</Text>
-            <View style={[layout.rowBox, styles.selectMenue]}>
-              <Text style={styles.textselectmenu}>
-                {typeof state.selectedArea.id !== "string"
-                  ? dir === "rtl"
-                    ? state.selectedArea.arName
-                    : state.selectedArea.name
-                  : t("Areaw")}
-              </Text>
-              <ArrowDownIcon />
-            </View>
-            {errors.Area && touched.Area && <Text style={styles.errorText}>{t(errors.Area as any)}</Text>}
-          </Pressable>
-
-          {/* Addresses */}
-          <Inputs
-            label={t("adress")}
-            options={{
-              onBlur: handleBlur("Addresses"),
-              onChangeText: handleChange("Addresses"),
-              numberOfLines: 2,
-              placeholder: t("adressw"),
-              maxLength: 250,
-              keyboardType: "default",
-              multiline: true,
-            }}
-            inputCon={{ height: 74, paddingTop: 17 }}
-            input={{ height: 74, verticalAlign: "top" }}
-            password={false}
-            showErrorr={(errors.Addresses && touched.Addresses) as boolean}
-            error={errors.Addresses as any}
-          />
-
-          {/* Market / Activities */}
-          <Pressable
-            style={styles.selectMenueCon}
-            onPress={() => {
-              setFieldTouched("Activities");
-              setstate((old) => ({ ...old, shoMarkets: true }));
-            }}
-          >
-            <Text style={[layout.textAlign, styles.label]}>{t("Market")}</Text>
-            <View style={[layout.rowBox, styles.selectMenue]}>
-              <Text
-                style={[
-                  layout.textAlign,
-                  styles.textselectmenu,
-                  state.selectedMarket.length !== 0 && { width: "80%" },
-                ]}
-                numberOfLines={1}
-              >
-                {state.selectedMarket.length !== 0
-                  ? dir === "rtl"
-                    ? state.selectedMarket.map((item: any) => item.arName).join(",")
-                    : state.selectedMarket.map((item: any) => item.name).join(",")
-                  : t("Marketw")}
-              </Text>
-              <ArrowDownIcon />
-            </View>
-            {errors.Activities && touched.Activities && (
-              <Text style={styles.errorText}>{t(errors.Activities as any)}</Text>
-            )}
-          </Pressable>
-
-          {/* Other Phone */}
-          <Inputs
-            label={t("otherPhoneNumber")}
-            options={{
-              onBlur: handleBlur("OtherPhoneNumbers"),
-              onChangeText: handleChange("OtherPhoneNumbers"),
-              placeholder: t("otherPhoneNumberw"),
-              maxLength: 11,
-              keyboardType: Platform.OS === "android" ? "numeric" : "number-pad",
-            }}
-            password={false}
-            isPhone={true}
-            input={{ width: "73%" }}
-            showErrorr={(errors.OtherPhoneNumbers && touched.OtherPhoneNumbers) as boolean}
-            error={errors.OtherPhoneNumbers as any}
-          />
-
-          {/* Government dropdown */}
-          {state.showGovernemnts && (
-            <DropDowenMenu
-              onCloseFn={(val) => {
-                if (typeof val?.id === "string") {
+            {/* Area */}
+            <Pressable
+              style={styles.selectMenueCon}
+              onPress={() => {
+                setFieldTouched("Area");
+                if (!state.selectedGoverenmet.id) {
                   setstate((old) => ({
                     ...old,
                     showGovernemnts: false,
                     forms: { ...state.forms, City: "You must pick a city!" },
                   }));
-                  setFieldError("City", "You must pick a city!");
                 } else {
-                  setFieldValue("City", val.id);
-                  GetAreas(val.id);
-                  setstate((old) => ({
-                    ...old,
-                    showGovernemnts: false,
-                    selectedGoverenmet: val,
-                    forms: { ...state.forms, City: "" },
-                  }));
+                  setstate((old) => ({ ...old, showArea: true }));
                 }
-              }}
-              title={t("Choose City")}
-              currentFilter={state.selectedGoverenmet}
-              items={countries}
-              style={{ flex: 0.7 }}
-            />
-          )}
+              } }
+            >
+              <Text style={[layout.textAlign, styles.label]}>{t("Area")}</Text>
+              <View style={[layout.rowBox, styles.selectMenue]}>
+                <Text style={styles.textselectmenu}>
+                  {typeof state.selectedArea.id !== "string"
+                    ? dir === "rtl"
+                      ? state.selectedArea.arName
+                      : state.selectedArea.name
+                    : t("Areaw")}
+                </Text>
+                <ArrowDownIcon />
+              </View>
+              {errors.Area && touched.Area && <Text style={styles.errorText}>{t(errors.Area as any)}</Text>}
+            </Pressable>
 
-          {/* Area dropdown */}
-          {state.showArea && state.areas.length !== 0 && (
-            <DropDowenMenu
-              onCloseFn={(val) => {
-                if (typeof val?.id === "string") {
-                  setstate((old) => ({
-                    ...old,
-                    showArea: false,
-                    forms: { ...state.forms, Area: "You must pick a area!" },
-                  }));
-                  setFieldError("Area", "You must pick a area!");
-                } else {
-                  setFieldValue("Area", val.id);
-                  setstate((old) => ({
-                    ...old,
-                    showArea: false,
-                    selectedArea: val,
-                    forms: { ...state.forms, Area: "" },
-                  }));
-                }
+            {/* Addresses */}
+            <Inputs
+              label={t("adress")}
+              options={{
+                onBlur: handleBlur("Addresses"),
+                onChangeText: handleChange("Addresses"),
+                numberOfLines: 2,
+                placeholder: t("adressw"),
+                maxLength: 250,
+                keyboardType: "default",
+                multiline: true,
               }}
-              title={t("Choose Area")}
-              currentFilter={state.selectedArea}
-              items={state.areas}
-              style={{ flex: 0.7 }}
-            />
-          )}
+              inputCon={{ height: 74, paddingTop: 17 }}
+              input={{ height: 74, verticalAlign: "top" }}
+              password={false}
+              showErrorr={(errors.Addresses && touched.Addresses) as boolean}
+              error={errors.Addresses as any} />
 
-          {/* Market MultiSelect */}
-          {state.shoMarkets && (
-            <MultiChekers
-              onCloseFn={(val) => {
-                if (val?.length === 0) {
-                  setFieldError("Activities", "You must choose a market!");
-                  setstate((old) => ({
-                    ...old,
-                    shoMarkets: false,
-                  }));
-                } else {
-                  setFieldValue("Activities", val);
-                  setstate((old) => ({
-                    ...old,
-                    shoMarkets: false,
-                    selectedMarket: val,
-                    forms: { ...state.forms, Markets: "" },
-                  }));
-                }
+            {/* Market / Activities */}
+            <Pressable
+              style={styles.selectMenueCon}
+              onPress={() => {
+                setFieldTouched("Activities");
+                setstate((old) => ({ ...old, shoMarkets: true }));
+              } }
+            >
+              <Text style={[layout.textAlign, styles.label]}>{t("Market")}</Text>
+              <View style={[layout.rowBox, styles.selectMenue]}>
+                <Text
+                  style={[
+                    layout.textAlign,
+                    styles.textselectmenu,
+                    state.selectedMarket.length !== 0 && { width: "80%" },
+                  ]}
+                  numberOfLines={1}
+                >
+                  {state.selectedMarket.length !== 0
+                    ? dir === "rtl"
+                      ? state.selectedMarket.map((item: any) => item.arName).join(",")
+                      : state.selectedMarket.map((item: any) => item.name).join(",")
+                    : t("Marketw")}
+                </Text>
+                <ArrowDownIcon />
+              </View>
+              {errors.Activities && touched.Activities && (
+                <Text style={styles.errorText}>{t(errors.Activities as any)}</Text>
+              )}
+            </Pressable>
+
+            {/* Other Phone */}
+            <Inputs
+              label={t("otherPhoneNumber")}
+              options={{
+                onBlur: handleBlur("OtherPhoneNumbers"),
+                onChangeText: handleChange("OtherPhoneNumbers"),
+                placeholder: t("otherPhoneNumberw"),
+                maxLength: 11,
+                keyboardType: Platform.OS === "android" ? "numeric" : "number-pad",
               }}
-              title={t("Marketw")}
-              currentFilter={state.selectedMarket}
-              items={activites}
-              style={{ flex: 0.6 }}
-              type="activities"
-              hasTextInput={true}
-              textinputTitle={t('marketwwww')}
-            />
-          )}
+              password={false}
+              isPhone={true}
+              input={{ width: "73%" }}
+              showErrorr={(errors.OtherPhoneNumbers && touched.OtherPhoneNumbers) as boolean}
+              error={errors.OtherPhoneNumbers as any} />
 
-          {state.showFiltter && <FilterOrder
+            {/* Government dropdown */}
+            {state.showGovernemnts && (
+              <DropDowenMenu
+                onCloseFn={(val) => {
+                  if (typeof val?.id === "string") {
+                    setstate((old) => ({
+                      ...old,
+                      showGovernemnts: false,
+                      forms: { ...state.forms, City: "You must pick a city!" },
+                    }));
+                    setFieldError("City", "You must pick a city!");
+                  } else {
+                    setFieldValue("City", val.id);
+                    GetAreas(val.id);
+                    setstate((old) => ({
+                      ...old,
+                      showGovernemnts: false,
+                      selectedGoverenmet: val,
+                      forms: { ...state.forms, City: "" },
+                    }));
+                  }
+                } }
+                title={t("Choose City")}
+                currentFilter={state.selectedGoverenmet}
+                items={countries}
+                style={{ flex: 0.7 }} />
+            )}
+
+            {/* Area dropdown */}
+            {state.showArea && state.areas.length !== 0 && (
+              <DropDowenMenu
+                onCloseFn={(val) => {
+                  if (typeof val?.id === "string") {
+                    setstate((old) => ({
+                      ...old,
+                      showArea: false,
+                      forms: { ...state.forms, Area: "You must pick a area!" },
+                    }));
+                    setFieldError("Area", "You must pick a area!");
+                  } else {
+                    setFieldValue("Area", val.id);
+                    setstate((old) => ({
+                      ...old,
+                      showArea: false,
+                      selectedArea: val,
+                      forms: { ...state.forms, Area: "" },
+                    }));
+                  }
+                } }
+                title={t("Choose Area")}
+                currentFilter={state.selectedArea}
+                items={state.areas}
+                style={{ flex: 0.7 }} />
+            )}
+
+            {/* Market MultiSelect */}
+            {state.shoMarkets && (
+              <MultiChekers
+                onSaveFn={handleSaveMarkets}
+                onCloseFn={handleCloseMarkets}
+                title={t("Marketw")}
+                currentFilter={state.selectedMarket}
+                items={activites}
+                style={{ flex: 0.6 }}
+                type="activities"
+                hasTextInput={true}
+                textinputTitle={t('marketwwww')} />
+            )}
+
+            {state.showFiltter && <FilterOrder
               title={t('Filter')}
               items={filterOption}
               currentFilter={filterOption}
               onCloseFn={(val) => {
                 if (state.whichimage == "logo") {
-                  setFieldTouched("ImageUrl")
+                  setFieldTouched("ImageUrl");
                 }
-                setstate(old => ({ ...old, showFiltter: false }))
+                setstate(old => ({ ...old, showFiltter: false }));
                 setTimeout(() => {
                   handleCameraPhotos(val.Name);
 
                 }, 300);
-              }}
-            />}
-        </>
-      )}
+              } } />}
+          </>
+        );
+      }}
     </Formik>
   );
 };
