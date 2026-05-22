@@ -12,6 +12,8 @@ import { IFont, ITheme } from "../../../../Constants/interfaces";
 import { Colors, PixelPerfect } from "../../../../Constants/styleConstants";
 import { openAPPCamera, openAPPPicker } from "../../../../Services/ImageCropPicker";
 import FilterOrder from "../../../../Components/PopUps/FilterOrder";
+import { EMPTY_LOCATION, onAreaSelected, onGovernmentSelected, SyncAreaSelection, canShowAreaDropdown } from "./locationSelectionHelpers";
+import { capAddresses } from "./addressHelpers";
 
 const filterOption = [{ ID: 1, Name: "Camera", Value: "Camera" }, { ID: 2, Name: "Photos", Value: "Photos" },]
 
@@ -80,7 +82,7 @@ const SyncStep3Addresses = React.memo(function SyncStep3Addresses({
         return old;
       }
 
-      return { ...old, addresses: [nextFirst, ...rest] };
+      return { ...old, addresses: capAddresses([nextFirst, ...rest]) };
     });
   }, [city, area, street, countries, areas, setstate]);
 
@@ -177,6 +179,13 @@ const FormStep3 = ({ formikRef, state, setstate, GetAreas, countries, tools, sty
       onSubmit={() => { }}
     >
       {({ handleChange, handleBlur, errors, touched, setFieldValue, setFieldTouched, setFieldError, values }) => {
+        const governmentId = state.selectedGoverenmet.id;
+        const { areas: areaOptions, isLoading: areasLoading, canOpen: canOpenAreas } = canShowAreaDropdown(
+          state.areasByCountryId,
+          governmentId,
+          state.loadingAreasCountryId,
+        );
+
         const handleSaveMarkets = (val: any) => {
           setFieldTouched("Activities");
           if (val?.length === 0) {
@@ -248,12 +257,18 @@ const FormStep3 = ({ formikRef, state, setstate, GetAreas, countries, tools, sty
 
         return (
           <>
+            <SyncAreaSelection
+              areaId={values.Area}
+              areas={areaOptions}
+              setFieldValue={setFieldValue}
+              setSharedState={setstate}
+            />
             <SyncStep3Addresses
               city={values.City}
               area={values.Area}
               street={values.Addresses}
               countries={countries}
-              areas={state.areas}
+              areas={areaOptions}
               setstate={setstate}
             />
             <View style={styless.logoCon}>
@@ -304,12 +319,12 @@ const FormStep3 = ({ formikRef, state, setstate, GetAreas, countries, tools, sty
             <Pressable
               style={styles.selectMenueCon}
               onPress={() => {
-setstate((old) => ({
-  ...old,
-  showArea: false,
-  showGovernemnts: true,
-  selectedArea:{ name: "", arName: "", id: "" },
-}));
+                setFieldTouched("City");
+                setstate((old) => ({
+                  ...old,
+                  showArea: false,
+                  showGovernemnts: true,
+                }));
               }}
             >
 
@@ -332,13 +347,17 @@ setstate((old) => ({
             <Pressable
               style={styles.selectMenueCon}
               onPress={() => {
-
-                if (!state.selectedGoverenmet.id) {
+                setFieldTouched("Area");
+                if (!governmentId) {
                   setstate((old) => ({
                     ...old,
                     showGovernemnts: false,
-                    forms: { ...state.forms, City: "You must pick a city!" },
+                    forms: { ...old.forms, City: "You must pick a city!" },
                   }));
+                } else if (areasLoading) {
+                  return;
+                } else if (!canOpenAreas) {
+                  GetAreas(Number(governmentId));
                 } else {
                   setstate((old) => ({ ...old, showArea: true }));
                 }
@@ -522,21 +541,31 @@ setstate((old) => ({
               <DropDowenMenu
                 onCloseFn={(val) => {
                   setFieldTouched("City");
-                  if (typeof val?.id === "string") {
+                  const result = onGovernmentSelected({
+                    val,
+                    prevCityId: values.City,
+                    setFieldValue,
+                    setFieldError,
+                    getAreas: GetAreas,
+                  });
+                  if (result === "invalid") {
                     setstate((old) => ({
                       ...old,
                       showGovernemnts: false,
-                      forms: { ...state.forms, City: "You must pick a city!" },
+                      forms: { ...old.forms, City: "You must pick a city!" },
                     }));
-                    setFieldError("City", "You must pick a city!");
                   } else {
-                    setFieldValue("City", val.id);
-                    GetAreas(val.id);
                     setstate((old) => ({
                       ...old,
                       showGovernemnts: false,
-                      selectedGoverenmet: val,
-                      forms: { ...state.forms, City: "" },
+                      showArea: false,
+                      selectedGoverenmet: result.government,
+                      selectedArea: result.clearArea ? EMPTY_LOCATION : old.selectedArea,
+                      forms: {
+                        ...old.forms,
+                        City: "",
+                        ...(result.clearArea ? { Area: "" } : {}),
+                      },
                     }));
                   }
                 }}
@@ -548,31 +577,30 @@ setstate((old) => ({
             )}
 
             {/* Area dropdown */}
-            {state.showArea && state.areas.length !== 0 && (
+            {state.showArea && canOpenAreas && (
               <DropDowenMenu
+                key={`area-${governmentId}`}
                 onCloseFn={(val) => {
-
                   setFieldTouched("Area");
-                  if (typeof val?.id === "string") {
+                  const result = onAreaSelected({ val, setFieldValue, setFieldError });
+                  if (result === "invalid") {
                     setstate((old) => ({
                       ...old,
                       showArea: false,
-                      forms: { ...state.forms, Area: "You must pick a area!" },
+                      forms: { ...old.forms, Area: "You must pick a area!" },
                     }));
-                    setFieldError("Area", "You must pick a area!");
                   } else {
-                    setFieldValue("Area", val.id);
                     setstate((old) => ({
                       ...old,
                       showArea: false,
-                      selectedArea: val,
-                      forms: { ...state.forms, Area: "" },
+                      selectedArea: result,
+                      forms: { ...old.forms, Area: "" },
                     }));
                   }
                 }}
                 title={t("Choose Area")}
                 currentFilter={state.selectedArea}
-                items={state.areas}
+                items={areaOptions}
                 style={{ flex: 0.7 }}
               />
             )}

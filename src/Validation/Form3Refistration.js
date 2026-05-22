@@ -8,7 +8,7 @@ CompanyName: yup
     .label('CompanyName'),
     Description: yup
     .string()
-    .required('Description is required')
+    .required('paperDescriptionRequired')
     .label('Description'),
   ImageUrl: yup.object()
     .test(

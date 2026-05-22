@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useCallback, useState } from 'react';
 import { IFont, ITheme } from '../../../Constants/interfaces';
 import { ThemeContext } from '../../../Constants/theming';
 import { Colors, PixelPerfect } from '../../../Constants/styleConstants';
@@ -25,6 +25,7 @@ import FormStep4 from './Componnent/FormStep4';
 import FormStep5 from './Componnent/FormStep5';
 import SignUpSuccess from '../../../Components/PopUps/SignUpSuccess';
 import FormStep3 from './Componnent/FormStep3';
+import { EMPTY_LOCATION, isAreaInList } from './Componnent/locationSelectionHelpers';
 
 type Props = {
     navigation: any
@@ -53,7 +54,8 @@ const Index = (props: Props) => {
         roles: roles,
         showRols: false,
         loadingSignin: false,
-        areas: [],
+        areasByCountryId: {} as Record<string | number, any[]>,
+        loadingAreasCountryId: null as string | number | null,
         isAgreeOnTerms: false,
         IsRorleCustommer: true,
         showTools: false,
@@ -70,16 +72,52 @@ const Index = (props: Props) => {
     const dispatch = useDispatch();
     const showToast = useToastNotification();
     const [activeStep, setActiveStep] = useState<number | null>(null);
-    const GetAreas = (id) => {
+    const areasRequestByCountryRef = useRef<Record<string | number, number>>({});
+
+    const GetAreas = useCallback((id: number) => {
+        const requestId = (areasRequestByCountryRef.current[id] ?? 0) + 1;
+        areasRequestByCountryRef.current[id] = requestId;
+
+        setstate(old => ({ ...old, loadingAreasCountryId: id }));
+
         dispatch<any>(GetAllRegionsByCountryIdHandler(id, (res, status) => {
-            if (res.status == 200) {
-                setstate(old => ({ ...old, areas: res.data }))
-            } else {
-                showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
+            if (areasRequestByCountryRef.current[id] !== requestId) {
+                return;
             }
 
-        }))
-    }
+            if (res.status == 200) {
+                setstate(old => {
+                    const areas = res.data ?? [];
+                    const next: typeof old = {
+                        ...old,
+                        areasByCountryId: {
+                            ...old.areasByCountryId,
+                            [id]: areas,
+                        },
+                        loadingAreasCountryId:
+                            old.loadingAreasCountryId === id ? null : old.loadingAreasCountryId,
+                    };
+
+                    if (old.selectedGoverenmet?.id == id) {
+                        next.selectedArea = (
+                            isAreaInList(old.selectedArea?.id, areas)
+                                ? old.selectedArea
+                                : EMPTY_LOCATION
+                        ) as typeof old.selectedArea;
+                    }
+
+                    return next;
+                });
+            } else {
+                setstate(old => ({
+                    ...old,
+                    loadingAreasCountryId:
+                        old.loadingAreasCountryId === id ? null : old.loadingAreasCountryId,
+                }));
+                showToast({ type: 'error', message: res?.message ?? t("Something Went wrong") });
+            }
+        }));
+    }, [dispatch, showToast]);
     useEffect(() => {
         setActiveStep(1);
         loadSettings();
