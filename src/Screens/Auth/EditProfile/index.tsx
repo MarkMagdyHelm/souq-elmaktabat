@@ -13,10 +13,10 @@ import HeaderWithText from '../../../Components/Headers/HeaderWithText';
 import { Formik, FormikProps } from 'formik';
 import { useRoute } from '@react-navigation/native';
 import { AddOfferICon, ArrowDownIcon, ArrowUpIcon, EditProfileIcon } from '../../../Assets/Svg';
-import { RootState } from '../../../Store/store';
+import { RootState, store } from '../../../Store/store';
 import { imageUrl, mainUrl } from '../../../Constants/config';
 import DropDowenMenu from '../../../Components/DropDowenMenus/DropDowenMenu';
-import { GetAllActivities, GetAllAvailableTools } from '../../../Apis/CommonApi';
+import { GetAllActivities, GetAllAvailableTools, UserProfile } from '../../../Apis/CommonApi';
 import axios from 'axios';
 import { UpdateProfile } from '../../../Validation/UpdateProfile';
 import DoneRate from '../../../Components/PopUps/DoneRate';
@@ -130,7 +130,36 @@ const Index = (props: Props) => {
         }
     };
 
+const userProfile = async () => {
+    setstate(old => ({ ...old, loading: true }));
+    dispatch<any>(
+      await UserProfile((res, status) => {
 
+        if (res.status === 200) {
+          const { userdata } = store.getState().auth;
+          const mergedUser = {
+            ...res.data[0],
+            ...userdata,
+            imageUrl: res?.data?.[0]?.imageURL,
+          };
+      
+
+          dispatch(SetUserData(mergedUser));
+          showToast({ type: 'ok', message: res.data.message });
+           navigation.reset({
+            index: 0,
+            routes: [{name:'Market'},{ name: 'SellerProfile' }],
+          } as any)
+        } else {
+          showToast({
+            type: 'error',
+            message: res?.Message ?? t('Something Went wrong'),
+          });
+        }
+        setstate(old => ({ ...old, loading: false }));
+      }),
+    );
+  };
     const updateUserProfile = async (values: any) => {
 
         // console.log("---------------------values-------------------");
@@ -200,22 +229,7 @@ const Index = (props: Props) => {
                     ...old, loading: false
                 }));
                 if (res.data.status == 200) {
-                    const updatedUserData = {
-                        ...userdata,
-                        name: values.Username,
-                        phoneNumber: values.Phone,
-                        companyName: values.CompanyName,
-                        // email: values.Email,
-                        imageUrl: res.data?.data?.imageUrl || userdata.imageUrl,
-                    };
-                    dispatch(SetUserData(updatedUserData));
-                    /// showToast({ type: 'ok', message: res.data.message });
-        showToast({
-          type: "ok",
-          message: res?.message ?? t("Successfully Updated"),
-        });
-        navigateBackWithUpdatedData();
-        
+                    userProfile();
                 } else {
                     showToast({ type: 'error', message: res.data.message ?? t("Something Went wrong") });
                 }

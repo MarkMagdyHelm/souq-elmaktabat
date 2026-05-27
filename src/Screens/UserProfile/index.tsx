@@ -122,7 +122,7 @@ const Index = (props: Props) => {
                         </View>
 
                    <ImageWithFallback
-                uri={ imageUrl + userdata.imageUrl}
+                uri={ userdata.imageUrl}
                 type={0}//to set default
                 style={styles.avatar}
               />

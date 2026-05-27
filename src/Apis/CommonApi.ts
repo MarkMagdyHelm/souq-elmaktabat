@@ -5,6 +5,7 @@ import i18n from '../Local/i18n.config';
 import { ChangeAppLanguage } from '../Store/actions/settings';
 import { AsyncKeys, saveItem } from '../Helper';
 import { logoutHandler } from './User';
+import { SetUserData } from '../Store/actions/auth';
 
 /**
  * GetAllSetting
@@ -143,7 +144,7 @@ export const UserProfile = (cb?: (data: any, status: any) => void) => {
       const { data, status } = await globalAPI.get('api/User/UserProfile');
       cb && cb(data ?? {}, status); // تأمين بسيط لو data طلعت null
     } catch (error) {
-      //console.log('UserProfile error = ', error);
+      console.log('UserProfile error = ', error);
       cb && cb(error, 500);
     }
   };

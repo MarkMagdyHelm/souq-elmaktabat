@@ -1,474 +1,527 @@
-import { FlatList, Platform, Pressable, ScrollView, StyleSheet, Text, View, ViewStyle } from 'react-native'
-import React, { useContext, useEffect, useRef, useState } from 'react'
-import { IFont, ITheme } from '../../Constants/interfaces'
-import { ThemeContext } from '../../Constants/theming'
-import { Colors, PixelPerfect, phoneWidth } from '../../Constants/styleConstants'
-import { t } from 'i18next'
+import {
+  FlatList,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  ViewStyle,
+} from 'react-native';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { IFont, ITheme } from '../../Constants/interfaces';
+import { ThemeContext } from '../../Constants/theming';
+import {
+  Colors,
+  PixelPerfect,
+  phoneWidth,
+} from '../../Constants/styleConstants';
+import { t } from 'i18next';
 import Modal from 'react-native-modal';
-import { CheckBoxEmptyIcon, CheckBoxIcon, CloseIcon } from '../../Assets/Svg'
-import Button from '../touchables/Button'
-import { Formik } from 'formik'
-import { validationSchema } from '../../Validation/AddBranch'
-import Inputs from '../inputs/index'
-import { useKeyboard } from '../../Constants/UseKayboard'
-import { SetActivites, SetCountries, SetPaperSize, SetPaperType, SetPayments, SetRejectReasons, SetRoles, SetTools } from '../../Store/actions/settings'
-import { useDispatch } from 'react-redux'
-import { validationSchemaReasons } from '../../Validation/reasons'
+import { CheckBoxEmptyIcon, CheckBoxIcon, CloseIcon } from '../../Assets/Svg';
+import Button from '../touchables/Button';
+import { Formik } from 'formik';
+import { validationSchema } from '../../Validation/AddBranch';
+import Inputs from '../inputs/index';
+import { useKeyboard } from '../../Constants/UseKayboard';
+import {
+  SetActivites,
+  SetCountries,
+  SetPaperSize,
+  SetPaperType,
+  SetPayments,
+  SetRejectReasons,
+  SetRoles,
+  SetTools,
+    SetInks
+} from '../../Store/actions/settings';
+import { useDispatch } from 'react-redux';
+import { validationSchemaReasons } from '../../Validation/reasons';
 
 type Props = {
-    onCloseFn: (val: any) => void,
-    currentFilter: any,
-    items: any,
-    title: string,
-    style: ViewStyle,
-    hasTextInput?: boolean,
-    type: string;
-    textinputTitle?: string
-}
+  onCloseFn: (val: any) => void;
+  currentFilter: any;
+  items: any;
+  title: string;
+  style: ViewStyle;
+  hasTextInput?: boolean;
+  type: string;
+  textinputTitle?: string;
+};
 
 const FilterMultiChecker = (props: Props) => {
-    const {
-        onCloseFn,
-        currentFilter,
-        items,
-        title,
-        style,
-        hasTextInput,
-        type,
-        textinputTitle
-    } = props
-    const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
-    const styles = useStyles(Fonts, theme, dark, dir);
+  const {
+    onCloseFn,
+    currentFilter,
+    items,
+    title,
+    style,
+    hasTextInput,
+    type,
+    textinputTitle,
+  } = props;
 
-    const [state, setstate] = useState({
-        items: items,
-        selectFilter: currentFilter,
-        isScroll: false,
-        isClickable: false
-    });
-    const dispatch = useDispatch();
-    const flatListRef = useRef(null);
+  const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
+  const styles = useStyles(Fonts, theme, dark, dir);
 
-    const handelCheck = (index: number) => {
-        if (type == "activities") {
-            setstate((old) => {
-                const updatedItems = old.items.map((item, i) =>
-                    i === index ? { ...item, isSelected: !item.isSelected } : item
-                );
+  const [state, setstate] = useState({
+    items: items,
+    selectFilter: currentFilter,
+    isScroll: false,
+    isClickable: false,
+  });
+  const dispatch = useDispatch();
+  const flatListRef = useRef(null);
 
-                const ActivitesSelected = updatedItems.filter((el) => el.isSelected);
-                dispatch(SetActivites(updatedItems));
-                return {
-                    ...old,
-                    items: updatedItems,
-                    selectFilter: ActivitesSelected,
-                    isScroll: false
-                };
-            });
-        }
+  const handelCheck = (index: number) => {
+    if (type == 'activities') {
+      setstate(old => {
+        const updatedItems = old.items.map((item, i) =>
+          i === index ? { ...item, isSelected: !item.isSelected } : item,
+        );
 
-        if (type == "tools") {
-            setstate((old) => {
-                const updatedItems = old.items.map((item, i) =>
-                    i === index ? { ...item, isSelected: !item.isSelected } : item
-                );
-
-                const ToolsSelected = updatedItems.filter((el) => el.isSelected);
-                dispatch(SetTools(updatedItems));
-                return {
-                    ...old,
-                    items: updatedItems,
-                    selectFilter: ToolsSelected,
-                    isScroll: false
-                };
-            });
-        }
-        if (type == "payments") {
-            setstate((old) => {
-                const updatedItems = old.items.map((item, i) =>
-                    i === index ? { ...item, isSelected: !item.isSelected } : item
-                );
-
-                const PaymentsSelected = updatedItems.filter((el) => el.isSelected);
-                dispatch(SetPayments(updatedItems));
-                return {
-                    ...old,
-                    items: updatedItems,
-                    selectFilter: PaymentsSelected,
-                    isScroll: false
-                };
-            });
-        }
-        if (type == "rejectReasons") {
-            setstate((old) => {
-            
-                const updatedItems = old.items.map((item, i) =>
-                    i === index ? { ...item, isSelected: !item.isSelected } : item
-                );
-
-                const RejectReasonssSelected = updatedItems.filter((el) => el.isSelected);
-                dispatch(SetRejectReasons(updatedItems));
-
-
-                return {
-                    ...old,
-                    items: updatedItems,
-                    selectFilter: RejectReasonssSelected,
-                    isScroll: false
-                };
-            });
-        }
-        if (type == "countries") {
-            setstate((old) => {
-              
-                const updatedItems = old.items.map((item, i) =>
-                    i === index ? { ...item, isSelected: !item.isSelected } : item
-                );
-
-                const countriesSelected = updatedItems.filter((el) => el.isSelected);
-                dispatch(SetCountries(updatedItems));
-
-
-                return {
-                    ...old,
-                    items: updatedItems,
-                    selectFilter: countriesSelected,
-                    isScroll: false
-                };
-            });
-        }
-        if (type == "paperType") {
-            setstate((old) => {
-               
-                const updatedItems = old.items.map((item, i) =>
-                    i === index ? { ...item, isSelected: !item.isSelected } : item
-                );
-
-                const paperTypeSelected = updatedItems.filter((el) => el.isSelected);
-                dispatch(SetPaperType(updatedItems));
-
-
-                return {
-                    ...old,
-                    items: updatedItems,
-                    selectFilter: paperTypeSelected,
-                    isScroll: false
-                };
-            });
-        }
-        if (type == "paperSize") {
-            setstate((old) => {
-              
-                const updatedItems = old.items.map((item, i) =>
-                    i === index ? { ...item, isSelected: !item.isSelected } : item
-                );
-
-                const paperSizeSelected = updatedItems.filter((el) => el.isSelected);
-                dispatch(SetPaperSize(updatedItems));
-
-
-                return {
-                    ...old,
-                    items: updatedItems,
-                    selectFilter: paperSizeSelected,
-                    isScroll: false
-                };
-            });
-        }
-    };
-
-    const keyboard = useKeyboard();
-
-    const handleSubmmit = (values) => {
-        if (values.activity.length != 0) {
-            setstate((old) => {
-
-                const newItem = {
-                    arName: values.activity,
-                    isSelected: true,
-                    name: values.activity,
-                };
-
-                // check if it already exists (by arName or name)
-                const exists = old.items.some(
-                    (el) => el.arName == values.activity || el.name == values.activity
-                );
-
-                // if exists, return old state without changes
-                if (exists) {
-                    return old;
-                }
-
-                const updatedItems = [...old.items, newItem] as any;
-                if (type == "activities") {
-
-                    dispatch(SetActivites(updatedItems));
-                    const ActivitesSelected = updatedItems.filter((el) => el.isSelected);
-
-                    return {
-                        ...old,
-                        items: updatedItems,
-                        selectFilter: ActivitesSelected,
-                        isScroll: true,
-                    };
-                }
-
-                if (type == "tools") {
-
-                    dispatch(SetTools(updatedItems));
-                    const ToolsSelected = updatedItems.filter((el) => el.isSelected);
-
-                    return {
-                        ...old,
-                        items: updatedItems,
-                        selectFilter: ToolsSelected,
-                        isScroll: true,
-                    };
-                }
-                if (type == "rejectReasons") {
-
-                    dispatch(SetRejectReasons(updatedItems));
-                    const RejectReasonssSelected = updatedItems.filter((el) => el.isSelected);
-
-                    return {
-                        ...old,
-                        items: updatedItems,
-                        selectFilter: RejectReasonssSelected,
-                        isScroll: true,
-                    };
-                }
-
-                if (type == "countries") {
-
-                    dispatch(SetCountries(updatedItems));
-                    const countriesSelected = updatedItems.filter((el) => el.isSelected);
-
-                    return {
-                        ...old,
-                        items: updatedItems,
-                        selectFilter: countriesSelected,
-                        isScroll: true,
-                    };
-                }
-
-
-                if (type == "paperType") {
-
-                    dispatch(SetPaperType(updatedItems));
-                    const paperTypeSelected = updatedItems.filter((el) => el.isSelected);
-
-                    return {
-                        ...old,
-                        items: updatedItems,
-                        selectFilter: paperTypeSelected,
-                        isScroll: true,
-                    };
-                }
-                if (type == "paperSize") {
-
-                    dispatch(SetPaperType(updatedItems));
-                    const paperSizeSelected = updatedItems.filter((el) => el.isSelected);
-
-                    return {
-                        ...old,
-                        items: updatedItems,
-                        selectFilter: paperSizeSelected,
-                        isScroll: true,
-                    };
-                }
-
-
-
-            });
-        } else {
-            handleSubmit2()
-        }
-        //   handleSubmit2()
-    };
-    useEffect(() => {
-        if (state.isScroll) {
-
-            setTimeout(() => {
-                flatListRef.current?.scrollToEnd({ animated: true });
-
-            }, 100);
-        }
-    }, [state.items])
-    const handleSubmit2 = () => {
-        onCloseFn && onCloseFn(state.selectFilter)
+        const ActivitesSelected = updatedItems.filter(el => el.isSelected);
+        dispatch(SetActivites(updatedItems));
+        return {
+          ...old,
+          items: updatedItems,
+          selectFilter: ActivitesSelected,
+          isScroll: false,
+        };
+      });
     }
-    const handleReset = ()=>{
-        if (type == "countries") {
-            setstate((old) => {
-                // if (items[index].id == 1) {
-                //     return {
-                //         ...old,
-                //         isClickable:true
-                //     };
 
-                // }
-                const updatedItems = old.items.map((item, i) =>
-                  ( { ...item, isSelected: false } )
-                );
+    if (type == 'tools') {
+      setstate(old => {
+        const updatedItems = old.items.map((item, i) =>
+          i === index ? { ...item, isSelected: !item.isSelected } : item,
+        );
 
-                dispatch(SetCountries(updatedItems));
-                return {
-                    ...old,
-                    items: updatedItems,
-                    selectFilter: [],
-                    isScroll: false
-                };
-            });
-        }
+        const ToolsSelected = updatedItems.filter(el => el.isSelected);
+        dispatch(SetTools(updatedItems));
+        return {
+          ...old,
+          items: updatedItems,
+          selectFilter: ToolsSelected,
+          isScroll: false,
+        };
+      });
     }
-    return (
-        <Modal
-            backdropOpacity={0.2}
-            //    backdropColor='#00000'
-            onBackButtonPress={() => {
-                onCloseFn && onCloseFn(state.selectFilter)
-            }}
-            onBackdropPress={() => {
-                onCloseFn && onCloseFn(state.selectFilter)
-            }}
-            isVisible={true}
-            style={{ margin: 0, justifyContent: keyboard ? "flex-start" : "flex-end", marginTop: keyboard ? PixelPerfect(40) : 0 }}
-        >
-            <View style={[styles.con, style, (Platform.OS == "android" && keyboard) && { flex: 1 }]}>
-                <View style={[layout.rowBox, styles.headerCon]}>
-                    <Text style={styles.title}>{title}</Text>
-                    <Pressable style={styles.CloseCon}
-                        unstable_pressDelay={100}
-                        onPress={() => { onCloseFn && onCloseFn(state.selectFilter) }}>
-                        <CloseIcon />
-                    </Pressable>
-                </View>
-                <View style={[styles.listCon, { flex: 0.95 }]}>
-                    <FlatList
-                        ref={flatListRef}
-                        showsVerticalScrollIndicator={false}
-                        //   onRefresh={() =>{}}
-                        //   refreshing={isFetching}
-                        style={styles.list}
-                        data={state.items}
+    if (type == 'payments') {
+      setstate(old => {
+        const updatedItems = old.items.map((item, i) =>
+          i === index ? { ...item, isSelected: !item.isSelected } : item,
+        );
 
-                        keyExtractor={(items, index: number) => index.toString()}
-                        ItemSeparatorComponent={() => (<View style={{ height: PixelPerfect(18) }} />)}
-                        renderItem={({ item, index }) => {
-                    
-                            return (
-                                <Pressable style={[layout.rowBox, styles.filterCon]} onPress={() => { handelCheck(index) }}>
-                                    {item.isSelected ? <CheckBoxIcon /> : <CheckBoxEmptyIcon />}
-                                    <Text style={styles.filterText}>{!hasTextInput ? item.name : (dir == "rtl" ? item.arName : item.name)}</Text>
-                                </Pressable>
-                            );
-                        }}
-                        ListFooterComponent={() => (<View style={{ height: PixelPerfect(10) }} />)}
-                    />
-                </View>
+        const PaymentsSelected = updatedItems.filter(el => el.isSelected);
+        dispatch(SetPayments(updatedItems));
+        return {
+          ...old,
+          items: updatedItems,
+          selectFilter: PaymentsSelected,
+          isScroll: false,
+        };
+      });
+    }
+    if (type == 'rejectReasons') {
+      setstate(old => {
+        const updatedItems = old.items.map((item, i) =>
+          i === index ? { ...item, isSelected: !item.isSelected } : item,
+        );
 
-                <View style={[layout.rowBox, {
-                    width: phoneWidth ,
-                    paddingHorizontal: PixelPerfect(16),
-                    alignItems: "center",
-                    justifyContent: "space-between"
-                }]}>
+        const RejectReasonssSelected = updatedItems.filter(el => el.isSelected);
+        dispatch(SetRejectReasons(updatedItems));
 
-                    <Button
-                        title={t('Save')}
-                        styleTitle={styles.buttonText}
-                        onPress={handleSubmit2}
-                        style={styles.button}
-                    />
-                    <Button
-                        title={t('Reset')}
-                        styleTitle={styles.buttonResetText}
-                        onPress={handleReset}
-                        style={styles.buttonReset}
-                    />
-                </View>
+        return {
+          ...old,
+          items: updatedItems,
+          selectFilter: RejectReasonssSelected,
+          isScroll: false,
+        };
+      });
+    }
+    if (type == 'countries') {
+      setstate(old => {
+        const updatedItems = old.items.map((item, i) =>
+          i === index ? { ...item, isSelected: !item.isSelected } : item,
+        );
 
-            </View>
-        </Modal>
-    )
+        const countriesSelected = updatedItems.filter(el => el.isSelected);
+        dispatch(SetCountries(updatedItems));
+
+        return {
+          ...old,
+          items: updatedItems,
+          selectFilter: countriesSelected,
+          isScroll: false,
+        };
+      });
+    }
+    if (type == 'paperType') {
+      setstate(old => {
+        const updatedItems = old.items.map((item, i) =>
+          i === index ? { ...item, isSelected: !item.isSelected } : item,
+        );
+
+        const paperTypeSelected = updatedItems.filter(el => el.isSelected);
+        dispatch(SetPaperType(updatedItems));
+
+        return {
+          ...old,
+          items: updatedItems,
+          selectFilter: paperTypeSelected,
+          isScroll: false,
+        };
+      });
+    }
+    if (type == 'paperSize') {
+      setstate(old => {
+        const updatedItems = old.items.map((item, i) =>
+          i === index ? { ...item, isSelected: !item.isSelected } : item,
+        );
+
+        const paperSizeSelected = updatedItems.filter(el => el.isSelected);
+        dispatch(SetPaperSize(updatedItems));
+
+        return {
+          ...old,
+          items: updatedItems,
+          selectFilter: paperSizeSelected,
+          isScroll: false,
+        };
+      });
+    }
+    if (type == 'inkIds') {
+  setstate(old => {
+    const updatedItems = old.items.map((item, i) =>
+      i === index ? { ...item, isSelected: !item.isSelected } : item,
+    );
+
+    const inkIdsSelected = updatedItems.filter(el => el.isSelected);
+
+    dispatch(SetInks(updatedItems));
+
+    return {
+      ...old,
+      items: updatedItems,
+      selectFilter: inkIdsSelected,
+      isScroll: false,
+    };
+  });
 }
+  };
 
-export default FilterMultiChecker
+  const keyboard = useKeyboard();
 
-const useStyles = (Fonts: IFont, theme: ITheme, darkmode: boolean, dir: string,) =>
-    StyleSheet.create({
-        con: {
+  const handleSubmmit = values => {
+    if (values.activity.length != 0) {
+      setstate(old => {
+        const newItem = {
+          arName: values.activity,
+          isSelected: true,
+          name: values.activity,
+        };
 
-            backgroundColor: Colors.white,
-            borderTopRightRadius: PixelPerfect(8),
-            borderTopLeftRadius: PixelPerfect(8),
-            paddingVertical: PixelPerfect(20)
-        },
-        title: {
-            fontFamily: Fonts.bold,
-            fontSize: PixelPerfect(20),
-            color: theme.black,
-            marginBottom: PixelPerfect(20),
-            textAlign: dir == "rtl" ? "right" : "left",
-            lineHeight: PixelPerfect(25)
-        },
-        filterCon: {
-            alignItems: "center",
-            marginBottom: PixelPerfect(10),
-            paddingHorizontal: PixelPerfect(24),
-            paddingVertical: PixelPerfect(3),
-        },
-        filterText: {
-            fontFamily: Fonts.regular,
-            fontSize: PixelPerfect(16),
-            color: theme.black,
-            paddingHorizontal: PixelPerfect(5),
-            paddingTop: Platform.OS == "ios" ? PixelPerfect(3) : 0
-        },
-        listCon: {
-            flex: 0.99
-        },
-        list: {
+        // check if it already exists (by arName or name)
+        const exists = old.items.some(
+          el => el.arName == values.activity || el.name == values.activity,
+        );
 
-        },
-        headerCon: {
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingHorizontal: PixelPerfect(16),
+        // if exists, return old state without changes
+        if (exists) {
+          return old;
+        }
 
-        },
-        CloseCon: {
-            height: PixelPerfect(50),
-            width: PixelPerfect(50)
-        },
-        button: {
-            backgroundColor: Colors.secondColor,
-            height: PixelPerfect(50),
-            alignItems: "center",
-            justifyContent: "center",
-            // marginTop: PixelPerfect(10),
-            width: (phoneWidth - PixelPerfect(32)) * 0.48
-            // flex:0.5
-        },
-        buttonReset: {
-         
-            height: PixelPerfect(50),
-            alignItems: "center",
-            justifyContent: "center",
-            borderColor: theme.babyBlue,
-            borderWidth:PixelPerfect(1),
-            width: (phoneWidth - PixelPerfect(32)) * 0.48
-            // flex:0.5
-        },
-        buttonText: {
-            fontFamily: Fonts.bold,
-            fontSize: PixelPerfect(18),
-            color: theme.mainColor,
-        },
-        buttonResetText: {
-            fontFamily: Fonts.bold,
-            fontSize: PixelPerfect(18),
-            color:theme.babyBlue,
-          
-        },
-    })
+        const updatedItems = [...old.items, newItem] as any;
+        if (type == 'activities') {
+          dispatch(SetActivites(updatedItems));
+          const ActivitesSelected = updatedItems.filter(el => el.isSelected);
+
+          return {
+            ...old,
+            items: updatedItems,
+            selectFilter: ActivitesSelected,
+            isScroll: true,
+          };
+        }
+
+        if (type == 'tools') {
+          dispatch(SetTools(updatedItems));
+          const ToolsSelected = updatedItems.filter(el => el.isSelected);
+
+          return {
+            ...old,
+            items: updatedItems,
+            selectFilter: ToolsSelected,
+            isScroll: true,
+          };
+        }
+        if (type == 'rejectReasons') {
+          dispatch(SetRejectReasons(updatedItems));
+          const RejectReasonssSelected = updatedItems.filter(
+            el => el.isSelected,
+          );
+
+          return {
+            ...old,
+            items: updatedItems,
+            selectFilter: RejectReasonssSelected,
+            isScroll: true,
+          };
+        }
+
+        if (type == 'countries') {
+          dispatch(SetCountries(updatedItems));
+          const countriesSelected = updatedItems.filter(el => el.isSelected);
+
+          return {
+            ...old,
+            items: updatedItems,
+            selectFilter: countriesSelected,
+            isScroll: true,
+          };
+        }
+
+        if (type == 'paperType') {
+          dispatch(SetPaperType(updatedItems));
+          const paperTypeSelected = updatedItems.filter(el => el.isSelected);
+
+          return {
+            ...old,
+            items: updatedItems,
+            selectFilter: paperTypeSelected,
+            isScroll: true,
+          };
+        }
+        if (type == 'paperSize') {
+          dispatch(SetPaperType(updatedItems));
+          const paperSizeSelected = updatedItems.filter(el => el.isSelected);
+
+          return {
+            ...old,
+            items: updatedItems,
+            selectFilter: paperSizeSelected,
+            isScroll: true,
+          };
+        }
+      });
+    } else {
+      handleSubmit2();
+    }
+    //   handleSubmit2()
+  };
+  useEffect(() => {
+    if (state.isScroll) {
+      setTimeout(() => {
+        flatListRef.current?.scrollToEnd({ animated: true });
+      }, 100);
+    }
+  }, [state.items]);
+  const handleSubmit2 = () => {
+    onCloseFn && onCloseFn(state.selectFilter);
+  };
+  const handleReset = () => {
+    if (type == 'countries') {
+      setstate(old => {
+        // if (items[index].id == 1) {
+        //     return {
+        //         ...old,
+        //         isClickable:true
+        //     };
+
+        // }
+        const updatedItems = old.items.map((item, i) => ({
+          ...item,
+          isSelected: false,
+        }));
+
+        dispatch(SetCountries(updatedItems));
+        return {
+          ...old,
+          items: updatedItems,
+          selectFilter: [],
+          isScroll: false,
+        };
+      });
+    }
+  };
+  return (
+    <Modal
+      backdropOpacity={0.2}
+      //    backdropColor='#00000'
+      onBackButtonPress={() => {
+        onCloseFn && onCloseFn(state.selectFilter);
+      }}
+      onBackdropPress={() => {
+        onCloseFn && onCloseFn(state.selectFilter);
+      }}
+      isVisible={true}
+      style={{
+        margin: 0,
+        justifyContent: keyboard ? 'flex-start' : 'flex-end',
+        marginTop: keyboard ? PixelPerfect(40) : 0,
+      }}
+    >
+      <View
+        style={[
+          styles.con,
+          style,
+          Platform.OS == 'android' && keyboard && { flex: 1 },
+        ]}
+      >
+        <View style={[layout.rowBox, styles.headerCon]}>
+          <Text style={styles.title}>{title}</Text>
+          <Pressable
+            style={styles.CloseCon}
+            unstable_pressDelay={100}
+            onPress={() => {
+              onCloseFn && onCloseFn(state.selectFilter);
+            }}
+          >
+            <CloseIcon />
+          </Pressable>
+        </View>
+        <View style={[styles.listCon, { flex: 0.95 }]}>
+          <FlatList
+            ref={flatListRef}
+            showsVerticalScrollIndicator={false}
+            //   onRefresh={() =>{}}
+            //   refreshing={isFetching}
+            style={styles.list}
+            data={state.items}
+            keyExtractor={(items, index: number) => index.toString()}
+            ItemSeparatorComponent={() => (
+              <View style={{ height: PixelPerfect(18) }} />
+            )}
+            renderItem={({ item, index }) => {
+              return (
+                <Pressable
+                  style={[layout.rowBox, styles.filterCon]}
+                  onPress={() => {
+                    handelCheck(index);
+                  }}
+                >
+                  {item.isSelected ? <CheckBoxIcon /> : <CheckBoxEmptyIcon />}
+                  <Text style={styles.filterText}>
+                    {!hasTextInput && currentFilter !== 'alwaysAR'
+                      ? item.name
+                      : dir == 'rtl'
+                      ? item.arName
+                      : item.name}
+                  </Text>
+                </Pressable>
+              );
+            }}
+            ListFooterComponent={() => (
+              <View style={{ height: PixelPerfect(10) }} />
+            )}
+          />
+        </View>
+
+        <View
+          style={[
+            layout.rowBox,
+            {
+              width: phoneWidth,
+              paddingHorizontal: PixelPerfect(16),
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            },
+          ]}
+        >
+          <Button
+            title={t('Save')}
+            styleTitle={styles.buttonText}
+            onPress={handleSubmit2}
+            style={styles.button}
+          />
+          <Button
+            title={t('Reset')}
+            styleTitle={styles.buttonResetText}
+            onPress={handleReset}
+            style={styles.buttonReset}
+          />
+        </View>
+      </View>
+    </Modal>
+  );
+};
+
+export default FilterMultiChecker;
+
+const useStyles = (
+  Fonts: IFont,
+  theme: ITheme,
+  darkmode: boolean,
+  dir: string,
+) =>
+  StyleSheet.create({
+    con: {
+      backgroundColor: Colors.white,
+      borderTopRightRadius: PixelPerfect(8),
+      borderTopLeftRadius: PixelPerfect(8),
+      paddingVertical: PixelPerfect(20),
+    },
+    title: {
+      fontFamily: Fonts.bold,
+      fontSize: PixelPerfect(20),
+      color: theme.black,
+      marginBottom: PixelPerfect(20),
+      textAlign: dir == 'rtl' ? 'right' : 'left',
+      lineHeight: PixelPerfect(25),
+    },
+    filterCon: {
+      alignItems: 'center',
+      marginBottom: PixelPerfect(10),
+      paddingHorizontal: PixelPerfect(24),
+      paddingVertical: PixelPerfect(3),
+    },
+    filterText: {
+      fontFamily: Fonts.regular,
+      fontSize: PixelPerfect(16),
+      color: theme.black,
+      paddingHorizontal: PixelPerfect(5),
+      paddingTop: Platform.OS == 'ios' ? PixelPerfect(3) : 0,
+    },
+    listCon: {
+      flex: 0.99,
+    },
+    list: {},
+    headerCon: {
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: PixelPerfect(16),
+    },
+    CloseCon: {
+      height: PixelPerfect(50),
+      width: PixelPerfect(50),
+    },
+    button: {
+      backgroundColor: Colors.secondColor,
+      height: PixelPerfect(50),
+      alignItems: 'center',
+      justifyContent: 'center',
+      // marginTop: PixelPerfect(10),
+      width: (phoneWidth - PixelPerfect(32)) * 0.48,
+      // flex:0.5
+    },
+    buttonReset: {
+      height: PixelPerfect(50),
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderColor: theme.babyBlue,
+      borderWidth: PixelPerfect(1),
+      width: (phoneWidth - PixelPerfect(32)) * 0.48,
+      // flex:0.5
+    },
+    buttonText: {
+      fontFamily: Fonts.bold,
+      fontSize: PixelPerfect(18),
+      color: theme.mainColor,
+    },
+    buttonResetText: {
+      fontFamily: Fonts.bold,
+      fontSize: PixelPerfect(18),
+      color: theme.babyBlue,
+    },
+  });

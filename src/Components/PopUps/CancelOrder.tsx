@@ -5,10 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  ScrollView,
-  SafeAreaView,
-  Alert,
-  Image,
+
   Modal,
 } from 'react-native';
 

@@ -49,8 +49,8 @@ export const GetAllInkOffers = (body:any,cb?: (data: any, status: any) => void) 
     try {
       const { data, status } = await globalAPI.post('api/Offer/GetAllInkOffers',body);
       cb && cb(data, status);
-      // console.log('GetAllInkOffers  = ', data);
-      // console.log('GetAllInkOffers  = ', body);
+      console.log('GetAllInkOffers  = ', data);
+      console.log('GetAllInkOffers  = ', body);
 
     } catch (error) {
       console.log('GetAllInkOffers error = ', error);
@@ -67,8 +67,8 @@ export const GetAllPrintersOffers = (body:any,cb?: (data: any, status: any) => v
     try {
       const { data, status } = await globalAPI.post('api/Offer/GetAllPrintingOffers',body);
       cb && cb(data, status);
-      // console.log('GetAllPrintersOffers = ', body);
-      // console.log('GetAllPrintersOffers = ', data);
+      console.log('GetAllPrintersOffers = ', body);
+      console.log('GetAllPrintersOffers = ', data);
 
     } catch (error) {
       console.log('GetAllPrintersOffers error = ', error);

@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { ThemeContext } from '../../Constants/theming';
 import { IFont, ITheme } from '../../Constants/interfaces';
 import {
-  SafeAreaView,
   View,
   Text,
   Image,

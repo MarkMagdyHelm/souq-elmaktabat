@@ -249,10 +249,16 @@ export const CheckActivison = (cb?: (data: any, status: any) => void) => {
       if (data.status == 200) {
          console.log('CheckActivisonHandler success - user is valid');
          const sessionUser = data.data;
+         console.log("sessionUser", sessionUser);
+         console.log(typeof sessionUser === 'object');
+         
+         
          if (sessionUser && typeof sessionUser === 'object') {
            const { userdata } = store.getState().auth;
            const mergedUser = { ...userdata, ...sessionUser };
            dispatch(SetUserData(mergedUser));
+           console.log("mergedUser",mergedUser);
+           
          }
          cb && cb(data, status);
       } else {

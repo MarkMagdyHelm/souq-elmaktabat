@@ -21,15 +21,15 @@ import HeaderWithText from '../../../Components/Headers/HeaderWithText';
 import { Formik, FormikProps } from 'formik';
 import { validationSchema } from '../../../Validation/Signup';
 import { useRoute } from '@react-navigation/native';
-import { ForgetPasswordHandler } from '../../../Apis/User';
+import { CheckActivison, ForgetPasswordHandler } from '../../../Apis/User';
 import {
   AddOfferICon,
   ArrowDownIcon,
   ArrowUpIcon,
   EditProfileIcon,
 } from '../../../Assets/Svg';
-import { RootState } from '../../../Store/store';
-import { imageUrl, mainUrl } from '../../../Constants/config';
+import { RootState, store } from '../../../Store/store';
+import { mainUrl } from '../../../Constants/config';
 import DropDowenMenu from '../../../Components/DropDowenMenus/DropDowenMenu';
 import {
   GetAllActivitiesHandler,
@@ -39,18 +39,77 @@ import {
 import {
   GetAllActivities,
   GetAllAvailableTools,
+  UserProfile,
 } from '../../../Apis/CommonApi';
 import axios from 'axios';
 import { UpdateProfile } from '../../../Validation/UpdateProfile';
 import DoneRate from '../../../Components/PopUps/DoneRate';
 import { UpdateProfileUser } from '../../../Validation/UpdateProfileUser';
 import FilterOrder from '../../../Components/PopUps/FilterOrder';
-import { openAPPCamera, openAPPPicker } from '../../../Services/ImageCropPicker';
+import {
+  openAPPCamera,
+  openAPPPicker,
+} from '../../../Services/ImageCropPicker';
 import ImageWithFallback from '../../../Components/ImageWithFallback/ImageWithFallback';
+import { loginHandler } from '../../../Apis/User';
+import { GetSellerData } from '../../../Apis/HomeApis';
 import { SetUserData } from '../../../Store/actions/auth';
 
 type Props = {
   navigation: any;
+};
+
+const resolveProfileAddress = (item: any) => {
+  const branch =
+    item?.branches?.[0] ??
+    item?.info?.branches?.[0] ??
+    item?.info?.addresses?.[0] ??
+    item?.addresses?.[0] ??
+    null;
+
+  return {
+    id:
+      branch?.id ??
+      branch?.branchId ??
+      branch?.Id ??
+      item?.info?.branchId ??
+      item?.branchId ??
+      '',
+
+    // COUNTRY
+    countryId:
+      branch?.countryId ?? branch?.country?.id ?? branch?.Country?.id ?? '',
+
+    country:
+      branch?.country ??
+      branch?.Country ??
+      branch?.country?.name ??
+      branch?.country?.arName ??
+      branch?.Country?.name ??
+      branch?.Country?.arName ??
+      '',
+
+    // REGION
+    regionId:
+      branch?.regionId ?? branch?.region?.id ?? branch?.Region?.id ?? '',
+
+    region:
+      branch?.region ??
+      branch?.Region ??
+      branch?.region?.name ??
+      branch?.region?.arName ??
+      branch?.Region?.name ??
+      branch?.Region?.arName ??
+      '',
+
+    street:
+      branch?.street ??
+      branch?.Street ??
+      branch?.name ??
+      branch?.branchName ??
+      item?.info?.address ??
+      '',
+  };
 };
 
 const Index = (props: Props) => {
@@ -60,11 +119,14 @@ const Index = (props: Props) => {
     (state: RootState) => state.settings,
   );
   const { item } = useRoute().params as any;
-  const filterOption = [{ID: 1, Name: "Camera", Value: "Camera"}, {ID: 2, Name: "Photos", Value: "Photos"}];
+  const filterOption = [
+    { ID: 1, Name: 'Camera', Value: 'Camera' },
+    { ID: 2, Name: 'Photos', Value: 'Photos' },
+  ];
   const styles = useStyles(Fonts, theme, dark, dir);
 
   const { userdata } = useSelector((state: RootState) => state.auth);
-  const [uri, setUri] = useState(imageUrl + userdata.imageUrl);
+  const [uri, setUri] = useState(userdata.imageUrl);
   const formikRef = useRef<FormikProps<any>>(null);
 
   const [state, setstate] = useState({
@@ -78,137 +140,250 @@ const Index = (props: Props) => {
     selecteMarket: { name: '', arName: '', id: '' },
     activities: [],
     servies: [],
+    branchId: '' as string | number | '',
   });
 
   const dispatch = useDispatch();
   const showToast = useToastNotification();
+  const GetRegions = (
+    id: string | number,
+    regionId?: string | number,
+    regionName?: string,
+  ) => {
+    dispatch<any>(
+      GetAllRegionsByCountryIdHandler(id, (res, status) => {
+        if (res.status == 200) {
+          const regions = res.data ?? [];
+          const matchedRegion =
+            regionId || regionName
+              ? regions.find(
+                  (region: any) =>
+                    region.id == regionId ||
+                    region.name == regionName ||
+                    region.arName == regionName,
+                )
+              : null;
 
+          setstate(old => ({
+            ...old,
+            servies: regions,
+            loading: false,
+            ...(matchedRegion ? { selecteServies: matchedRegion } : {}),
+          }));
+
+          if (matchedRegion && formikRef.current) {
+            formikRef.current.setFieldValue('Area', matchedRegion.id);
+          }
+        } else {
+          showToast({
+            type: 'error',
+            message: res?.message ?? t('Something Went wrong'),
+          });
+        }
+      }),
+    );
+  };
+
+  const userProfile = async () => {
+    setstate(old => ({ ...old, loading: true }));
+    dispatch<any>(
+      await UserProfile((res, status) => {
+
+        if (res.status === 200) {
+          const { userdata } = store.getState().auth;
+          const mergedUser = {
+            ...res.data[0],
+            ...userdata,
+            imageUrl: res?.data?.[0]?.imageURL,
+          };
+      
+
+          dispatch(SetUserData(mergedUser));
+          showToast({ type: 'ok', message: res.data.message });
+           navigation.reset({
+            index: 0,
+            routes: [{name:'Market'},{ name: 'UserProfile' }],
+          } as any)
+        } else {
+          showToast({
+            type: 'error',
+            message: res?.Message ?? t('Something Went wrong'),
+          });
+        }
+        setstate(old => ({ ...old, loading: false }));
+      }),
+    );
+  };
   useEffect(() => {
     getAllActivities();
-    //getAllAvailableTools()
-    // console.log('iiiiiiii', item);
 
-    const preSelectedGovernment = item.info?.activities?.[0];
-    
+    const profileAddress = resolveProfileAddress(item);
+
+    const infoActivity = item.info?.activities?.[0];
+    const matchedActivity = infoActivity
+      ? activites.find(
+          (a: any) =>
+            a.id == infoActivity.id ||
+            a.name === infoActivity.name ||
+            a.arName === infoActivity.arName,
+        )
+      : null;
+
+    const matchedCountry =
+      profileAddress.countryId || profileAddress.country
+        ? countries.find(
+            (c: any) =>
+              c.id == profileAddress.countryId ||
+              c.name == profileAddress.country ||
+              c.arName == profileAddress.country,
+          )
+        : null;
     setstate(old => ({
       ...old,
       payments: payments,
-      // region issue
-      selectedActivities: preSelectedGovernment ?? old.selectedActivities,
-      selecteServies: item.info?.tools?.[0] ?? old.selecteServies,
-      selecteMarket: item.info?.payments?.[0] ?? old.selecteMarket,
+      branchId: profileAddress.id,
+      selecteMarket: matchedActivity ?? old.selecteMarket,
+      selectedActivities: matchedCountry ?? old.selectedActivities,
     }));
 
-    // Fetch regions if government is already selected
-    if (preSelectedGovernment?.id) {
-      GetRegions(preSelectedGovernment.id);
+    if (profileAddress.countryId) {
+      GetRegions(
+        matchedCountry?.id || profileAddress.countryId,
+        profileAddress.regionId,
+        profileAddress.region,
+      );
     }
   }, []);
+  useEffect(() => {
+    if (!countries.length || !item) return;
+
+    const profileAddress = resolveProfileAddress(item);
+
+    const country = countries.find(
+      c =>
+        c.id == profileAddress.countryId ||
+        c.name == profileAddress.country ||
+        c.arName == profileAddress.country,
+    );
+
+    if (!country) return;
+
+    setstate(old => ({
+      ...old,
+      selectedActivities: country,
+    }));
+
+    GetRegions(country.id, profileAddress.regionId, profileAddress.region);
+  }, [countries, item]);
   const navigateBackWithUpdatedData = () => {
     navigation.navigate('UserProfile');
   };
+
   const updateUserProfile = async (values: any) => {
-  setstate(old => ({
-    ...old,
-    loading: true,
-  }));
-
-  try {
-    const bodyFormData = new FormData();
-
-    // 🔹 BASIC FIELDS (UNCHANGED)
-    bodyFormData.append('UserName', values.Username || '');
-    bodyFormData.append('PhoneNumber', values.Phone || '');
-    bodyFormData.append('AnotherPhoneNumber', values.PhoneNumber || '');
-    bodyFormData.append('Address', values.Address || '');
-
-    // 🔹 IMAGE (UNCHANGED)
-    if (values.ImageUrl?.uri) {
-      bodyFormData.append('ImageURL', {
-        uri: values.ImageUrl.uri,
-        type: values.ImageUrl.type || 'image/jpeg',
-        name: values.ImageUrl.name || `image_${Date.now()}.jpg`,
-      } as any);
-    }
-
-    // 🔴 FIX 1: SAFE IDS SELECTION (NO LOGIC CHANGE)
-    // const activityId = state.selectedActivities?.id || values.Governmen;
-    // const areaId = state.selecteServies?.id || values.Area;
-    const areaId =  values.Area;
-    const GovernmentID = values.Governmen;
-    // const marketId = state.selecteMarket?.id || values.Market;
-
-    // 🔹 Activity
-    // if (activityId) {
-    //   bodyFormData.append('ActivityIds', activityId);
-    // }
-
-    // 🔴 FIX 2: SWAGGER CORRECT STRUCTURE ONLY
-    if (areaId) {
-      bodyFormData.append('Branches.Region', String(areaId));
-    }
-
-    if (GovernmentID) {
-      bodyFormData.append('Branches.Country', String(GovernmentID));
-    }
-
-    // // 🔹 Payment (UNCHANGED LOGIC)
-    // if (marketId) {
-    //   bodyFormData.append('PaymentMethodIds', marketId);
-    // }
-
-    // Debug (UNCHANGED)
-    console.log('📦 payload', bodyFormData);
-
-    const res = await axios.put(
-      mainUrl + 'api/User/UpdateUserProfile',
-      bodyFormData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${userdata.token}`,
-          'Accept-Language': dir === 'rtl' ? 'ar' : 'en',
-        },
-      },
-    );
-
     setstate(old => ({
       ...old,
-      loading: false,
+      loading: true,
     }));
 
-    if (res?.data?.status === 200) {
-      const updatedUserData = {
-        ...userdata,
-        name: values.Username,
-        phoneNumber: values.Phone,
-        email: values.Email,
-        address: values.Address,
-        imageUrl: res.data?.data?.imageUrl || userdata.imageUrl,
-      };
+    try {
+      const bodyFormData = new FormData();
 
-      dispatch(SetUserData(updatedUserData));
-      showToast({ type: 'ok', message: res.data.message });
+      bodyFormData.append('UserName', values.Username || '');
+      bodyFormData.append('PhoneNumber', values.Phone || '');
+      bodyFormData.append('AnotherPhoneNumber', values.PhoneNumber || '');
 
-      navigation.navigate('UserProfile');
-    } else {
+      const activityId =
+        typeof state.selecteMarket?.id !== 'string' &&
+        state.selecteMarket?.id != null
+          ? state.selecteMarket.id
+          : values.Market;
+      if (activityId != null && activityId !== '') {
+        bodyFormData.append('ActivityIds', String(activityId));
+      }
+
+      if (values.ImageUrl?.uri) {
+        bodyFormData.append('ImageURL', {
+          uri: values.ImageUrl.uri.startsWith('file://')
+            ? values.ImageUrl.uri
+            : `file://${values.ImageUrl.uri}`,
+          type: values.ImageUrl.type || 'image/jpeg',
+          name: values.ImageUrl.name || `image_${Date.now()}.jpg`,
+        } as any);
+      }
+
+      const addressId = state.branchId;
+      const countryId =
+        typeof state.selectedActivities?.id !== 'string' &&
+        state.selectedActivities?.id != null
+          ? state.selectedActivities.id
+          : values.Governmen;
+      const regionId =
+        typeof state.selecteServies?.id !== 'string' &&
+        state.selecteServies?.id != null
+          ? state.selecteServies.id
+          : values.Area;
+      const street = (values.Address ?? '').trim();
+
+      if (
+        countryId != null &&
+        countryId !== '' &&
+        regionId != null &&
+        regionId !== ''
+      ) {
+        const addressEntry: Record<string, string | number> = {
+          Country: countryId,
+          Region: regionId,
+          Street: street,
+        };
+        if (addressId != null && addressId !== '') {
+          addressEntry.Id = addressId;
+        }
+        const branchId = state.branchId;
+        bodyFormData.append('Branches.Id', String(branchId));
+        bodyFormData.append('Branches.Country', String(countryId));
+        bodyFormData.append('Branches.Region', String(regionId));
+        bodyFormData.append('Branches.Street', street);
+      }
+      console.log('📦 payload', bodyFormData);
+      console.log('UpdateUserProfile');
+
+      const res = await axios.put(
+        mainUrl + 'api/User/UpdateUserProfile',
+        bodyFormData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${userdata.token}`,
+            'Accept-Language': dir === 'rtl' ? 'ar' : 'en',
+          },
+        },
+      );
+
+      setstate(old => ({
+        ...old,
+        loading: false,
+      }));
+
+      if (res?.data?.status === 200) {
+        userProfile();
+      } else {
+        showToast({
+          type: 'error',
+          message: res.data.message ?? t('Something Went wrong'),
+        });
+      }
+    } catch (err) {
+      setstate(old => ({
+        ...old,
+        loading: false,
+      }));
+
       showToast({
         type: 'error',
-        message: res.data.message ?? t('Something Went wrong'),
+        message: err?.message ?? t('Something Went wrong'),
       });
     }
-  } catch (err) {
-    setstate(old => ({
-      ...old,
-      loading: false,
-    }));
-
-    showToast({
-      type: 'error',
-      message: t('Something Went wrong'),
-    });
-  }
-};
+  };
   const getAllActivities = () => {
     setstate(old => ({ ...old, loading: true }));
     dispatch<any>(
@@ -230,45 +405,41 @@ const Index = (props: Props) => {
     try {
       let file = null;
 
-      if (name === "Camera") {
+      if (name === 'Camera') {
         file = await openAPPCamera();
-      } else if (name === "Photos") {
+      } else if (name === 'Photos') {
         file = await openAPPPicker();
       }
 
       if (file?.uri) {
         setUri(file.uri);
-        formikRef.current?.setFieldValue("ImageUrl", {
+        formikRef.current?.setFieldValue('ImageUrl', {
           uri: file.uri,
           type: file.type,
           name: file.name,
         });
-        formikRef.current?.setFieldTouched("ImageUrl", true);
+        formikRef.current?.setFieldTouched('ImageUrl', true);
       } else {
-        formikRef.current?.setFieldError("ImageUrl", "Image is required");
+        formikRef.current?.setFieldError('ImageUrl', 'Image is required');
       }
     } catch (e) {
       // console.log(e);
     }
   };
 
-  const GetRegions = id => {
-    dispatch<any>(
-      GetAllRegionsByCountryIdHandler(id, (res, status) => {
-        if (res.status == 200) {
-          setstate(old => ({ ...old, servies: res.data, loading: false }));
-        } else {
-          showToast({
-            type: 'error',
-            message: res?.message ?? t('Something Went wrong'),
-          });
-        }
-      }),
-    );
-  };
-  // console.log('==============userdata======================');
-  // console.log(userdata);
-  // console.log('=============userdata=======================');
+  const profileAddress = resolveProfileAddress(item);
+  const matchedCountryInit = profileAddress.countryId
+    ? countries.find((c: any) => c.id == profileAddress.countryId)
+    : null;
+  const infoActivityInit = item.info?.activities?.[0];
+  const matchedActivityInit = infoActivityInit
+    ? activites.find(
+        (a: any) =>
+          a.id == infoActivityInit.id ||
+          a.name === infoActivityInit.name ||
+          a.arName === infoActivityInit.arName,
+      )
+    : null;
   return (
     <Container showHint={false}>
       <HeaderWithText title={t('UpdateProfile')} />
@@ -286,14 +457,27 @@ const Index = (props: Props) => {
               Username: userdata.name,
               Phone: userdata.phoneNumber,
               Email: userdata.email,
-              Market:
-                dir == 'rtl'
-                  ? item.info?.activities[0]?.arName
-                  : item.info?.activities[0]?.name,
-              Address: item.info?.address ?? userdata.address ?? '',
-              Governmen: dir == 'rtl' ? item.info?.activities[0]?.arName : item.info?.activities[0]?.name,
-              Area: dir == 'rtl' ? item.info?.tools[0]?.arName : item.info?.tools[0]?.name,
-
+              Market: matchedActivityInit
+                ? dir === 'rtl'
+                  ? matchedActivityInit.arName
+                  : matchedActivityInit.name
+                : '',
+              Address:
+                profileAddress.street ||
+                item.info?.address ||
+                userdata.address ||
+                '',
+              Governmen: matchedCountryInit
+                ? dir === 'rtl'
+                  ? matchedCountryInit.arName
+                  : matchedCountryInit.name
+                : '',
+              Area:
+                typeof state.selecteServies?.id !== 'string'
+                  ? dir === 'rtl'
+                    ? state.selecteServies?.arName
+                    : state.selecteServies?.name
+                  : '',
               PhoneNumber: item.info?.anotherPhoneNumber ?? '',
             }}
             onSubmit={updateUserProfile}
@@ -322,17 +506,22 @@ const Index = (props: Props) => {
                       >
                         {t('personalImage')}
                       </Text>
-                      <Pressable style={styles.logoWrapper} onPress={() => setstate(old => ({ ...old, showFiltter: true }))}>
+                      <Pressable
+                        style={styles.logoWrapper}
+                        onPress={() =>
+                          setstate(old => ({ ...old, showFiltter: true }))
+                        }
+                      >
                         {/* <Image
                           source={{ uri: uri }}
                           style={styles.avatar}
                           resizeMode="contain"
                         /> */}
                         <ImageWithFallback
-                uri={ uri}
-                type={0}//to set default
-                style={styles.avatar}
-              />
+                          uri={uri}
+                          type={0} //to set default
+                          style={styles.avatar}
+                        />
                         <EditProfileIcon style={styles.editBtn} />
                       </Pressable>
                     </View>
@@ -516,6 +705,11 @@ const Index = (props: Props) => {
                       <DropDowenMenu
                         onCloseFn={val => {
                           GetRegions(val?.id);
+                          setstate(old => ({
+                            ...old,
+                            selecteServies: { name: '', arName: '', id: '' },
+                          }));
+                          setFieldValue('Area', '');
                           if (typeof val?.id === 'string') {
                             setstate(old => ({
                               ...old,
@@ -596,17 +790,19 @@ const Index = (props: Props) => {
                         style={{ flex: 0.4 }}
                       />
                     )}
-                    {state.showFiltter && <FilterOrder
-                      title={t('Filter')}
-                      items={filterOption}
-                      currentFilter={filterOption}
-                      onCloseFn={(val) => {
-                        setstate(old => ({ ...old, showFiltter: false }))
-                        setTimeout(() => {
-                          handleCameraPhotos(val.Name);
-                        }, 300);
-                      }}
-                    />}
+                    {state.showFiltter && (
+                      <FilterOrder
+                        title={t('Filter')}
+                        items={filterOption}
+                        currentFilter={filterOption}
+                        onCloseFn={val => {
+                          setstate(old => ({ ...old, showFiltter: false }));
+                          setTimeout(() => {
+                            handleCameraPhotos(val.Name);
+                          }, 300);
+                        }}
+                      />
+                    )}
                   </Content>
                 </>
               );

@@ -92,9 +92,11 @@ export const GetMyBranches = (body: any, cb?: (data: any, status: any) => void) 
             const { data, status } = await globalAPI.get('api/User/GetMyBranches', {
                 params: body
             });
+            console.log("GetMyBranches data = ", data);
+            
             cb && cb(data, status);
         } catch (error) {
-            // console.log('GetMyBranches error = ', error);
+            console.log('GetMyBranches error = ', error);
             cb && cb(error, 500);
         }
     };

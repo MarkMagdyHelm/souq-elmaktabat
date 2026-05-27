@@ -49,7 +49,7 @@ export const Container: FC<containerProps> = ({
         barStyle={isdark ? 'light-content' : 'dark-content'}
         // hidden
       />
-    <SafeAreaView style={{ flex:0, backgroundColor:isdark?theme.mainColor:theme.mainColor}} />
+    {/* <SafeAreaView style={{ flex:0, backgroundColor:isdark?theme.mainColor:theme.mainColor}} /> */}
     
       <KeyboardAvoidingView
         style={{ flex: 1 ,borderColor:Colors.white,
@@ -61,7 +61,7 @@ export const Container: FC<containerProps> = ({
     })}>
     {children}
   </KeyboardAvoidingView>
-      {!noSafeArea&&<SafeAreaView
+      {/* {!noSafeArea&&<SafeAreaView
       style={[
         { flex: 0, backgroundColor: Colors.white },
         style,
@@ -69,7 +69,7 @@ export const Container: FC<containerProps> = ({
           backgroundColor: color?? Colors.white,
         },
       ]}>
-    </SafeAreaView>}
+    </SafeAreaView>} */}
     </>
   );
 };

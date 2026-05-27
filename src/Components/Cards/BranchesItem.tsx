@@ -20,6 +20,7 @@ const BranchsItem = (props: Props) => {
     } = props;
     const { Fonts, dir, layout, theme, dark } = useContext(ThemeContext);
     const styles = useStyles(Fonts, theme, dark, dir, item.status);
+console.log("item",item);
 
     return (
         <View style={styles.card}>

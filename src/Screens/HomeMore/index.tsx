@@ -70,7 +70,7 @@ const Index = (props: Props) => {
       : sectionId == 2
       ? ['price', 'inkTypeFilter', 'governorate']
       : sectionId == 3
-      ? ['nonColor', 'color', 'governorate']
+      ? [ 'governorate']
       : [];
   // console.log("ggggggg",filters);
 
@@ -287,14 +287,13 @@ const Index = (props: Props) => {
         {
           countries: state.countries,
           inkIds: state.inkIds,
-          paperSizeId: state.paperSize,
-          paperId: state.paperType,
           minPrice: state.minPrice,
           maxPrice: state.maxPrice,
           page: page.toString(),
           pageSize: '10',
           query: query,
         },
+        
         (res, status) => {
           if (res.status === 200) {
             const newItems = res.data.items;
@@ -455,6 +454,7 @@ const Index = (props: Props) => {
       }
     }, 500);
   };
+console.log("filters",filters);
 
   return (
     <Container showHint={false}>
@@ -501,7 +501,7 @@ const Index = (props: Props) => {
               }
             }}
             title={t('chooseGovernorate')}
-            currentFilter={''}
+            currentFilter={'alwaysAR'}
             items={countries}
             style={{ flex: 0.6 }}
             type="countries"
@@ -558,13 +558,17 @@ const Index = (props: Props) => {
         )}
         {state.viewInkType && (
           <FilterMultiChecker
-            onCloseFn={val => {
+        
+            onCloseFn={val => {              
               if (Array.isArray(val)) {
+                console.log("inkIds",state.inkIds);
                 setstate(old => ({
                   ...old,
                   viewInkType: false,
-                  inkType: val.map(item => item.id),
+                  inkIds: val.map(item => item.id),
                 }));
+                console.log("inkIds",state.inkIds);
+
               } else {
                 setstate(old => ({
                   ...old,
@@ -573,10 +577,10 @@ const Index = (props: Props) => {
               }
             }}
             title={t('inkTypew')}
-            currentFilter={''}
+            currentFilter={'alwaysAR'}
             items={inks}
             style={{ flex: 0.6 }}
-            type="paperType"
+            type="inkIds"
             hasTextInput={false}
           />
         )}
@@ -603,30 +607,7 @@ const Index = (props: Props) => {
               }));
             }
           }}
-          // onCloseFn={val => {
-          //   if (val) {
-          //     setstate(old => ({
-          //       ...old,
-          //       minPrice: val.min,
-          //       maxPrice: val.max,
-          //       viewPrice: false,
-          //     }));
-          //   } else {
-          //     setstate(old => ({
-          //       ...old,
-          //       minPrice: null,
-          //       maxPrice: null,
-          //       viewPrice: false,
-          //     }));
-          //   }
-          //   setstate(old => ({ ...old, sections: [] }));
-          //   if (sectionId == 1) {
-          //     getAllPaperOffers(1);
-          //   } else {
-          //     getAllInkOffers(1);
-          //   }
-          // }}
-        />
+            />
         <SearchBar
           onPressSearch={handleSearch}
           onPress={() => {
@@ -636,6 +617,7 @@ const Index = (props: Props) => {
           }}
         />
         {state.viewFilter && (
+  <View style={{ maxHeight: PixelPerfect(40) }}>
           <FlatList
             data={filters}
             keyExtractor={(item, index) => index.toString()}
@@ -644,8 +626,11 @@ const Index = (props: Props) => {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.container}
           />
+            </View>
+
         )}
-        {state.loading ? (
+        {
+        state.loading ? (
             <FlatList
               data={Array.from({ length: 6 })}
               keyExtractor={(_, index) => index.toString()}
@@ -660,7 +645,8 @@ const Index = (props: Props) => {
               renderItem={() => <HomeCategoryLoder height={PixelPerfect(228)} />}
               showsVerticalScrollIndicator={false}
             />
-        ) : (
+        ) : 
+        (
           <FlatList
             data={state.sections}
             keyExtractor={item => item.id}
@@ -747,13 +733,10 @@ const useStyles = (
     },
 
     container: {
-      // justifyContent: 'flex-end',
-      // flex: 1,
-      // height: PixelPerfect(35),
-      height: '100%',
-      marginBottom: PixelPerfect(8),
-      flexGrow: 1,
-      // flexGrow: 1,
+          flex: 0,
+              alignSelf: 'flex-start',
+
+
     },
     emptyContainer: {
       flex: 1,
@@ -788,8 +771,8 @@ const useStyles = (
       marginHorizontal: PixelPerfect(6),
     },
     filterText: {
-      paddingTop: PixelPerfect(40),
-      fontSize: PixelPerfect(14),
+      // paddingTop: PixelPerfect(40),
+      // fontSize: PixelPerfect(14),
       fontFamily: Fonts.regular,
       color: '#000',
     },

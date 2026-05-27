@@ -242,8 +242,9 @@ const MoreComponnent = (props: Props) => {
   // const userImage = userdata?.imageUrl || userdata?.userImages ? { uri: imageUrl + (userdata?.imageUrl || userdata?.userImages) } : null;
   const imagePath = userdata?.imageUrl || userdata?.userImages;
 
-  const userImage = imagePath ? { uri: imageUrl + imagePath } : null;
+  const userImage = imagePath ? { uri:  imagePath } : null;
   // console.log(userImage?.uri, 'userdatauserdata', isSeller);
+console.log("userImage?.uri",userImage);
 
   const [visibleCancel, setVisibleCancel] = useState(false);
   const [visibleDelete, setVisibleDelete] = useState(false);
@@ -316,6 +317,7 @@ const MoreComponnent = (props: Props) => {
           <View style={styles.profileImageContainer}>
             {userImage && isLogin && (
               // <Image source={userImage} style={styles.profileImage} />
+             
               <ImageWithFallback
                 uri={userImage?.uri}
                 type={0} //to set default

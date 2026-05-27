@@ -154,6 +154,16 @@ export const SetInkType = (payload: any[]) => ({
   type: ActionType.INK_Type,
   payload: payload,
 });
+
+/**
+ * SetInks
+ * @param payload array
+ */
+export const SetInks = (payload: any[]) => ({
+  type: ActionType.SAVE_INKS,
+  payload: payload,
+});
+
 /**
  * SetColorType
  * @param payload array

@@ -11,7 +11,6 @@ import {
   I18nManager,
   LogBox,
   Platform,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,

@@ -22,5 +22,6 @@ export enum ActionType {
   SAVE_PAPERWIDTH = "SAVE_PAPERWIDTH",
   PAPER_TYPE = "PAPER_TYPE",
   INK_Type = "INK_Type",
+  SAVE_INKS = "SAVE_INKS",
   COLOR_TYPE = "COLOR_TYPE",
 }
