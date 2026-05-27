@@ -77,15 +77,15 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Souq Elmaktabat wants to access your camera to use them properly</string>
+	<string>Souq Elmaktabat needs camera access to let you take photos of your commercial registration documents and personal identification for account verification. For example, you can photograph your business license or ID card to complete your seller registration.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Souq Elmaktabat need access to your microphone to use them properly</string>
+	<string>Microphone access is not actively used by Souq Elmaktabat.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Souq Elmaktabat would like to save photos from the app to use them properly</string>
+	<string>Souq Elmaktabat would like to save product photos and document images to your photo library so you can easily access and share them later.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Souq Elmaktabat would like to save photos from the app to use them properly</string>
+	<string>Souq Elmaktabat needs access to your photo library to let you upload existing photos of your commercial registration documents, business licenses, or personal identification for account verification.</string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UIAppFonts</key>
