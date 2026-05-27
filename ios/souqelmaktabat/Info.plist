@@ -80,8 +80,6 @@
 	<string>Souq Elmaktabat needs camera access to let you take photos of your commercial registration documents and personal identification for account verification. For example, you can photograph your business license or ID card to complete your seller registration.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Microphone access is not actively used by Souq Elmaktabat.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Souq Elmaktabat would like to save product photos and document images to your photo library so you can easily access and share them later.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
