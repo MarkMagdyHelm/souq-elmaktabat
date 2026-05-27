@@ -1,6 +1,9 @@
 import React from 'react';
 import 'react-native-gesture-handler';
 import {AppRegistry, I18nManager, Text, TextInput, LogBox} from 'react-native';
+if (__DEV__) {
+  require('./src/ReactotronConfig');
+}
 import {ThemeProvider} from './src/Constants/theming';
 // @ts-ignore
 import {Provider} from 'react-redux';

@@ -8,6 +8,9 @@ import settings from './reducers/settings';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const reactotronEnhancer =
+  __DEV__ ? require('../ReactotronConfig').default?.createEnhancer?.() : undefined;
+
 const authConfig = {
   key: 'auth',
   storage: AsyncStorage,
@@ -29,16 +32,18 @@ const rootReducer = combineReducers({
 });
 
 export const store = configureStore({
-  // Automatically calls `combineReducers`
   reducer:{
     settings: persistReducer(settingsConfig, settings as any),
     auth: persistReducer(authConfig, auth as any),
-    
   },
-  middleware:getDefaultMiddleware =>
-  getDefaultMiddleware({
-    serializableCheck: false,
-  }),
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
+  enhancers: getDefaultEnhancers =>
+    reactotronEnhancer
+      ? getDefaultEnhancers().concat(reactotronEnhancer)
+      : getDefaultEnhancers(),
 })
 export const persistor = persistStore(store);
 
