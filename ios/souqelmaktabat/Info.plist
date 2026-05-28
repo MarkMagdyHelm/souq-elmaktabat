@@ -39,7 +39,14 @@
 				<key>NSIncludesSubdomains</key>
 				<true/>
 			</dict>
-			<key>markmagdy-001-site3.ktempurl.com</key>
+			<key>ctempurl.com</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+			<key>ktempurl.com</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
@@ -60,14 +67,7 @@
 				<key>NSIncludesSubdomains</key>
 				<true/>
 			</dict>
-			<key>ktempurl.com</key>
-			<dict>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-				<key>NSIncludesSubdomains</key>
-				<true/>
-			</dict>
-			<key>ctempurl.com</key>
+			<key>markmagdy-001-site3.ktempurl.com</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
@@ -77,13 +77,13 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Souq Elmaktabat needs camera access to let you take photos of your commercial registration documents and personal identification for account verification. For example, you can photograph your business license or ID card to complete your seller registration.</string>
+	<string>Souq Elmaktabat requires camera access to capture photos of your identification and business documents during the registration process. When you sign up as a seller, you will be prompted to take photos of your commercial registration certificate, tax card, or national ID card. These photos are uploaded to our servers for identity verification to ensure a trusted marketplace. Example: When registering, tap "Upload Document" and select "Take Photo" to photograph your business license, which will be verified by our team before approving your seller account.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Souq Elmaktabat would like to save product photos and document images to your photo library so you can easily access and share them later.</string>
+	<string>Souq Elmaktabat needs permission to save photos to your library so you can keep copies of product images and document photos for your records. When you take a photo of a document or product within the app, you can choose to save it to your photo library for future reference or to share with others outside the app. Example: After photographing your commercial registration document in the app, you can tap "Save to Library" to store a copy in your Photos app for your personal records.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Souq Elmaktabat needs access to your photo library to let you upload existing photos of your commercial registration documents, business licenses, or personal identification for account verification.</string>
+	<string>Souq Elmaktabat requires access to your photo library to allow you to select and upload existing photos of your identification and business documents during registration. When you sign up as a seller, you can choose "Select from Library" to upload previously saved photos of your commercial registration certificate, tax card, or national ID card. These photos are sent to our servers for identity verification. Example: During seller registration, tap "Upload Document" then select "Choose from Library" to pick an existing photo of your business license from your device.</string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UIAppFonts</key>
