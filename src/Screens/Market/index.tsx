@@ -61,6 +61,7 @@ const Index = (props: Props) => {
   console.log("isAdmin", isAdmin);
   
   const [visibleCancel, setVisibleCancel] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   const dispatch = useDispatch();
   const [state, setstate] = useState({
@@ -111,6 +112,7 @@ const Index = (props: Props) => {
           };
 
           setstate(old => ({ ...old, sections: [sec], loading: false }));
+          setInitialLoading(false);
           getAllInkOffers();
         } else {
           toastNotfication({
@@ -118,6 +120,7 @@ const Index = (props: Props) => {
             message: res?.Message ?? t('Something Went wrong'),
           });
           setstate(old => ({ ...old, loading: false }));
+          setInitialLoading(false);
         }
       }),
     );
@@ -466,6 +469,24 @@ const Index = (props: Props) => {
           {t('mainCategories')}
         </Text>
 
+        {initialLoading ? (
+          <View
+            style={[
+              layout.rowBox,
+              {
+                justifyContent: 'space-between',
+                paddingHorizontal: PixelPerfect(16),
+                paddingTop: PixelPerfect(5),
+              },
+            ]}
+          >
+            {[1, 2, 3].map(i => (
+              <View key={i} style={{ flex: 1, alignItems: i === 1 ? 'flex-end' : i === 2 ? 'center' : 'flex-start' }}>
+                <HomeCategoryLoder height={PixelPerfect(96)} />
+              </View>
+            ))}
+          </View>
+        ) : (
         <View
           style={[
             layout.rowBox,
@@ -501,6 +522,28 @@ const Index = (props: Props) => {
             />
           </View>
         </View>
+        )}
+        {initialLoading ? (
+          <View style={{ marginTop: PixelPerfect(16) }}>
+            <View style={[layout.rowBox, styles.viewCon]}>
+              <HomeCategoryLoder height={PixelPerfect(20)} />
+            </View>
+            <FlatList
+              data={[1, 2, 3, 4]}
+              horizontal
+              keyExtractor={item => `skeleton-${item}`}
+              showsHorizontalScrollIndicator={false}
+              style={{ paddingBottom: PixelPerfect(36) }}
+              contentContainerStyle={{ paddingHorizontal: PixelPerfect(8) }}
+              ItemSeparatorComponent={() => (
+                <View style={{ width: PixelPerfect(8) }} />
+              )}
+              renderItem={() => (
+                <HomeCategoryLoder height={PixelPerfect(228)} />
+              )}
+            />
+          </View>
+        ) : null}
         {state.sections.map(section => {
           // console.log('iiiiiiiii', state);
 
