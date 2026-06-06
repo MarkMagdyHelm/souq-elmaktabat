@@ -5,12 +5,13 @@ import {
   Text,
   View,
   TouchableOpacity,
+  Pressable,
 } from 'react-native';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Container } from '../../Components/containers/Containers';
 import { ThemeContext } from '../../Constants/theming';
 import { IFont, ITheme } from '../../Constants/interfaces';
-import { PixelPerfect, phoneWidth } from '../../Constants/styleConstants';
+import { PixelPerfect, phoneHeight, phoneWidth } from '../../Constants/styleConstants';
 import TabBar from '../../Components/TabBar/index';
 
 // import 'moment/locale/ar';
@@ -36,12 +37,15 @@ import {
   AddFavouritePaperOffer,
   AddFavouriteInkOffer,
   AddFavouritePrintingPressesOffer,
+  GetCategories,
 } from '../../Apis/CommonApi';
 import CancelOrder from '../../Components/PopUps/CancelOrder';
 import { logoutHandler } from '../../Apis/User';
 import Loader from '../../Components/PopUps/Loader';
 import LottieView from 'lottie-react-native';
 import HomeCategoryLoder from '../../Components/SkeltonLoaders/HomeCategoryLoder';
+import { AddOfferICon } from '../../Assets/Svg';
+import CategoriesPopup from '../../Components/PopUps/categories';
 
 type Props = {
   navigation: any;
@@ -55,7 +59,7 @@ const Index = (props: Props) => {
   // const ref = useRef() as any;
   const toastVisible = useRef(false);
 
-  const { isLogin } = useSelector((state: RootState) => state.auth);
+  const { isLogin,isSeller, isAdmin } = useSelector((state: RootState) => state.auth);
   const { sectionId } = useRoute().params as any;
   const { countries, paperSize, inks } = useSelector(
     (state: RootState) => state.settings,
@@ -99,8 +103,12 @@ const Index = (props: Props) => {
     requestsPage: 1,
     hasMoreRequests: true,
     loadingMore: false,
+    showCategories: false,
+    categories: [],
+
   });
   useEffect(() => {
+    getCategory();
     getPapers();
   }, []);
 
@@ -138,7 +146,27 @@ const Index = (props: Props) => {
   //     placement: 'top',
   //   } as any);
   // };
+ const getCategory = () => {
+    setstate(old => ({ ...old, loading: true }));
+    dispatch<any>(
+      GetCategories((res, status) => {
+        if (res.status === 200) {
+          const updatedCategories = res.data.map(item => ({
+            ...item,
+            image: item.imageUrl, //??
+          }));
 
+          setstate(old => ({ ...old, categories: updatedCategories }));
+        } else {
+          toastNotfication({
+            type: 'error',
+            message: res?.Message ?? t('Something Went wrong'),
+          });
+        }
+        setstate(old => ({ ...old, loading: false }));
+      }),
+    );
+  };
   const toastNotfication = (config: any) => {
     if (!toastVisible.current) return;
 
@@ -376,6 +404,7 @@ const Index = (props: Props) => {
 
   const handleRefresh = () => {
     setstate(old => ({ ...old, sections: [] }));
+    getCategory();
     if (sectionId == 1) {
       getAllPaperOffers(1);
     } else if (sectionId == 2) {
@@ -690,6 +719,26 @@ console.log("filters",filters);
       </View>
       {/* <Filter/> */}
       <TabBar />
+{state.showCategories && (
+        <CategoriesPopup
+          onCloseFn={() => {
+            setstate(old => ({ ...old, showCategories: false }));
+          }}
+          title={t('categoriespopup')}
+          items={state.categories}
+          style={{ flex: 0.45 }}
+        />
+      )}
+
+        {(isSeller && isAdmin)  && (
+              <View style={styles.addOffer}>
+                <Pressable
+                  onPress={() => setstate(old => ({ ...old, showCategories: true }))}
+                >
+                  <AddOfferICon />
+                </Pressable>
+              </View>
+            )}
     </Container>
   );
 };
@@ -779,5 +828,10 @@ const useStyles = (
     footerLoader: {
       paddingVertical: PixelPerfect(20),
       alignItems: 'center',
+    },
+    addOffer: {
+      position: 'absolute',
+      bottom: phoneHeight * 0.125,
+      left: PixelPerfect(16),
     },
   });
