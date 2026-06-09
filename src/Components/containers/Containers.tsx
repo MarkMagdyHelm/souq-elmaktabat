@@ -47,13 +47,21 @@ export const Container: FC<containerProps> = ({
       <StatusBar
         backgroundColor={isdark?theme.mainColor:theme.mainColor}
         barStyle={isdark ? 'light-content' : 'dark-content'}
-        // hidden
       />
-    {/* <SafeAreaView style={{ flex:0, backgroundColor:isdark?theme.mainColor:theme.mainColor}} /> */}
+    {!noSafeArea&&<SafeAreaView
+      edges={['top']}
+      style={[
+        { flex: 0, backgroundColor: isdark ? theme.mainColor : theme.mainColor },
+        style,
+        fullBackground && {
+          backgroundColor: color ?? Colors.white,
+        },
+      ]}>
+    </SafeAreaView>}
     
       <KeyboardAvoidingView
         style={{ flex: 1 ,borderColor:Colors.white,
-          backgroundColor:isdark?theme.mainColor:theme.mainColor}}
+          backgroundColor:Colors.white}}
         keyboardVerticalOffset={50}
        
     {...(showHint && {
@@ -61,7 +69,8 @@ export const Container: FC<containerProps> = ({
     })}>
     {children}
   </KeyboardAvoidingView>
-      {/* {!noSafeArea&&<SafeAreaView
+      {!noSafeArea&&<SafeAreaView
+      edges={['bottom']}
       style={[
         { flex: 0, backgroundColor: Colors.white },
         style,
@@ -69,7 +78,7 @@ export const Container: FC<containerProps> = ({
           backgroundColor: color?? Colors.white,
         },
       ]}>
-    </SafeAreaView>} */}
+    </SafeAreaView>}
     </>
   );
 };

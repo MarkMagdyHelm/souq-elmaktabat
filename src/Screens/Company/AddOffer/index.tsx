@@ -81,7 +81,7 @@ const Index = (props: Props) => {
         if (type == "Inks") {
             body.InkId = formikRef?.current?.values?.InksType,
                 body.Brand = formikRef?.current?.values?.Brand,
-                body.Size = formikRef?.current?.values?.InksWidth,
+                body.Width = formikRef?.current?.values?.InksWidth,
                 body.ColorId = formikRef?.current?.values?.Color,
                 body.Price = formikRef?.current?.values?.PaperPrice,
                 body.Min = formikRef?.current?.values?.PaperQuntaity,
@@ -220,9 +220,11 @@ const Index = (props: Props) => {
     tomorrow.setDate(tomorrow.getDate() + 1);
 
     const onChange = (event, selectedDate) => {
-        setstate(old => ({ ...old, showDate: Platform.OS === 'ios' }));
+        const showDate = Platform.OS === 'ios';
         if (selectedDate && selectedDate >= new Date()) {
-            setstate(old => ({ ...old, date: selectedDate }));
+            setstate(old => ({ ...old, showDate, date: selectedDate }));
+        } else {
+            setstate(old => ({ ...old, showDate }));
         }
     };
 
@@ -431,10 +433,11 @@ const Index = (props: Props) => {
                                                 onBlur: handleBlur("Brand"),
                                                 onChangeText: handleChange("Brand"),
                                                 placeholder: t("inkBrandw"),
-                                                keyboardType: "number-pad",
+                                                keyboardType: "default",
                                             }}
                                             password={false}
                                             isPhone={false}
+                                            
                                             input={{}}
                                             showErrorr={(errors.Brand && touched.Brand) as boolean}
                                             error={errors.Brand as any}

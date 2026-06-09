@@ -58,19 +58,23 @@ const Index = (props: Props) => {
         // Size & Width fields
         paperSizeId: item?.paperSizeId ?? "",
         paperSize: item?.paperSize ?? "",
-        width: item?.width != null ? String(item.width) : "",
-        size: item?.size != null ? String(item.size) : "",
+        width: item?.width != null ? String(item.width) : (item?.size != null ? String(item.size) : ""),
         // Pricing
         price: type === "Printers"
             ? (item?.nonColoredPrice != null ? String(item.nonColoredPrice) : (item?.price != null ? String(item.price) : ""))
             : (item?.price != null ? String(item.price) : ""),
         coloredPrice: item?.coloredPrice != null ? String(item.coloredPrice) : "",
         min: item?.min != null ? String(item.min) : "",
-        // Branch info
-        branchId: item?.branchId ?? "",
-        branchName: item?.branchName ?? "",
-        countryName: item?.countryName ?? "",
-        regionName: item?.regionName ?? "",
+        // Branch info (fall back to first entry in branches array if flat fields missing)
+        // branches[0] may be a primitive ID (number/string) or an object
+        branchId: item?.branchId
+            ?? item?.branches?.[0]?.branchId
+            ?? item?.branches?.[0]?.id
+            ?? (typeof item?.branches?.[0] === 'number' || typeof item?.branches?.[0] === 'string' ? item.branches[0] : "")
+            ?? "",
+        branchName: item?.branchName ?? item?.branches?.[0]?.branchName ?? item?.branches?.[0]?.name ?? "",
+        countryName: item?.countryName ?? item?.branches?.[0]?.countryName ?? item?.branches?.[0]?.country ?? "",
+        regionName: item?.regionName ?? item?.branches?.[0]?.regionName ?? item?.branches?.[0]?.region ?? "",
         // Dates & Delivery
         endDate: item?.endDate ?? "",
         includeDelivery: item?.includeDelivery ?? false,
@@ -105,7 +109,7 @@ const Index = (props: Props) => {
             selectedInks: { name: "", arName: "", id: "" },
             selectedColor: { name: "", arName: "", id: "" },
             selectedPaperSize: { name: "", arName: "", id: "" },
-            selectedPaperQuntaity: { name: "", arName: "", id: "" },
+            selectedPaperQuntaity: { name: "", arName: "", id: "" } as any,
             selectedBranches: { branchName: "", branchId: "", countryName: "", regionName: "" },
             
             // Form States
@@ -120,29 +124,69 @@ const Index = (props: Props) => {
         
         // Populate selected values from offerData based on type
         if (type === "Paper" && offerData.paperId) {
-            baseState.selectedPaperType = { id: offerData.paperId, name: offerData.name, arName: offerData.name };
+            const numericPaperId = typeof offerData.paperId === 'string' && offerData.paperId
+                ? Number(offerData.paperId) || offerData.paperId
+                : offerData.paperId;
+            baseState.selectedPaperType = { id: numericPaperId, name: offerData.name, arName: offerData.name };
+            offerData.paperId = numericPaperId;
         }
-        if (type === "Inks" && offerData.inkId) {
-            baseState.selectedInks = { id: offerData.inkId, name: offerData.name, arName: offerData.name };
+        if (type === "Inks") {
+            // Match ink type from settings by ID (loose equality handles string/number),
+            // then fall back to matching by name
+            let matchedInk = offerData.inkId
+                ? inks?.find(i => i.id == offerData.inkId)
+                : null;
+            if (!matchedInk && offerData.name) {
+                matchedInk = inks?.find(i => i.name === offerData.name || i.arName === offerData.name);
+            }
+            if (matchedInk) {
+                baseState.selectedInks = matchedInk;
+                // Ensure Formik gets the correct numeric ID
+                offerData.inkId = matchedInk.id;
+            } else if (offerData.inkId) {
+                baseState.selectedInks = { id: offerData.inkId, name: offerData.name, arName: offerData.name };
+            }
         }
         if (offerData.colorId) {
-            // Find matching color from colors array
-            const matchingColor = colors?.find(c => c.id === offerData.colorId);
+            // Find matching color from colors array (loose equality for string/number)
+            const matchingColor = colors?.find(c => c.id == offerData.colorId);
             baseState.selectedColor = matchingColor || { id: offerData.colorId, name: "", arName: "" };
         }
         if (offerData.paperSizeId) {
-            // Find matching paper size from paperSize array
-            const matchingSize = paperSize?.find(ps => ps.id === offerData.paperSizeId);
-            baseState.selectedPaperSize = matchingSize || { id: offerData.paperSizeId, name: offerData.paperSize, arName: offerData.paperSize };
+            // Find matching paper size from paperSize array (loose equality for string/number)
+            const matchingSize = paperSize?.find(ps => ps.id == offerData.paperSizeId);
+            if (matchingSize) {
+                baseState.selectedPaperSize = matchingSize;
+                offerData.paperSizeId = matchingSize.id;
+            } else {
+                const numericSizeId = typeof offerData.paperSizeId === 'string' && offerData.paperSizeId
+                    ? Number(offerData.paperSizeId) || offerData.paperSizeId
+                    : offerData.paperSizeId;
+                baseState.selectedPaperSize = { id: numericSizeId, name: offerData.paperSize, arName: offerData.paperSize };
+                offerData.paperSizeId = numericSizeId;
+            }
+        } else if (type === "Paper" && offerData.paperSize) {
+            // No ID available — match by display name against Redux paperSize list
+            const matchingSize = paperSize?.find(ps =>
+                ps.name === offerData.paperSize || ps.arName === offerData.paperSize
+            );
+            if (matchingSize) {
+                baseState.selectedPaperSize = matchingSize;
+                offerData.paperSizeId = matchingSize.id;
+            }
         }
         if (offerData.min) {
             // Find matching quantity from amounts array
             const matchingAmount = amounts?.find(a => a.name === offerData.min?.toString());
-            baseState.selectedPaperQuntaity = matchingAmount ? { ...matchingAmount, id: String(matchingAmount.id) } : { id: String(offerData.min), name: offerData.min?.toString(), arName: offerData.min?.toString() };
+            baseState.selectedPaperQuntaity = matchingAmount ? { ...matchingAmount } : { id: Number(offerData.min), name: offerData.min?.toString(), arName: offerData.min?.toString() };
         }
         if (offerData.branchId) {
+            // Ensure branchId is numeric so typeof check in display logic works
+            const numericBranchId = typeof offerData.branchId === 'string' && offerData.branchId
+                ? Number(offerData.branchId) || offerData.branchId
+                : offerData.branchId;
             baseState.selectedBranches = {
-                branchId: offerData.branchId,
+                branchId: numericBranchId,
                 branchName: offerData.branchName,
                 countryName: offerData.countryName,
                 regionName: offerData.regionName
@@ -239,7 +283,7 @@ const formattedPaperTypes = uiState.paperTypeList.map(function (item) {
         } else if (type === "Inks") {
             updated.inkId = values?.InksType ?? item.inkId;
             updated.brand = values?.Brand ?? item.brand;
-            updated.size = values?.InksWidth ?? item.size;
+            updated.width = values?.InksWidth ?? item.width;
             updated.colorId = values?.Color ?? item.colorId;
             updated.price = values?.PaperPrice ?? item.price;
             updated.min = values?.PaperQuntaity ?? item.min;
@@ -264,7 +308,19 @@ const formattedPaperTypes = uiState.paperTypeList.map(function (item) {
     // Navigate back to OffersDetails with updated item
     const navigateBackWithUpdatedItem = () => {
         const updatedItem = buildUpdatedItem();
-        navigation.navigate('OffersDetails', { item: updatedItem });
+        // navigation.navigate('OffersDetails', { item: updatedItem });
+        navigation.reset({
+  index: 1,
+  routes: [
+    { name: 'Market' },
+    {
+      name: 'OffersDetails',
+      params: {
+        item: updatedItem,
+      },
+    },
+  ],
+});
     };
 
     // Extract all form values from Formik reference
@@ -286,7 +342,7 @@ const formattedPaperTypes = uiState.paperTypeList.map(function (item) {
         InkId: formValues.inksType,
         InkOfferId: offerData.id,
         Brand: formValues.brand,
-        Size: formValues.inksWidth,
+        Width: formValues.inksWidth,
         ColorId: formValues.color,
         Price: formValues.price,
         Min: formValues.min,
@@ -570,9 +626,11 @@ const submitPaperOffer = (values: any) => {
     tomorrow.setDate(tomorrow.getDate() + 1);
 
     const onChange = (event, selectedDate) => {
-        setstate(old => ({ ...old, showDate: Platform.OS === 'ios' }));
+        const showDate = Platform.OS === 'ios';
         if (selectedDate && selectedDate >= new Date()) {
-            setstate(old => ({ ...old, date: selectedDate }));
+            setstate(old => ({ ...old, showDate, date: selectedDate }));
+        } else {
+            setstate(old => ({ ...old, showDate }));
         }
     };
 
@@ -583,6 +641,56 @@ const submitPaperOffer = (values: any) => {
             getAllPapersV2()
         }
     }, [])
+
+    // Match Paper Type after paperTypeList loads asynchronously
+    useEffect(() => {
+        if (type !== "Paper" || state.paperTypeList.length === 0) return;
+        // Skip if Paper Type is already matched (id is numeric)
+        if (typeof state.selectedPaperType.id !== "string") return;
+
+        const currentPaperId = formikRef.current?.values?.PaperType;
+        let matched = null;
+
+        // Try matching by existing ID
+        if (currentPaperId) {
+            matched = state.paperTypeList.find(p => p.id == currentPaperId);
+        }
+        // Fall back to matching by name
+        if (!matched && offerData.name) {
+            matched = state.paperTypeList.find(p => p.name === offerData.name || p.arName === offerData.name);
+        }
+
+        if (matched) {
+            setstate(old => ({ ...old, selectedPaperType: matched }));
+            formikRef.current?.setFieldValue("PaperType", matched.id);
+        }
+    }, [state.paperTypeList])
+
+    // Match Branch after branch list loads asynchronously
+    useEffect(() => {
+        if (state.branches.length === 0) return;
+        // Skip if branch is already matched (branchId is numeric)
+        if (typeof state.selectedBranches.branchId !== "string") return;
+
+        const currentBranchId = formikRef.current?.values?.Branches || offerData.branchId;
+        if (!currentBranchId) return;
+
+        const matched = state.branches.find(b => b.branchId == currentBranchId || b.id == currentBranchId);
+        if (matched) {
+            const numericId = typeof matched.branchId === 'string' ? Number(matched.branchId) || matched.branchId : matched.branchId;
+            setstate(old => ({
+                ...old,
+                selectedBranches: {
+                    branchId: numericId,
+                    branchName: matched.branchName || matched.name || "",
+                    countryName: matched.countryName || matched.country || "",
+                    regionName: matched.regionName || matched.region || "",
+                },
+            }));
+            formikRef.current?.setFieldValue("Branches", matched.branchId || matched.id);
+        }
+    }, [state.branches])
+
     const getMyBranches = () => {
         setstate(old => ({ ...old, loading: true }))
 
@@ -750,7 +858,7 @@ const submitPaperOffer = (values: any) => {
                     onBlur: handleBlur("Brand"),
                     onChangeText: handleChange("Brand"),
                     maxLength: 5,
-                    keyboardType: "number-pad",
+                                                keyboardType: "default",
                 }}
                 password={false}
                 isPhone={false}
@@ -961,7 +1069,7 @@ const submitPaperOffer = (values: any) => {
                             locale="ar"
                             onChange={onChange}
                         />
-                        : (Platform.OS == "android" && !uiState.showDate && uiState.date != new Date()) ? <View style={styles.dateCon}>
+                        : (offerData.endDate || uiState.date.getTime() !== new Date().getTime()) ? <View style={styles.dateCon}>
                             <Text style={[styles.textselectmenu, { color: theme.black }]}>
                                 {moment(uiState.date).locale("en").format("YYYY/MM/DD")}
                             </Text>
@@ -1074,7 +1182,9 @@ const submitPaperOffer = (values: any) => {
                     currentFilter={uiState.paperType}
                     // items={formattedPaperTypes}
                     items={uiState.paperTypeList}
-                    style={{ flex: 0.3 }} name={formattedPaperTypes}                />
+                    style={{ flex: 0.3 }}
+                    //  name={formattedPaperTypes}       
+                              />
             )}
 
             {uiState.showSize && (
@@ -1269,7 +1379,7 @@ const submitPaperOffer = (values: any) => {
                         PaperQuntaity: offerData.min,
                         Branches: offerData.branchId,
                         PaperWidth: offerData.width,
-                        InksWidth: offerData.size,
+                        InksWidth: offerData.width,
                         PaperPrice: offerData.price,
                         PaperPrice1: offerData.coloredPrice,
                         PaperDescription: offerData.description,

@@ -8,7 +8,7 @@ import {
   View,
   RefreshControl,
 } from 'react-native';
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Container, Content } from '../../Components/containers/Containers';
 import { ThemeContext } from '../../Constants/theming';
 import { IFont, ITheme } from '../../Constants/interfaces';
@@ -37,6 +37,7 @@ import {
   GetAllPaperOffers,
   GetAllPrintersOffers,
 } from '../../Apis/HomeApis';
+import { useFocusEffect } from '@react-navigation/native';
 import { AddOfferICon, MoreIcon } from '../../Assets/Svg';
 import CategoriesPopup from '../../Components/PopUps/categories';
 import { CheckActivison, logoutHandler } from '../../Apis/User';
@@ -72,6 +73,8 @@ const Index = (props: Props) => {
     inks: [],
     showCategories: false,
   });
+  const isInitialFocus = useRef(true);
+
   useEffect(() => {
     getCategory();
     getAllPaperOffers();
@@ -79,6 +82,17 @@ const Index = (props: Props) => {
     dispatch<any>(CheckActivison());
     getSettings();
   }, []);
+
+  // Re-fetch offer data when screen gains focus (e.g. after editing an offer)
+  useFocusEffect(
+    useCallback(() => {
+      if (isInitialFocus.current) {
+        isInitialFocus.current = false;
+        return;
+      }
+      getAllPaperOffers();
+    }, [])
+  );
   const toastVisible = useRef(false);
 
   const toast = useToast();
@@ -613,7 +627,7 @@ const Index = (props: Props) => {
         })}
       </Content>
       <TabBar />
-      {isSeller && isAdmin && (
+      {isSeller && isAdmin  && (
         <View style={styles.addOffer}>
           <Pressable
             onPress={() => setstate(old => ({ ...old, showCategories: true }))}

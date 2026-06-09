@@ -59,9 +59,9 @@ const Index = (props: Props) => {
     const dispatch = useDispatch();
     const showToast = useToastNotification();
 
-    const navigateBackWithUpdatedData = () => {
-        navigation.navigate('SellerProfile');
-    };
+    // const navigateBackWithUpdatedData = () => {
+    //     navigation.navigate('SellerProfile');
+    // };
 
     useEffect(() => {
         getAllActivities()

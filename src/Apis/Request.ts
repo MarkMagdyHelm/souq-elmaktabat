@@ -176,12 +176,12 @@ export const AddPaperOffer = (body: any, cb?: (data: any, status: any) => void) 
             const { data, status } = await globalAPI.post('api/Offer/AddPaperOffer',
                 body
             );
-            // console.log("botttty",body);
-            // console.log('AddPaperOffer data = ', data);
+            console.log("botttty",body);
+            console.log('AddPaperOffer data = ', data);
             
             cb && cb(data, status);
         } catch (error) {
-            // console.log('AddPaperOffer error = ', error);
+            console.log('AddPaperOffer error = ', error);
             cb && cb(error, 500);
         }
     };
@@ -204,19 +204,19 @@ export const AddPaperOffer = (body: any, cb?: (data: any, status: any) => void) 
 export const UpdatePaperOffer = (body: any, cb?: (data: any, status: any) => void) => {
     return async (dispatch: Dispatch<IDispatch>) => {
         try {
-  // console.log("FORMDATA INSTANCE:", body instanceof FormData);
-  // console.log("FORMDATA:", body);
+  console.log("FORMDATA INSTANCE:", body instanceof FormData);
+  console.log("FORMDATA:", body);
             const { data, status } = await globalAPI.put('api/Offer/UpdatePaperOffer',
                 body, {
   headers: {
     "Content-Type": "multipart/form-data",
   }}
             );
-            // console.log('UpdatePaperOffer data = ', data);
+            console.log('UpdatePaperOffer data = ', data);
             
             cb && cb(data, status);
         } catch (error) {
-            // console.log('UpdatePaperOffer error = ', error);
+            console.log('UpdatePaperOffer error = ', error);
             cb && cb(error, 500);
         }
     };
