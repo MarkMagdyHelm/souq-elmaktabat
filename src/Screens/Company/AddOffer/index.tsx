@@ -51,7 +51,7 @@ const Index = (props: Props) => {
         showDate: false,
         showBranches: false,
         isdelervable: false,
-        date: new Date(),
+        date: (() => { const d = new Date(); d.setDate(d.getDate() + 1); return d; })(),
         branches: [],
         paperTypeList: [],
         selectedPaperType: { name: "", arName: "", id: "" },
@@ -221,7 +221,7 @@ const Index = (props: Props) => {
 
     const onChange = (event, selectedDate) => {
         const showDate = Platform.OS === 'ios';
-        if (selectedDate && selectedDate >= new Date()) {
+        if (selectedDate && selectedDate >= tomorrow) {
             setstate(old => ({ ...old, showDate, date: selectedDate }));
         } else {
             setstate(old => ({ ...old, showDate }));

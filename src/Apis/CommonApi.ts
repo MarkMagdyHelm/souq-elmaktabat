@@ -179,9 +179,11 @@ export const GetMyBranches = (cb?: (data: any, status: any) => void) => {
   return async (dispatch: Dispatch<IDispatch>) => {
     try {
       const { data, status } = await globalAPI.get('api/User/GetMyBranches');
+    console.log("GetMyBranches data = ", data, status);
+    
       cb && cb(data, status);
     } catch (error) {
-      //console.log('GetMyBranches error = ', error);
+      console.log('GetMyBranches error = ', error);
       cb && cb(error, 500);
     }
   };

@@ -66,7 +66,8 @@ const Index = (props: Props) => {
         coloredPrice: item?.coloredPrice != null ? String(item.coloredPrice) : "",
         min: item?.min != null ? String(item.min) : "",
         // Branch info (fall back to first entry in branches array if flat fields missing)
-        // branches[0] may be a primitive ID (number/string) or an object
+        // NOTE: branches[0].id may be association record ID, not actual branchId.
+        // The useEffect on state.branches will resolve the correct branchId from GetMyBranches.
         branchId: item?.branchId
             ?? item?.branches?.[0]?.branchId
             ?? item?.branches?.[0]?.id
@@ -115,7 +116,15 @@ const Index = (props: Props) => {
             // Form States
             isdelervable: offerData.includeDelivery,
             isImediatePrinting: offerData.imediatePrinting,
-            date: offerData.endDate ? new Date(offerData.endDate) : new Date(),
+            date: (() => {
+                const minDate = new Date();
+                minDate.setDate(minDate.getDate() + 1);
+                if (offerData.endDate) {
+                    const parsed = new Date(offerData.endDate);
+                    return isNaN(parsed.getTime()) || parsed < minDate ? minDate : parsed;
+                }
+                return minDate;
+            })(),
             PaperDescription: offerData.description,
             
             // Other
@@ -458,10 +467,8 @@ const submitPaperOffer = (values: any) => {
 
   formData.append("IncludeDelivery", String(uiState.isdelervable));
 
-  // 🔥 FIX 1: Branches (كان غلط)
   formData.append("Branches", String(values.Branches));
 
-  // 🔥 FIX 2: Image (name لازم يبقى ImageUrl + condition صح)
   if (
     values.ImageUrl &&
     typeof values.ImageUrl === "object" &&
@@ -627,7 +634,7 @@ const submitPaperOffer = (values: any) => {
 
     const onChange = (event, selectedDate) => {
         const showDate = Platform.OS === 'ios';
-        if (selectedDate && selectedDate >= new Date()) {
+        if (selectedDate && selectedDate >= tomorrow) {
             setstate(old => ({ ...old, showDate, date: selectedDate }));
         } else {
             setstate(old => ({ ...old, showDate }));
@@ -666,29 +673,53 @@ const submitPaperOffer = (values: any) => {
         }
     }, [state.paperTypeList])
 
-    // Match Branch after branch list loads asynchronously
+    // Match Branch after branch list loads asynchronously.
+    // Always re-validate against GetMyBranches to ensure correct branchId
+    // (item.branches[0].id may be an association record ID, not the real branchId).
     useEffect(() => {
         if (state.branches.length === 0) return;
-        // Skip if branch is already matched (branchId is numeric)
-        if (typeof state.selectedBranches.branchId !== "string") return;
 
         const currentBranchId = formikRef.current?.values?.Branches || offerData.branchId;
-        if (!currentBranchId) return;
 
-        const matched = state.branches.find(b => b.branchId == currentBranchId || b.id == currentBranchId);
-        if (matched) {
-            const numericId = typeof matched.branchId === 'string' ? Number(matched.branchId) || matched.branchId : matched.branchId;
-            setstate(old => ({
-                ...old,
-                selectedBranches: {
-                    branchId: numericId,
-                    branchName: matched.branchName || matched.name || "",
-                    countryName: matched.countryName || matched.country || "",
-                    regionName: matched.regionName || matched.region || "",
-                },
-            }));
-            formikRef.current?.setFieldValue("Branches", matched.branchId || matched.id);
+        let matched = null;
+
+        // 1. Try matching by branchId (exact match against GetMyBranches branchId)
+        if (currentBranchId) {
+            matched = state.branches.find(b => b.branchId == currentBranchId);
         }
+
+        // 2. Fallback: match by name/location from offer data
+        if (!matched && (offerData.countryName || offerData.branchName)) {
+            matched = state.branches.find(b => {
+                if (offerData.countryName && offerData.regionName) {
+                    return b.countryName === offerData.countryName && b.regionName === offerData.regionName;
+                }
+                if (offerData.branchName) {
+                    return b.branchName === offerData.branchName || b.name === offerData.branchName;
+                }
+                return false;
+            });
+        }
+
+        // 3. Fallback: if only 1 branch exists, use it (common for single-branch sellers)
+        if (!matched && state.branches.length === 1) {
+            matched = state.branches[0];
+        }
+
+        if (!matched) return;
+
+        // Always update with the authoritative branchId from GetMyBranches
+        const numericId = typeof matched.branchId === 'string' ? Number(matched.branchId) || matched.branchId : matched.branchId;
+        setstate(old => ({
+            ...old,
+            selectedBranches: {
+                branchId: numericId,
+                branchName: matched.branchName || matched.name || "",
+                countryName: matched.countryName || matched.country || "",
+                regionName: matched.regionName || matched.region || "",
+            },
+        }));
+        formikRef.current?.setFieldValue("Branches", matched.branchId);
     }, [state.branches])
 
     const getMyBranches = () => {
